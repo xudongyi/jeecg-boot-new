@@ -182,7 +182,7 @@
           }
         });
         this.$nextTick(() => {
-          this.form.setFieldsValue(pick(this.model,'reportYear','documentType','documentName','content','updateBy','updateTime'))
+          this.form.setFieldsValue(pick(this.model,'status','companyId','reportYear','documentType','documentName','content','createBy','createTime','updateBy','updateTime'))
         });
 
       },
