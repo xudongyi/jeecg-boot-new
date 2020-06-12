@@ -6,7 +6,7 @@
   import CompanyAdminPenaltiesList from '../oneCompayOneRecord/CompanyAdminPenaltiesList'
 
     export default {
-        name: "adminPenaltiesApplyList",
+        name: "adminPenaltiesApply",
       components: {CompanyAdminPenaltiesList},
       computed: {},
       data(){
