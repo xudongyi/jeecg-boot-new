@@ -28,15 +28,20 @@
       </a-form>
     </div>
     <!-- 查询区域-END -->
-    
+
     <!-- 操作按钮区域 -->
     <div class="table-operator" v-if="operationShow">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
-          <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
+          <a-menu-item key="1" @click="batchDel">
+            <a-icon type="delete"/>
+            删除
+          </a-menu-item>
         </a-menu>
-        <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>
+        <a-button style="margin-left: 8px"> 批量操作
+          <a-icon type="down"/>
+        </a-button>
       </a-dropdown>
       <a-button @click="batchDeclare" type="primary" icon="snippets">申报</a-button>
     </div>
@@ -44,7 +49,8 @@
     <!-- table区域-begin -->
     <div>
       <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;" v-if="operationShow">
-        <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a style="font-weight: 600">{{ selectedRowKeys.length }}</a>项
+        <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a style="font-weight: 600">{{
+        selectedRowKeys.length }}</a>项
         <a style="margin-left: 24px" @click="onClearSelected">清空</a>
       </div>
 
@@ -66,7 +72,8 @@
         </template>
         <template slot="imgSlot" slot-scope="text">
           <span v-if="!text" style="font-size: 12px;font-style: italic;">无图片</span>
-          <img v-else :src="getImgView(text)" height="25px" alt="" style="max-width:80px;font-size: 12px;font-style: italic;"/>
+          <img v-else :src="getImgView(text)" height="25px" alt=""
+               style="max-width:80px;font-size: 12px;font-style: italic;"/>
         </template>
         <template slot="fileSlot" slot-scope="text">
           <span v-if="!text" style="font-size: 12px;font-style: italic;">无文件</span>
@@ -83,11 +90,12 @@
 
         <span slot="action" slot-scope="text, record">
           <!--权限控制查看还是编辑，查看只允许查看不允许修改-->
-          <a  @click="handleEdit(record)" v-if="operationShow && (record.status!='1' && record.status!='4')">编辑</a>
-           <a-divider v-if="operationShow && (record.status!='1' && record.status!='4')" type="vertical" />
-           <a @click="handleview(record)" v-if="!operationShow || (record.status=='1' || record.status=='4')">查看</a>
+          <a @click="handleEdit(record)" v-if="operationShow && (record.status=='0' || record.status=='3')">编辑</a>
+          <a @click="handleEdit(record)" v-if="operationShow && (record.status=='2')">申请修改</a>
+           <a-divider v-if="operationShow && (record.status=='0' || record.status=='3')" type="vertical"/>
+          <a @click="handleview(record)" v-if="!operationShow || (record.status=='1' || record.status=='4')">查看</a>
            <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
-                  <a v-if="operationShow  && (record.status!='1' && record.status!='4')">删除</a>
+                  <a v-if="operationShow  && (record.status=='0' && record.status=='3')">删除</a>
           </a-popconfirm>
         </span>
       </a-table>
@@ -100,8 +108,8 @@
 <script>
 
   import '@/assets/less/TableExpand.less'
-  import { mixinDevice } from '@/utils/mixin'
-  import { JeecgListMixin } from '@/mixins/JeecgListMixin'
+  import {mixinDevice} from '@/utils/mixin'
+  import {JeecgListMixin} from '@/mixins/JeecgListMixin'
   import CompanyAcceptanceModal from './CompanyAcceptanceModal'
   import {getAction} from "../../../../../api/manage";
   import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
