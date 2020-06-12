@@ -53,11 +53,6 @@
             }
           },
           {
-            title:'申报状态',
-            align:"center",
-            dataIndex: 'status_dictText'
-          },
-          {
             title:'申报时间',
             align:"center",
             dataIndex: 'createTime',
@@ -82,6 +77,11 @@
             title:'审核人',
             align:"center",
             dataIndex: 'updateBy'
+          },
+          {
+            title:'申报状态',
+            align:"center",
+            dataIndex: 'status_dictText'
           },
           {
             title: '操作',

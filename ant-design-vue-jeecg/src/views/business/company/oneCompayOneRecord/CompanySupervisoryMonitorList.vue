@@ -37,7 +37,7 @@
     <!-- 查询区域-END -->
     
     <!-- 操作按钮区域 -->
-    <div class="table-operator">
+    <div class="table-operator" v-if="role === 'monitor'">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
 <!--      <a-button type="primary" icon="download" @click="handleExportXls('监督性监测信息')">导出</a-button>-->
 <!--      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">-->

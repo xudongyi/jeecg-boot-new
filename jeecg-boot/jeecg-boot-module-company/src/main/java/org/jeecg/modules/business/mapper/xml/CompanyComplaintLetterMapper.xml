@@ -1,5 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.jeecg.modules.business.mapper.CompanyComplaintLetterMapper">
+    <resultMap id="CompanyComplaintLetterVO" type="org.jeecg.modules.business.vo.CompanyComplaintLetterVO" >
+        <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="VARCHAR"/>
+        <result column="company_id" property="companyId" jdbcType="VARCHAR"/>
+        <result column="compliant_date" property="compliantDate" jdbcType="TIMESTAMP"/>
+        <result column="pollution_type" property="pollutionType" jdbcType="VARCHAR"/>
+        <result column="complaint_title" property="complaintTitle" jdbcType="VARCHAR"/>
+        <result column="content" property="content" jdbcType="VARCHAR"/>
+        <result column="create_by" property="createBy" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_by" property="updateBy" jdbcType="VARCHAR"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="company_name" property="companyName" jdbcType="VARCHAR"/>
+    </resultMap>
 
+    <select id="getCompanyComplaintLetter" parameterType="String"  resultMap="CompanyComplaintLetterVO">
+        select t1.company_name,t2.* from company_base t1
+        , company_complaint_letter t2 where t1.company_id=t2.company_id
+
+        <if test="companyId != null">
+            and t1.company_id in (#{companyId})
+        </if>
+        <if test="status != null">
+            and status in (#{status})
+        </if>
+        <if test="companyName != null">
+            and company_name like concat('%',#{companyName},'%')
+        </if>
+        <if test="dateBegin != null">
+            and report_date >= (#{dateBegin})
+        </if>
+        <if test="dateEnd != null">
+            and report_date &lt;= (#{dateEnd})
+        </if>
+    </select>
 </mapper>

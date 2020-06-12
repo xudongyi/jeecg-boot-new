@@ -4,16 +4,6 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="申报状态">
-              <j-dict-select-tag placeholder="请选择申报状态" v-model="queryParam.status" dictCode="statue"/>
-            </a-form-item>
-          </a-col>
-          <a-col :xl="6" :lg="7" :md="8" :sm="24" v-if="role === 'monitor'">
-            <a-form-item label="企业名称">
-              <a-input placeholder="请输入企业名称" v-model="queryParam.companyName"></a-input>
-            </a-form-item>
-          </a-col>
          <!-- <template v-if="toggleSearchStatus">-->
             <a-col :xl="10" :lg="11" :md="12" :sm="24" v-if="role === 'monitor'">
               <a-form-item label="发文日期">
@@ -25,6 +15,16 @@
 <!--
           </template>
 -->
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="申报状态">
+              <j-dict-select-tag placeholder="请选择申报状态" v-model="queryParam.status" dictCode="statue"/>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="6" :lg="7" :md="8" :sm="24" v-if="role === 'monitor'">
+            <a-form-item label="企业名称">
+              <a-input placeholder="请输入企业名称" v-model="queryParam.companyName"></a-input>
+            </a-form-item>
+          </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
@@ -96,8 +96,8 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="tohandleEdit(record)" v-if="role === 'monitor'">编辑</a>
-          <a @click="tohandleEdit(record)" v-else>查看</a>
+          <a @click="toHandleEdit(record)" v-if="role === 'monitor'">编辑</a>
+          <a @click="toHandleEdit(record)" v-else>查看</a>
           <a-divider type="vertical" v-if="role === 'monitor'" />
           <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
             <a v-if="role === 'monitor'">删除</a>
@@ -237,7 +237,7 @@
     methods: {
       initDictConfig(){
       },
-      tohandleEdit:function (record) {
+      toHandleEdit:function (record) {
         this.$refs.modalForm.value = record.companyId;
         this.handleEdit(record);
         this.$refs.modalForm.title="行政处罚信息";

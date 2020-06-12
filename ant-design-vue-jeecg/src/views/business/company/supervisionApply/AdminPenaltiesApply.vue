@@ -51,11 +51,6 @@
                 return !text?"":(text.length>10?text.substr(0,10):text)
               }
             },
-            {
-              title:'申报状态',
-              align:"center",
-              dataIndex: 'status_dictText'
-            },
             // {
             //   title:'企业id',
             //   align:"center",
@@ -68,14 +63,22 @@
             //   scopedSlots: {customRender: 'fileSlot'}
             // },
             {
+              title:'申报时间',
+              align:"center",
+              dataIndex: 'createTime',
+              customRender:function (text) {
+                return !text?"":(text.length>10?text.substr(0,10):text)
+              }
+            },
+            {
               title:'申报人',
               align:"center",
               dataIndex: 'createBy'
             },
             {
-              title:'申报时间',
+              title:'审核时间',
               align:"center",
-              dataIndex: 'createTime',
+              dataIndex: 'updateTime',
               customRender:function (text) {
                 return !text?"":(text.length>10?text.substr(0,10):text)
               }
@@ -86,12 +89,9 @@
               dataIndex: 'updateBy'
             },
             {
-              title:'审核时间',
+              title:'申报状态',
               align:"center",
-              dataIndex: 'updateTime',
-              customRender:function (text) {
-                return !text?"":(text.length>10?text.substr(0,10):text)
-              }
+              dataIndex: 'status_dictText'
             },
             {
               title: '操作',

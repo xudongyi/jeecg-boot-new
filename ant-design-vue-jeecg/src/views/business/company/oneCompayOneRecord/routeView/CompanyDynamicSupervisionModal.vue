@@ -67,8 +67,9 @@
       </a-form>
     </a-spin>
     <template slot="footer">
-      <a-button type="primary" @click="handleOk">暂存</a-button>
-      <a-button type="primary" @click="handDeclare">申报</a-button>
+      <a-button type="primary" @click="handleCancel">关闭</a-button>
+      <a-button type="primary" @click="handleOk" v-if="monitor === true">暂存</a-button>
+      <a-button type="primary" @click="handDeclare" v-if="monitor === true">申报</a-button>
     </template>
   </j-modal>
 </template>
