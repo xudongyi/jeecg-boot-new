@@ -1,12 +1,18 @@
 package org.jeecg.modules.business.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.jeecg.modules.business.entity.CompanySupervisoryMonitor;
 import org.jeecg.modules.business.mapper.CompanySupervisoryMonitorMapper;
 import org.jeecg.modules.business.service.ICompanySupervisoryMonitorService;
+import org.jeecg.modules.business.vo.CompanyAdminPenaltiesVO;
+import org.jeecg.modules.business.vo.CompanySupervisoryMonitorVO;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+
+import javax.annotation.Resource;
+import java.util.Date;
 
 /**
  * @Description: 监督性监测信息
@@ -17,10 +23,18 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 @Service
 public class CompanySupervisoryMonitorServiceImpl extends ServiceImpl<CompanySupervisoryMonitorMapper, CompanySupervisoryMonitor> implements ICompanySupervisoryMonitorService {
 
+    @Resource
+    CompanySupervisoryMonitorMapper companySupervisoryMonitorMapper;
+
     @Override
     public Integer findCountByCompanyId(String companyId) {
         QueryWrapper<CompanySupervisoryMonitor> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda().eq(CompanySupervisoryMonitor::getCompanyId,companyId);
         return this.count(queryWrapper);
+    }
+
+    @Override
+    public Page<CompanySupervisoryMonitorVO> getCompanySupervisoryMonitor(Page<CompanySupervisoryMonitorVO> page, String companyId, String status, String companyName, Date dateBegin, Date dateEnd) {
+        return page.setRecords(companySupervisoryMonitorMapper.getCompanySupervisoryMonitor(page,companyId,status,companyName,dateBegin,dateEnd));
     }
 }

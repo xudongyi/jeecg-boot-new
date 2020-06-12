@@ -14,7 +14,7 @@
               <a-input placeholder="请输入企业名称" v-model="queryParam.companyName"></a-input>
             </a-form-item>
           </a-col>
-          <template v-if="toggleSearchStatus">
+         <!-- <template v-if="toggleSearchStatus">-->
             <a-col :xl="10" :lg="11" :md="12" :sm="24" v-if="role === 'monitor'">
               <a-form-item label="发文日期">
                 <j-date placeholder="请选择开始日期" class="query-group-cust" v-model="queryParam.reportDate_begin"></j-date>
@@ -22,15 +22,17 @@
                 <j-date placeholder="请选择结束日期" class="query-group-cust" v-model="queryParam.reportDate_end"></j-date>
               </a-form-item>
             </a-col>
+<!--
           </template>
+-->
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <a-button type="primary" @click="toSearchReset" icon="reload" style="margin-left: 8px">重置</a-button>
-              <a @click="handleToggleSearch" style="margin-left: 8px" v-if="role === 'monitor'">
+            <!--  <a @click="handleToggleSearch" style="margin-left: 8px" v-if="role === 'monitor'">
                 {{ toggleSearchStatus ? '收起' : '展开' }}
                 <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>
-              </a>
+              </a>-->
             </span>
           </a-col>
         </a-row>

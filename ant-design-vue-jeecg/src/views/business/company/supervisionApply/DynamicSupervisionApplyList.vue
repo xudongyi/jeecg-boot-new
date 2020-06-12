@@ -7,7 +7,7 @@
   import CompanyDynamicSupervisionList from '../oneCompayOneRecord/routeView/CompanyDynamicSupervisionList'
 
   export default {
-      name: "",
+      name: "dynamicSupervisionApply",
       components: {CompanyDynamicSupervisionList},
       computed: {},
       data(){
