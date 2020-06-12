@@ -12,7 +12,7 @@
         <a-row>
           <a-col span="12">
             <a-form-item label="企业名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-select show-search style="width: 100%" placeholder="请输入企业名称" @change="handleChange" :value="value" :disabled="monitor !== true"
+              <a-select show-search style="width: 100%" @change="handleChange" :value="value" :disabled="monitor !== true"
               >
                 <a-select-option v-for="item in items" :key="item.value"  >
                   {{item.value}}

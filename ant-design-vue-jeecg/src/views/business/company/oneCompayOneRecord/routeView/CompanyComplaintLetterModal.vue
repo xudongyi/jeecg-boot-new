@@ -175,13 +175,13 @@
       },
       add () {
         this.edit({});
+        //新增时自动带入申报人和申报时间
+        this.model.createBy = this.$store.getters.userInfo.username;
+        this.model.createTime = this.currentTime;
       },
       edit (record) {
         this.form.resetFields();
         this.model = Object.assign({}, record);
-        //新增时自动带入申报人和申报时间
-        this.model.createBy = this.$store.getters.userInfo.username;
-        this.model.createTime = this.currentTime;
         this.visible = true;
         let that = this;
         //查询企业名称

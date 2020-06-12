@@ -98,11 +98,12 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="toHandleEdit(record)" v-if="role === 'monitor'">编辑</a>
-          <a @click="toHandleEdit(record)" v-else>查看</a>
-          <a-divider type="vertical" v-if="role === 'monitor'"/>
+          <!--权限控制查看还是编辑，查看只允许查看不允许修改-->
+          <a @click="toHandleEdit(record)" v-if="role === 'monitor' && (record.status!='1' && record.status!='4')">编辑</a>
+          <a @click="toHandleEdit(record)" v-if="role !== 'monitor' || (record.status=='1' || record.status=='4')">查看</a>
+          <a-divider type="vertical" v-if="role === 'monitor' && (record.status!='1' && record.status!='4')"/>
                 <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
-                  <a v-if="role === 'monitor'">删除</a>
+                  <a v-if="role === 'monitor' && (record.status!='1' && record.status!='4')">删除</a>
                 </a-popconfirm>
         </span>
 
