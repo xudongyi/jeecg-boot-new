@@ -3,6 +3,7 @@
 <mapper namespace="org.jeecg.modules.business.mapper.CompanyApplyMapper">
 
         <resultMap id="CompanyApplyVo" type="org.jeecg.modules.business.vo.CompanyApplyVo" >
+            <result column="id" property="id" jdbcType="VARCHAR"/>
             <result column="companyName" property="company_name" jdbcType="VARCHAR"/>
             <result column="fromTable" property="from_table" jdbcType="VARCHAR"/>
             <result column="createTime" property="create_time" jdbcType="VARCHAR"/>
@@ -15,7 +16,7 @@
 
 
     <select id="queryCompanyApplyVo"  resultMap="CompanyApplyVo">
-		select a.company_name,b.from_table,b.create_time,b.`status`,b.update_by,b.update_time
+		select b.id,a.company_name,b.from_table,b.create_time,b.`status`,b.update_by,b.update_time
             from company_base a inner join company_apply b  on a.company_id = b.company_id
             where a.company_id in
         <foreach collection="companyIds" item="id" index="index" open="(" close=")" separator=",">

@@ -1,4 +1,7 @@
 <template>
+
+
+  <div>
   <a-card :bordered="false">
     <!-- 查询区域 -->
     <div class="table-page-search-wrapper">
@@ -96,8 +99,7 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="handleEdit(record)">查看</a>
-
+          <a @click="handleEdit(record)">审核</a>
 <!--
           <a-divider type="vertical" />
 -->
@@ -112,11 +114,14 @@
             </a-menu>
           </a-dropdown>-->
         </span>
-
       </a-table>
     </div>
 
   </a-card>
+  <basic-info-audit ref ="basicInfoModal"></basic-info-audit>
+
+  </div>
+
 </template>
 
 <script>
@@ -126,17 +131,20 @@
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import JDictSelectTag from '@/components/dict/JDictSelectTag.vue'
   import {queryCompanyName} from "../../requestAction/request";
+  import BasicInfoAudit from "./modules/BasicInfoAudit";
 
   export default {
     name: "BaseAuditList",
     mixins:[JeecgListMixin, mixinDevice],
-    components: {
-      JDictSelectTag},
+    components: {JDictSelectTag
+      ,BasicInfoAudit//基础信息审核
+    },
 
     data () {
       return {
         items:[],
         value:'',
+        applyId:'',//申请的id
         queryParam:{companyIds:this.$store.getters.userInfo.companyIds.join(',')},
         // 表头
         columns: [
@@ -224,6 +232,10 @@
         this.value ='';
         this.queryParam = {companyIds:this.$store.getters.userInfo.companyIds.join(',')};
         this.loadData(1);
+      },
+      handleEdit(record){
+        this.applyId = record.id;
+        this.$refs.basicInfoModal.visible = "company_baseinfo"=== record.fromTable;
       }
     },
     mounted() {

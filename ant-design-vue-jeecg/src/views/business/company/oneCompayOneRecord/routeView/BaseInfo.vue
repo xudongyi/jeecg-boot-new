@@ -374,6 +374,9 @@
           this.form.setFieldsValue(pick(this.model,...this.datecolums))
         })
       },
+      audit(){
+
+      },
       close () {
         this.$emit('close');
       },

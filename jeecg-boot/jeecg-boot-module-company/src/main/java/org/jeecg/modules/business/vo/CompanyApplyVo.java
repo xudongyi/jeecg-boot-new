@@ -6,6 +6,11 @@ import org.jeecg.common.aspect.annotation.Dict;
 @Data
 public class CompanyApplyVo {
     /**
+     * 申请id
+     */
+    private String id;
+
+    /**
      * 企业名称
      */
     private String companyName;

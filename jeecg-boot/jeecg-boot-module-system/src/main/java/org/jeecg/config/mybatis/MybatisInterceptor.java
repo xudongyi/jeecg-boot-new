@@ -16,6 +16,7 @@ import org.apache.ibatis.plugin.Signature;
 import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.common.util.oConvertUtils;
+import org.jeecg.modules.business.annotation.Ignore;
 import org.jeecg.modules.system.entity.SysUser;
 import org.springframework.stereotype.Component;
 
@@ -117,9 +118,13 @@ public class MybatisInterceptor implements Interceptor {
 			}
 
 			for (Field field : fields) {
+
+
 				log.debug("------field.name------" + field.getName());
 				try {
 					if ("updateBy".equals(field.getName())) {
+						if(isIgnoreUpdate(field))
+							continue;
 						//获取登录用户信息
 						if (sysUser != null) {
 							// 登录账号
@@ -129,6 +134,8 @@ public class MybatisInterceptor implements Interceptor {
 						}
 					}
 					if ("updateTime".equals(field.getName())) {
+						if(isIgnoreUpdate(field))
+							continue;
 						field.setAccessible(true);
 						field.set(parameter, new Date());
 						field.setAccessible(false);
@@ -139,6 +146,11 @@ public class MybatisInterceptor implements Interceptor {
 			}
 		}
 		return invocation.proceed();
+	}
+
+	private boolean isIgnoreUpdate(Field field) {
+		return field.getAnnotation(Ignore.class).name().equals("update")&&
+				field.getAnnotation(Ignore.class).value()==true;
 	}
 
 	@Override
