@@ -2,4 +2,40 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.jeecg.modules.business.mapper.CompanySupervisoryMonitorMapper">
 
+    <resultMap id="CompanySupervisoryMonitorVO" type="org.jeecg.modules.business.vo.CompanySupervisoryMonitorVO" >
+        <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="VARCHAR"/>
+        <result column="company_id" property="companyId" jdbcType="VARCHAR"/>
+        <result column="report_date" property="reportDate" jdbcType="TIMESTAMP"/>
+        <result column="report_type" property="reportType" jdbcType="VARCHAR"/>
+        <result column="report_name" property="reportName" jdbcType="VARCHAR"/>
+        <result column="content" property="content" jdbcType="VARCHAR"/>
+        <result column="create_by" property="createBy" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_by" property="updateBy" jdbcType="VARCHAR"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="company_name" property="companyName" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="getCompanySupervisoryMonitor" parameterType="String"  resultMap="CompanySupervisoryMonitorVO">
+        select t1.company_name,t2.* from company_base t1
+        , company_supervisory_monitor t2 where t1.company_id=t2.company_id
+
+        <if test="companyId != null">
+            and t1.company_id in (#{companyId})
+        </if>
+        <if test="status != null">
+            and status in (#{status})
+        </if>
+        <if test="companyName != null">
+            and company_name like concat('%',#{companyName},'%')
+        </if>
+        <if test="dateBegin != null">
+            and report_date >= (#{dateBegin})
+        </if>
+        <if test="dateEnd != null">
+            and report_date &lt;= (#{dateEnd})
+        </if>
+    </select>
+
 </mapper>

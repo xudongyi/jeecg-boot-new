@@ -1,10 +1,15 @@
 package org.jeecg.modules.business.controller;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import cn.hutool.core.util.StrUtil;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.modules.business.entity.CompanySupervisoryMonitor;
@@ -16,6 +21,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 
 import org.jeecg.common.system.base.controller.JeecgController;
+import org.jeecg.modules.business.vo.CompanySupervisoryMonitorVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -52,10 +58,23 @@ public class CompanySupervisoryMonitorController extends JeecgController<Company
 	public Result<?> queryPageList(CompanySupervisoryMonitor companySupervisoryMonitor,
 								   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
 								   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
-								   HttpServletRequest req) {
-		QueryWrapper<CompanySupervisoryMonitor> queryWrapper = QueryGenerator.initQueryWrapper(companySupervisoryMonitor, req.getParameterMap());
-		Page<CompanySupervisoryMonitor> page = new Page<CompanySupervisoryMonitor>(pageNo, pageSize);
-		IPage<CompanySupervisoryMonitor> pageList = companySupervisoryMonitorService.page(page, queryWrapper);
+								   HttpServletRequest req) throws ParseException {
+		String companyId = req.getParameter("companyId");
+		String status = req.getParameter("status");
+		String companyName = req.getParameter("companyName");
+		String reportDateBegin = req.getParameter("reportDate_begin");
+		String reportDateEnd = req.getParameter("reportDate_end");
+		Date dateBegin;
+		Date dateEnd;
+		if(StrUtil.isEmpty(reportDateBegin) && StrUtil.isEmpty(reportDateEnd)) {
+			dateBegin = null;
+			dateEnd = null;
+		}else{
+			dateBegin = new SimpleDateFormat("yyyy-MM-dd").parse(reportDateBegin);
+			dateEnd = new SimpleDateFormat("yyyy-MM-dd").parse(reportDateEnd);
+		}
+		Page<CompanySupervisoryMonitorVO> page = new Page<CompanySupervisoryMonitorVO>(pageNo, pageSize);
+		IPage<CompanySupervisoryMonitorVO> pageList = companySupervisoryMonitorService.getCompanySupervisoryMonitor(page, companyId,status,companyName,dateBegin,dateEnd);
 		return Result.ok(pageList);
 	}
 	

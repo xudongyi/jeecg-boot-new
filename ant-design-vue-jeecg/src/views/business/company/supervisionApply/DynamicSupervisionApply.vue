@@ -1,13 +1,14 @@
 <template>
-    <company-admin-penalties-list ref="modalList" :company-id="companyid" role="monitor"></company-admin-penalties-list>
+
+   <company-dynamic-supervision-list ref="modalList" :company-id="companyid" role="monitor"></company-dynamic-supervision-list>
 </template>
 
 <script>
-  import CompanyAdminPenaltiesList from '../oneCompayOneRecord/CompanyAdminPenaltiesList'
+  import CompanyDynamicSupervisionList from '../oneCompayOneRecord/routeView/CompanyDynamicSupervisionList'
 
-    export default {
-        name: "adminPenaltiesApplyList",
-      components: {CompanyAdminPenaltiesList},
+  export default {
+      name: "dynamicSupervisionApply",
+      components: {CompanyDynamicSupervisionList},
       computed: {},
       data(){
         return{
@@ -17,7 +18,8 @@
       methods:{
 
       },
-      mounted(){
+      mounted()
+      {
           this.$refs.modalList.columns = [{
             title: '序号',
             dataIndex: '',
@@ -27,50 +29,31 @@
             customRender: function (t, r, index) {
               return parseInt(index) + 1;
             }
-          },
+            },
             {
-              title:'文件名称',
-              align:"center",
+              title: '材料名称',
+              align: "center",
               dataIndex: 'documentName'
             },
             {
-              title:'文件编号',
-              align:"center",
-              dataIndex: 'documentNo'
+              title: '材料类型',
+              align: "center",
+              dataIndex: 'documentType_dictText'
             },
             {
-              title:'企业名称',
-              align:"center",
+              title: '企业名称',
+              align: "center",
               dataIndex: 'companyName'
             },
             {
-              title:'发文日期',
-              align:"center",
-              dataIndex: 'reportDate',
-              customRender:function (text) {
-                return !text?"":(text.length>10?text.substr(0,10):text)
-              }
+              title: '申报年份',
+              align: "center",
+              dataIndex: 'reportYear'
             },
             {
               title:'申报状态',
               align:"center",
               dataIndex: 'status_dictText'
-            },
-            // {
-            //   title:'企业id',
-            //   align:"center",
-            //   dataIndex: 'companyId'
-            // },
-            // {
-            //   title:'文件上传',
-            //   align:"center",
-            //   dataIndex: 'content',
-            //   scopedSlots: {customRender: 'fileSlot'}
-            // },
-            {
-              title:'申报人',
-              align:"center",
-              dataIndex: 'createBy'
             },
             {
               title:'申报时间',
@@ -81,9 +64,9 @@
               }
             },
             {
-              title:'审核人',
+              title:'申报人',
               align:"center",
-              dataIndex: 'updateBy'
+              dataIndex: 'createBy'
             },
             {
               title:'审核时间',
@@ -94,6 +77,11 @@
               }
             },
             {
+              title:'审核人',
+              align:"center",
+              dataIndex: 'updateBy'
+            },
+            {
               title: '操作',
               dataIndex: 'action',
               align:"center",
@@ -101,8 +89,7 @@
               width:147,
               scopedSlots: { customRender: 'action' }
             }
-
-          ];
+            ];
       },
       created(){
         console.log(this.$store.getters.userInfo)
@@ -111,6 +98,7 @@
           this.companyid = this.$store.getters.userInfo.companyIds[0]
         }
       }
+
     }
 </script>
 
