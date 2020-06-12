@@ -4,14 +4,18 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.modules.business.entity.CompanyAdminPenalties;
 import org.jeecg.modules.business.entity.CompanyComplaintLetter;
+import org.jeecg.modules.business.entity.CompanySupervisoryMonitor;
 import org.jeecg.modules.business.service.ICompanyComplaintLetterService;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -166,6 +170,35 @@ public class CompanyComplaintLetterController extends JeecgController<CompanyCom
 		this.companyComplaintLetterService.removeByIds(Arrays.asList(ids.split(",")));
 		return Result.ok("批量删除成功!");
 	}
+
+	 /**
+	  *  批量申报
+	  *
+	  * @param ids
+	  * @return
+	  */
+	 @AutoLog(value = "信访投诉信息-批量申报")
+	 @ApiOperation(value="信访投诉信息-批量申报", notes="信访投诉信息-批量申报")
+	 @GetMapping(value = "/batchDeclare")
+	 public Result<?> batchDeclare(@RequestParam(name="ids",required=true) String ids) {
+		 List<String> idList = Arrays.asList(ids.split(","));
+		 if (CollectionUtil.isNotEmpty(idList)) {
+			 for (Iterator<String> iterator = idList.iterator(); iterator.hasNext(); ) {
+				 String id = iterator.next();
+				 //查询
+				 CompanyComplaintLetter companyComplaintLetter = companyComplaintLetterService.getById(id);
+				 //判断申报的是否是暂存
+				 if (!Constant.status.TEMPORARY.equals(companyComplaintLetter.getStatus())) {
+					 return Result.error("请选择暂存的信息申报！");
+				 }
+				 //修改状态为1：待审核状态
+				 companyComplaintLetter.setStatus(Constant.status.PEND);
+				 companyComplaintLetterService.updateById(companyComplaintLetter);
+
+			 }
+		 }
+		 return Result.ok("批量申报成功!");
+	 }
 	
 	/**
 	 * 通过id查询

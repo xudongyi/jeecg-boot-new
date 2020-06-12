@@ -2,16 +2,15 @@ package org.jeecg.modules.business.controller;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
+import org.jeecg.modules.business.entity.CompanyAdminPenalties;
 import org.jeecg.modules.business.entity.CompanySupervisoryMonitor;
 import org.jeecg.modules.business.service.ICompanySupervisoryMonitorService;
 
@@ -21,6 +20,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 
 import org.jeecg.common.system.base.controller.JeecgController;
+import org.jeecg.modules.business.utils.Constant;
 import org.jeecg.modules.business.vo.CompanySupervisoryMonitorVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -133,6 +133,35 @@ public class CompanySupervisoryMonitorController extends JeecgController<Company
 		this.companySupervisoryMonitorService.removeByIds(Arrays.asList(ids.split(",")));
 		return Result.ok("批量删除成功!");
 	}
+
+	 /**
+	  *  批量申报
+	  *
+	  * @param ids
+	  * @return
+	  */
+	 @AutoLog(value = "监督性监测信息-批量申报")
+	 @ApiOperation(value="监督性监测信息-批量申报", notes="监督性监测信息-批量申报")
+	 @GetMapping(value = "/batchDeclare")
+	 public Result<?> batchDeclare(@RequestParam(name="ids",required=true) String ids) {
+		 List<String> idList = Arrays.asList(ids.split(","));
+		 if (CollectionUtil.isNotEmpty(idList)) {
+			 for (Iterator<String> iterator = idList.iterator(); iterator.hasNext(); ) {
+				 String id = iterator.next();
+				 //查询
+				 CompanySupervisoryMonitor companySupervisoryMonitor = companySupervisoryMonitorService.getById(id);
+				 //判断申报的是否是暂存
+				 if (!Constant.status.TEMPORARY.equals(companySupervisoryMonitor.getStatus())) {
+					 return Result.error("请选择暂存的信息申报！");
+				 }
+				 //修改状态为1：待审核状态
+				 companySupervisoryMonitor.setStatus(Constant.status.PEND);
+				 companySupervisoryMonitorService.updateById(companySupervisoryMonitor);
+
+			 }
+		 }
+		 return Result.ok("批量申报成功!");
+	 }
 	
 	/**
 	 * 通过id查询

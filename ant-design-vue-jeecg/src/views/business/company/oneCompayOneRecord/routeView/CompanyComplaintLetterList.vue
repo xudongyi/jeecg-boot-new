@@ -49,6 +49,7 @@
         </a-menu>
         <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>
       </a-dropdown>
+      <a-button @click="batchDeclare" type="primary" icon="snippets">申报</a-button>
     </div>
 
     <!-- table区域-begin -->
@@ -58,7 +59,7 @@
         <a style="margin-left: 24px" @click="onClearSelected">清空</a>
       </div>
 
-      <!--:rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"-->
+      <!---->
       <a-table
         ref="table"
         size="middle"
@@ -68,7 +69,7 @@
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
-
+        :rowSelection="rowSelection"
         class="j-table-force-nowrap"
         @change="handleTableChange">
 
@@ -116,6 +117,7 @@
   import CompanyComplaintLetterModal from './CompanyComplaintLetterModal'
   import JDate from '@/components/jeecg/JDate.vue'
   import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
+  import {getAction} from "../../../../../api/manage";
 
   export default {
     name: "CompanyComplaintLetterList",
@@ -220,6 +222,7 @@
           list: "/ccl/companyComplaintLetter/list",
           delete: "/ccl/companyComplaintLetter/delete",
           deleteBatch: "/ccl/companyComplaintLetter/deleteBatch",
+          batchDeclare: "/ccl/companyComplaintLetter/batchDeclare"
           // exportXlsUrl: "/ccl/companyComplaintLetter/exportXls",
           // importExcelUrl: "ccl/companyComplaintLetter/importExcel",
         },
@@ -230,6 +233,18 @@
       importExcelUrl: function(){
         return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
       },
+      rowSelection() {
+        return {
+          getCheckboxProps: record => ({
+            props: {
+              disabled: record.status == '1',
+              name: record.id,
+            },
+          }),
+          selectedRowKeys: this.selectedRowKeys,
+          onChange: this.onSelectChange
+        };
+      }
     },
     methods: {
       initDictConfig(){
@@ -243,6 +258,36 @@
         this.queryParam = {companyId:this.companyId};
         this.loadData(1);
       },
+      batchDeclare: function () {
+        if (this.selectedRowKeys.length <= 0) {
+          this.$message.warning('请选择一条记录！');
+          return;
+        } else {
+          let ids = "";
+          for (var a = 0; a < this.selectedRowKeys.length; a++) {
+            ids += this.selectedRowKeys[a] + ",";
+          }
+          let that = this;
+          this.$confirm({
+            title: "确认申报",
+            content: "是否申报选中数据?",
+            onOk: function () {
+              that.loading = true;
+              getAction(that.url.batchDeclare, {ids: ids}).then((res) => {
+                if (res.success) {
+                  that.$message.success(res.message);
+                  that.loadData();
+                  that.onClearSelected();
+                } else {
+                  that.$message.warning(res.message);
+                }
+              }).finally(() => {
+                that.loading = false;
+              });
+            }
+          });
+        }
+      }
 
     }
 
