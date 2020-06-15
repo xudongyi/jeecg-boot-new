@@ -4,18 +4,18 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
-         <!-- <template v-if="toggleSearchStatus">-->
-            <a-col :xl="10" :lg="11" :md="12" :sm="24" v-if="role === 'monitor'">
-              <a-form-item label="发文日期">
-                <j-date placeholder="请选择开始日期" class="query-group-cust" v-model="queryParam.reportDate_begin"></j-date>
-                <span class="query-group-split-cust"></span>
-                <j-date placeholder="请选择结束日期" class="query-group-cust" v-model="queryParam.reportDate_end"></j-date>
-              </a-form-item>
-            </a-col>
-<!--
-          </template>
--->
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+          <!-- <template v-if="toggleSearchStatus">-->
+          <a-col :xl="10" :lg="11" :md="12" :sm="24">
+            <a-form-item label="发文日期">
+              <j-date placeholder="请选择开始日期" class="query-group-cust" v-model="queryParam.reportDate_begin"></j-date>
+              <span class="query-group-split-cust"></span>
+              <j-date placeholder="请选择结束日期" class="query-group-cust" v-model="queryParam.reportDate_end"></j-date>
+            </a-form-item>
+          </a-col>
+          <!--
+                    </template>
+          -->
+          <a-col :xl="6" :lg="7" :md="8" :sm="24" v-if="role === 'monitor'">
             <a-form-item label="申报状态">
               <j-dict-select-tag placeholder="请选择申报状态" v-model="queryParam.status" dictCode="statue"/>
             </a-form-item>
@@ -29,24 +29,24 @@
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <a-button type="primary" @click="toSearchReset" icon="reload" style="margin-left: 8px">重置</a-button>
-            <!--  <a @click="handleToggleSearch" style="margin-left: 8px" v-if="role === 'monitor'">
-                {{ toggleSearchStatus ? '收起' : '展开' }}
-                <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>
-              </a>-->
+              <!--  <a @click="handleToggleSearch" style="margin-left: 8px" v-if="role === 'monitor'">
+                  {{ toggleSearchStatus ? '收起' : '展开' }}
+                  <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>
+                </a>-->
             </span>
           </a-col>
         </a-row>
       </a-form>
     </div>
     <!-- 查询区域-END -->
-    
+
     <!-- 操作按钮区域 -->
     <div class="table-operator" v-if="role === 'monitor'">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
-<!--      <a-button type="primary" icon="download" @click="handleExportXls('行政处罚信息')">导出</a-button>-->
-<!--      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">-->
-<!--        <a-button type="primary" icon="import">导入</a-button>-->
-<!--      </a-upload>-->
+      <!--      <a-button type="primary" icon="download" @click="handleExportXls('行政处罚信息')">导出</a-button>-->
+      <!--      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">-->
+      <!--        <a-button type="primary" icon="import">导入</a-button>-->
+      <!--      </a-upload>-->
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
           <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
@@ -97,18 +97,19 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="toHandleEdit(record)" v-if="role === 'monitor'">编辑</a>
-          <a @click="toHandleEdit(record)" v-else>查看</a>
-          <a-divider type="vertical" v-if="role === 'monitor'" />
+          <a @click="toHandleEdit(record)" v-if="role === 'monitor' && (record.status=='0' || record.status=='3')">编辑</a>
+          <a @click="toHandleEdit(record)" v-if="role !== 'monitor'">查看</a>
+          <a @click="handleView(record)" v-if="role === 'monitor' && (record.status=='1' || record.status=='4')">查看</a>
+          <a-divider type="vertical" v-if="role === 'monitor' && (record.status=='0' || record.status=='3')" />
           <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
-            <a v-if="role === 'monitor'">删除</a>
+            <a v-if="role === 'monitor' && (record.status=='0' || record.status=='3')">删除</a>
           </a-popconfirm>
         </span>
 
       </a-table>
     </div>
 
-    <companyAdminPenalties-modal ref="modalForm" @ok="modalFormOk" :companyId="companyId" :monitor="role === 'monitor'"></companyAdminPenalties-modal>
+    <companyAdminPenalties-modal ref="modalForm" @ok="modalFormOk" :companyId="companyId" :monitor="monitor"></companyAdminPenalties-modal>
   </a-card>
 </template>
 
@@ -136,7 +137,8 @@
     data () {
       return {
         description: '行政处罚信息管理页面',
-        companyid:this.companyId,
+        companyid:'',
+        monitor:'',
         queryParam: {
           companyId: this.companyId
         },
@@ -252,10 +254,19 @@
     methods: {
       initDictConfig(){
       },
+      handleView: function (record) {
+        this.$refs.modalForm.edit(record);
+        this.$refs.modalForm.title = "查看";
+        this.$refs.modalForm.disableSubmit = true;
+      },
+      handleAddMy:function(){
+        this.handleAdd();
+        this.monitor = 'add';
+      },
       toHandleEdit:function (record) {
-        this.$refs.modalForm.value = record.companyId;
         this.handleEdit(record);
-        this.$refs.modalForm.title="行政处罚信息";
+        this.monitor = 'edit';
+        this.$refs.modalForm.title="行政处罚信息编辑";
       },
       toSearchReset() {
         this.queryParam = {companyId:this.companyId};
@@ -293,6 +304,8 @@
       }
     },
     created(){
+      this.monitor = this.role;
+      this.companyid = this.companyId;
       if(this.companyid==null) {
         this.companyid = this.$store.getters.userInfo.companyIds[0]
       }

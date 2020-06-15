@@ -13,8 +13,8 @@
         <a-row>
           <a-col span="12">
             <a-form-item label="企业名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-select show-search style="width: 100%" placeholder="请输入企业名称" @change="handleChange" :value="value" :disabled="monitor !== true">
-                <a-select-option v-for="item in items" :key="item.value"  >
+              <a-select v-decorator="['companyId', validatorRules.companyId]" show-search style="width: 100%" placeholder="请输入企业名称" :disabled="monitorTag === 'view' || disableSubmit">
+                <a-select-option v-for="item in items" :value="item.key">
                   {{item.value}}
                 </a-select-option>
               </a-select>
@@ -22,28 +22,28 @@
           </a-col>
           <a-col span="12">
             <a-form-item label="文件名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input v-decorator="['documentName', validatorRules.documentName]" placeholder="请输入文件名称" :disabled="monitor !== true"></a-input>
+              <a-input v-decorator="['documentName', validatorRules.documentName]" placeholder="请输入文件名称" :disabled="monitorTag === 'view' || disableSubmit"></a-input>
             </a-form-item>
           </a-col>
         </a-row>
         <a-row>
           <a-col span="12">
             <a-form-item label="文件编号" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input v-decorator="['documentNo', validatorRules.documentNo]" placeholder="请输入文件编号" :disabled="monitor !== true"></a-input>
+              <a-input v-decorator="['documentNo', validatorRules.documentNo]" placeholder="请输入文件编号" :disabled="monitorTag === 'view' || disableSubmit"></a-input>
             </a-form-item>
           </a-col>
           <a-col span="12">
             <a-form-item label="发文日期" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <j-date placeholder="请选择发文日期" v-decorator="['reportDate', validatorRules.reportDate]" :trigger-change="true" style="width: 100%" :disabled="monitor !== true"/>
+              <j-date placeholder="请选择发文日期" v-decorator="['reportDate', validatorRules.reportDate]" :trigger-change="true" style="width: 100%" :disabled="monitorTag === 'view' || disableSubmit"/>
             </a-form-item>
           </a-col>
         </a-row>
-<!--        <a-form-item label="数据状态" :labelCol="labelCol" :wrapperCol="wrapperCol">-->
-<!--          <j-dict-select-tag type="list" v-decorator="['status', validatorRules.status]" :trigger-change="true" dictCode="statue" placeholder="请选择数据状态"/>-->
-<!--        </a-form-item>-->
-<!--        <a-form-item label="企业id" :labelCol="labelCol" :wrapperCol="wrapperCol">-->
-<!--          <a-input v-decorator="['companyId', validatorRules.companyId]" placeholder="请输入企业id"></a-input>-->
-<!--        </a-form-item>-->
+        <!--        <a-form-item label="数据状态" :labelCol="labelCol" :wrapperCol="wrapperCol">-->
+        <!--          <j-dict-select-tag type="list" v-decorator="['status', validatorRules.status]" :trigger-change="true" dictCode="statue" placeholder="请选择数据状态"/>-->
+        <!--        </a-form-item>-->
+        <!--        <a-form-item label="企业id" :labelCol="labelCol" :wrapperCol="wrapperCol">-->
+        <!--          <a-input v-decorator="['companyId', validatorRules.companyId]" placeholder="请输入企业id"></a-input>-->
+        <!--        </a-form-item>-->
         <a-row>
           <a-col span="24">
             <a-form-item label="文件上传" :labelCol="labelCols" :wrapperCol="wrapperCols">
@@ -52,31 +52,31 @@
           </a-col>
         </a-row>
 
-        <a-row v-if="monitor === true">
+        <a-row v-if="monitorTag != 'view'">
           <a-col span="12">
             <a-form-item label="申报人" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input v-decorator="['createBy']" placeholder="请输入申报人" :disabled="monitor === true"></a-input>
+              <a-input v-decorator="['createBy']" placeholder="请输入申报人" :disabled="monitorTag === 'view' || 'add' || 'edit' || disableSubmit"></a-input>
             </a-form-item>
           </a-col>
           <a-col span="12">
             <a-form-item label="申报时间" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <j-date placeholder="请选择申报时间" v-decorator="['createTime']" :trigger-change="true" style="width: 100%" :disabled="monitor === true"/>
+              <j-date placeholder="请选择申报时间" v-decorator="['createTime']" :trigger-change="true" style="width: 100%" :disabled="monitorTag === 'view' || 'add' || 'edit' || disableSubmit"/>
             </a-form-item>
           </a-col>
         </a-row>
-<!--        <a-form-item label="审核人" :labelCol="labelCol" :wrapperCol="wrapperCol">-->
-<!--          <a-input v-decorator="['updateBy']" placeholder="请输入审核人"></a-input>-->
-<!--        </a-form-item>-->
-<!--        <a-form-item label="审核时间" :labelCol="labelCol" :wrapperCol="wrapperCol">-->
-<!--          <j-date placeholder="请选择审核时间" v-decorator="['updateTime']" :trigger-change="true" style="width: 100%"/>-->
-<!--        </a-form-item>-->
+        <!--        <a-form-item label="审核人" :labelCol="labelCol" :wrapperCol="wrapperCol">-->
+        <!--          <a-input v-decorator="['updateBy']" placeholder="请输入审核人"></a-input>-->
+        <!--        </a-form-item>-->
+        <!--        <a-form-item label="审核时间" :labelCol="labelCol" :wrapperCol="wrapperCol">-->
+        <!--          <j-date placeholder="请选择审核时间" v-decorator="['updateTime']" :trigger-change="true" style="width: 100%"/>-->
+        <!--        </a-form-item>-->
 
       </a-form>
     </a-spin>
     <template slot="footer">
       <a-button type="primary" @click="handleCancel">关闭</a-button>
-      <a-button type="primary" @click="handleOk" v-if="monitor === true">暂存</a-button>
-      <a-button type="primary" @click="handDeclare" v-if="monitor === true">申报</a-button>
+      <a-button type="primary" @click="handleOk" v-if="monitorTag !== 'view' && (!disableSubmit)">暂存</a-button>
+      <a-button type="primary" @click="handDeclare" v-if="monitorTag !== 'view' && (!disableSubmit)">申报</a-button>
     </template>
   </j-modal>
 </template>
@@ -86,31 +86,28 @@
   import { httpAction } from '@/api/manage'
   import pick from 'lodash.pick'
   import { validateDuplicateValue } from '@/utils/util'
-  import JDate from '@/components/jeecg/JDate'  
+  import JDate from '@/components/jeecg/JDate'
   import JUpload from '@/components/jeecg/JUpload'
   import JDictSelectTag from "@/components/dict/JDictSelectTag"
   import {queryCompanyName} from "../../../requestAction/request";
 
   export default {
     name: "CompanyAdminPenaltiesModal",
-    components: { 
+    components: {
       JDate,
       JUpload,
       JDictSelectTag,
     },
     props: {
-      companyId:'',
-      monitor:{
-        type:Boolean
-      }
+      monitor:''
     },
     data () {
       return {
         form: this.$form.createForm(this),
         title:"操作",
         width:800,
-        value:'',
         items:[],
+        disableSubmit:false,
         visible: false,
         model: {},
         labelCol: {
@@ -131,19 +128,14 @@
         },
         confirmLoading: false,
         validatorRules: {
-          // companyName: {
-          //   rules: [
-          //     { required: true, message: '请输入企业名称!'},
-          //   ]
-          // },
+          companyId: {
+            rules: [
+              { required: true, message: '请选择企业名称!'},
+            ]
+          },
           status: {
             rules: [
               { required: true, message: '请输入数据状态!'},
-            ]
-          },
-          companyId: {
-            rules: [
-              { required: true, message: '请输入企业id!'},
             ]
           },
           reportDate: {
@@ -166,33 +158,33 @@
           add: "/cap/companyAdminPenalties/add",
           edit: "/cap/companyAdminPenalties/edit",
           declare:"/cap/companyAdminPenalties/declare"
-        }
+        },
+        monitorTag:''
       }
     },
     created () {
+      this.monitorTag = this.monitor;
+      console.log(this.monitorTag==='view')
+      let that = this;
+      //查询企业名称
+      queryCompanyName({companyIds:this.$store.getters.userInfo.companyIds.join(',')}).then((res) => {
+        if(res.success){
+          that.items = res.result;
+        }
+      })
     },
     methods: {
       add () {
         this.edit({});
       },
       edit (record) {
+        console.log(record);
         this.form.resetFields();
         this.model = Object.assign({}, record);
         this.visible = true;
         let that = this;
-        //查询企业名称
-        queryCompanyName({companyIds:this.$store.getters.userInfo.companyIds.join(',')}).then((res) => {
-          if(res.success){
-            that.items = res.result;
-            that.items.forEach(e=>{
-              if(e.key === that.value){
-                that.value = e.value;
-              }
-            })
-          }
-        })
         this.$nextTick(() => {
-          this.form.setFieldsValue(pick(this.model,'status','companyId','reportDate','documentName','documentNo','content','createBy','createTime','updateBy','updateTime'))
+          this.form.setFieldsValue(pick(this.model,'status','companyId','reportDate','documentName','documentNo','content','createBy','createTime','updateBy','updateTime'));
         })
       },
       close () {
@@ -202,10 +194,8 @@
       handleOk () {
         const that = this;
         //获取选中企业名称对应的key值
-        const company_id = this.items.find(e=>{
-          return e.value === that.value
-        }).key;
-        console.log(company_id);
+
+
         // 触发表单验证
         this.form.validateFields((err, values) => {
           if (!err) {
@@ -217,10 +207,9 @@
               method = 'post';
             }else{
               httpurl+=this.url.edit;
-               method = 'put';
+              method = 'put';
             }
             let formData = Object.assign(this.model, values);
-            formData.companyId = company_id;
             console.log("表单提交数据",formData)
             httpAction(httpurl,formData,method).then((res)=>{
               if(res.success){
@@ -234,7 +223,7 @@
               that.close();
             })
           }
-         
+
         })
       },
       handleCancel () {
@@ -243,10 +232,7 @@
       popupCallback(row){
         this.form.setFieldsValue(pick(row,'status','companyId','reportDate','documentName','documentNo','content','createBy','createTime','updateBy','updateTime'))
       },
-      handleChange(value) {
-        console.log(value);
-        this.value = value;
-      },
+
       handDeclare(){
         const that = this;
         // 触发表单验证
@@ -256,7 +242,6 @@
             let httpUrl = this.url.declare;
             let method = 'put';
             let formData = Object.assign(this.model, values);
-            formData.companyId=this.companyId;
             httpAction(httpUrl,formData,method).then((res)=>{
               if(res.success){
                 that.$message.success(res.message);
@@ -272,7 +257,7 @@
 
         })
       }
-      
+
     }
   }
 </script>
