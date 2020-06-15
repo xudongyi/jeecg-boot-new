@@ -55,12 +55,12 @@
         <a-row v-if="monitorTag != 'view'">
           <a-col span="12">
             <a-form-item label="申报人" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input v-decorator="['createBy']" placeholder="请输入申报人" :disabled="monitorTag === 'view' || 'add' || 'edit' || disableSubmit"></a-input>
+              <a-input v-decorator="['createBy']" placeholder="请输入申报人" :disabled="monitorTag !== 'add' || monitorTag !== 'edit' || disableSubmit"></a-input>
             </a-form-item>
           </a-col>
           <a-col span="12">
             <a-form-item label="申报时间" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <j-date placeholder="请选择申报时间" v-decorator="['createTime']" :trigger-change="true" style="width: 100%" :disabled="monitorTag === 'view' || 'add' || 'edit' || disableSubmit"/>
+              <j-date placeholder="请选择申报时间" v-decorator="['createTime']" :trigger-change="true" style="width: 100%" :disabled="monitorTag !== 'edit' || disableSubmit"/>
             </a-form-item>
           </a-col>
         </a-row>
@@ -164,7 +164,7 @@
     },
     created () {
       this.monitorTag = this.monitor;
-      console.log(this.monitorTag==='view')
+      console.log(this.monitorTag==='view');
       let that = this;
       //查询企业名称
       queryCompanyName({companyIds:this.$store.getters.userInfo.companyIds.join(',')}).then((res) => {
@@ -193,9 +193,6 @@
       },
       handleOk () {
         const that = this;
-        //获取选中企业名称对应的key值
-
-
         // 触发表单验证
         this.form.validateFields((err, values) => {
           if (!err) {
