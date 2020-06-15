@@ -184,7 +184,6 @@
         this.form.resetFields();
         this.model = Object.assign({}, record);
         this.visible = true;
-        let that = this;
         this.$nextTick(() => {
           this.form.setFieldsValue(pick(this.model,'status','companyId','reportDate','documentName','documentNo','content','createBy','createTime','updateBy','updateTime'));
         })

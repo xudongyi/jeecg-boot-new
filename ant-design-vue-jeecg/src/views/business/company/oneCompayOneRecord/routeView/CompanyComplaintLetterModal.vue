@@ -16,8 +16,10 @@
         <a-row>
           <a-col span='12'>
             <a-form-item label="企业名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-select show-search style="width: 100%" placeholder="请输入企业名称" @change="handleChange" :value="value" :disabled="monitor !== true">
-                <a-select-option v-for="item in items" :key="item.value"  >
+              <a-select v-decorator="['companyId', validatorRules.companyId]" show-search style="width: 100%"
+                        placeholder="请输入企业名称" :disabled="monitorTag === 'view' || disableSubmit"
+                        optionFilterProp="children">
+                <a-select-option v-for="item in items" :key="item.key" :value="item.key">
                   {{item.value}}
                 </a-select-option>
               </a-select>
@@ -25,19 +27,19 @@
           </a-col>
           <a-col span='12'>
             <a-form-item label="投诉日期" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <j-date placeholder="请选择投诉日期" v-decorator="['compliantDate', validatorRules.compliantDate]" :trigger-change="true" style="width: 100%" :disabled="monitor !== true"/>
+              <j-date placeholder="请选择投诉日期" v-decorator="['compliantDate', validatorRules.compliantDate]" :trigger-change="true" style="width: 100%" :disabled="monitorTag === 'view' || disableSubmit"/>
             </a-form-item>
           </a-col>
         </a-row>
         <a-row>
           <a-col span='12'>
             <a-form-item label="污染类型" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <j-dict-select-tag type="list" v-decorator="['pollutionType', validatorRules.pollutionType]" :trigger-change="true" dictCode="pollution_type" placeholder="请选择污染类型" :disabled="monitor !== true"/>
+              <j-dict-select-tag type="list" v-decorator="['pollutionType', validatorRules.pollutionType]" :trigger-change="true" dictCode="pollution_type" placeholder="请选择污染类型" :disabled="monitorTag === 'view' || disableSubmit"/>
             </a-form-item>
           </a-col>
           <a-col span='12'>
             <a-form-item label="投诉标题" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input v-decorator="['complaintTitle', validatorRules.complaintTitle]" placeholder="请输入投诉标题" :disabled="monitor !== true"></a-input>
+              <a-input v-decorator="['complaintTitle', validatorRules.complaintTitle]" placeholder="请输入投诉标题" :disabled="monitorTag === 'view' || disableSubmit"></a-input>
             </a-form-item>
           </a-col>
         </a-row>
@@ -49,15 +51,15 @@
           </a-col>
         </a-row>
 
-        <a-row v-if="monitor === true">
+        <a-row v-if="monitorTag != 'view'">
           <a-col span="12">
             <a-form-item label="申报人" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input v-decorator="['createBy']" placeholder="请输入申报人" :disabled="monitor === true"></a-input>
+              <a-input v-decorator="['createBy']" placeholder="请输入申报人" :disabled="monitorTag !== 'add' || monitorTag !== 'edit' || disableSubmit"></a-input>
             </a-form-item>
           </a-col>
           <a-col span="12">
             <a-form-item label="申报时间" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <j-date placeholder="请选择申报时间" v-decorator="['createTime']" :trigger-change="true" style="width: 100%" :disabled="monitor === true"/>
+              <j-date placeholder="请选择申报时间" v-decorator="['createTime']" :trigger-change="true" style="width: 100%" :disabled="monitorTag !== 'add' || monitorTag !== 'edit' || disableSubmit"/>
             </a-form-item>
           </a-col>
         </a-row>
@@ -72,8 +74,8 @@
     </a-spin>
     <template slot="footer">
       <a-button type="primary" @click="handleCancel">关闭</a-button>
-      <a-button type="primary" @click="handleOk" v-if="monitor === true">暂存</a-button>
-      <a-button type="primary" @click="handDeclare" v-if="monitor === true">申报</a-button>
+      <a-button type="primary" @click="handleOk" v-if="monitorTag !== 'view' && (!disableSubmit)">暂存</a-button>
+      <a-button type="primary" @click="handDeclare" v-if="monitorTag !== 'view' && (!disableSubmit)">申报</a-button>
     </template>
   </j-modal>
 </template>
@@ -97,19 +99,16 @@
       JDictSelectTag,
     },
     props:{
-      companyId:'',
-      monitor:{
-        type:Boolean
-      },
+      monitor:'',
     },
     data () {
       return {
         form: this.$form.createForm(this),
         title:"操作",
         width:800,
-        visible: false,
-        value:'',
         items:[],
+        disableSubmit:false,
+        visible: false,
         model: {},
         currentTime:'',
         labelCol: {
@@ -135,11 +134,11 @@
               { required: true, message: '请输入数据状态!'},
             ]
           },
-          // companyId: {
-          //   rules: [
-          //     { required: true, message: '请输入企业id!'},
-          //   ]
-          // },
+          companyId: {
+            rules: [
+              { required: true, message: '请输入企业名称!'},
+            ]
+          },
           compliantDate: {
             rules: [
               { required: true, message: '请输入投诉日期!'},
@@ -160,11 +159,21 @@
           add: "/ccl/companyComplaintLetter/add",
           edit: "/ccl/companyComplaintLetter/edit",
           declare: "/ccl/companyComplaintLetter/declare"
-        }
+        },
+        monitorTag:''
       }
     },
     created () {
       this.getTime();
+      this.monitorTag = this.monitor;
+      console.log(this.monitorTag==='view');
+      let that = this;
+      //查询企业名称
+      queryCompanyName({companyIds:this.$store.getters.userInfo.companyIds.join(',')}).then((res) => {
+        if(res.success){
+          that.items = res.result;
+        }
+      })
     },
     methods: {
       //获取系统时间
@@ -183,18 +192,6 @@
         this.form.resetFields();
         this.model = Object.assign({}, record);
         this.visible = true;
-        let that = this;
-        //查询企业名称
-        queryCompanyName({companyIds:this.$store.getters.userInfo.companyIds.join(',')}).then((res) => {
-          if(res.success){
-            that.items = res.result;
-            that.items.forEach(e=>{
-              if(e.key === that.value){
-                that.value = e.value;
-              }
-            })
-          }
-        })
         this.$nextTick(() => {
           this.form.setFieldsValue(pick(this.model,'status','companyId','compliantDate','pollutionType','complaintTitle','content','createBy','createTime','updateBy','updateTime'))
         })
@@ -205,11 +202,6 @@
       },
       handleOk () {
         const that = this;
-        //获取选中企业名称对应的key值
-        const company_id = this.items.find(e=>{
-          return e.value === that.value
-        }).key;
-        console.log(company_id);
         // 触发表单验证
         this.form.validateFields((err, values) => {
           if (!err) {
@@ -224,7 +216,6 @@
                method = 'put';
             }
             let formData = Object.assign(this.model, values);
-            formData.companyId = company_id;
             console.log("表单提交数据",formData)
             httpAction(httpurl,formData,method).then((res)=>{
               if(res.success){
@@ -246,10 +237,6 @@
       },
       popupCallback(row){
         this.form.setFieldsValue(pick(row,'status','companyId','compliantDate','pollutionType','complaintTitle','content','createBy','createTime','updateBy','updateTime'))
-      },
-      handleChange(value) {
-        console.log(value);
-        this.value = value;
       },
       handDeclare(){
         const that = this;

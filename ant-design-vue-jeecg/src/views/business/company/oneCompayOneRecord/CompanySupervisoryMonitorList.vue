@@ -94,18 +94,19 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="toHandleEdit(record)" v-if="role === 'monitor'">编辑</a>
-          <a @click="toHandleEdit(record)" v-else>查看</a>
-          <a-divider type="vertical" v-if="role === 'monitor'"/>
-                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
-                  <a v-if="role === 'monitor'">删除</a>
-                </a-popconfirm>
+          <a @click="toHandleEdit(record)" v-if="role === 'monitor' && (record.status=='0' || record.status=='3')">编辑</a>
+          <a @click="toHandleEdit(record)" v-if="role !== 'monitor'">查看</a>
+          <a @click="handleView(record)" v-if="role === 'monitor' && (record.status=='1' || record.status=='4')">查看</a>
+          <a-divider type="vertical" v-if="role === 'monitor' && (record.status=='0' || record.status=='3')" />
+          <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
+            <a v-if="role === 'monitor' && (record.status=='0' || record.status=='3')">删除</a>
+          </a-popconfirm>
         </span>
 
       </a-table>
     </div>
 
-    <companySupervisoryMonitor-modal ref="modalForm" @ok="modalFormOk" :companyId="companyId" :monitor="role === 'monitor'"></companySupervisoryMonitor-modal>
+    <companySupervisoryMonitor-modal ref="modalForm" @ok="modalFormOk" :companyId="companyId" :monitor="monitor"></companySupervisoryMonitor-modal>
   </a-card>
 </template>
 
@@ -133,6 +134,8 @@
     data () {
       return {
         description: '监督性监测信息管理页面',
+        companyid:'',
+        monitor:'',
         queryParam: {
           companyId:this.companyId
         },
@@ -206,9 +209,18 @@
     methods: {
       initDictConfig(){
       },
+      handleView: function (record) {
+        this.$refs.modalForm.edit(record);
+        this.$refs.modalForm.title = "查看";
+        this.$refs.modalForm.disableSubmit = true;
+      },
+      handleAddMy:function(){
+        this.handleAdd();
+        this.monitor = 'add';
+      },
       toHandleEdit:function (record) {
-        this.$refs.modalForm.value = record.companyId;
         this.handleEdit(record);
+        this.monitor = 'edit';
         this.$refs.modalForm.title="监督性监测信息";
       },
       toSearchReset() {
@@ -244,6 +256,13 @@
             }
           });
         }
+      }
+    },
+    created() {
+      this.monitor = this.role;
+      this.companyid = this.companyId;
+      if(this.companyid==null) {
+        this.companyid = this.$store.getters.userInfo.companyIds[0]
       }
     }
   }
