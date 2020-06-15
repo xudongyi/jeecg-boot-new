@@ -13,8 +13,10 @@
         <a-row>
           <a-col span="12">
             <a-form-item label="企业名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-select v-decorator="['companyId', validatorRules.companyId]" show-search style="width: 100%" placeholder="请输入企业名称" :disabled="monitorTag === 'view' || disableSubmit">
-                <a-select-option v-for="item in items" :value="item.key">
+              <a-select v-decorator="['companyId', validatorRules.companyId]" show-search style="width: 100%"
+                        placeholder="请输入企业名称" :disabled="monitorTag === 'view' || disableSubmit"
+                        optionFilterProp="children">
+                <a-select-option v-for="item in items" :key="item.key" :value="item.key">
                   {{item.value}}
                 </a-select-option>
               </a-select>
@@ -229,7 +231,12 @@
       popupCallback(row){
         this.form.setFieldsValue(pick(row,'status','companyId','reportDate','documentName','documentNo','content','createBy','createTime','updateBy','updateTime'))
       },
-
+      filterOption(input, option) {
+        debugger
+        return (
+          option.componentOptions.children[0].text.indexOf(input) >= 0
+        );
+      },
       handDeclare(){
         const that = this;
         // 触发表单验证
