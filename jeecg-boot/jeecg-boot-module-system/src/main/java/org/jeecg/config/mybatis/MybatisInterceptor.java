@@ -149,6 +149,9 @@ public class MybatisInterceptor implements Interceptor {
 	}
 
 	private boolean isIgnoreUpdate(Field field) {
+		if(field.getAnnotation(Ignore.class)==null){
+			return false;
+		}
 		return field.getAnnotation(Ignore.class).name().equals("update")&&
 				field.getAnnotation(Ignore.class).value()==true;
 	}
