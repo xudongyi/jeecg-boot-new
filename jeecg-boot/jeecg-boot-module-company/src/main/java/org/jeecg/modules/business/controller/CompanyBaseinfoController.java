@@ -4,12 +4,14 @@ import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.system.util.JwtUtil;
 import org.jeecg.common.util.oConvertUtils;
+import org.jeecg.modules.business.entity.CompanyApply;
 import org.jeecg.modules.business.entity.CompanyBaseinfo;
 import org.jeecg.modules.business.entity.CompanySysuser;
 import org.jeecg.modules.business.service.ICompanyApplyService;
@@ -23,6 +25,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.jeecg.common.system.base.controller.JeecgController;
 import org.jeecg.modules.business.service.ICompanySysuserService;
 import org.jeecg.modules.business.utils.Constant;
+import org.jeecg.modules.business.utils.FieldBaseEquator;
+import org.jeecg.modules.business.utils.FieldInfo;
+import org.jeecg.modules.business.vo.CompanyBaseInfoVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -109,6 +114,41 @@ public class CompanyBaseinfoController extends JeecgController<CompanyBaseinfo, 
 		companyApplyService.saveByBase(companyBaseinfo.getCompanyId(),companyBaseinfo.getId(),companyBaseinfo.getStatus(),oldId,Constant.tables.BASEINFO);
 		return Result.ok("添加成功！");
 	}
+	 /**
+	  *   添加
+	  *
+	  * @param applyId
+	  * @return
+	  */
+	 @AutoLog(value = "查询待审核数据")
+	 @ApiOperation(value="company_baseinfo-添加", notes="company_baseinfo-添加")
+	 @GetMapping(value = "/queryAduitBase")
+	 public Result<?> queryAduitBase(@RequestParam(required = true) String applyId) {
+	 	Map<String,Object> result = new HashMap<>();
+	 	 CompanyApply companyApply = companyApplyService.getById(applyId);
+	 	 //获取新数据
+		 CompanyBaseInfoVo newBaseinfo = companyBaseinfoService.getCompanyBaseInfo(companyApply.getNewId());
+		 result.put("baseInfo",newBaseinfo);
+		 //申请人名字
+
+
+		 if(StrUtil.isEmpty(companyApply.getOldId())){
+		 	//提示
+			 result.put("cueColor","");
+			 return  Result.ok(result);
+		 }
+		 //获取老数据
+		 CompanyBaseInfoVo oldBaseinfo = companyBaseinfoService.getCompanyBaseInfo(companyApply.getOldId());
+		 //新老数据对比
+		 FieldBaseEquator fieldBaseEquator = new FieldBaseEquator();
+		 List<String> list = fieldBaseEquator.getDiffFieldNames(newBaseinfo,oldBaseinfo);
+		 result.put("cueColor","");
+		 result.put("cueField",list);
+		 return  Result.ok(result);
+	 }
+
+
+
 	/**
 	 *  编辑
 	 *

@@ -1,6 +1,4 @@
 <template>
-
-
   <div>
   <a-card :bordered="false">
     <!-- 查询区域 -->
@@ -118,8 +116,7 @@
     </div>
 
   </a-card>
-  <basic-info-audit ref ="basicInfoModal"></basic-info-audit>
-
+  <basic-info-audit ref ="basicInfoModal" ></basic-info-audit>
   </div>
 
 </template>
@@ -138,13 +135,13 @@
     mixins:[JeecgListMixin, mixinDevice],
     components: {JDictSelectTag
       ,BasicInfoAudit//基础信息审核
+
     },
 
     data () {
       return {
         items:[],
         value:'',
-        applyId:'',//申请的id
         queryParam:{companyIds:this.$store.getters.userInfo.companyIds.join(',')},
         // 表头
         columns: [
@@ -234,12 +231,21 @@
         this.loadData(1);
       },
       handleEdit(record){
-        this.applyId = record.id;
-        this.$refs.basicInfoModal.visible = "company_baseinfo"=== record.fromTable;
-      }
+        //先关闭所有浮窗
+        this.$refs.basicInfoModal.visible = false;
+        //打开需要展示的浮窗
+        if("company_baseinfo"=== record.fromTable){
+          this.$refs.basicInfoModal.visible = true;
+          this.$refs.basicInfoModal.auditModal( record);
+        }
+
+      },
+
     },
+
     mounted() {
       let that = this;
+      console.log(this.$store.getters.userInfo);
       queryCompanyName({companyIds:this.$store.getters.userInfo.companyIds.join(',')}).then((res) => {
 
         if(res.success){
@@ -251,7 +257,8 @@
           });
         }
       });
-    }
+    },
+
   }
 </script>
 <style scoped>

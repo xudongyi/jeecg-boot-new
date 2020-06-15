@@ -24,6 +24,10 @@ public class CompanyApplyVo {
      */
     private String createTime;
     /**
+     * 申报时间
+     */
+    private String createBy;
+    /**
      * 申报状态
      */
     @Dict(dicCode = "statue")

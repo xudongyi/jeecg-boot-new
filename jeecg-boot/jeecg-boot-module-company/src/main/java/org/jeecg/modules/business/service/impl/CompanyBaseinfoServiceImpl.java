@@ -6,9 +6,12 @@ import org.jeecg.modules.business.entity.CompanyBaseinfo;
 import org.jeecg.modules.business.mapper.CompanyBaseinfoMapper;
 import org.jeecg.modules.business.service.ICompanyBaseinfoService;
 import org.jeecg.modules.business.utils.Constant;
+import org.jeecg.modules.business.vo.CompanyBaseInfoVo;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+
+import javax.annotation.Resource;
 
 /**
  * @Description: company_baseinfo
@@ -18,6 +21,10 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
  */
 @Service
 public class CompanyBaseinfoServiceImpl extends ServiceImpl<CompanyBaseinfoMapper, CompanyBaseinfo> implements ICompanyBaseinfoService {
+
+    @Resource
+    CompanyBaseinfoMapper companyBaseinfoMapper;
+
    public  CompanyBaseinfo queryByCompanyId(String companyId){
        return this.getOne((new QueryWrapper<CompanyBaseinfo>().lambda()
                .eq(CompanyBaseinfo :: getStatus, Constant.status.NORMAL)
@@ -33,6 +40,11 @@ public class CompanyBaseinfoServiceImpl extends ServiceImpl<CompanyBaseinfoMappe
         UpdateWrapper<CompanyBaseinfo> updateWrapper = new UpdateWrapper<CompanyBaseinfo>()
                 .eq("COMPANY_ID" , companyId).set("STATUS",status);
         return this.update(updateWrapper);
+    }
+
+    @Override
+    public CompanyBaseInfoVo getCompanyBaseInfo(String id) {
+        return companyBaseinfoMapper.getCompanyBaseInfo(id);
     }
 
 }

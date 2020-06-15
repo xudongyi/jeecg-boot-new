@@ -1,103 +1,38 @@
 <template>
-  <div class="clearfix">
-    <pic-list :images="imageList"></pic-list>
+  <div>
+    <a-descriptions >
+      <a-descriptions-item label="申报人">
+        张三
+      </a-descriptions-item>
+      <a-descriptions-item label="申报时间">
+        1810000000
+      </a-descriptions-item>
+    </a-descriptions>
+
+
+
+      <a-form-item label="不通过原因：">
+        <a-textarea placeholder="Basic usage" :rows="2" />
+      </a-form-item>
+      <a-descriptions >
+        <a-descriptions-item label="审核人">
+          张三
+        </a-descriptions-item>
+        <a-descriptions-item label="审核时间">
+          1810000000
+        </a-descriptions-item>
+      </a-descriptions>
 
   </div>
 </template>
+
 <script>
-
-  import PicList from "../component/PicList";
-
-  function getBase64(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = error => reject(error);
-    });
-  }
-
+  //审批的脚部组件
   export default {
-    name:"Case",
-    components:{
-      PicList
-    },
-    data() {
-      return {
-        previewVisible: false,
-        previewImage: '',
-        fileList: [
-          {
-            uid: '-1',
-            name: 'image.png',
-            status: 'done',
-            url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-          },
-          {
-            uid: '-2',
-            name: 'image.png',
-            status: 'done',
-            url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-          },
-          {
-            uid: '-3',
-            name: 'image.png',
-            status: 'done',
-            url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-          },
-          {
-            uid: '-4',
-            name: 'image.png',
-            status: 'done',
-            url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-          },
-          {
-            uid: '-5',
-            name: 'image.png',
-            status: 'error',
-          },
-        ],
-      };
-    },
-    computed:{
-      imageList(){
-        let copy = [];
-        this.fileList.forEach(
-          element=>{
-            if(element.url!=null)
-              copy.push(element.url);
-          }
-        );
-        console.log(copy)
-        return copy;
-      }
-    },
-    methods: {
-      handleCancel() {
-        this.previewVisible = false;
-      },
-      async handlePreview(file) {
-        if (!file.url && !file.preview) {
-          file.preview = await getBase64(file.originFileObj);
-        }
-        this.previewImage = file.url || file.preview;
-        this.previewVisible = true;
-      },
-      handleChange({ fileList }) {
-        this.fileList = fileList;
-      },
-    },
-  };
+    name: "AuditFooter"
+  }
 </script>
-<style>
-  /* you can make up upload button and sample style by using stylesheets */
-  .ant-upload-select-picture-card i {
-    font-size: 32px;
-    color: #999;
-  }
 
-  .ant-upload-select-picture-card .ant-upload-text {
-    margin-top: 8px;
-    color: #666;
-  }
+<style scoped>
+
 </style>

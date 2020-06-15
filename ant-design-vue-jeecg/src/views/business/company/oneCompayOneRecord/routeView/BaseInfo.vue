@@ -5,7 +5,7 @@
       <a-row >
         <a-col span = '12'>
         <a-form-item label="企业名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="['shortName',{}]" placeholder="请输入企业名称":disabled="disable"  ></a-input>
+          <a-input v-decorator="['companyName',{}]" placeholder="请输入企业名称":disabled="disable"  ></a-input>
         </a-form-item>
         </a-col>
         <a-col span = '12'>
@@ -67,7 +67,7 @@
           </a-col>
           <a-col span = '12'>
             <a-form-item label="法人联系电话" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input v-decorator="['principalPhone', {}]" placeholder="请输入企业法人联系电话":disabled="disable"  ></a-input>
+              <a-input v-decorator="['corporatePhone', {}]" placeholder="请输入企业法人联系电话":disabled="disable"  ></a-input>
             </a-form-item>
           </a-col>
         </a-row>
@@ -175,8 +175,8 @@
             </a-form-item>
           </a-col>
           <a-col span = '12'>
-            <a-form-item label="厂区面积（平方米）" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input v-decorator="['factoryArea', {}]" placeholder="请输入厂区面积（平方米）":disabled="disable"  ></a-input>
+            <a-form-item label="化工集中区名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <a-input v-decorator="['attachedPark', {}]" placeholder="化工集中区名称":disabled="disable"  ></a-input>
             </a-form-item>
           </a-col>
         </a-row>
@@ -256,7 +256,7 @@
         form: this.$form.createForm(this),
         fatherTile:this.ftitle,
         title:"操作",
-        datecolums:['shortName','socialCreditCode','companyType','administrativeRegion','industry','address','longitude','dimension','corporate','economicType','affiliation','envProtectPrincipal','principalPhone','envProtectContact','contactPhone','emergencyLeader','leaderPhone','drainageArea','postalCode','fax','email','industrialOutput','staffCount','enterpriseSize','factoryArea','ischemicals','attachedPark','parentCompany','groupCompany','registeCapital','annualSalesIncome','annualProfit','totalAssets','registeAddress','operateScope','profile'],
+        datecolums:["companyName",'shortName','socialCreditCode','companyType','administrativeRegion','industry','address','longitude','dimension','corporate','corporatePhone','economicType','affiliation','envProtectPrincipal','principalPhone','envProtectContact','contactPhone','emergencyLeader','leaderPhone','drainageArea','postalCode','fax','email','industrialOutput','staffCount','enterpriseSize','factoryArea','ischemicals','attachedPark','parentCompany','groupCompany','registeCapital','annualSalesIncome','annualProfit','totalAssets','registeAddress','operateScope','profile'],
         model: {},
 
         labelCol: {
@@ -339,14 +339,13 @@
       disable(){
         //布尔类型转一下
         //是不是申请
-        console.log(this.fatherTile,!Boolean(this.fatherTile==="申请"))
         return !Boolean(this.ftitle==="申请");
       }
     },
     created () {
       let that = this;
       let record = {};
-      if(this.companyId ===""){
+      if(this.companyId ==null ||this.companyId ===""){
         that.edit({});
       }else {
         loadCompanyBaseInfo({companyId: this.companyId}).then((res) => {
@@ -373,9 +372,6 @@
         this.$nextTick(() => {
           this.form.setFieldsValue(pick(this.model,...this.datecolums))
         })
-      },
-      audit(){
-
       },
       close () {
         this.$emit('close');

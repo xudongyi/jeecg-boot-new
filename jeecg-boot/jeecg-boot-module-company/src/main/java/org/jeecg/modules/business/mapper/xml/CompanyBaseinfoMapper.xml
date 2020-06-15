@@ -2,4 +2,72 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.jeecg.modules.business.mapper.CompanyBaseinfoMapper">
 
+
+
+
+
+
+    <resultMap id="CompanyBaseInfoVO" type="org.jeecg.modules.business.vo.CompanyBaseInfoVo" >
+        <result column="companyId" property="company_id" jdbcType="VARCHAR"/>
+        <result column="companyName" property="company_name" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="VARCHAR"/>
+        <result column="shortName" property="short_name" jdbcType="TIMESTAMP"/>
+        <result column="socialCreditCode" property="social_credit_code" jdbcType="VARCHAR"/>
+        <result column="companyType" property="company_type" jdbcType="VARCHAR"/>
+        <result column="administrativeRegion" property="administrative_region" jdbcType="VARCHAR"/>
+        <result column="industry" property="industry" jdbcType="VARCHAR"/>
+        <result column="address" property="address" jdbcType="TIMESTAMP"/>
+        <result column="longitude" property="longitude" jdbcType="VARCHAR"/>
+        <result column="dimension" property="dimension" jdbcType="TIMESTAMP"/>
+        <result column="corporate" property="corporate" jdbcType="VARCHAR"/>
+        <result column="corporatePhone" property="corporate_phone" jdbcType="VARCHAR"/>
+        <result column="economicType" property="economic_type" jdbcType="VARCHAR"/>
+        <result column="affiliation" property="affiliation" jdbcType="VARCHAR"/>
+        <result column="envProtectPrincipal" property="env_protect_principal" jdbcType="VARCHAR"/>
+        <result column="principalPhone" property="principal_phone" jdbcType="TIMESTAMP"/>
+        <result column="envProtectContact" property="env_protect_contact" jdbcType="VARCHAR"/>
+        <result column="contactPhone" property="contact_phone" jdbcType="VARCHAR"/>
+        <result column="emergencyLeader" property="emergency_leader" jdbcType="VARCHAR"/>
+        <result column="leaderPhone" property="leader_phone" jdbcType="VARCHAR"/>
+        <result column="drainageArea" property="drainage_area" jdbcType="TIMESTAMP"/>
+        <result column="postalCode" property="postal_code" jdbcType="VARCHAR"/>
+        <result column="fax" property="fax" jdbcType="TIMESTAMP"/>
+        <result column="email" property="email" jdbcType="VARCHAR"/>
+        <result column="industrialOutput" property="industrial_output" jdbcType="VARCHAR"/>
+        <result column="staffCount" property="staff_count" jdbcType="VARCHAR"/>
+        <result column="enterpriseSize" property="enterprise_size" jdbcType="VARCHAR"/>
+        <result column="factoryArea" property="factory_area" jdbcType="TIMESTAMP"/>
+        <result column="ischemicals" property="ischemicals" jdbcType="VARCHAR"/>
+        <result column="attachedPark" property="attached_park" jdbcType="VARCHAR"/>
+        <result column="parentCompany" property="parent_company" jdbcType="VARCHAR"/>
+        <result column="groupCompany" property="group_company" jdbcType="VARCHAR"/>
+        <result column="registeCapital" property="registe_capital" jdbcType="TIMESTAMP"/>
+        <result column="annualSalesIncome" property="annual_sales_income" jdbcType="VARCHAR"/>
+        <result column="annualProfit" property="annual_profit" jdbcType="TIMESTAMP"/>
+        <result column="totalAssets" property="total_assets" jdbcType="VARCHAR"/>
+        <result column="registeAddress" property="registe_address" jdbcType="VARCHAR"/>
+        <result column="operateScope" property="operate_scope" jdbcType="VARCHAR"/>
+        <result column="profile" property="profile" jdbcType="VARCHAR"/>
+
+    </resultMap>
+
+
+    <select id="getCompanyBaseInfo" parameterType="String"  resultMap="CompanyBaseInfoVO">
+       select a.id AS company_id,a.company_name AS company_name,b.status AS status,b.short_name AS short_name,
+       b.social_credit_code AS social_credit_code,b.company_type AS company_type,b.administrative_region AS administrative_region,
+       b.industry AS industry,b.address AS address,b.longitude AS longitude,b.dimension AS dimension,b.corporate AS corporate,b.corporate_phone,
+       b.economic_type AS economic_type,b.affiliation AS affiliation,b.env_protect_principal AS env_protect_principal,
+       b.principal_phone AS principal_phone,b.env_protect_contact AS env_protect_contact,b.contact_phone AS contact_phone,
+       b.emergency_leader AS emergency_leader,b.leader_phone AS leader_phone,b.drainage_area AS drainage_area,b.postal_code AS postal_code,
+       b.fax AS fax,b.email AS email,b.industrial_output AS industrial_output,b.staff_count AS staff_count,b.enterprise_size AS enterprise_size,
+       b.factory_area AS factory_area,b.ischemicals AS ischemicals,b.attached_park AS attached_park,b.parent_company AS parent_company,
+       b.group_company AS group_company,b.registe_capital AS registe_capital,b.annual_sales_income AS annual_sales_income,
+       b.annual_profit AS annual_profit,b.total_assets AS total_assets,b.registe_address AS registe_address,b.operate_scope AS operate_scope,
+       b.profile AS profile
+       from company_base a inner join company_baseinfo b on a.id = b.company_id  where b.id = #{id}
+
+    </select>
+
+
+
 </mapper>

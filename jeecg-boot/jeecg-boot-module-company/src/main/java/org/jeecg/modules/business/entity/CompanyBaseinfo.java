@@ -98,6 +98,10 @@ public class CompanyBaseinfo implements Serializable {
 	@Excel(name = "企业法人", width = 15)
     @ApiModelProperty(value = "企业法人")
     private java.lang.String corporate;
+    /**企业法人电话*/
+    @Excel(name = "企业法人电话", width = 15)
+    @ApiModelProperty(value = "企业法人电话")
+    private java.lang.String corporatePhone;
 	/**经济类型*/
 	@Excel(name = "经济类型", width = 15)
     @ApiModelProperty(value = "经济类型")

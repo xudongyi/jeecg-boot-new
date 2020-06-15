@@ -266,7 +266,18 @@ public class SysUserController {
         }
         return result;
     }
-
+    @RequestMapping(value = "/queryByUserName", method = RequestMethod.GET)
+    public Result<SysUser> queryByUserName(@RequestParam(name = "userName", required = true) String userName) {
+        Result<SysUser> result = new Result<SysUser>();
+        SysUser sysUser = sysUserService.getUserByName(userName);
+        if (sysUser == null) {
+            result.error500("未找到对应实体");
+        } else {
+            result.setResult(sysUser);
+            result.setSuccess(true);
+        }
+        return result;
+    }
     @RequestMapping(value = "/queryUserRole", method = RequestMethod.GET)
     public Result<List<String>> queryUserRole(@RequestParam(name = "userid", required = true) String userid) {
         Result<List<String>> result = new Result<>();
