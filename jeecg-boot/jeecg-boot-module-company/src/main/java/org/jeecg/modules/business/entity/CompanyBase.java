@@ -51,10 +51,6 @@ public class CompanyBase implements Serializable {
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "更新日期")
     private java.util.Date updateTime;
-	/**企业id*/
-	@Excel(name = "企业id", width = 15)
-    @ApiModelProperty(value = "企业id")
-    private java.lang.String companyId;
 	/**企业名称*/
 	@Excel(name = "企业名称", width = 15)
     @ApiModelProperty(value = "企业名称")

@@ -146,9 +146,9 @@ public class CompanyBaseController extends JeecgController<CompanyBase, ICompany
 
 		 List<Map<String,String>> result = new ArrayList<>();
 		 //查询企业id和name
-		 companyBaseService.list(new QueryWrapper<CompanyBase>().lambda().in(CompanyBase::getCompanyId,idList)).forEach(companyBase -> {
+		 companyBaseService.list(new QueryWrapper<CompanyBase>().lambda().in(CompanyBase::getId,idList)).forEach(companyBase -> {
 			 Map<String,String> param = new HashMap<>();
-			 param.put("key",companyBase.getCompanyId());
+			 param.put("key",companyBase.getId());
 			 param.put("value",companyBase.getCompanyName());
 
 			 result.add(param);
