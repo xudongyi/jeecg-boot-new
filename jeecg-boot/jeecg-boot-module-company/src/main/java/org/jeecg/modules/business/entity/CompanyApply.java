@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.jeecg.common.aspect.annotation.Dict;
+import org.jeecg.modules.business.annotation.Ignore;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.jeecgframework.poi.excel.annotation.Excel;
 import io.swagger.annotations.ApiModel;
@@ -43,11 +44,13 @@ public class CompanyApply implements Serializable {
     private java.util.Date createTime;
 	/**更新人*/
     @ApiModelProperty(value = "更新人")
+    @Ignore
     private java.lang.String updateBy;
 	/**更新日期*/
 	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern="yyyy-MM-dd")
     @ApiModelProperty(value = "更新日期")
+    @Ignore
     private java.util.Date updateTime;
 	/**新的id，new_id 是申请的单子对应的id*/
 	@Excel(name = "新的id，new_id 是申请的单子对应的id", width = 15)

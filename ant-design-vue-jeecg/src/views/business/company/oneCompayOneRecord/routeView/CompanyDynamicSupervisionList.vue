@@ -52,7 +52,7 @@
         </a-menu>
         <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>
       </a-dropdown>
-
+      <a-button @click="batchDeclare" type="primary" icon="snippets">申报</a-button>
     </div>
 
     <!-- table区域-begin -->
@@ -73,7 +73,7 @@
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
-        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+        :rowSelection="rowSelection"
         class="j-table-force-nowrap"
         @change="handleTableChange">
 
@@ -100,10 +100,10 @@
         <span slot="action" slot-scope="text, record">
           <a @click="toHandleEdit(record)" v-if="role === 'monitor'">编辑</a>
           <a @click="toHandleEdit(record)" v-else>查看</a>
-          <a-divider type="vertical" v-if="role === 'monitor'"/>
-                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
-                  <a v-if="role === 'monitor'">删除</a>
-                </a-popconfirm>
+          <a-divider type="vertical" v-if="role === 'monitor'" />
+          <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
+            <a v-if="role === 'monitor'">删除</a>
+          </a-popconfirm>
         </span>
 
 
@@ -121,6 +121,7 @@
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import CompanyDynamicSupervisionModal from './CompanyDynamicSupervisionModal'
   import store from '@/store/'
+  import {getAction} from "../../../../../api/manage";
 
   export default {
     name: "CompanyDynamicSupervisionList",
@@ -224,6 +225,7 @@
           list: "/cds/companyDynamicSupervision/list",
           delete: "/cds/companyDynamicSupervision/delete",
           deleteBatch: "/cds/companyDynamicSupervision/deleteBatch",
+          batchDeclare: "/cds/companyDynamicSupervision/batchDeclare"
           // exportXlsUrl: "/cds/companyDynamicSupervision/exportXls",
           // importExcelUrl: "cds/companyDynamicSupervision/importExcel",
         },
@@ -234,6 +236,18 @@
       importExcelUrl: function(){
         return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
       },
+      rowSelection() {
+        return {
+          getCheckboxProps: record => ({
+            props: {
+              disabled: record.status == '1',
+              name: record.id,
+            },
+          }),
+          selectedRowKeys: this.selectedRowKeys,
+          onChange: this.onSelectChange
+        };
+      }
     },
     methods: {
       initDictConfig(){
@@ -246,6 +260,36 @@
       toSearchReset() {
         this.queryParam = {companyId:this.companyId};
         this.loadData(1);
+      },
+      batchDeclare: function () {
+        if (this.selectedRowKeys.length <= 0) {
+          this.$message.warning('请选择一条记录！');
+          return;
+        } else {
+          let ids = "";
+          for (var a = 0; a < this.selectedRowKeys.length; a++) {
+            ids += this.selectedRowKeys[a] + ",";
+          }
+          let that = this;
+          this.$confirm({
+            title: "确认申报",
+            content: "是否申报选中数据?",
+            onOk: function () {
+              that.loading = true;
+              getAction(that.url.batchDeclare, {ids: ids}).then((res) => {
+                if (res.success) {
+                  that.$message.success(res.message);
+                  that.loadData();
+                  that.onClearSelected();
+                } else {
+                  that.$message.warning(res.message);
+                }
+              }).finally(() => {
+                that.loading = false;
+              });
+            }
+          });
+        }
       },
     },
     created(){

@@ -12,7 +12,7 @@
         <a-row>
           <a-col span="12">
             <a-form-item label="企业名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-select show-search style="width: 100%" placeholder="请输入企业名称" @change="handleChange" :value="value" :disabled="monitor !== true"
+              <a-select show-search style="width: 100%" @change="handleChange" :value="value" :disabled="monitor !== true"
               >
                 <a-select-option v-for="item in items" :key="item.value"  >
                   {{item.value}}
@@ -67,8 +67,9 @@
       </a-form>
     </a-spin>
     <template slot="footer">
-      <a-button type="primary" @click="handleOk">暂存</a-button>
-      <a-button type="primary" @click="handDeclare">申报</a-button>
+      <a-button type="primary" @click="handleCancel">关闭</a-button>
+      <a-button type="primary" @click="handleOk" v-if="monitor === true">暂存</a-button>
+      <a-button type="primary" @click="handDeclare" v-if="monitor === true">申报</a-button>
     </template>
   </j-modal>
 </template>
@@ -181,7 +182,7 @@
           }
         });
         this.$nextTick(() => {
-          this.form.setFieldsValue(pick(this.model,'reportYear','documentType','documentName','content','updateBy','updateTime'))
+          this.form.setFieldsValue(pick(this.model,'status','companyId','reportYear','documentType','documentName','content','createBy','createTime','updateBy','updateTime'))
         });
 
       },

@@ -4,6 +4,7 @@ import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
 import org.jeecg.common.api.vo.Result;
@@ -205,7 +206,36 @@ public class CompanyDynamicSupervisionController extends JeecgController<Company
 		this.companyDynamicSupervisionService.removeByIds(Arrays.asList(ids.split(",")));
 		return Result.ok("批量删除成功!");
 	}
-	
+
+	 /**
+	  *  批量申报
+	  *
+	  * @param ids
+	  * @return
+	  */
+	 @AutoLog(value = "企业年度动态监管-批量申报")
+	 @ApiOperation(value="企业年度动态监管-批量申报", notes="企业年度动态监管-批量申报")
+	 @GetMapping(value = "/batchDeclare")
+	 public Result<?> batchDeclare(@RequestParam(name="ids",required=true) String ids) {
+		 List<String> idList = Arrays.asList(ids.split(","));
+		 if (CollectionUtil.isNotEmpty(idList)) {
+			 for (Iterator<String> iterator = idList.iterator(); iterator.hasNext(); ) {
+				 String id = iterator.next();
+				 //查询
+				 CompanyDynamicSupervision companyDynamicSupervision = companyDynamicSupervisionService.getById(id);
+				 //判断申报的是否是暂存
+				 if (!Constant.status.TEMPORARY.equals(companyDynamicSupervision.getStatus())) {
+					 return Result.error("请选择暂存的信息申报！");
+				 }
+				 //修改状态为1：待审核状态
+				 companyDynamicSupervision.setStatus(Constant.status.PEND);
+				 companyDynamicSupervisionService.updateById(companyDynamicSupervision);
+
+			 }
+		 }
+		 return Result.ok("批量申报成功!");
+	 }
+
 	/**
 	 * 通过id查询
 	 *

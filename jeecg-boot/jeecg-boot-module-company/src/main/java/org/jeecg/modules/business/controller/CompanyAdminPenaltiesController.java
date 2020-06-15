@@ -2,18 +2,17 @@ package org.jeecg.modules.business.controller;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.Data;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.modules.business.entity.CompanyAdminPenalties;
+import org.jeecg.modules.business.entity.CompanyDynamicSupervision;
 import org.jeecg.modules.business.service.ICompanyAdminPenaltiesService;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -193,6 +192,35 @@ public class CompanyAdminPenaltiesController extends JeecgController<CompanyAdmi
 	public Result<?> deleteBatch(@RequestParam(name="ids",required=true) String ids) {
 		this.companyAdminPenaltiesService.removeByIds(Arrays.asList(ids.split(",")));
 		return Result.ok("批量删除成功!");
+	}
+
+	/**
+	 *  批量申报
+	 *
+	 * @param ids
+	 * @return
+	 */
+	@AutoLog(value = "行政处罚信息-批量申报")
+	@ApiOperation(value="行政处罚信息-批量申报", notes="行政处罚信息-批量申报")
+	@GetMapping(value = "/batchDeclare")
+	public Result<?> batchDeclare(@RequestParam(name="ids",required=true) String ids) {
+		List<String> idList = Arrays.asList(ids.split(","));
+		if (CollectionUtil.isNotEmpty(idList)) {
+			for (Iterator<String> iterator = idList.iterator(); iterator.hasNext(); ) {
+				String id = iterator.next();
+				//查询
+				CompanyAdminPenalties companyAdminPenalties = companyAdminPenaltiesService.getById(id);
+				//判断申报的是否是暂存
+				if (!Constant.status.TEMPORARY.equals(companyAdminPenalties.getStatus())) {
+					return Result.error("请选择暂存的信息申报！");
+				}
+				//修改状态为1：待审核状态
+				companyAdminPenalties.setStatus(Constant.status.PEND);
+				companyAdminPenaltiesService.updateById(companyAdminPenalties);
+
+			}
+		}
+		return Result.ok("批量申报成功!");
 	}
 	
 	/**

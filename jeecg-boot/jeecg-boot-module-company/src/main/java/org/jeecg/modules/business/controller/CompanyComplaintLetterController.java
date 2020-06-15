@@ -1,11 +1,21 @@
 package org.jeecg.modules.business.controller;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.StrUtil;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
+import org.jeecg.modules.business.entity.CompanyAdminPenalties;
 import org.jeecg.modules.business.entity.CompanyComplaintLetter;
+import org.jeecg.modules.business.entity.CompanySupervisoryMonitor;
 import org.jeecg.modules.business.service.ICompanyComplaintLetterService;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -14,6 +24,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 
 import org.jeecg.common.system.base.controller.JeecgController;
+import org.jeecg.modules.business.utils.Constant;
+import org.jeecg.modules.business.vo.CompanyComplaintLetterVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -50,13 +62,59 @@ public class CompanyComplaintLetterController extends JeecgController<CompanyCom
 	public Result<?> queryPageList(CompanyComplaintLetter companyComplaintLetter,
 								   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
 								   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
-								   HttpServletRequest req) {
-		QueryWrapper<CompanyComplaintLetter> queryWrapper = QueryGenerator.initQueryWrapper(companyComplaintLetter, req.getParameterMap());
-		Page<CompanyComplaintLetter> page = new Page<CompanyComplaintLetter>(pageNo, pageSize);
-		IPage<CompanyComplaintLetter> pageList = companyComplaintLetterService.page(page, queryWrapper);
+								   HttpServletRequest req) throws ParseException {
+		String companyId = req.getParameter("companyId");
+		String status = req.getParameter("status");
+		String companyName = req.getParameter("companyName");
+		String reportDateBegin = req.getParameter("compliantDate_begin");
+		String reportDateEnd = req.getParameter("compliantDate_end");
+		Date dateBegin;
+		Date dateEnd;
+		if(StrUtil.isEmpty(reportDateBegin) && StrUtil.isEmpty(reportDateEnd)) {
+			dateBegin = null;
+			dateEnd = null;
+		}else{
+			dateBegin = new SimpleDateFormat("yyyy-MM-dd").parse(reportDateBegin);
+			dateEnd = new SimpleDateFormat("yyyy-MM-dd").parse(reportDateEnd);
+		}
+		Page<CompanyComplaintLetterVO> page = new Page<>(pageNo, pageSize);
+		IPage<CompanyComplaintLetterVO> pageList = companyComplaintLetterService.getCompanyComplaintLetter(page,companyId,status,companyName,dateBegin,dateEnd);
 		return Result.ok(pageList);
 	}
-	
+
+	 /**
+	  * 分页列表查询
+	  *
+	  * @param companyComplaintLetter
+	  * @return
+	  */
+	 @AutoLog(value = "信访投诉信息-申报")
+	 @ApiOperation(value="信访投诉信息-申报", notes="信访投诉信息-申报")
+	 @PutMapping(value = "/declare")
+	 public Result<?> declare(@RequestBody CompanyComplaintLetter companyComplaintLetter) {
+		 companyComplaintLetter.setStatus(Constant.status.PEND);
+		 //判断是新增还是编辑
+		 if(!StrUtil.isEmpty(companyComplaintLetter.getId())){
+			 //编辑
+			 //查询修改之前的对象
+			 CompanyComplaintLetter oldCompanyComplaintLetter = companyComplaintLetterService.getById(companyComplaintLetter.getId());
+			 //状态为正常
+			 if(Constant.status.NORMAL.equals(oldCompanyComplaintLetter.getStatus())){
+				 //修改老数据状态为过期
+				 oldCompanyComplaintLetter.setStatus(Constant.status.EXPIRED);
+				 companyComplaintLetterService.updateById(companyComplaintLetter);
+				 //新增修改后的为新数据
+				 companyComplaintLetter.setId("");
+				 companyComplaintLetterService.save(companyComplaintLetter);
+			 }else if(Constant.status.NOPASS.equals(oldCompanyComplaintLetter.getStatus()) || Constant.status.TEMPORARY.equals(oldCompanyComplaintLetter.getStatus())){
+				 companyComplaintLetterService.updateById(companyComplaintLetter);
+			 }
+		 }else {
+			 companyComplaintLetterService.save(companyComplaintLetter);
+		 }
+		 return Result.ok("申报成功！");
+	 }
+
 	/**
 	 *   添加
 	 *
@@ -112,6 +170,35 @@ public class CompanyComplaintLetterController extends JeecgController<CompanyCom
 		this.companyComplaintLetterService.removeByIds(Arrays.asList(ids.split(",")));
 		return Result.ok("批量删除成功!");
 	}
+
+	 /**
+	  *  批量申报
+	  *
+	  * @param ids
+	  * @return
+	  */
+	 @AutoLog(value = "信访投诉信息-批量申报")
+	 @ApiOperation(value="信访投诉信息-批量申报", notes="信访投诉信息-批量申报")
+	 @GetMapping(value = "/batchDeclare")
+	 public Result<?> batchDeclare(@RequestParam(name="ids",required=true) String ids) {
+		 List<String> idList = Arrays.asList(ids.split(","));
+		 if (CollectionUtil.isNotEmpty(idList)) {
+			 for (Iterator<String> iterator = idList.iterator(); iterator.hasNext(); ) {
+				 String id = iterator.next();
+				 //查询
+				 CompanyComplaintLetter companyComplaintLetter = companyComplaintLetterService.getById(id);
+				 //判断申报的是否是暂存
+				 if (!Constant.status.TEMPORARY.equals(companyComplaintLetter.getStatus())) {
+					 return Result.error("请选择暂存的信息申报！");
+				 }
+				 //修改状态为1：待审核状态
+				 companyComplaintLetter.setStatus(Constant.status.PEND);
+				 companyComplaintLetterService.updateById(companyComplaintLetter);
+
+			 }
+		 }
+		 return Result.ok("批量申报成功!");
+	 }
 	
 	/**
 	 * 通过id查询

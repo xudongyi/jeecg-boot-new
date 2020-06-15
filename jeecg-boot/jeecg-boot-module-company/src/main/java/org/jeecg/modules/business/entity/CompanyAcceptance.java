@@ -48,7 +48,6 @@ public class CompanyAcceptance implements Serializable {
     @ApiModelProperty(value = "更新人")
     private String updateBy;
 	/**更新日期*/
-	@Ignore
 	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern="yyyy-MM-dd")
     @ApiModelProperty(value = "更新日期")
