@@ -27,10 +27,10 @@
           <company-clean-product-list v-if="leftActive==13 && topActive==1" :companyId="companyId" listType="0" :operation-show="false"/>
           <company-online-info-list v-if="leftActive==14 && topActive==1" :companyId="companyId" listType="0" :operation-show="false"/>
 
-          <company-dynamic-supervision-list v-if="leftActive==1 && topActive==2" :companyId="companyId"/>
-          <company-admin-penalties-list v-if="leftActive==2 && topActive==2" :companyId="companyId" :role="'view'" />
-          <company-supervisory-monitor-list v-if="leftActive==3 && topActive==2" :companyId="companyId" />
-          <company-complaint-letter-list v-if="leftActive==4 && topActive==2" :companyId="companyId"/>
+          <company-dynamic-supervision-list v-if="leftActive==1 && topActive==2" :companyId="companyId" :role="'view'"/>
+          <company-admin-penalties-list v-if="leftActive==2 && topActive==2" :companyId="companyId" :role="'view'"/>
+          <company-supervisory-monitor-list v-if="leftActive==3 && topActive==2" :companyId="companyId" :role="'view'"/>
+          <company-complaint-letter-list v-if="leftActive==4 && topActive==2" :companyId="companyId" :role="'view'"/>
 
         </a-layout-content>
       </a-layout>

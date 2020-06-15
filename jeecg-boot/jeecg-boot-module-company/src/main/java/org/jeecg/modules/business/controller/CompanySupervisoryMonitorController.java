@@ -77,7 +77,40 @@ public class CompanySupervisoryMonitorController extends JeecgController<Company
 		IPage<CompanySupervisoryMonitorVO> pageList = companySupervisoryMonitorService.getCompanySupervisoryMonitor(page, companyId,status,companyName,dateBegin,dateEnd);
 		return Result.ok(pageList);
 	}
-	
+
+	 /**
+	  * 分页列表查询
+	  *
+	  * @param companySupervisoryMonitor
+	  * @return
+	  */
+	 @AutoLog(value = "监督性监测信息-申报")
+	 @ApiOperation(value="监督性监测信息-申报", notes="监督性监测信息-申报")
+	 @PutMapping(value = "/declare")
+	 public Result<?> declare(@RequestBody CompanySupervisoryMonitor companySupervisoryMonitor) {
+		 companySupervisoryMonitor.setStatus(Constant.status.PEND);
+		 //判断是新增还是编辑
+		 if(!StrUtil.isEmpty(companySupervisoryMonitor.getId())){
+			 //编辑
+			 //查询修改之前的对象
+			 CompanySupervisoryMonitor oldCompanySupervisoryMonitor = companySupervisoryMonitorService.getById(companySupervisoryMonitor.getId());
+			 //状态为正常
+			 if(Constant.status.NORMAL.equals(oldCompanySupervisoryMonitor.getStatus())){
+				 //修改老数据状态为过期
+				 oldCompanySupervisoryMonitor.setStatus(Constant.status.EXPIRED);
+				 companySupervisoryMonitorService.updateById(companySupervisoryMonitor);
+				 //新增修改后的为新数据
+				 companySupervisoryMonitor.setId("");
+				 companySupervisoryMonitorService.save(companySupervisoryMonitor);
+			 }else if(Constant.status.NOPASS.equals(oldCompanySupervisoryMonitor.getStatus()) || Constant.status.TEMPORARY.equals(oldCompanySupervisoryMonitor.getStatus())){
+				 companySupervisoryMonitorService.updateById(companySupervisoryMonitor);
+			 }
+		 }else {
+			 companySupervisoryMonitorService.save(companySupervisoryMonitor);
+		 }
+		 return Result.ok("申报成功！");
+	 }
+
 	/**
 	 *   添加
 	 *

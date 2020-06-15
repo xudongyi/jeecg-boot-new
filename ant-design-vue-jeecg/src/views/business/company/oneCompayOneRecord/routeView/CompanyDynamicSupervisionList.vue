@@ -98,11 +98,12 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="toHandleEdit(record)" v-if="role === 'monitor'">编辑</a>
-          <a @click="toHandleEdit(record)" v-else>查看</a>
-          <a-divider type="vertical" v-if="role === 'monitor'" />
+          <a @click="toHandleEdit(record)" v-if="role === 'monitor' && (record.status=='0' || record.status=='3')">编辑</a>
+          <a @click="toHandleEdit(record)" v-if="role !== 'monitor'">查看</a>
+          <a @click="handleView(record)" v-if="role === 'monitor' && (record.status=='1' || record.status=='4')">查看</a>
+          <a-divider type="vertical" v-if="role === 'monitor' && (record.status=='0' || record.status=='3')" />
           <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
-            <a v-if="role === 'monitor'">删除</a>
+            <a v-if="role === 'monitor' && (record.status=='0' || record.status=='3')">删除</a>
           </a-popconfirm>
         </span>
 
@@ -110,7 +111,7 @@
       </a-table>
     </div>
 
-    <companyDynamicSupervision-modal ref="modalForm" @ok="modalFormOk" :companyId="companyid" :monitor="role === 'monitor'"></companyDynamicSupervision-modal>
+    <companyDynamicSupervision-modal ref="modalForm" @ok="modalFormOk" :companyId="companyId" :monitor="monitor"></companyDynamicSupervision-modal>
   </a-card>
 </template>
 
@@ -136,7 +137,8 @@
     data () {
       return {
         description: '企业年度动态监管管理页面',
-        companyid:this.companyId,
+        companyid:'',
+        monitor:'',
         queryParam: {
           companyId: this.companyId
         },
@@ -252,9 +254,18 @@
     methods: {
       initDictConfig(){
       },
+      handleView: function (record) {
+        this.$refs.modalForm.edit(record);
+        this.$refs.modalForm.title = "查看";
+        this.$refs.modalForm.disableSubmit = true;
+      },
+      handleAddMy:function(){
+        this.handleAdd();
+        this.monitor = 'add';
+      },
       toHandleEdit:function(record){
-        this.$refs.modalForm.value = record.companyId;
         this.handleEdit(record);
+        this.monitor = 'edit';
         this.$refs.modalForm.title="年度动态监管";
       },
       toSearchReset() {
@@ -293,20 +304,11 @@
       },
     },
     created(){
+      this.monitor = this.role;
+      this.companyid = this.companyId;
       if(this.companyid==null) {
         this.companyid = this.$store.getters.userInfo.companyIds[0]
       }
-      //
-      // let that = this;
-      // var params = this.getQueryParams();//查询条件
-      // queryDynamicSupervision(params).then((res)=>{
-      //   if(res.success) {
-      //     console.log(res.result);
-      //     that.data = res.result;
-      //   }else{
-      //     this.$message.error(res.message);
-      //   }
-      // })
     }
   }
 </script>

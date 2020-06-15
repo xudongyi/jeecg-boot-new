@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.jeecg.modules.business.annotation.Ignore;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.jeecgframework.poi.excel.annotation.Excel;
 import org.jeecg.common.aspect.annotation.Dict;
@@ -72,9 +73,11 @@ public class CompanyComplaintLetter implements Serializable {
     @ApiModelProperty(value = "申报时间")
     private java.util.Date createTime;
 	/**审核人*/
+	@Ignore
     @ApiModelProperty(value = "审核人")
     private java.lang.String updateBy;
 	/**审核时间*/
+	@Ignore
 	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern="yyyy-MM-dd")
     @ApiModelProperty(value = "审核时间")
