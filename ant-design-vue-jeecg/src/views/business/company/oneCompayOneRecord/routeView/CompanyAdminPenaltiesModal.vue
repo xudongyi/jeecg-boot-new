@@ -231,12 +231,6 @@
       popupCallback(row){
         this.form.setFieldsValue(pick(row,'status','companyId','reportDate','documentName','documentNo','content','createBy','createTime','updateBy','updateTime'))
       },
-      filterOption(input, option) {
-        debugger
-        return (
-          option.componentOptions.children[0].text.indexOf(input) >= 0
-        );
-      },
       handDeclare(){
         const that = this;
         // 触发表单验证
