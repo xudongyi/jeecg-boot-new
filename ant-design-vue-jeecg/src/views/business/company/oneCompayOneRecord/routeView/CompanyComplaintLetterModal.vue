@@ -59,7 +59,8 @@
           </a-col>
           <a-col span="12">
             <a-form-item label="申报时间" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <j-date placeholder="请选择申报时间" v-decorator="['createTime']" :trigger-change="true" style="width: 100%" :disabled="monitorTag !== 'add' || monitorTag !== 'edit' || disableSubmit"/>
+              <j-date :showTime="true" :dateFormat="dateFormat"
+                      placeholder="请选择申报时间" v-decorator="['createTime']" :trigger-change="true" style="width: 100%" :disabled="monitorTag !== 'add' || monitorTag !== 'edit' || disableSubmit"/>
             </a-form-item>
           </a-col>
         </a-row>
@@ -89,6 +90,7 @@
   import JUpload from '@/components/jeecg/JUpload'
   import JDictSelectTag from "@/components/dict/JDictSelectTag"
   import {queryCompanyName} from "../../../requestAction/request";
+  import moment from 'moment'
 
 
   export default {
@@ -104,6 +106,7 @@
     data () {
       return {
         form: this.$form.createForm(this),
+        dateFormat:"YYYY-MM-DD HH:mm:ss",
         title:"操作",
         width:800,
         items:[],
@@ -178,20 +181,26 @@
     methods: {
       //获取系统时间
       getTime() {
-        setInterval(()=>{
-          this.currentTime = new Date();
+        let  _this =this;
+        this.timer =  setInterval(()=>{
+          _this.model.createTime = moment().format(this.dateFormat);
+          console.log(_this.model.createTime );
+          this.$nextTick(() => { this.form.setFieldsValue(pick(this.model,'createTime'))})
+
         },1000)
       },
       add () {
         this.edit({});
         //新增时自动带入申报人和申报时间
         this.model.createBy = this.$store.getters.userInfo.username;
-        this.model.createTime = this.currentTime;
       },
       edit (record) {
         this.form.resetFields();
         this.model = Object.assign({}, record);
         this.visible = true;
+        //获取时间
+        this.getTime();
+        this.model.createTime = moment().format(this.dateFormat);
         this.$nextTick(() => {
           this.form.setFieldsValue(pick(this.model,'status','companyId','compliantDate','pollutionType','complaintTitle','content','createBy','createTime','updateBy','updateTime'))
         })
@@ -199,6 +208,9 @@
       close () {
         this.$emit('close');
         this.visible = false;
+        if (this.timer) {
+          clearInterval(this.timer); // 在Vue实例销毁前，清除我们的定时器
+        }
       },
       handleOk () {
         const that = this;

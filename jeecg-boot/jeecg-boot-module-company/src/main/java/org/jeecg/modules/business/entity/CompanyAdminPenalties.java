@@ -67,8 +67,8 @@ public class CompanyAdminPenalties implements Serializable {
     @ApiModelProperty(value = "申报人")
     private java.lang.String createBy;
 	/**申报时间*/
-	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
-    @DateTimeFormat(pattern="yyyy-MM-dd")
+	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "申报时间")
     private java.util.Date createTime;
 	/**审核人*/
