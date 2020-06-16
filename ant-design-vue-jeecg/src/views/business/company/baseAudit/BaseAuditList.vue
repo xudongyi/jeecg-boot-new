@@ -7,12 +7,12 @@
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="申报状态">
-              <j-dict-select-tag placeholder="请选择申报状态" v-model="queryParam.status" dictCode="statue"/>
+              <j-dict-select-tag placeholder="请选择申报状态" v-model="queryParam.status" dictCode="statue" @input="searchQuery"/>
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="审核单元">
-              <j-dict-select-tag  placeholder="请选择审核单元" v-model="queryParam.fromTable" dictCode="fromTable"/>
+              <j-dict-select-tag  placeholder="请选择审核单元" v-model="queryParam.fromTable" dictCode="fromTable"  @input="searchQuery"/>
             </a-form-item>
           </a-col>
             <a-col :xl="6" :lg="7" :md="8" :sm="24">

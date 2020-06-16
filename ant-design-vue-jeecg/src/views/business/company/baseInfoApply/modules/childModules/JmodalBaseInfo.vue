@@ -6,12 +6,16 @@
     :visible="visible"
     :confirmLoading="confirmLoading"
     switchFullscreen
-    @ok="handleOk"
-    @cancel="handleCancel"
-    cancelText="关闭"
+
     v-if="visible"
     >
     <base-info ref="baseModal" :companyId="companyId" :ftitle="title"  @OK="modalFormOk"></base-info>
+
+    <template slot="footer">
+      <a-button type="primary" @click="handleCancel">关闭</a-button>
+      <a-button type="primary" @click="handleOk" v-if="disableSubmit">申报</a-button>
+
+    </template>
   </j-modal>
 </template>
 
