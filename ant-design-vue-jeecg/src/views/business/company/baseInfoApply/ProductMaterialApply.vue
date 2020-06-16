@@ -1,5 +1,5 @@
 <template>
-  <company-apply-list :company-id="companyId" :hoverable="latestArchived"
+  <company-apply-list :company-id="companyId"
                       :from-table="fromTable" @applyDetail = "applyDetail"  @toDetail="latestDetail" @toApply="apply"
                       v-if="!showDetail"></company-apply-list>
   <product-material-list v-else :company-id="companyId"> </product-material-list>
@@ -20,7 +20,6 @@
           fromTable: "company_product_material",
           companyId: this.$store.getters.userInfo.companyIds[0],
           showDetail: false,
-          latestArchived: false
         }
       },
       methods: {
@@ -46,20 +45,6 @@
 
         }
 
-
-      }, created() {
-
-        let that = this;
-        //查询最新归档信息
-        queryLatestArchivedData({companyId: this.companyId, fromTable: this.fromTable}).then((res) => {
-          console.log(res)
-          if (res.success) {
-            that.latestArchived = res.result;
-          } else {
-            that.$message.warning(res.message);
-          }
-
-        })
 
       }
     }

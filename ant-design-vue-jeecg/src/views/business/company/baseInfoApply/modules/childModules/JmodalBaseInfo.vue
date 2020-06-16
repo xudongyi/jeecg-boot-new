@@ -20,7 +20,7 @@
 
 
   export default {
-        name: "JmodalBaseInfo",
+    name: "JmodalBaseInfo",
     components:{
       BaseInfo
     },
@@ -51,7 +51,7 @@
         }
 
       },created() {
-          console.log("Jmodal",this.title)
+
     }
   }
 </script>

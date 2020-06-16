@@ -231,17 +231,11 @@ public class CompanyApplyController extends JeecgController<CompanyApply, ICompa
     @GetMapping(value = "/queryLatestArchivedData")
     public Result<?> queryLatestArchivedData(@RequestParam(name = "companyId", required = true) String companyId, @RequestParam(name = "fromTable", required = true) String fromTable) {
         //查询正常状态的  申报信息
-        QueryWrapper<CompanyApply> companyWrapper = new QueryWrapper<CompanyApply>();
-        companyWrapper.eq("company_id", companyId).eq("from_table", fromTable).
-                and(wrapper -> wrapper.eq("status", Constant.status.NORMAL).or().eq("status", Constant.status.PEND));
-        int num = companyApplyService.count(companyWrapper);
-        Result<Object> ok;
-        if (num == 0) {
-            ok = Result.ok(false);
-        }else {
-            ok = Result.ok(true);
-        }
-        return ok;
+       Map<String,Integer> result = new HashMap<>(2);
+        result.put("total",companyApplyService.count(new QueryWrapper<CompanyApply>().eq("company_id", companyId).eq("from_table", fromTable).eq("status", Constant.status.NORMAL)));
+        result.put("pend",companyApplyService.count(new QueryWrapper<CompanyApply>().eq("company_id", companyId).eq("from_table", fromTable).eq("status", Constant.status.PEND)));
+        result.put("total",result.get("pend")+result.get("total"));
+        return Result.ok(result);
 
     }
 
@@ -307,10 +301,8 @@ public class CompanyApplyController extends JeecgController<CompanyApply, ICompa
         String userId = jsonObject.getString("userId");
         //申请表Id
         String applyId = jsonObject.getString("applyId");
-        //详情表Id
-        String newId = jsonObject.getString("newId");
-        //详情表Id
-        String oldId = jsonObject.getString("oldId");
+        CompanyApply companyApply = companyApplyService.getById(applyId);
+
         //审批结果
         String result = jsonObject.getString("result");
         //备注信息  和  Constant不同过与正常保持一致
@@ -320,11 +312,11 @@ public class CompanyApplyController extends JeecgController<CompanyApply, ICompa
 
         //动态获取
         ServiceImpl o = ServiceUtils.getService(jsonObject.getString("fromTable"));
-        UpdateWrapper updateWrapper = new UpdateWrapper<>().eq("id",newId).set("status",result);
+        UpdateWrapper updateWrapper = new UpdateWrapper<>().eq("id",companyApply.getNewId()).set("status",result);
         o.update(updateWrapper);
         if(result.equals(Constant.status.NORMAL))
         {
-            o.update(new UpdateWrapper<>().eq("id",oldId).set("status",Constant.status.EXPIRED));
+            o.update(new UpdateWrapper<>().eq("id",companyApply.getOldId()).set("status",Constant.status.EXPIRED));
         }
 
         return Result.ok();

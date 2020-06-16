@@ -1,7 +1,7 @@
 <template>
    <div>
 
-        <company-apply-list :company-id="companyId" :hoverable="latestArchived"
+        <company-apply-list :company-id="companyId"
                             :from-table="fromTable" @applyDetail = "applyDetail"  @toDetail="latestDetail" @toApply="apply"
                             ></company-apply-list>
 
@@ -26,8 +26,7 @@
         data(){
           return {
             fromTable:"company_baseinfo",
-            //最新归档信息数据
-            latestArchived:false,
+
             companyId:this.$store.getters.userInfo.companyIds[0],
 
           }
@@ -65,21 +64,7 @@
 
 
       },
-      created() {
 
-          let that = this;
-          //查询最新归档信息
-        queryLatestArchivedData({companyId:this.companyId,fromTable:this.fromTable}).then((res)=>{
-          if(res.success){
-            that.latestArchived = res.result;
-          }else{
-            that.$message.warning(res.message);
-          }
-
-        })
-
-
-      }
     }
 </script>
 

@@ -11,8 +11,8 @@
 
     <!-- 操作按钮区域 -->
     <div class="table-operator">
-      <a-button v-if="hoverable" @click="toDetail" type="primary" icon="profile">查看</a-button>
-      <a-button  @click="toApply" type="primary" icon="form">申报</a-button>
+      <a-button v-if="latestArchived.total>0" @click="toDetail" type="primary" icon="profile">查看</a-button>
+      <a-button  v-if="latestArchived.pend===0" @click="toApply" type="primary" icon="form">申报</a-button>
       <!-- <a-button type="primary" icon="download" @click="handleExportXls('企业申报基础表')">导出</a-button>
        <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
          <a-button type="primary" icon="import">导入</a-button>
@@ -96,6 +96,7 @@
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import CompanyApplyModal from "./childModules/CompanyApplyModal";
   import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
+  import {queryLatestArchivedData} from "../../../requestAction/request";
 
   export default {
     name: "CompanyApplyList",
@@ -106,10 +107,7 @@
   props:{
     companyId:'',
     fromTable:'',
-    hoverable:{
-      type:Boolean,
-      default:true
-    }
+
   },
     data () {
       return {
@@ -118,6 +116,7 @@
           companyId:this.companyId,
           fromTable:this.fromTable
         },
+        latestArchived:{},
         // 表头
         columns: [
           {
@@ -181,6 +180,19 @@
       toApply(){
         this.$emit("toApply");
       }
+    },
+    created() {
+      let that = this;
+      //查询最新归档信息
+      queryLatestArchivedData({companyId:this.companyId,fromTable:this.fromTable}).then((res)=>{
+        console.log(res)
+        if(res.success){
+          that.latestArchived = res.result;
+        }else{
+          that.$message.warning(res.message);
+        }
+
+      })
     }
   }
 </script>

@@ -6,8 +6,8 @@
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="企业简称">
-              <a-select  show-search style="width: 100%" placeholder="请输入企业简称">
-                <a-select-option v-for="item in items" :key="item.key" :value="item.value">
+              <a-select  show-search style="width: 100%" placeholder="请输入企业简称" v-model="queryParam.shortName">
+                <a-select-option v-for="item in items" :key="item.key" :value="item.value"  >
                   {{item.value}}
                 </a-select-option>
               </a-select>
@@ -78,7 +78,7 @@
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import store from '@/store/'
-  import {queryCompanyName} from "../../requestAction/request";
+  import {queryShortName} from "../../requestAction/request";
 
   export default {
     name: "CompanyBaseinfoList",
@@ -162,6 +162,7 @@
         this.queryParam={
           status:"2"
         };
+        this.loadData(1);
       },
       initDictConfig(){
       },
@@ -170,11 +171,9 @@
       }
     },
     mounted() {
-      this.monitorTag = this.monitor;
-      console.log(this.monitorTag==='view')
       let that = this;
       //查询企业名称
-      queryCompanyName({companyIds:this.$store.getters.userInfo.companyIds.join(',')}).then((res) => {
+      queryShortName({companyIds:this.$store.getters.userInfo.companyIds.join(',')}).then((res) => {
         if(res.success){
           that.items = res.result;
         }

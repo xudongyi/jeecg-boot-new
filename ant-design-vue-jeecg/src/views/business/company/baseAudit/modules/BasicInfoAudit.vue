@@ -48,7 +48,6 @@
 
         //提交数据，做数据处理
         //调用
-        debugger
         this.$refs.auditFooter.submit(this.applyInfo);
 
       },
@@ -63,8 +62,6 @@
         queryAduitBase({applyId:record.id}).then((res)=>{
           if(res.success){
             that.$refs.baseModal.edit(res.result.info);
-
-
 
             //判断修改处的  后面需要处理一下
             if(res.cueColor === ''){

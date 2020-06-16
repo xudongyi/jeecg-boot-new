@@ -1,7 +1,7 @@
 <template>
   <div>
     <company-apply-list v-if="!listshow" :company-id="companyId" :from-table="fromTable"
-                        :hoverable="latestArchived" @toDetail="detail" @toApply="apply"
+                         @toDetail="detail" @toApply="apply"
                         @applyDetail="viewApply"></company-apply-list>
     <company-acceptance-list v-if="listshow" :company-id="companyId" :operationShow="operationShow" :listType="listType"
     ></company-acceptance-list>
@@ -29,8 +29,6 @@
         listshow: false,
         fromTable: "company_acceptance",
         hoverable: true,
-        //最新归档信息数据
-        latestArchived: false,
         companyId: this.$store.getters.userInfo.companyIds[0],
         operationShow: false,
         listType: "0"
@@ -65,21 +63,8 @@
 
 
     },
-    created() {
-
-      let that = this;
-      //查询最新归档信息
-      queryLatestArchivedData({companyId: this.companyId, fromTable: this.fromTable}).then((res) => {
-        if (res.success) {
-          that.latestArchived = res.result;
-        } else {
-          that.$message.warning(res.message);
-        }
-
-      })
 
 
-    }
   }
 </script>
 

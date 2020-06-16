@@ -6,7 +6,9 @@ import org.jeecgframework.poi.excel.annotation.Excel;
 
 @Data
 public class CompanyBaseInfoVo{
-
+        /**详情表ID*/
+        @ApiModelProperty(value = "详情表ID")
+        private java.lang.String id;
         /**企业名称*/
         @Excel(name = "企业名称", width = 15)
         @ApiModelProperty(value = "企业名称")

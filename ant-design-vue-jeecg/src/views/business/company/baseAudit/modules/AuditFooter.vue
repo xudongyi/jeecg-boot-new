@@ -65,8 +65,8 @@
         //数据提交
         submit(record){
           let _this = this;
-          submitAudit({userId:this.$store.getters.userInfo.id,applyId:record.id, newId:record.newId,
-            oldId:record.oldId,result:this.result,message:this.message,fromTable:record.fromTable}).then((res)=>{
+          submitAudit({userId:this.$store.getters.userInfo.id,applyId:record.id,
+            result:this.result,message:this.message,fromTable:record.fromTable}).then((res)=>{
             if(res.success){
               _this.$emit("success");
               _this.$message.success("提交成功");

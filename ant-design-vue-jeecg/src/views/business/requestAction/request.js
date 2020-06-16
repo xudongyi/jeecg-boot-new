@@ -24,7 +24,8 @@ const queryAduitBase = (params)=>getAction("/company/apply/queryAduitBase",param
 const queryUserByName = (params)=>getAction("/sys/user/queryByUserName",params);
 //提交审核信息
 const submitAudit = (params)=>postAction("/company/apply/submitAudit",params);
-
+//查询用户所属的企业简称
+const queryShortName = (params)=>getAction("/company/companyBaseinfo/queryShortName",params);
 
 export {
   getDetailMenus,
@@ -40,5 +41,6 @@ export {
   queryDynamicSupervision,
   queryAduitBase,
   queryUserByName,
-  submitAudit
+  submitAudit,
+  queryShortName
 }

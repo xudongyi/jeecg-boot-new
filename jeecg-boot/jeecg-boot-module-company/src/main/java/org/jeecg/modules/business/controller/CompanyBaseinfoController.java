@@ -12,6 +12,7 @@ import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.system.util.JwtUtil;
 import org.jeecg.common.util.oConvertUtils;
 import org.jeecg.modules.business.entity.CompanyApply;
+import org.jeecg.modules.business.entity.CompanyBase;
 import org.jeecg.modules.business.entity.CompanyBaseinfo;
 import org.jeecg.modules.business.entity.CompanySysuser;
 import org.jeecg.modules.business.service.ICompanyApplyService;
@@ -114,7 +115,31 @@ public class CompanyBaseinfoController extends JeecgController<CompanyBaseinfo, 
 		companyApplyService.saveByBase(companyBaseinfo.getCompanyId(),companyBaseinfo.getId(),Constant.status.PEND,oldId,Constant.tables.BASEINFO);
 		return Result.ok("添加成功！");
 	}
+	 /**
+	  * 通过id查询
+	  *
+	  * @param companyIds
+	  * @return
+	  */
+	 @AutoLog(value = "企业基础表-通过id查询")
+	 @ApiOperation(value="企业基础表-通过id查询", notes="企业基础表-通过id查询")
+	 @GetMapping(value = "/queryShortName")
+	 public Result<?> queryShortName(@RequestParam(name="companyIds",required=true) String companyIds) {
+		 List<String> idList =  Arrays.asList(companyIds.split(","));
 
+		 List<Map<String,String>> result = new ArrayList<>();
+		 //查询企业id和name
+		 companyBaseinfoService.list(new QueryWrapper<CompanyBaseinfo>().lambda().in(CompanyBaseinfo::getCompanyId,idList)
+				 .eq(CompanyBaseinfo::getStatus,Constant.status.NORMAL)).forEach(companyBaseinfo -> {
+			 Map<String,String> param = new HashMap<>();
+			 param.put("key",companyBaseinfo.getCompanyId());
+			 param.put("value",companyBaseinfo.getShortName());
+
+			 result.add(param);
+		 });
+
+		 return Result.ok(result);
+	 }
 
 
 

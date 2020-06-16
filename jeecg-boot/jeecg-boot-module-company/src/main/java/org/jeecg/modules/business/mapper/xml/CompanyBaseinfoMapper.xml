@@ -8,6 +8,7 @@
 
 
     <resultMap id="CompanyBaseInfoVO" type="org.jeecg.modules.business.vo.CompanyBaseInfoVo" >
+        <result column="id" property="id" jdbcType="VARCHAR"/>
         <result column="companyId" property="company_id" jdbcType="VARCHAR"/>
         <result column="companyName" property="company_name" jdbcType="VARCHAR"/>
         <result column="status" property="status" jdbcType="VARCHAR"/>
@@ -53,7 +54,7 @@
 
 
     <select id="getCompanyBaseInfo" parameterType="String"  resultMap="CompanyBaseInfoVO">
-       select a.id AS company_id,a.company_name AS company_name,b.status AS status,b.short_name AS short_name,
+       select b.id,a.id AS company_id,a.company_name AS company_name,b.status AS status,b.short_name AS short_name,
        b.social_credit_code AS social_credit_code,b.company_type AS company_type,b.administrative_region AS administrative_region,
        b.industry AS industry,b.address AS address,b.longitude AS longitude,b.dimension AS dimension,b.corporate AS corporate,b.corporate_phone,
        b.economic_type AS economic_type,b.affiliation AS affiliation,b.env_protect_principal AS env_protect_principal,
@@ -69,7 +70,7 @@
             b.id = #{id}
     </select>
     <select id="getInfoByCompanyId" parameterType="String"  resultMap="CompanyBaseInfoVO">
-        select a.id AS company_id,a.company_name AS company_name,b.status AS status,b.short_name AS short_name,
+        select b.id,a.id AS company_id,a.company_name AS company_name,b.status AS status,b.short_name AS short_name,
         b.social_credit_code AS social_credit_code,b.company_type AS company_type,b.administrative_region AS administrative_region,
         b.industry AS industry,b.address AS address,b.longitude AS longitude,b.dimension AS dimension,b.corporate AS corporate,b.corporate_phone,
         b.economic_type AS economic_type,b.affiliation AS affiliation,b.env_protect_principal AS env_protect_principal,

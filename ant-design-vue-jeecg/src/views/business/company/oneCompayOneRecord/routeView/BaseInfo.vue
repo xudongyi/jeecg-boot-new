@@ -391,7 +391,7 @@
             //   httpurl+=this.url.edit;
             //    method = 'put';
             // }
-            let formData = Object.assign(this.model, values);
+            let formData = Object.assign(that.model, values);
             console.log("表单提交数据",formData)
             httpAction(httpurl,formData,method).then((res)=>{
               if(res.success){
