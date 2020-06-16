@@ -6,4 +6,6 @@ import org.jeecg.modules.business.entity.CompanyDynamicSupervision;
 @Data
 public class CompanyDynamicSupervisionVO extends CompanyDynamicSupervision {
     private String companyName;
+    private String createName;
+    private String updateName;
 }

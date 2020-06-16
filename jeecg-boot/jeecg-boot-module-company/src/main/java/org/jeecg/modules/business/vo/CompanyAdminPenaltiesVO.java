@@ -6,4 +6,6 @@ import org.jeecg.modules.business.entity.CompanyAdminPenalties;
 @Data
 public class CompanyAdminPenaltiesVO extends CompanyAdminPenalties {
     private String companyName;
+    private String createName;
+    private String updateName;
 }
