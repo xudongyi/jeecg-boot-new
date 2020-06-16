@@ -48,7 +48,8 @@
 
         //提交数据，做数据处理
         //调用
-        this.$refs.auditFooter.submit(this.record);
+        debugger
+        this.$refs.auditFooter.submit(this.applyInfo);
 
       },
       //关闭窗口

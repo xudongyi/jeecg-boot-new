@@ -29,5 +29,5 @@ public interface ICompanyApplyService extends IService<CompanyApply> {
 
     Page<CompanyApplyVo> queryCompanyApplyVo(Page<CompanyApplyVo> page,String[] companyIds,String status,String fromTable);
 
-    Boolean submitApply(String  id,String content,String status);
+    Boolean submitApply(String userId,String  id,String content,String status);
 }

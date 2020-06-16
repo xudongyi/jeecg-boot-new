@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -76,10 +77,10 @@ public class CompanyApplyServiceImpl extends ServiceImpl<CompanyApplyMapper, Com
      * @return
      */
     @Override
-    public Boolean submitApply(String id, String content, String status) {
+    public Boolean submitApply(String userId,String id, String content, String status) {
         LambdaUpdateWrapper<CompanyApply> updateWrapper = new UpdateWrapper<CompanyApply>().lambda()
                 .eq(CompanyApply::getId,id).set(CompanyApply::getStatus,status)
-                .set(CompanyApply::getContent,content);
+                .set(CompanyApply::getContent,content).set(CompanyApply::getUpdateBy,userId).set(CompanyApply::getUpdateTime,new Date());
 
         return this.update(updateWrapper);
     }

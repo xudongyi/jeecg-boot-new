@@ -65,7 +65,7 @@
         //数据提交
         submit(record){
           let _this = this;
-          submitAudit({applyId:record.id, newId:record.newId,
+          submitAudit({userId:this.$store.getters.userInfo.id,applyId:record.id, newId:record.newId,
             oldId:record.oldId,result:this.result,message:this.message,fromTable:record.fromTable}).then((res)=>{
             if(res.success){
               _this.$emit("success");

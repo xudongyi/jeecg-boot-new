@@ -258,6 +258,7 @@ public class CompanyApplyController extends JeecgController<CompanyApply, ICompa
     @AutoLog(value = "提交申报考核信息")
     @ApiOperation(value = "提交申报考核信息", notes = "通用")
     public Result<?> submitAudit(@RequestBody JSONObject jsonObject) {
+        String userId = jsonObject.getString("userId");
         //申请表Id
         String applyId = jsonObject.getString("applyId");
         //详情表Id
@@ -269,7 +270,7 @@ public class CompanyApplyController extends JeecgController<CompanyApply, ICompa
         //备注信息  和  Constant不同过与正常保持一致
         String message = jsonObject.getString("message");
         //修改申请表
-        companyApplyService.submitApply(applyId, message ,result);
+        companyApplyService.submitApply(userId,applyId, message ,result);
 
         //动态获取
         ServiceImpl o = ServiceUtils.getService(jsonObject.getString("fromTable"));
