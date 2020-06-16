@@ -14,15 +14,21 @@
         <result column="update_by" property="updateBy" jdbcType="VARCHAR"/>
         <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
         <result column="company_name" property="companyName" jdbcType="VARCHAR"/>
+        <result column="createName" property="createName" jdbcType="VARCHAR"/>
+        <result column="updateName" property="updateName" jdbcType="VARCHAR"/>
     </resultMap>
 
 
     <select id="getCompanyDynamicSupervision" parameterType="String"  resultMap="CompanyDynamicSupervisionVO">
-        select t1.company_name,t2.* from company_base t1
-        left join company_dynamic_supervision t2 on t1.id=t2.company_id
+        select t1.*,t2.company_name,t3.realname as createName ,t4.realname as updateName
+        from
+        company_dynamic_supervision t1
+        left join company_base t2 on t2.id=t1.company_id
+        left join sys_user t3 on t3.id=t1.create_by
+        left join sys_user t4 on t4.id=t1.update_by
         where 1=1
         <if test="companyId != null">
-            and t1.id in (#{companyId})
+            and t2.id in (#{companyId})
         </if>
         <if test="status != null">
             and status in (#{status})

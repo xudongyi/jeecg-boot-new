@@ -58,10 +58,15 @@
                 return !text?"":(text.length>10?text.substr(0,10):text)
               }
             },
+            // {
+            //   title:'申报人',
+            //   align:"center",
+            //   dataIndex: 'createBy'
+            // },
             {
               title:'申报人',
               align:"center",
-              dataIndex: 'createBy'
+              dataIndex: 'createName'
             },
             {
               title:'审核时间',
@@ -74,7 +79,7 @@
             {
               title:'审核人',
               align:"center",
-              dataIndex: 'updateBy'
+              dataIndex: 'updateName'
             },
             {
               title:'申报状态',

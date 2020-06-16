@@ -67,7 +67,7 @@
           {
             title:'申报人',
             align:"center",
-            dataIndex: 'createBy'
+            dataIndex: 'createName'
           },
           {
             title:'审核时间',
@@ -80,7 +80,7 @@
           {
             title:'审核人',
             align:"center",
-            dataIndex: 'updateBy'
+            dataIndex: 'updateName'
           },
           {
             title:'申报状态',

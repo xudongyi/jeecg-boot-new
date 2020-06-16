@@ -54,7 +54,7 @@
         <a-row v-if="monitorTag != 'view'">
           <a-col span="12">
             <a-form-item label="申报人" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input v-decorator="['createBy']" placeholder="请输入申报人" :disabled="monitorTag !== 'add' || monitorTag !== 'edit' || disableSubmit"></a-input>
+              <a-input v-decorator="['createName']" placeholder="请输入申报人" :disabled="monitorTag !== 'add' || monitorTag !== 'edit' || disableSubmit"></a-input>
             </a-form-item>
           </a-col>
           <a-col span="12">
@@ -167,7 +167,6 @@
       }
     },
     created () {
-      this.getTime();
       this.monitorTag = this.monitor;
       console.log(this.monitorTag==='view');
       let that = this;
@@ -191,18 +190,22 @@
       },
       add () {
         this.edit({});
-        //新增时自动带入申报人和申报时间
-        this.model.createBy = this.$store.getters.userInfo.username;
+        //获取时间
+        this.getTime();
+
       },
       edit (record) {
         this.form.resetFields();
         this.model = Object.assign({}, record);
         this.visible = true;
-        //获取时间
-        this.getTime();
         this.model.createTime = moment().format(this.dateFormat);
+
+        if(record.createTime)
+          this.model.createTime =moment(record.createTime).format(this.dateFormat);
+        this.model.createName = this.$store.getters.userInfo.realname;
+
         this.$nextTick(() => {
-          this.form.setFieldsValue(pick(this.model,'status','companyId','compliantDate','pollutionType','complaintTitle','content','createBy','createTime','updateBy','updateTime'))
+          this.form.setFieldsValue(pick(this.model,'status','companyId','compliantDate','pollutionType','complaintTitle','content','createName','createTime','updateName','updateTime'))
         })
       },
       close () {
