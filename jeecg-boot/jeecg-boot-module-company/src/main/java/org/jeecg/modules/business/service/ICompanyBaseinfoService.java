@@ -16,4 +16,5 @@ public interface ICompanyBaseinfoService extends IService<CompanyBaseinfo> {
     CompanyBaseinfo queryByCompanyId(String companyId);
     boolean upDateStatus(String companyId,String status);
     CompanyBaseInfoVo getCompanyBaseInfo(String id);
+    CompanyBaseInfoVo getInfoByCompanyId(String companyId);
 }

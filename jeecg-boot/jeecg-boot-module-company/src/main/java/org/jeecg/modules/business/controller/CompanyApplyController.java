@@ -1,5 +1,6 @@
 package org.jeecg.modules.business.controller;
 
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -24,6 +25,7 @@ import org.jeecg.modules.business.utils.Equator;
 import org.jeecg.modules.business.utils.FieldBaseEquator;
 import org.jeecg.modules.business.utils.ServiceUtils;
 import org.jeecg.modules.business.vo.CompanyApplyVo;
+import org.jeecg.modules.business.vo.CompanyBaseInfoVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -141,6 +143,50 @@ public class CompanyApplyController extends JeecgController<CompanyApply, ICompa
     public Result<?> delete(@RequestParam(name = "id", required = true) String id) {
         companyApplyService.removeById(id);
         return Result.ok("删除成功!");
+    }
+    /**
+     *   添加
+     *
+     * @param applyId
+     * @return
+     */
+    @AutoLog(value = "查询待审核数据")
+    @ApiOperation(value="查询待审核数据", notes="查询待审核数据")
+    @GetMapping(value = "/queryAduitBase")
+    public Result<?> queryAduitBase(@RequestParam(required = true) String applyId) {
+        Map<String,Object> result = new HashMap<>();
+        CompanyApply companyApply = companyApplyService.getById(applyId);
+
+        Object newInfo = getObject(companyApply, companyApply.getNewId());
+        //申请人名字
+        result.put("info", newInfo);
+
+        if(StrUtil.isEmpty(companyApply.getOldId())){
+            //提示
+            result.put("cueColor","");
+            return  Result.ok(result);
+        }
+
+        //获取老数据
+        Object oldInfo = getObject(companyApply, companyApply.getOldId());
+
+        //新老数据对比
+        FieldBaseEquator fieldBaseEquator = new FieldBaseEquator();
+        List<String> list = fieldBaseEquator.getDiffFieldNames(newInfo,oldInfo);
+        result.put("cueColor","");
+        result.put("cueField",list);
+        return  Result.ok(result);
+    }
+
+    private Object getObject(CompanyApply companyApply, String newId) {
+        Object newInfo;
+        if(companyApply.getFromTable().equals(Constant.tables.BASEINFO)) {//获取新数据
+            newInfo = companyBaseinfoService.getCompanyBaseInfo(newId);
+
+        }else{
+            newInfo = ServiceUtils.getService(companyApply.getFromTable()).getById(newId);
+        }
+        return newInfo;
     }
 
     /**

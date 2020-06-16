@@ -6,7 +6,11 @@
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="企业简称">
-              <a-input placeholder="请输入企业简称" v-model="queryParam.shortName"></a-input>
+              <a-select  show-search style="width: 100%" placeholder="请输入企业简称">
+                <a-select-option v-for="item in items" :key="item.key" :value="item.value">
+                  {{item.value}}
+                </a-select-option>
+              </a-select>
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
@@ -28,8 +32,8 @@
           </template>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
-              <a-button type="primary" @click="" icon="search">查询</a-button>
-              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
+              <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
+              <a-button type="primary" @click="localReset" icon="reload" style="margin-left: 8px">重置</a-button>
               <a @click="handleToggleSearch" style="margin-left: 8px">
                 {{ toggleSearchStatus ? '收起' : '展开' }}
                 <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>
@@ -74,6 +78,7 @@
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import store from '@/store/'
+  import {queryCompanyName} from "../../requestAction/request";
 
   export default {
     name: "CompanyBaseinfoList",
@@ -85,6 +90,7 @@
     },
     data () {
       return {
+        items:[],
         description: '企业基础信息表管理页面',
         visible :this.list_visible,
         // 表头
@@ -141,6 +147,9 @@
           list: "/company/companyBaseinfo/listByUserId/"+store.getters.userInfo.id,
         },
         dictOptions:{},
+        queryParam:{
+          status:"2"
+        }
       }
     },
     computed: {
@@ -149,11 +158,27 @@
       },
     },
     methods: {
+      localReset(){
+        this.queryParam={
+          status:"2"
+        };
+      },
       initDictConfig(){
       },
       handleDetail(record){
         this.$emit('toDetail',record.companyId);
       }
+    },
+    mounted() {
+      this.monitorTag = this.monitor;
+      console.log(this.monitorTag==='view')
+      let that = this;
+      //查询企业名称
+      queryCompanyName({companyIds:this.$store.getters.userInfo.companyIds.join(',')}).then((res) => {
+        if(res.success){
+          that.items = res.result;
+        }
+      });
     }
   }
 </script>

@@ -64,10 +64,29 @@
        b.group_company AS group_company,b.registe_capital AS registe_capital,b.annual_sales_income AS annual_sales_income,
        b.annual_profit AS annual_profit,b.total_assets AS total_assets,b.registe_address AS registe_address,b.operate_scope AS operate_scope,
        b.profile AS profile
-       from company_base a inner join company_baseinfo b on a.id = b.company_id  where b.id = #{id}
-
+       from company_base a inner join company_baseinfo b on a.id = b.company_id
+       where
+            b.id = #{id}
     </select>
-
+    <select id="getInfoByCompanyId" parameterType="String"  resultMap="CompanyBaseInfoVO">
+        select a.id AS company_id,a.company_name AS company_name,b.status AS status,b.short_name AS short_name,
+        b.social_credit_code AS social_credit_code,b.company_type AS company_type,b.administrative_region AS administrative_region,
+        b.industry AS industry,b.address AS address,b.longitude AS longitude,b.dimension AS dimension,b.corporate AS corporate,b.corporate_phone,
+        b.economic_type AS economic_type,b.affiliation AS affiliation,b.env_protect_principal AS env_protect_principal,
+        b.principal_phone AS principal_phone,b.env_protect_contact AS env_protect_contact,b.contact_phone AS contact_phone,
+        b.emergency_leader AS emergency_leader,b.leader_phone AS leader_phone,b.drainage_area AS drainage_area,b.postal_code AS postal_code,
+        b.fax AS fax,b.email AS email,b.industrial_output AS industrial_output,b.staff_count AS staff_count,b.enterprise_size AS enterprise_size,
+        b.factory_area AS factory_area,b.ischemicals AS ischemicals,b.attached_park AS attached_park,b.parent_company AS parent_company,
+        b.group_company AS group_company,b.registe_capital AS registe_capital,b.annual_sales_income AS annual_sales_income,
+        b.annual_profit AS annual_profit,b.total_assets AS total_assets,b.registe_address AS registe_address,b.operate_scope AS operate_scope,
+        b.profile AS profile
+        from company_base a right join company_baseinfo b on a.id = b.company_id
+        where
+            a.id = #{companyId}
+        <if test="status != null and status != ''">
+            and b.status = #{status}
+        </if>
+    </select>
 
 
 </mapper>

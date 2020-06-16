@@ -52,9 +52,7 @@ public class CompanyApply implements Serializable {
     @ApiModelProperty(value = "更新日期")
     @Ignore
     private java.util.Date updateTime;
-    /**更新日期*/
-    @ApiModelProperty(value = "审核人姓名")
-    private java.lang.String reviewer;
+
 	/**新的id，new_id 是申请的单子对应的id*/
 	@Excel(name = "新的id，new_id 是申请的单子对应的id", width = 15)
     @ApiModelProperty(value = "新的id，new_id 是申请的单子对应的id")

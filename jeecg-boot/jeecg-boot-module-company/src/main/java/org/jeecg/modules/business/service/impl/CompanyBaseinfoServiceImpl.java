@@ -47,4 +47,9 @@ public class CompanyBaseinfoServiceImpl extends ServiceImpl<CompanyBaseinfoMappe
         return companyBaseinfoMapper.getCompanyBaseInfo(id);
     }
 
+    @Override
+    public CompanyBaseInfoVo getInfoByCompanyId(String companyId) {
+        return companyBaseinfoMapper.getInfoByCompanyId(companyId,Constant.status.NORMAL);
+    }
+
 }

@@ -106,46 +106,15 @@ public class CompanyBaseinfoController extends JeecgController<CompanyBaseinfo, 
 
 //		//根据companyId 修改老的一条数据  状态过期  更新的时候会用到
 //		companyBaseinfoService.upDateStatus(companyBaseinfo.getCompanyId(), Constant.status.EXPIRED);
-
+		companyBaseinfo.setStatus(Constant.status.PEND);
 		//新增
 		companyBaseinfoService.save(companyBaseinfo);
 
 		//插入一条  applyinfo
-		companyApplyService.saveByBase(companyBaseinfo.getCompanyId(),companyBaseinfo.getId(),companyBaseinfo.getStatus(),oldId,Constant.tables.BASEINFO);
+		companyApplyService.saveByBase(companyBaseinfo.getCompanyId(),companyBaseinfo.getId(),Constant.status.PEND,oldId,Constant.tables.BASEINFO);
 		return Result.ok("添加成功！");
 	}
-	 /**
-	  *   添加
-	  *
-	  * @param applyId
-	  * @return
-	  */
-	 @AutoLog(value = "查询待审核数据")
-	 @ApiOperation(value="company_baseinfo-添加", notes="company_baseinfo-添加")
-	 @GetMapping(value = "/queryAduitBase")
-	 public Result<?> queryAduitBase(@RequestParam(required = true) String applyId) {
-	 	Map<String,Object> result = new HashMap<>();
-	 	 CompanyApply companyApply = companyApplyService.getById(applyId);
-	 	 //获取新数据
-		 CompanyBaseInfoVo newBaseinfo = companyBaseinfoService.getCompanyBaseInfo(companyApply.getNewId());
-		 result.put("baseInfo",newBaseinfo);
-		 //申请人名字
 
-
-		 if(StrUtil.isEmpty(companyApply.getOldId())){
-		 	//提示
-			 result.put("cueColor","");
-			 return  Result.ok(result);
-		 }
-		 //获取老数据
-		 CompanyBaseInfoVo oldBaseinfo = companyBaseinfoService.getCompanyBaseInfo(companyApply.getOldId());
-		 //新老数据对比
-		 FieldBaseEquator fieldBaseEquator = new FieldBaseEquator();
-		 List<String> list = fieldBaseEquator.getDiffFieldNames(newBaseinfo,oldBaseinfo);
-		 result.put("cueColor","");
-		 result.put("cueField",list);
-		 return  Result.ok(result);
-	 }
 
 
 

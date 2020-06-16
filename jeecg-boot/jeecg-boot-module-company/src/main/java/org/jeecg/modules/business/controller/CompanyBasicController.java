@@ -11,6 +11,7 @@ import org.jeecg.modules.business.entity.CompanyBaseinfo;
 import org.jeecg.modules.business.service.ICompanyBaseinfoService;
 import org.jeecg.modules.business.service.ICompanyBasicService;
 import org.jeecg.modules.business.utils.Constant;
+import org.jeecg.modules.business.vo.CompanyBaseInfoVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -71,8 +72,7 @@ public class CompanyBasicController extends JeecgController<CompanyBaseinfo, ICo
         //查找企业名称
 
         //查找企业详细数据
-        CompanyBaseinfo companyBaseinfo =  companyBaseinfoService.getOne(new QueryWrapper<CompanyBaseinfo>().lambda()
-                .eq(CompanyBaseinfo::getCompanyId,companyId).eq(CompanyBaseinfo::getStatus, Constant.status.NORMAL));
+        CompanyBaseInfoVo companyBaseinfo =  companyBaseinfoService.getInfoByCompanyId(companyId);
 
         return Result.ok(companyBaseinfo);
     }

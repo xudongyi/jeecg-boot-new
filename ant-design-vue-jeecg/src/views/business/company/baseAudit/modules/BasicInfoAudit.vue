@@ -62,7 +62,7 @@
         //查询对应的待审批数据  并查询出对应的对比数据
         queryAduitBase({applyId:record.id}).then((res)=>{
           if(res.success){
-            that.$refs.baseModal.edit(res.result.baseInfo);
+            that.$refs.baseModal.edit(res.result.info);
 
 
 

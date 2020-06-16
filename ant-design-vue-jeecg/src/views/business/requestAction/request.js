@@ -19,7 +19,7 @@ const queryCompanyName = (params)=>getAction("/cb/companyBase/queryCompanyName",
 //查询企业名称和动态监管信息
 const queryDynamicSupervision = (params)=>getAction("/cds/companyDynamicSupervision/list",params);
 //查询企业基础信息申报数据  并返回此次更新数据的数据
-const queryAduitBase = (params)=>getAction("/company/companyBaseinfo/queryAduitBase",params);
+const queryAduitBase = (params)=>getAction("/company/apply/queryAduitBase",params);
 //根据用户名查找用户信息
 const queryUserByName = (params)=>getAction("/sys/user/queryByUserName",params);
 //提交审核信息

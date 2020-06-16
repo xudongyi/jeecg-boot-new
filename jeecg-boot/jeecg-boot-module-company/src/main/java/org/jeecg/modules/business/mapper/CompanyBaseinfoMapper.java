@@ -19,6 +19,6 @@ public interface CompanyBaseinfoMapper extends BaseMapper<CompanyBaseinfo> {
 
 
     CompanyBaseInfoVo getCompanyBaseInfo(String id);
-
+    CompanyBaseInfoVo getInfoByCompanyId(String companyId,String status);
 
 }
