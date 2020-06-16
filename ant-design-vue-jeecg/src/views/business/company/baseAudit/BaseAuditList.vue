@@ -40,7 +40,7 @@
       </a-form>
     </div>
     <!-- 查询区域-END -->
-    
+
     <!-- 操作按钮区域 -->
    <!-- <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
@@ -117,6 +117,7 @@
 
   </a-card>
   <basic-info-audit ref ="basicInfoModal" ></basic-info-audit>
+    <acceptance-audit ref="acceptanceModal"></acceptance-audit>
   </div>
 
 </template>
@@ -129,11 +130,13 @@
   import JDictSelectTag from '@/components/dict/JDictSelectTag.vue'
   import {queryCompanyName} from "../../requestAction/request";
   import BasicInfoAudit from "./modules/BasicInfoAudit";
+  import AcceptanceAudit from "./modules/AcceptanceAudit";
 
   export default {
     name: "BaseAuditList",
     mixins:[JeecgListMixin, mixinDevice],
-    components: {JDictSelectTag
+    components: {
+      AcceptanceAudit, JDictSelectTag
       ,BasicInfoAudit//基础信息审核
 
     },
@@ -237,6 +240,10 @@
         if("company_baseinfo"=== record.fromTable){
           this.$refs.basicInfoModal.visible = true;
           this.$refs.basicInfoModal.auditModal( record);
+        }
+        if("company_acceptance"===record.fromTable){
+          this.$refs.acceptanceModal.visible = true;
+          this.$refs.acceptanceModal.auditModal( record);
         }
 
       },

@@ -17,7 +17,7 @@
   import CompanyApplyModal from "./modules/childModules/CompanyApplyModal";
 
   export default {
-    name: "AcceptanceApply",
+    name: "DirtyAllowApply",
     components: {
       CompanyApplyList,
       queryLatestArchivedData,

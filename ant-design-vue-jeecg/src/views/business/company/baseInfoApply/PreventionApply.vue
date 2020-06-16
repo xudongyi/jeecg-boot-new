@@ -17,7 +17,7 @@
   import CompanyApplyModal from "./modules/childModules/CompanyApplyModal";
 
   export default {
-    name: "AcceptanceApply",
+    name: "PreventionApply",
     components: {
       CompanyApplyList,
       queryLatestArchivedData,
