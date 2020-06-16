@@ -17,9 +17,11 @@
 
 
     <select id="queryCompanyApplyVo"  resultMap="CompanyApplyVo">
-		select b.id,a.company_name,b.from_table,b.create_time,b.create_by,b.status,b.update_by,b.update_time
+		select b.id,a.company_name,b.from_table,b.create_time,d.realname as create_by,b.status,c.realname as update_by,b.update_time
             from company_base a inner join company_apply b  on a.id = b.company_id
-            where a.id in
+            left join sys_user c on  b.update_by = c.id
+            left join sys_user d on  b.create_by = d.id
+            where  a.id in
         <foreach collection="companyIds" item="id" index="index" open="(" close=")" separator=",">
             #{id}
         </foreach>
@@ -29,6 +31,7 @@
         <if test="fromTable != null and fromTable != ''">
             and b.from_table = #{fromTable}
         </if>
-	</select>
+            and b.status != '0'
+    </select>
 
 </mapper>

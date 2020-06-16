@@ -70,13 +70,10 @@
           }
         });
 
-        //申请人的真实名字
-        queryUserByName({userName:record.createBy}).then((res)=> {
-          if(res.success){
-            that.$refs.auditFooter.applyer = res.result.realname;
-            that.$refs.auditFooter.applyTime = record.createTime;
-          }
-        });
+
+          that.$refs.auditFooter.applyer = this.applyInfo.createBy;
+          that.$refs.auditFooter.applyTime = this.applyInfo.createTime;
+
         this.confirmLoading = false;
       },
       modalFormOk(){

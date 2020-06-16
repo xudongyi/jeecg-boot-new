@@ -28,7 +28,13 @@
       triggerChange: Boolean,
       disabled: Boolean,
       value: [String, Number],
-      type: String
+      type: String,
+      excludeFields:{
+        type:Array,
+        default(){
+          return [];
+        }
+      }
     },
     data() {
       return {
@@ -64,6 +70,14 @@
         //优先从缓存中读取字典配置
         if(getDictItemsFromCache(this.dictCode)){
           this.dictOptions = getDictItemsFromCache(this.dictCode);
+          let _this =  this;
+          console.log(this.dictOptions)
+          this.dictOptions = this.dictOptions.filter(function (item) {
+
+            return _this.excludeFields.indexOf(item.value) < 0;
+
+          });
+
           return
         }
 

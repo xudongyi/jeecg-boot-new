@@ -7,7 +7,7 @@
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="申报状态">
-              <j-dict-select-tag placeholder="请选择申报状态" v-model="queryParam.status" dictCode="statue" @input="searchQuery"/>
+              <j-dict-select-tag placeholder="请选择申报状态" v-model="queryParam.status" dictCode="statue" @input="searchQuery" :excludeFields="['0','4']"/>
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
@@ -95,6 +95,12 @@
             下载
           </a-button>
         </template>
+        <template slot="createTime" slot-scope="text">
+        {{timeFormat(text)}}
+        </template>
+        <template slot="updateTime" slot-scope="text">
+          {{timeFormat(text)}}
+        </template>
 
         <span slot="action" slot-scope="text, record">
           <a @click="handleEdit(record)">审核</a>
@@ -131,6 +137,7 @@
   import {queryCompanyName} from "../../requestAction/request";
   import BasicInfoAudit from "./modules/BasicInfoAudit";
   import AcceptanceAudit from "./modules/AcceptanceAudit";
+  import moment from 'moment'
 
   export default {
     name: "BaseAuditList",
@@ -171,7 +178,8 @@
           {
             title:'申报时间',
             align:"center",
-            dataIndex: 'createTime'
+            dataIndex: 'createTime',
+            scopedSlots: { customRender: 'createTime' }
           },
           {
             title:'申报状态',
@@ -186,7 +194,8 @@
           {
             title:'生效时间',
             align:"center",
-            dataIndex: 'updateTime'
+            dataIndex: 'updateTime',
+            scopedSlots: { customRender: 'updateTime' }
           },
           {
             title: '操作',
@@ -214,6 +223,11 @@
     },
     methods: {
       initDictConfig(){
+      },
+      timeFormat(val){
+        if(val==null)
+          return '';
+        return moment(val).format('YYYY-MM-DD HH:mm:ss');
       },
       handleChange(value) {
         console.log(value)

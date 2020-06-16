@@ -6,7 +6,8 @@
     :visible="visible"
     :confirmLoading="confirmLoading"
     switchFullscreen
-
+    @cancel="handleCancel"
+    cancelText="关闭"
     v-if="visible"
     >
     <base-info ref="baseModal" :companyId="companyId" :ftitle="title"  @OK="modalFormOk"></base-info>
