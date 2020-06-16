@@ -13,7 +13,7 @@
     >
       <base-info ref="baseModal"  :ftitle="title"  @OK="modalFormOk"></base-info>
 
-      <audit-footer ref="auditFooter"></audit-footer>
+      <audit-footer ref="auditFooter" @success ="success"></audit-footer>
 
     </j-modal>
 </template>
@@ -31,7 +31,7 @@
         ,AuditFooter
       },data(){
       return{
-        applyId:'',
+        applyInfo:'',
         confirmLoading:true,
         visible: false,
         width:1200,
@@ -42,16 +42,21 @@
     methods:{
       handleCancel () {
         this.visible = false;
-        // this.close()
       },
       handleOk(){
-        this.$refs.baseModal.handleOk();
+        this.confirmLoading=true;
 
-        this.visible = false;
+        //提交数据，做数据处理
+        //调用
+        this.$refs.auditFooter.submit(this.record);
 
       },
+      //关闭窗口
+      success(){
+        this.visible = false;
+      },
       auditModal(record){
-        this.applyId = record.id;
+        this.applyInfo = record;
         let that = this;
         //查询对应的待审批数据  并查询出对应的对比数据
         queryAduitBase({applyId:record.id}).then((res)=>{
@@ -60,7 +65,7 @@
 
 
 
-            //判断修改处的
+            //判断修改处的  后面需要处理一下
             if(res.cueColor === ''){
 
             }
@@ -72,15 +77,13 @@
           if(res.success){
             that.$refs.auditFooter.applyer = res.result.realname;
             that.$refs.auditFooter.applyTime = record.createTime;
-
           }
-        })
+        });
         this.confirmLoading = false;
       },
       modalFormOk(){
 
       }
-
     },created() {
       console.log("Jmodal",this.title)
     }

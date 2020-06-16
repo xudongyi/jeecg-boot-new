@@ -59,7 +59,7 @@ public class MybatisInterceptor implements Interceptor {
 							if (sysUser != null) {
 								// 登录人账号
 								field.setAccessible(true);
-								field.set(parameter, sysUser.getUsername());
+								field.set(parameter, sysUser.getId());
 								field.setAccessible(false);
 							}
 						}
@@ -129,7 +129,7 @@ public class MybatisInterceptor implements Interceptor {
 						if (sysUser != null) {
 							// 登录账号
 							field.setAccessible(true);
-							field.set(parameter, sysUser.getUsername());
+							field.set(parameter, sysUser.getId());
 							field.setAccessible(false);
 						}
 					}

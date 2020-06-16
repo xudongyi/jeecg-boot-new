@@ -3,6 +3,7 @@ package org.jeecg.modules.business.controller;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -21,6 +22,7 @@ import org.jeecg.modules.business.service.*;
 import org.jeecg.modules.business.utils.Constant;
 import org.jeecg.modules.business.utils.Equator;
 import org.jeecg.modules.business.utils.FieldBaseEquator;
+import org.jeecg.modules.business.utils.ServiceUtils;
 import org.jeecg.modules.business.vo.CompanyApplyVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -51,6 +53,9 @@ public class CompanyApplyController extends JeecgController<CompanyApply, ICompa
     private ICompanyQualificationService companyQualificationService;
     @Autowired
     private ICompanyFileService companyFileService;
+
+
+
     /**
      * 分页列表查询
      *
@@ -193,6 +198,9 @@ public class CompanyApplyController extends JeecgController<CompanyApply, ICompa
         return ok;
 
     }
+
+
+
     /**
      * 通过id查询
      *
@@ -232,26 +240,52 @@ public class CompanyApplyController extends JeecgController<CompanyApply, ICompa
             @RequestParam(name = "fromTable", required = true) String fromTable) {
 
 
-        String[]  arrs = fromTable.split("_");
-        StringBuilder sb = new StringBuilder(arrs[0]);
-        for(int i =1;i<arrs.length;i++) sb.append(toUpperFirstChar2(arrs[i]));
-
-        //获取bean对象
-        ServiceImpl o = (ServiceImpl)SpringContextUtils.getBean(sb.toString()+"ServiceImpl");
+        ServiceImpl o = ServiceUtils.getService(fromTable);
         //排除字段
         List<String> excludeFields = Arrays.asList("serialVersionUID", "id", "createBy", "createTime", "updateBy", "updateTime", "sysOrgCode", "status","type");
         Equator fieldBaseEquator = new FieldBaseEquator(null, excludeFields);
         return Result.ok(fieldBaseEquator.getDiffFields(o.getById(beforeId), o.getById(afterId)));
     }
-    // 高效率  首字母转大写
-    private String toUpperFirstChar2(String string) {
-        char[] chars = string.toCharArray();
-        if (chars[0] >= 'a' && chars[0] <= 'z') {
-            chars[0] -= 32;
-            return String.valueOf(chars);
+
+
+
+    /**
+     * 提交申报考核信息
+     *
+     * @param jsonObject 提交申报考核信息
+     */
+    @PostMapping(value = "/submitAudit")
+    @AutoLog(value = "提交申报考核信息")
+    @ApiOperation(value = "提交申报考核信息", notes = "通用")
+    public Result<?> submitAudit(@RequestBody JSONObject jsonObject) {
+        //申请表Id
+        String applyId = jsonObject.getString("applyId");
+        //详情表Id
+        String newId = jsonObject.getString("newId");
+        //详情表Id
+        String oldId = jsonObject.getString("oldId");
+        //审批结果
+        String result = jsonObject.getString("result");
+        //备注信息  和  Constant不同过与正常保持一致
+        String message = jsonObject.getString("message");
+        //修改申请表
+        companyApplyService.submitApply(applyId, message ,result);
+
+        //动态获取
+        ServiceImpl o = ServiceUtils.getService(jsonObject.getString("fromTable"));
+        UpdateWrapper updateWrapper = new UpdateWrapper<>().eq("id",newId).set("status",result);
+        o.update(updateWrapper);
+        if(result.equals(Constant.status.NORMAL))
+        {
+            o.update(new UpdateWrapper<>().eq("id",oldId).set("status",Constant.status.EXPIRED));
         }
-        return string;
+
+        return Result.ok();
     }
+
+
+
+
 
 
     /**

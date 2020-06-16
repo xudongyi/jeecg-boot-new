@@ -1,6 +1,8 @@
 package org.jeecg.modules.business.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.jeecg.modules.business.entity.*;
 import org.jeecg.modules.business.mapper.CompanyApplyMapper;
@@ -64,6 +66,22 @@ public class CompanyApplyServiceImpl extends ServiceImpl<CompanyApplyMapper, Com
     @Override
     public Page<CompanyApplyVo> queryCompanyApplyVo(Page<CompanyApplyVo> page,String[] companyIds,String status,String fromTable) {
         return page.setRecords(companyApplyMapper.queryCompanyApplyVo(page,companyIds,status,fromTable));
+    }
+
+    /**
+     * 更新申请数据
+     * @param id
+     * @param content
+     * @param status
+     * @return
+     */
+    @Override
+    public Boolean submitApply(String id, String content, String status) {
+        LambdaUpdateWrapper<CompanyApply> updateWrapper = new UpdateWrapper<CompanyApply>().lambda()
+                .eq(CompanyApply::getId,id).set(CompanyApply::getStatus,status)
+                .set(CompanyApply::getContent,content);
+
+        return this.update(updateWrapper);
     }
 
 
