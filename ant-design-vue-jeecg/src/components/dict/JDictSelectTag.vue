@@ -71,7 +71,7 @@
         if(getDictItemsFromCache(this.dictCode)){
           this.dictOptions = getDictItemsFromCache(this.dictCode);
           let _this =  this;
-          console.log(this.dictOptions)
+          // console.log(this.dictOptions)
           this.dictOptions = this.dictOptions.filter(function (item) {
 
             return _this.excludeFields.indexOf(item.value) < 0;
@@ -96,7 +96,7 @@
         }else{
           val = e
         }
-        console.log(val,this.triggerChange);
+        // console.log(val,this.triggerChange);
         if(this.triggerChange){
           this.$emit('change', val);
         }else{

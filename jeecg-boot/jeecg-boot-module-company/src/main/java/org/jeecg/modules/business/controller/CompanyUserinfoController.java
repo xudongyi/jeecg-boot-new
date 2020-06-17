@@ -74,8 +74,14 @@ public class CompanyUserinfoController extends JeecgController<CompanyUserinfo, 
 	@ApiOperation(value="company_userinfo-添加", notes="company_userinfo-添加")
 	@PostMapping(value = "/add")
 	public Result<?> add(@RequestBody CompanyUserinfo companyUserinfo) {
+
+
+
 		companyUserinfo.setStatus(Constant.status.TEMPORARY);//暂存
 		companyUserinfoService.save(companyUserinfo);
+		//暂存需要新增  apply表
+		companyApplyService.saveByBase(companyUserinfo.getCompanyId(),companyUserinfo.getId(),Constant.status.TEMPORARY
+		,"",Constant.tables.USERINFO);
 		return Result.ok("添加成功！");
 	}
 	
@@ -93,11 +99,12 @@ public class CompanyUserinfoController extends JeecgController<CompanyUserinfo, 
 			companyUserinfoService.updateById(companyUserinfo);
 
 		else{
+			String oldId = companyUserinfo.getId();
 			//不是暂存的编辑  都是新增暂存状态
-			companyUserinfo.setStatus(Constant.status.PEND);//暂存
+			companyUserinfo.setStatus(Constant.status.TEMPORARY);//暂存
 			companyUserinfo.setId(null);
 			companyUserinfoService.save(companyUserinfo);
-
+			companyApplyService.saveByBase(companyUserinfo.getCompanyId(),companyUserinfo.getId(),Constant.status.TEMPORARY,oldId,Constant.tables.USERINFO);
 		}
 
 		return Result.ok("编辑成功!");
@@ -115,26 +122,32 @@ public class CompanyUserinfoController extends JeecgController<CompanyUserinfo, 
 	 public Result<?> editAndApply(@RequestBody CompanyUserinfo companyUserinfo) {
 
 	 	//新增申报记录
-		 CompanyApply companyApply = new CompanyApply();
 		String oldId = "";
 	 	//申报   1新增申报
-	 	if(StrUtil.isEmpty(companyUserinfo.getId()))
+	 	if(StrUtil.isEmpty(companyUserinfo.getId())) {
+			companyUserinfo.setStatus(Constant.status.PEND);//待审核
 			companyUserinfoService.save(companyUserinfo);
+			//新增申报记录
+			companyApplyService.saveByBase(companyUserinfo.getCompanyId(),companyUserinfo.getId(),Constant.status.PEND,oldId,Constant.tables.USERINFO);
+		}
 	 	//编辑申报 2、编辑暂存数据
 	 	else if(Constant.status.TEMPORARY.equals(companyUserinfo.getStatus())) {
-			companyUserinfo.setStatus(Constant.status.PEND);//暂存
+			companyUserinfo.setStatus(Constant.status.PEND);//待审核
 			companyUserinfoService.updateById(companyUserinfo);
+			companyApplyService.update(new UpdateWrapper<CompanyApply>().lambda()
+					.eq(CompanyApply::getNewId,companyUserinfo.getId())
+					.eq(CompanyApply::getStatus,Constant.status.TEMPORARY)
+					.set(CompanyApply::getStatus,Constant.status.PEND));
 		}else{
 			//编辑申报 3、编辑正常数据
 			oldId = companyUserinfo.getId();
-	 		//不是暂存的编辑  都是新增暂存状态
-			companyUserinfo.setStatus(Constant.status.PEND);//暂存
+			companyUserinfo.setStatus(Constant.status.PEND);//待审核
 			companyUserinfo.setId(null);
 			companyUserinfoService.save(companyUserinfo);
-
+			//新增申报记录
+			companyApplyService.saveByBase(companyUserinfo.getCompanyId(),companyUserinfo.getId(),Constant.status.PEND,oldId,Constant.tables.USERINFO);
 		}
-		 //新增申报记录
-		 companyApplyService.saveByBase(companyUserinfo.getCompanyId(),companyUserinfo.getId(),Constant.status.PEND,oldId,Constant.tables.USERINFO);
+
 		 return Result.ok("申报成功!");
 
 	 }
@@ -148,10 +161,40 @@ public class CompanyUserinfoController extends JeecgController<CompanyUserinfo, 
 	@ApiOperation(value="company_userinfo-通过id删除", notes="company_userinfo-通过id删除")
 	@DeleteMapping(value = "/delete")
 	public Result<?> delete(@RequestParam(name="id",required=true) String id) {
-		companyUserinfoService.removeById(id);
+		//删除
+		companyUserinfoService.remove(new QueryWrapper<CompanyUserinfo>().lambda()
+				.eq(CompanyUserinfo::getStatus,Constant.status.TEMPORARY)
+				.eq(CompanyUserinfo::getId,id ));
+
+		//删除申报记录
+		companyApplyService.remove(new QueryWrapper<CompanyApply>().lambda()
+				.eq(CompanyApply::getStatus,Constant.status.TEMPORARY)
+				.in(CompanyApply::getNewId,id ));
 		return Result.ok("删除成功!");
 	}
-	
+	 /**
+	  *
+	  *
+	  * @param ids 批量申报
+	  * @return
+	  */
+	 @AutoLog(value = "批量申报")
+	 @ApiOperation(value="批量申报", notes="批量申报")
+	 @GetMapping(value = "/batchApply")
+	 public Result<?> batchApply(@RequestParam(name="ids",required=true) String ids) {
+		 //修改
+		 companyUserinfoService.update(new UpdateWrapper<CompanyUserinfo>().lambda()
+				 .eq(CompanyUserinfo::getStatus,Constant.status.TEMPORARY)
+				 .in(CompanyUserinfo::getId,Arrays.asList(ids.split(",")))
+				 .set(CompanyUserinfo::getStatus,Constant.status.PEND));
+
+		 //修改申报记录
+		 companyApplyService.update(new UpdateWrapper<CompanyApply>().lambda()
+				 .eq(CompanyApply::getStatus,Constant.status.TEMPORARY)
+				 .in(CompanyApply::getNewId,Arrays.asList(ids.split(",")))
+				 .set(CompanyApply::getStatus,Constant.status.PEND));
+		 return Result.ok("申报成功!");
+	 }
 	/**
 	 *  批量删除
 	 *
@@ -162,10 +205,17 @@ public class CompanyUserinfoController extends JeecgController<CompanyUserinfo, 
 	@ApiOperation(value="company_userinfo-批量删除", notes="company_userinfo-批量删除")
 	@DeleteMapping(value = "/deleteBatch")
 	public Result<?> deleteBatch(@RequestParam(name="ids",required=true) String ids) {
-//		this.companyUserinfoService.update(new UpdateWrapper<CompanyUserinfo>().lambda().
-//		in(CompanyUserinfo::getId,Arrays.asList(ids.split(",")).
-//		set(CompanyUserinfo::getStatus))));
-		return Result.ok("批量删除成功!");
+		//删除
+		companyUserinfoService.remove(new QueryWrapper<CompanyUserinfo>().lambda()
+				.eq(CompanyUserinfo::getStatus,Constant.status.TEMPORARY)
+				.in(CompanyUserinfo::getId,Arrays.asList(ids.split(","))) );
+
+		//删除申报记录
+		companyApplyService.remove(new QueryWrapper<CompanyApply>().lambda()
+				.eq(CompanyApply::getStatus,Constant.status.TEMPORARY)
+				.in(CompanyApply::getNewId,Arrays.asList(ids.split(","))) );
+
+		return Result.ok("批量删除暂存数据成功!");
 	}
 	
 	/**

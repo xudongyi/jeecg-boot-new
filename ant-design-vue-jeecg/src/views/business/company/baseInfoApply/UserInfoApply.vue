@@ -6,7 +6,7 @@
                         :from-table="fromTable" @applyDetail = "applyDetail"  @toDetail="latestDetail" @toApply="apply"
                          v-if="!showDetail"></company-apply-list>
 
-    <userinfo-list :isApply="isApply" :company-id="companyId" v-if="showDetail" ></userinfo-list>
+    <userinfo-apply-list :isApply="isApply" :company-id="companyId" v-if="showDetail" ></userinfo-apply-list>
     <companyApply-modal ref="applyInfoForm" ></companyApply-modal>
   </div>
 </template>
@@ -16,7 +16,7 @@
   import CompanyApplyList from "./modules/CompanyApplyList"
   import {queryLatestArchivedData} from "../../requestAction/request"
   import CompanyApplyModal from "./modules/childModules/CompanyApplyModal";
-  import UserinfoList from "../oneCompayOneRecord/routeView/UserinfoList";
+  import UserinfoApplyList from "./modules/UserinfoApplyList";
 
   export default {
         name: "UserInfoApply",
@@ -24,7 +24,7 @@
         CompanyApplyList,
         queryLatestArchivedData,
         CompanyApplyModal,
-        UserinfoList
+        UserinfoApplyList
       },
       data(){
         return {
@@ -53,6 +53,8 @@
         applyDetail(record){
           //查询详情数据
           this.$refs.applyInfoForm.detail(record);
+          //单个表比较
+          this.$refs.applyInfoForm.compareDetail(this.fromTable);
         },
 
 

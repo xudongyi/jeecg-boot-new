@@ -9,42 +9,44 @@
     cancelText="关闭">
     <a-spin :spinning="confirmLoading">
       <a-form :form="form">
-        <a-form-item label="姓名" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="['name', validatorRules.name]" placeholder="请输入姓名"></a-input>
+        <a-form-item label="姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" >
+          <a-input v-decorator="['name', validatorRules.name]" placeholder="请输入姓名" :disabled="disable"></a-input>
         </a-form-item>
         <a-form-item label="性别" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="['sex', validatorRules.sex]" placeholder="请输入性别"></a-input>
+          <j-dict-select-tag  type="radio" dictCode="sex" v-decorator="['sex', validatorRules.sex]" :disabled="disable"  :trigger-change="true" ></j-dict-select-tag>
+
         </a-form-item>
         <a-form-item label="学历" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="['education', validatorRules.education]" placeholder="请输入学历"></a-input>
+          <a-input v-decorator="['education', validatorRules.education]" placeholder="请输入学历" :disabled="disable"></a-input>
         </a-form-item>
         <a-form-item label="专业" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="['profession', validatorRules.profession]" placeholder="请输入专业"></a-input>
+          <a-input v-decorator="['profession', validatorRules.profession]" placeholder="请输入专业" :disabled="disable"></a-input>
         </a-form-item>
         <a-form-item label="职称" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="['jobTitle', validatorRules.jobTitle]" placeholder="请输入职称"></a-input>
+          <a-input v-decorator="['jobTitle', validatorRules.jobTitle]" placeholder="请输入职称" :disabled="disable"></a-input>
         </a-form-item>
         <a-form-item label="部门" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="['department', validatorRules.department]" placeholder="请输入部门"></a-input>
+          <a-input v-decorator="['department', validatorRules.department]" placeholder="请输入部门" :disabled="disable"></a-input>
         </a-form-item>
         <a-form-item label="岗位" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="['post', validatorRules.post]" placeholder="请输入岗位"></a-input>
+          <a-input v-decorator="['post', validatorRules.post]" placeholder="请输入岗位" :disabled="disable"></a-input>
         </a-form-item>
         <a-form-item label="身份证号码" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="['idCard', validatorRules.idCard]" placeholder="请输入身份证号码"></a-input>
+          <a-input v-decorator="['idCard', validatorRules.idCard]" placeholder="请输入身份证号码" :disabled="disable"></a-input>
         </a-form-item>
         <a-form-item label="手机号码" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="['pbone', validatorRules.pbone]" placeholder="请输入手机号码"></a-input>
+          <a-input v-decorator="['pbone', validatorRules.pbone]" placeholder="请输入手机号码" :disabled="disable"></a-input>
         </a-form-item>
         <a-form-item label="出生日期" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-date placeholder="请输入出生日期" v-decorator="['birthDate', validatorRules.birthDate]" :trigger-change="true" style="width: 100%" />
+          <j-date placeholder="请输入出生日期" v-decorator="['birthDate', validatorRules.birthDate]" :trigger-change="true" style="width: 100%" :disabled="disable" />
         </a-form-item>
       </a-form>
     </a-spin>
     <template slot="footer">
-      <a-button type="primary" @click="handleCancel">取消</a-button>
-      <a-button type="primary" @click="handleOk">暂存</a-button>
-      <a-button type="primary" @click="handDeclare">申报</a-button>
+      <a-button type="primary" @click="handleCancel" v-show="disable">关闭</a-button>
+      <a-button type="primary" @click="handleCancel" v-show="!disable">取消</a-button>
+      <a-button type="primary" @click="handleOk" v-show="!disable">暂存</a-button>
+      <a-button type="primary" @click="handDeclare" v-show="!disable">申报</a-button>
     </template>
   </j-modal>
 </template>
@@ -55,12 +57,12 @@
   import pick from 'lodash.pick'
   import { validateDuplicateValue } from '@/utils/util'
   import JDate from '@/components/jeecg/JDate'  
-
+  import JDictSelectTag from  '@/components/dict/JDictSelectTag.vue'
 
   export default {
     name: "CompanyUserinfoModal",
     components: { 
-      JDate,
+      JDate,JDictSelectTag
     },
     props:{
       companyId:''
@@ -71,6 +73,7 @@
         title:"操作",
         width:800,
         visible: false,
+        disable:true,
         model: {},
         labelCol: {
           xs: { span: 24 },
@@ -142,11 +145,16 @@
     },
     created () {
     },
+    computed:{
+
+    },
     methods: {
+
       add () {
         this.edit({});
       },
       edit (record) {
+        console.log(this.disable)
         this.form.resetFields();
         this.model = Object.assign({}, record);
         this.visible = true;
@@ -157,6 +165,7 @@
       close () {
         this.$emit('close');
         this.visible = false;
+        this.disable = true;
       },
       handleOk () {
         const that = this;

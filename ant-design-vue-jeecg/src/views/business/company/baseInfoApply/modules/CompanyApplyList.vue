@@ -67,7 +67,7 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="handleDetail(record)">详情</a>
+          <a @click="handleToDetail(record)">详情</a>
 
           <!--<a-divider type="vertical" />
           <a-dropdown>
@@ -114,7 +114,8 @@
         description: '企业申报基础表管理页面',
         queryParam:{
           companyId:this.companyId,
-          fromTable:this.fromTable
+          fromTable:this.fromTable,
+          status : '!0'
         },
         latestArchived:{},
         // 表头
@@ -170,7 +171,7 @@
     methods: {
       initDictConfig(){
       },
-      handleDetail(record)
+      handleToDetail(record)
       {
         this.$emit("applyDetail",record);
       } ,

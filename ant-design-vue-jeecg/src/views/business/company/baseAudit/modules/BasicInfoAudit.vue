@@ -22,9 +22,9 @@
 
 <script>
   import BaseInfo from "../../oneCompayOneRecord/routeView/BaseInfo";
-  import {queryAduitBase,queryUserByName} from "../../../requestAction/request"
+  import {queryAduitBase} from "../../../requestAction/request"
   import AuditFooter from "../modules/AuditFooter";
-  import store from '@/store/'
+
   export default {
         name: "BasicInfoAudit",
       components:{BaseInfo
@@ -70,9 +70,10 @@
           }
         });
 
-
+        this.$nextTick(() => {
           that.$refs.auditFooter.applyer = this.applyInfo.createBy;
           that.$refs.auditFooter.applyTime = this.applyInfo.createTime;
+        })
 
         this.confirmLoading = false;
       },

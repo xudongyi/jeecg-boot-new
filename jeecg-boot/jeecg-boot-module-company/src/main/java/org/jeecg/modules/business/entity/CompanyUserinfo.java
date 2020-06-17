@@ -60,6 +60,7 @@ public class CompanyUserinfo implements Serializable {
     @ApiModelProperty(value = "姓名")
     private java.lang.String name;
 	/**性别*/
+	@Dict(dicCode="sex")
 	@Excel(name = "性别", width = 15)
     @ApiModelProperty(value = "性别")
     private java.lang.String sex;

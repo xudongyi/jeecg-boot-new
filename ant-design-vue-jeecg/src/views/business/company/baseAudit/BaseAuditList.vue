@@ -122,8 +122,9 @@
     </div>
 
   </a-card>
-  <basic-info-audit ref ="basicInfoModal" ></basic-info-audit>
+    <basic-info-audit ref ="basicInfoModal" ></basic-info-audit>
     <acceptance-audit ref="acceptanceModal"></acceptance-audit>
+    <user-info-audit  ref="userInfoModal"></user-info-audit>
   </div>
 
 </template>
@@ -137,6 +138,7 @@
   import {queryCompanyName} from "../../requestAction/request";
   import BasicInfoAudit from "./modules/BasicInfoAudit";
   import AcceptanceAudit from "./modules/AcceptanceAudit";
+  import UserInfoAudit from "./modules/UserInfoAudit";
   import moment from 'moment'
 
   export default {
@@ -145,7 +147,7 @@
     components: {
       AcceptanceAudit, JDictSelectTag
       ,BasicInfoAudit//基础信息审核
-
+      ,UserInfoAudit//员工信息审核
     },
 
     data () {
@@ -250,6 +252,8 @@
       handleEdit(record){
         //先关闭所有浮窗
         this.$refs.basicInfoModal.visible = false;
+        this.$refs.acceptanceModal.visible = false;
+        this.$refs.userInfoModal.visible = false;
         //打开需要展示的浮窗
         if("company_baseinfo"=== record.fromTable){
           this.$refs.basicInfoModal.visible = true;
@@ -259,7 +263,10 @@
           this.$refs.acceptanceModal.visible = true;
           this.$refs.acceptanceModal.auditModal( record);
         }
-
+        if("company_userinfo"===record.fromTable){
+          this.$refs.userInfoModal.visible = true;
+          this.$refs.userInfoModal.auditModal( record);
+        }
       },
 
     },

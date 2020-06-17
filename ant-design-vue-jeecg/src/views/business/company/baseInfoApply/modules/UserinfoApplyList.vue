@@ -35,7 +35,7 @@
     
     <!-- 操作按钮区域 -->
     <div class="table-operator" v-show="isApply">
-      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
+      <a-button @click="applyAdd" type="primary" icon="plus">新增</a-button>
 <!--      <a-button type="primary" icon="download" @click="handleExportXls('company_userinfo')">导出</a-button>-->
 <!--      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">-->
 <!--        <a-button type="primary" icon="import">导入</a-button>-->
@@ -43,6 +43,7 @@
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
           <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
+          <a-menu-item key="2" @click="batchApply"><a-icon type="delete"/>申报</a-menu-item>
 
         </a-menu>
         <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>
@@ -67,7 +68,7 @@
         :loading="loading"
         class="j-table-force-nowrap"
         @change="handleTableChange"
-
+        :rowSelection="rowSelection"
       >
 
         <template slot="htmlSlot" slot-scope="text">
@@ -92,10 +93,11 @@
         <a slot="name" @click="handleDetail(record)"   slot-scope="text, record">{{ text }}</a>
 
         <span slot="action"  slot-scope="text, record">
+           <a @click="handleView(record)"  v-show="!isApply || record.status !== '0' ">查看</a>
           <!-- 编辑和删除-->
-          <a @click="handleEdit(record)">详情</a>
-          <a-divider type="vertical" v-show="isApply"  />
-                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)" v-show="isApply">
+          <a @click="applyEdit(record)"  v-show="isApply && record.status === '0' ">编辑</a>
+          <a-divider type="vertical" v-show="isApply && record.status === '0' "  />
+                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)" v-show="isApply && record.status === '0'">
                   <a>删除</a>
                 </a-popconfirm>
         </span>
@@ -109,12 +111,13 @@
 <script>
 
   import '@/assets/less/TableExpand.less'
-  import {mixinDevice} from '@/utils/mixin'
-  import {JeecgListMixin} from '@/mixins/JeecgListMixin'
-  import CompanyUserinfoModal from "./modules/CompanyUserinfoModal";
+  import { mixinDevice } from '@/utils/mixin'
+  import { JeecgListMixin } from '@/mixins/JeecgListMixin'
+  import CompanyUserinfoModal from "../../oneCompayOneRecord/routeView/modules/CompanyUserinfoModal";
+  import {getAction} from '@/api/manage'
 
   export default {
-    name: "UserinfoList",
+    name: "UserinfoApplyList",
     mixins:[JeecgListMixin, mixinDevice],
     components: {
       CompanyUserinfoModal
@@ -153,7 +156,7 @@
           {
             title:'性别',
             align:"center",
-            dataIndex: 'sex'
+            dataIndex: 'sex_dictText'
           },
           {
             title:'学历',
@@ -211,7 +214,10 @@
         ],
         url: {
           list: "/companyUserinfo/list",
+          delete:"/companyUserinfo/delete",
           deleteBatch:"/companyUserinfo/deleteBatch",
+          batchApply:"/companyUserinfo/batchApply"
+
         },
         dictOptions:{},
       }
@@ -220,8 +226,33 @@
       importExcelUrl: function(){
         return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
       },
+      rowSelection() {
+        return {
+          getCheckboxProps: record => ({
+            props: {
+              disabled: record.status !== '0',
+              name: record.projectName,
+            },
+          }),
+          selectedRowKeys: this.selectedRowKeys,
+          onChange: this.onSelectChange
+        };
+      },
     },
     methods: {
+      handleView: function (record) {
+        this.$refs.modalForm.edit(record);
+        this.$refs.modalForm.title = "查看";
+        this.$refs.modalForm.disableSubmit = false;
+      },
+      applyAdd(){
+        this.handleAdd();
+        this.$refs.modalForm.disable = false;
+      },
+      applyEdit(){
+        this.$refs.modalForm.disable = false;
+        this.handleEdit();
+      },
       initDictConfig(){
 
       },
@@ -229,7 +260,36 @@
           this.queryParam = {companyId:this.companyId};
           this.loadData(1);
       },
-
+      batchApply() {
+        if (this.selectedRowKeys.length <= 0) {
+          this.$message.warning('请选择一条记录！');
+          return;
+        } else {
+          var ids = "";
+          for (var a = 0; a < this.selectedRowKeys.length; a++) {
+            ids += this.selectedRowKeys[a] + ",";
+          }
+          var that = this;
+          this.$confirm({
+            title: "确认申报",
+            content: "是否申报选中数据?",
+            onOk: function () {
+              that.loading = true;
+              getAction(that.url.batchApply, {ids: ids}).then((res) => {
+                if (res.success) {
+                  that.$message.success(res.message);
+                  that.loadData();
+                  that.onClearSelected();
+                } else {
+                  that.$message.warning(res.message);
+                }
+              }).finally(() => {
+                that.loading = false;
+              });
+            }
+          });
+        }
+      },
     }
   }
 </script>
