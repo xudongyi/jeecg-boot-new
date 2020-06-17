@@ -122,9 +122,11 @@
     </div>
 
   </a-card>
-    <basic-info-audit ref ="basicInfoModal" ></basic-info-audit>
+  <basic-info-audit ref ="basicInfoModal" ></basic-info-audit>
     <acceptance-audit ref="acceptanceModal"></acceptance-audit>
     <user-info-audit  ref="userInfoModal"></user-info-audit>
+    <prevention-audit ref="preventionModal"></prevention-audit>
+    <env-tax-audit ref="envTaxModal"></env-tax-audit>
   </div>
 
 </template>
@@ -138,6 +140,8 @@
   import {queryCompanyName} from "../../requestAction/request";
   import BasicInfoAudit from "./modules/BasicInfoAudit";
   import AcceptanceAudit from "./modules/AcceptanceAudit";
+  import PreventionAudit from "./modules/PreventionAudit";
+  import EnvTaxAudit from "./modules/EnvTaxAudit";
   import UserInfoAudit from "./modules/UserInfoAudit";
   import moment from 'moment'
 
@@ -148,6 +152,8 @@
       AcceptanceAudit, JDictSelectTag
       ,BasicInfoAudit//基础信息审核
       ,UserInfoAudit//员工信息审核
+      ,PreventionAudit,
+      EnvTaxAudit
     },
 
     data () {
@@ -254,6 +260,9 @@
         this.$refs.basicInfoModal.visible = false;
         this.$refs.acceptanceModal.visible = false;
         this.$refs.userInfoModal.visible = false;
+        this.$refs.preventionModal.visible = false;
+        this.$refs.envTaxModal.visible = false;
+
         //打开需要展示的浮窗
         if("company_baseinfo"=== record.fromTable){
           this.$refs.basicInfoModal.visible = true;
@@ -267,6 +276,15 @@
           this.$refs.userInfoModal.visible = true;
           this.$refs.userInfoModal.auditModal( record);
         }
+        if("company_prevention"===record.fromTable){
+          this.$refs.preventionModal.visible = true;
+          this.$refs.preventionModal.auditModal( record);
+        }
+        if("company_env_tax"===record.fromTable){
+          this.$refs.envTaxModal.visible = true;
+          this.$refs.envTaxModal.auditModal( record);
+        }
+
       },
 
     },

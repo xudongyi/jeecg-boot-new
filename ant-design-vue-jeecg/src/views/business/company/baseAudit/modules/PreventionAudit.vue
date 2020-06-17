@@ -13,24 +13,16 @@
     <a-spin :spinning="confirmLoading">
       <a-form :form="form">
 
-        <a-form-item label="项目名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="['projectName', validatorRules.projectName]" placeholder="请输入项目名称"
-                   :disabled="disableSubmit"></a-input>
+        <a-form-item label="名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input v-decorator="['name', validatorRules.name]" placeholder="请输入名称" :disabled="disableSubmit"></a-input>
         </a-form-item>
-        <a-form-item label="审批单位" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="['examineUnit']" placeholder="请输入审批单位" :disabled="disableSubmit"></a-input>
+        <a-form-item label="防治类型" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <j-dict-select-tag type="list" v-decorator="['type', validatorRules.type]" :trigger-change="true"
+                             dictCode="preType" placeholder="" :disabled="disableSubmit"/>
         </a-form-item>
-        <a-form-item label="审批文号" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="['examineNum']" placeholder="请输入审批文号" :disabled="disableSubmit"></a-input>
-        </a-form-item>
-        <a-form-item label="审批时间" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-date placeholder="请选择审批时间" v-decorator="['examineTime']" :trigger-change="true" style="width: 100%"
-                  :disabled="disableSubmit"/>
-        </a-form-item>
-        <a-form-item label="验收附件" :labelCol="labelCol" :wrapperCol="wrapperCol">
+        <a-form-item label="附件上传" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <j-upload v-decorator="['files']" :trigger-change="true" :disabled="disableSubmit"></j-upload>
         </a-form-item>
-
 
       </a-form>
     </a-spin>
@@ -45,6 +37,7 @@
   import pick from "lodash.pick";
   import AuditFooter from "./AuditFooter";
   import {queryAduitBase, queryUserByName} from "../../../requestAction/request";
+  import JDictSelectTag from "@/components/dict/JDictSelectTag"
   import JDate from '@/components/jeecg/JDate'
   import JUpload from '@/components/jeecg/JUpload'
   export default {
@@ -53,6 +46,7 @@
         AuditFooter,
         JDate,
         JUpload,
+        JDictSelectTag
       },data(){
       return{
         companyId:'',
@@ -60,7 +54,7 @@
         disableSubmit:true,
         visible: false,
         width:1200,
-        title:"基础信息审核-竣工验收信息",
+        title:"基础信息审核-污染防治信息",
         form: this.$form.createForm(this),
         model: {},
         labelCol: {
@@ -73,9 +67,9 @@
         },
 
         validatorRules: {
-          projectName: {
+          name: {
             rules: [
-              {required: true, message: '请输入项目名称!'},
+              { required: true, message: '请输入名称!'},
             ]
           },
         },
@@ -113,7 +107,7 @@
             that.model = Object.assign({}, res.result.info);
             that.visible = true;
             that.$nextTick(() => {
-              that.form.setFieldsValue(pick(this.model, 'projectName', 'examineUnit', 'examineNum', 'examineTime', 'files'))
+              this.form.setFieldsValue(pick(this.model,'name','type','files'))
             })
 
 
