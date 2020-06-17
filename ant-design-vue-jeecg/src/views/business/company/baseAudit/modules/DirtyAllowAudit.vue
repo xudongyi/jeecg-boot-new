@@ -80,7 +80,7 @@
   import moment from "moment";
 
   export default {
-    name: "AcceptanceAudit",
+    name: "DirtyAllowAudit",
     components: {
       AuditFooter,
       JDate,

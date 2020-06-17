@@ -119,7 +119,7 @@
   import JSearchSelectTag from '@/components/dict/JSearchSelectTag'
 
   export default {
-    name: "AcceptanceAudit",
+    name: "EnvTaxAudit",
     components: {
       AuditFooter,
       JDate,
