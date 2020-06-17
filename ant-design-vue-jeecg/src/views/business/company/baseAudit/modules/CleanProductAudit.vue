@@ -13,15 +13,20 @@
     <a-spin :spinning="confirmLoading">
       <a-form :form="form">
 
-        <a-form-item label="名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="['name', validatorRules.name]" placeholder="请输入名称" :disabled="disableSubmit"></a-input>
+        <a-form-item label="清洁生产报告名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input v-decorator="['reportName', validatorRules.reportName]" placeholder="请输入清洁生产报告名称" :disabled="disableSubmit"></a-input>
         </a-form-item>
-        <a-form-item label="防治类型" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-dict-select-tag type="list" v-decorator="['type', validatorRules.type]" :trigger-change="true"
-                             dictCode="preType" placeholder="" :disabled="disableSubmit"/>
+        <a-form-item label="报告时间" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <j-date placeholder="请选择报告时间" v-decorator="['reportTime']" :trigger-change="true" style="width: 100%" :disabled="disableSubmit"/>
         </a-form-item>
-        <a-form-item label="附件上传" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-upload v-decorator="['files']" :trigger-change="true" :disabled="disableSubmit"></j-upload>
+        <a-form-item label="清洁生成报告及专家意见" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <j-upload v-decorator="['opinionFiles']" :trigger-change="true" :disabled="disableSubmit"></j-upload>
+        </a-form-item>
+        <a-form-item label="落实情况简要描述" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-textarea v-decorator="['conditionDescribe']" placeholder="请输入落实情况简要描述" :disabled="disableSubmit"></a-textarea>
+        </a-form-item>
+        <a-form-item label="落实情况附件" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <j-image-upload isMultiple v-decorator="['describeFiles']" :disabled="disableSubmit"></j-image-upload>
         </a-form-item>
 
       </a-form>
@@ -37,16 +42,16 @@
   import pick from "lodash.pick";
   import AuditFooter from "./AuditFooter";
   import {queryAduitBase, queryUserByName} from "../../../requestAction/request";
-  import JDictSelectTag from "@/components/dict/JDictSelectTag"
   import JDate from '@/components/jeecg/JDate'
   import JUpload from '@/components/jeecg/JUpload'
+  import JImageUpload from '@/components/jeecg/JImageUpload'
   export default {
-        name: "PreventionAudit",
+        name: "CleanProductAudit",
       components:{
         AuditFooter,
         JDate,
         JUpload,
-        JDictSelectTag
+        JImageUpload
       },data(){
       return{
         companyId:'',
@@ -54,27 +59,26 @@
         disableSubmit:true,
         visible: false,
         width:1200,
-        title:"基础信息审核-污染防治信息",
+        title:"基础信息审核-清洁生产信息",
         form: this.$form.createForm(this),
         model: {},
         labelCol: {
-          xs: {span: 24},
-          sm: {span: 5},
+          xs: { span: 24 },
+          sm: { span: 5 },
         },
         wrapperCol: {
-          xs: {span: 24},
-          sm: {span: 16},
+          xs: { span: 24 },
+          sm: { span: 16 },
         },
-
+        confirmLoading: false,
         validatorRules: {
-          name: {
+          reportName: {
             rules: [
-              { required: true, message: '请输入名称!'},
+              { required: true, message: '请输入清洁生产报告名称!'},
             ]
           },
         },
         url: {
-
         }
 
       }
@@ -107,7 +111,7 @@
             that.model = Object.assign({}, res.result.info);
             that.visible = true;
             that.$nextTick(() => {
-              that.form.setFieldsValue(pick(this.model,'name','type','files'))
+              that.form.setFieldsValue(pick(this.model,'reportName','reportTime','opinionFiles','conditionDescribe','describeFiles'))
             })
 
 

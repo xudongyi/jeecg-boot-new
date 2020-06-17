@@ -126,6 +126,9 @@
     <acceptance-audit ref="acceptanceModal"></acceptance-audit>
     <prevention-audit ref="preventionModal"></prevention-audit>
     <env-tax-audit ref="envTaxModal"></env-tax-audit>
+    <dirty-allow-audit ref="dirtyAllowModal"></dirty-allow-audit>
+    <clean-product-audit ref="cleanProductModal"></clean-product-audit>
+    <online-info-audit ref="onlineInfoModal"></online-info-audit>
   </div>
 
 </template>
@@ -141,6 +144,9 @@
   import AcceptanceAudit from "./modules/AcceptanceAudit";
   import PreventionAudit from "./modules/PreventionAudit";
   import EnvTaxAudit from "./modules/EnvTaxAudit";
+  import DirtyAllowAudit from "./modules/DirtyAllowAudit";
+  import CleanProductAudit from "./modules/CleanProductAudit";
+  import OnlineInfoAudit from "./modules/OnlineInfoAudit";
   import UserInfoAudit from "./modules/UserInfoAudit";
   import DirtyAllowAudit from "./modules/DirtyAllowAudit"
   import moment from 'moment'
@@ -154,7 +160,9 @@
       ,UserInfoAudit//员工信息审核
       ,PreventionAudit,
       EnvTaxAudit,
-      DirtyAllowAudit
+      DirtyAllowAudit,
+      CleanProductAudit,
+      OnlineInfoAudit
     },
 
     data () {
@@ -264,7 +272,8 @@
         this.$refs.preventionModal.visible = false;
         this.$refs.envTaxModal.visible = false;
         this.$refs.dirtyAllowModal.visible = false;
-
+        this.$refs.cleanProductModal.visible = false;
+        this.$refs.onlineInfoModal.visible = false;
         //打开需要展示的浮窗
         if("company_baseinfo"=== record.fromTable){
           this.$refs.basicInfoModal.visible = true;
@@ -289,6 +298,14 @@
         if("company_dirty_allow"===record.fromTable){
           this.$refs.dirtyAllowModal.visible = true;
           this.$refs.dirtyAllowModal.auditModal( record);
+        }
+        if("company_clean_product"===record.fromTable){
+          this.$refs.cleanProductModal.visible = true;
+          this.$refs.cleanProductModal.auditModal( record);
+        }
+        if("company_online_info"===record.fromTable){
+          this.$refs.onlineInfoModal.visible = true;
+          this.$refs.onlineInfoModal.auditModal( record);
         }
 
       },

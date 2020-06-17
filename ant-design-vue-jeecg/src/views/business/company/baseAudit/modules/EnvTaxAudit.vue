@@ -119,7 +119,7 @@
   import JSearchSelectTag from '@/components/dict/JSearchSelectTag'
 
   export default {
-    name: "AcceptanceAudit",
+    name: "EnvTaxAudit",
     components: {
       AuditFooter,
       JDate,
@@ -223,7 +223,7 @@
             that.model = Object.assign({}, res.result.info);
             that.visible = true;
             that.$nextTick(() => {
-              this.form.setFieldsValue(pick(this.model, 'licenceCode', 'ventCategory', 'ventCode', 'ventName', 'taxsourceCode', 'letMode', 'ventLocate', 'ventLongitude', 'ventLatitude', 'letDirection', 'ventType', 'taxDepartment'))
+              that.form.setFieldsValue(pick(this.model, 'licenceCode', 'ventCategory', 'ventCode', 'ventName', 'taxsourceCode', 'letMode', 'ventLocate', 'ventLongitude', 'ventLatitude', 'letDirection', 'ventType', 'taxDepartment'))
             })
 
 
