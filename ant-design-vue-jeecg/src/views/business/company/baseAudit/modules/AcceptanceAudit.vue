@@ -9,7 +9,6 @@
     @ok="handleOk"
     @cancel="handleCancel"
     cancelText="关闭"
-    v-if="visible"
   >
     <a-spin :spinning="confirmLoading">
       <a-form :form="form">
@@ -106,16 +105,17 @@
         this.visible = false;
       },
       auditModal(record){
+        debugger
         this.applyInfo = record;
         let that = this;
         //查询对应的待审批数据  并查询出对应的对比数据
         queryAduitBase({applyId:record.id}).then((res)=>{
           if(res.success){
-            this.form.resetFields();
-            this.model = Object.assign({}, res.result.info);
-            this.visible = true;
-            this.$nextTick(() => {
-              this.form.setFieldsValue(pick(this.model, 'projectName', 'examineUnit', 'examineNum', 'examineTime', 'files'))
+            that.form.resetFields();
+            that.model = Object.assign({}, res.result.info);
+            that.visible = true;
+            that.$nextTick(() => {
+              that.form.setFieldsValue(pick(this.model, 'projectName', 'examineUnit', 'examineNum', 'examineTime', 'files'))
             })
 
 
@@ -125,20 +125,17 @@
             }
           }
         });
-        //申请人的真实名字
-        queryUserByName({userName:record.createBy}).then((res)=> {
-          if(res.success){
-            that.$refs.auditFooter.applyer = res.result.realname;
-            that.$refs.auditFooter.applyTime = record.createTime;
-          }
-        });
+        that.$nextTick(() => {
+          that.$refs.auditFooter.applyer = this.applyInfo.createBy;
+          that.$refs.auditFooter.applyTime = this.applyInfo.createTime;
+        })
         this.confirmLoading = false;
       },
       modalFormOk(){
 
       },
     },created() {
-      console.log("Jmodal",this.disableSubmit)
+
     }
     }
 </script>
