@@ -107,7 +107,7 @@
             that.model = Object.assign({}, res.result.info);
             that.visible = true;
             that.$nextTick(() => {
-              this.form.setFieldsValue(pick(this.model,'name','type','files'))
+              that.form.setFieldsValue(pick(this.model,'name','type','files'))
             })
 
 

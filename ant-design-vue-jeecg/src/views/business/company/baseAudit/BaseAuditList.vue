@@ -271,7 +271,8 @@
         this.$refs.preventionModal.visible = false;
         this.$refs.envTaxModal.visible = false;
         this.$refs.dirtyAllowModal.visible = false;
-
+        this.$refs.cleanProductModal.visible = false;
+        this.$refs.onlineInfoModal.visible = false;
         //打开需要展示的浮窗
         if("company_baseinfo"=== record.fromTable){
           this.$refs.basicInfoModal.visible = true;
