@@ -125,6 +125,7 @@
   <basic-info-audit ref ="basicInfoModal" ></basic-info-audit>
     <acceptance-audit ref="acceptanceModal"></acceptance-audit>
     <prevention-audit ref="preventionModal"></prevention-audit>
+    <env-tax-audit ref="envTaxModal"></env-tax-audit>
   </div>
 
 </template>
@@ -139,6 +140,7 @@
   import BasicInfoAudit from "./modules/BasicInfoAudit";
   import AcceptanceAudit from "./modules/AcceptanceAudit";
   import PreventionAudit from "./modules/PreventionAudit";
+  import EnvTaxAudit from "./modules/EnvTaxAudit";
   import moment from 'moment'
 
   export default {
@@ -148,7 +150,8 @@
        JDictSelectTag
       ,BasicInfoAudit,//基础信息审核
       AcceptanceAudit,
-      PreventionAudit
+      PreventionAudit,
+      EnvTaxAudit
     },
 
     data () {
@@ -265,6 +268,10 @@
         if("company_prevention"===record.fromTable){
           this.$refs.preventionModal.visible = true;
           this.$refs.preventionModal.auditModal( record);
+        }
+        if("company_env_tax"===record.fromTable){
+          this.$refs.envTaxModal.visible = true;
+          this.$refs.envTaxModal.auditModal( record);
         }
 
       },
