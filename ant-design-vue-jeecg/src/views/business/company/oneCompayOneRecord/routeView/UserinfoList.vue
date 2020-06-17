@@ -131,7 +131,10 @@
     data () {
       return {
 
-        queryParam:{companyId:this.companyId},
+        queryParam:{
+          companyId:this.companyId,
+          status:'2'
+        },
         // 表头
         columns: [
           {

@@ -5,63 +5,73 @@
     :visible="visible"
     :confirmLoading="confirmLoading"
     switchFullscreen
-    @ok="handleOk"
     @cancel="handleCancel"
     cancelText="关闭">
     <a-spin :spinning="confirmLoading">
       <a-form :form="form">
 
         <a-form-item label="类别" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-dict-select-tag type="radio" v-decorator="['outputType']"  @change = "handleTypeChange" :trigger-change="true" dictCode="output_type" placeholder="请选择类别"/>
+          <j-dict-select-tag type="radio" v-decorator="['outputType']"  @change = "handleTypeChange"  :disabled="disable"
+                             :trigger-change="true" dictCode="output_type" placeholder="请选择类别"/>
         </a-form-item>
         <a-form-item label="产品名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="['outputName', validatorRules.outputName]" placeholder="请输入产品名称"></a-input>
+          <a-input v-decorator="['outputName', validatorRules.outputName]" placeholder="请输入产品名称" :disabled="disable"></a-input>
         </a-form-item>
         <a-form-item label="产量" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input-number v-decorator="['yield', validatorRules.yield]" placeholder="请输入产量" style="width: 100%"/>
+          <a-input-number v-decorator="['yield', validatorRules.yield]" placeholder="请输入产量" style="width: 100%" :disabled="disable"/>
         </a-form-item>
         <a-form-item label="最大储量" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="['maxStore', validatorRules.maxStore]" placeholder="请输入最大储量"></a-input>
+          <a-input v-decorator="['maxStore', validatorRules.maxStore]" placeholder="请输入最大储量" :disabled="disable"></a-input>
         </a-form-item>
         <a-form-item label="CAS号" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="['cas', validatorRules.cas]" placeholder="请输入CAS号"></a-input>
+          <a-input v-decorator="['cas', validatorRules.cas]" placeholder="请输入CAS号" :disabled="disable"></a-input>
         </a-form-item>
         <a-form-item label="储存方式" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-dict-select-tag type="list" v-decorator="['storeType', validatorRules.storeType]" :trigger-change="true" dictCode="store_type" placeholder="请选择储存方式"/>
+          <j-dict-select-tag type="list" v-decorator="['storeType', validatorRules.storeType]"  :disabled="disable"
+                             :trigger-change="true" dictCode="store_type" placeholder="请选择储存方式"/>
         </a-form-item>
         <a-form-item label="危化品类别" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-dict-select-tag type="list" v-decorator="['hazardousChemicalsCategory', validatorRules.hazardousChemicalsCategory]" :trigger-change="true" dictCode="hazardous_chemicals_category" placeholder="请选择危化品类别"/>
+          <j-dict-select-tag type="list" v-decorator="['hazardousChemicalsCategory', validatorRules.hazardousChemicalsCategory]"  :disabled="disable"
+                             :trigger-change="true" dictCode="hazardous_chemicals_category" placeholder="请选择危化品类别"/>
         </a-form-item>
         <a-form-item label="主要危险性" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-dict-select-tag type="list" v-decorator="['mainRisk', validatorRules.mainRisk]" :trigger-change="true" dictCode="main_risk" placeholder="请选择主要危险性"/>
+          <j-dict-select-tag type="list" v-decorator="['mainRisk', validatorRules.mainRisk]" :trigger-change="true" :disabled="disable"
+                             dictCode="main_risk" placeholder="请选择主要危险性"/>
         </a-form-item>
         <a-form-item label="重点监管" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-dict-select-tag type="list" v-decorator="['supervision', validatorRules.supervision]" :trigger-change="true" dictCode="yes_or_no" placeholder="请选择重点监管"/>
+          <j-dict-select-tag type="list" v-decorator="['supervision', validatorRules.supervision]" :disabled="disable"
+                             :trigger-change="true" dictCode="yes_or_no" placeholder="请选择重点监管"/>
         </a-form-item>
         <a-form-item label="剧毒" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-dict-select-tag type="list" v-decorator="['toxic', validatorRules.toxic]" :trigger-change="true" dictCode="yes_or_no" placeholder="请选择剧毒"/>
+          <j-dict-select-tag type="list" v-decorator="['toxic', validatorRules.toxic]" :trigger-change="true" :disabled="disable" dictCode="yes_or_no" placeholder="请选择剧毒"/>
         </a-form-item>
         <a-form-item label="易制毒" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-dict-select-tag type="list" v-decorator="['precursorChemicals', validatorRules.precursorChemicals]" :trigger-change="true" dictCode="yes_or_no" placeholder="请选择易制毒"/>
+          <j-dict-select-tag type="list" v-decorator="['precursorChemicals', validatorRules.precursorChemicals]" :disabled="disable" :trigger-change="true" dictCode="yes_or_no" placeholder="请选择易制毒"/>
         </a-form-item>
         <a-form-item label="状态" v-if="displayPro" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-dict-select-tag type="list"  v-decorator="['status', validatorRules.status]" :trigger-change="true" dictCode="output_status" placeholder="请选择状态"/>
+          <j-dict-select-tag type="list"  v-decorator="['status', validatorRules.status]" :trigger-change="true" :disabled="disable" dictCode="output_status" placeholder="请选择状态"/>
         </a-form-item>
         <a-form-item label="是否领证" v-if="displayPro" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-dict-select-tag type="list"  v-decorator="['certified', validatorRules.certified]" :trigger-change="true" dictCode="yes_or_no" placeholder="请选择是否领证"/>
+          <j-dict-select-tag type="list"  v-decorator="['certified', validatorRules.certified]" :trigger-change="true" :disabled="disable" dictCode="yes_or_no" placeholder="请选择是否领证"/>
         </a-form-item>
         <a-form-item label="主要原材料"  v-if="displayPro" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-textarea v-decorator="['rawMaterials', validatorRules.rawMaterials]" rows="4" placeholder="请输入主要原材料"/>
+          <a-textarea v-decorator="['rawMaterials', validatorRules.rawMaterials]" rows="4" placeholder="请输入主要原材料" :disabled="disable"/>
         </a-form-item>
         <a-form-item label="主要生产设备" v-if="displayPro" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-textarea v-decorator="['proEquipment', validatorRules.proEquipment]" rows="4" placeholder="请输入主要生产设备"/>
+          <a-textarea v-decorator="['proEquipment', validatorRules.proEquipment]" rows="4" placeholder="请输入主要生产设备" :disabled="disable"/>
         </a-form-item>
         <a-form-item label="备注" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-textarea v-decorator="['remake', validatorRules.remake]" rows="4" placeholder="请输入备注"/>
+          <a-textarea v-decorator="['remake', validatorRules.remake]" rows="4" placeholder="请输入备注" :disabled="disable"/>
         </a-form-item>
 
       </a-form>
     </a-spin>
+    <template slot="footer">
+      <a-button type="primary" @click="handleCancel" v-show="disable">关闭</a-button>
+      <a-button type="primary" @click="handleCancel" v-show="!disable">取消</a-button>
+      <a-button type="primary" @click="handleOk" v-show="!disable">暂存</a-button>
+      <a-button type="primary" @click="handDeclare" v-show="!disable">申报</a-button>
+    </template>
   </j-modal>
 </template>
 
@@ -94,6 +104,7 @@
           xs: { span: 24 },
           sm: { span: 16 },
         },
+        disable:true,
         confirmLoading: false,
         validatorRules: {
           outputName: {
@@ -175,6 +186,7 @@
         url: {
           add: "/companyProductMaterial/add",
           edit: "/companyProductMaterial/edit",
+          apply:"/companyProductMaterial/editAndApply"
         }
       }
     },
@@ -198,6 +210,7 @@
       close () {
         this.$emit('close');
         this.visible = false;
+        this.disable = true;
       },
       handleOk () {
         const that = this;
@@ -228,6 +241,35 @@
             })
           }
          
+        })
+      },
+      //申报
+      handDeclare(){
+        const that = this;
+        // 触发表单验证
+        this.form.validateFields((err, values) => {
+          //获取表单数据
+          if (!err) {
+            that.confirmLoading = true;
+
+            let httpurl =this.url.apply;
+            let method = 'post';
+            values.companyId = that.companyId;
+            let formData = Object.assign(this.model, values);
+            console.log("表单提交数据",formData)
+            httpAction(httpurl,formData,method).then((res)=>{
+              if(res.success){
+                that.$message.success(res.message);
+                that.$emit('ok');
+              }else{
+                that.$message.warning(res.message);
+              }
+            }).finally(() => {
+              that.confirmLoading = false;
+              that.close();
+            })
+          }
+
         })
       },
       handleCancel () {

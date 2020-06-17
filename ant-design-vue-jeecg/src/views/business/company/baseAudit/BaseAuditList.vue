@@ -142,6 +142,7 @@
   import PreventionAudit from "./modules/PreventionAudit";
   import EnvTaxAudit from "./modules/EnvTaxAudit";
   import UserInfoAudit from "./modules/UserInfoAudit";
+  import DirtyAllowAudit from "./modules/DirtyAllowAudit"
   import moment from 'moment'
 
   export default {

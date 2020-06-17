@@ -1,25 +1,31 @@
 <template>
+  <div>
   <company-apply-list :company-id="companyId"
                       :from-table="fromTable" @applyDetail = "applyDetail"  @toDetail="latestDetail" @toApply="apply"
                       v-if="!showDetail"></company-apply-list>
-  <product-material-list v-else :company-id="companyId"> </product-material-list>
+  <product-material-apply-list v-else :company-id="companyId" :isApply="isApply"> </product-material-apply-list>
+  <companyApply-modal ref="applyInfoForm" ></companyApply-modal>
+  </div>
 </template>
 
 <script>
   import CompanyApplyList from "./modules/CompanyApplyList"
   import {queryLatestArchivedData} from "../../requestAction/request";
-  import ProductMaterialList from "../oneCompayOneRecord/routeView/ProductMaterialList";
+  import ProductMaterialApplyList from "./modules/ProductMaterialApplyList";
+  import CompanyApplyModal from "./modules/childModules/CompanyApplyModal";
     export default {
       name: "ProductMaterialApply",
       components: {
         CompanyApplyList,
-        ProductMaterialList
+        CompanyApplyModal,
+        ProductMaterialApplyList
       },
       data() {
         return {
           fromTable: "company_product_material",
           companyId: this.$store.getters.userInfo.companyIds[0],
           showDetail: false,
+          isApply:false
         }
       },
       methods: {
@@ -31,11 +37,9 @@
         //新增申请
         apply() {
 
-          this.$refs.baseInfoForm.title = "申请";
-          this.$refs.baseInfoForm.disableSubmit = true;
-          this.$refs.baseInfoForm.visible = true;
-          this.$refs.baseInfoForm.confirmLoading = false;
-
+          //查询详情数据
+          this.showDetail = true;
+          this.isApply = true;
 
         },
         applyDetail(record) {
