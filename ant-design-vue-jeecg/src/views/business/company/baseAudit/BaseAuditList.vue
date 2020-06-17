@@ -124,7 +124,6 @@
   </a-card>
   <basic-info-audit ref ="basicInfoModal" ></basic-info-audit>
     <acceptance-audit ref="acceptanceModal"></acceptance-audit>
-    <user-info-audit  ref="userInfoModal"></user-info-audit>
     <prevention-audit ref="preventionModal"></prevention-audit>
     <env-tax-audit ref="envTaxModal"></env-tax-audit>
   </div>
@@ -153,7 +152,8 @@
       ,BasicInfoAudit//基础信息审核
       ,UserInfoAudit//员工信息审核
       ,PreventionAudit,
-      EnvTaxAudit
+      EnvTaxAudit,
+      DirtyAllowAudit
     },
 
     data () {
@@ -262,6 +262,7 @@
         this.$refs.userInfoModal.visible = false;
         this.$refs.preventionModal.visible = false;
         this.$refs.envTaxModal.visible = false;
+        this.$refs.dirtyAllowModal.visible = false;
 
         //打开需要展示的浮窗
         if("company_baseinfo"=== record.fromTable){
@@ -283,6 +284,10 @@
         if("company_env_tax"===record.fromTable){
           this.$refs.envTaxModal.visible = true;
           this.$refs.envTaxModal.auditModal( record);
+        }
+        if("company_dirty_allow"===record.fromTable){
+          this.$refs.dirtyAllowModal.visible = true;
+          this.$refs.dirtyAllowModal.auditModal( record);
         }
 
       },
