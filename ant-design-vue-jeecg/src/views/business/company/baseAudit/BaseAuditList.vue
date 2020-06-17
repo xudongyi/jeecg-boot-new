@@ -124,6 +124,7 @@
   </a-card>
   <basic-info-audit ref ="basicInfoModal" ></basic-info-audit>
     <acceptance-audit ref="acceptanceModal"></acceptance-audit>
+    <prevention-audit ref="preventionModal"></prevention-audit>
   </div>
 
 </template>
@@ -137,15 +138,17 @@
   import {queryCompanyName} from "../../requestAction/request";
   import BasicInfoAudit from "./modules/BasicInfoAudit";
   import AcceptanceAudit from "./modules/AcceptanceAudit";
+  import PreventionAudit from "./modules/PreventionAudit";
   import moment from 'moment'
 
   export default {
     name: "BaseAuditList",
     mixins:[JeecgListMixin, mixinDevice],
     components: {
-      AcceptanceAudit, JDictSelectTag
-      ,BasicInfoAudit//基础信息审核
-
+       JDictSelectTag
+      ,BasicInfoAudit,//基础信息审核
+      AcceptanceAudit,
+      PreventionAudit
     },
 
     data () {
@@ -258,6 +261,10 @@
         if("company_acceptance"===record.fromTable){
           this.$refs.acceptanceModal.visible = true;
           this.$refs.acceptanceModal.auditModal( record);
+        }
+        if("company_prevention"===record.fromTable){
+          this.$refs.preventionModal.visible = true;
+          this.$refs.preventionModal.auditModal( record);
         }
 
       },
