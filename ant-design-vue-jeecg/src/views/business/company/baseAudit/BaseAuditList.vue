@@ -126,6 +126,7 @@
     <acceptance-audit ref="acceptanceModal"></acceptance-audit>
     <prevention-audit ref="preventionModal"></prevention-audit>
     <env-tax-audit ref="envTaxModal"></env-tax-audit>
+    <dirty-allow-audit ref="dirtyAllowModal"></dirty-allow-audit>
   </div>
 
 </template>
@@ -141,6 +142,7 @@
   import AcceptanceAudit from "./modules/AcceptanceAudit";
   import PreventionAudit from "./modules/PreventionAudit";
   import EnvTaxAudit from "./modules/EnvTaxAudit";
+  import DirtyAllowAudit from "./modules/DirtyAllowAudit";
   import moment from 'moment'
 
   export default {
@@ -151,7 +153,8 @@
       ,BasicInfoAudit,//基础信息审核
       AcceptanceAudit,
       PreventionAudit,
-      EnvTaxAudit
+      EnvTaxAudit,
+      DirtyAllowAudit
     },
 
     data () {
@@ -272,6 +275,10 @@
         if("company_env_tax"===record.fromTable){
           this.$refs.envTaxModal.visible = true;
           this.$refs.envTaxModal.auditModal( record);
+        }
+        if("company_dirty_allow"===record.fromTable){
+          this.$refs.dirtyAllowModal.visible = true;
+          this.$refs.dirtyAllowModal.auditModal( record);
         }
 
       },
