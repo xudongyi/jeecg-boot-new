@@ -158,7 +158,6 @@
 
           }
         },
-        confirmLoading: false,
         validatorRules: {
           licenceCode: {
             rules: [
