@@ -26,18 +26,15 @@
         left join company_base t2 on t2.id=t1.company_id
         left join sys_user t3 on t3.id=t1.create_by
         left join sys_user t4 on t4.id=t1.update_by
-        where 1=1
-        <if test="companyId != null">
-            and t2.id in (#{companyId})
-        </if>
+        where  t2.id in
+        <foreach collection="companyIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
         <if test="status != null">
-            and status in (#{status})
-        </if>
-        <if test="companyName != null">
-            and company_name like concat('%',#{companyName},'%')
+            and t1.status in (#{status})
         </if>
         <if test="reportYear != null">
-            and report_year = (#{reportYear})
+            and t1.report_year = (#{reportYear})
         </if>
 	</select>
 </mapper>

@@ -14,5 +14,5 @@ import java.util.List;
  * @Version: V1.0
  */
 public interface CompanyDynamicSupervisionMapper extends BaseMapper<CompanyDynamicSupervision> {
-    List<CompanyDynamicSupervisionVO> getCompanyDynamicSupervision(Page page, String companyId,String status, String companyName,String reportYear);
+    List<CompanyDynamicSupervisionVO> getCompanyDynamicSupervision(Page page, String[] companyIds,String status,String reportYear);
 }

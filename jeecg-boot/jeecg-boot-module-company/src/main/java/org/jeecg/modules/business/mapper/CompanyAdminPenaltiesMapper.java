@@ -16,5 +16,5 @@ import java.util.List;
  * @Version: V1.0
  */
 public interface CompanyAdminPenaltiesMapper extends BaseMapper<CompanyAdminPenalties> {
-    List<CompanyAdminPenaltiesVO> getCompanyAdminPenalties(Page page, String companyId, String status, String companyName,Date dateBegin,Date dateEnd);
+    List<CompanyAdminPenaltiesVO> getCompanyAdminPenalties(Page page, String[] companyIds, String status,Date dateBegin,Date dateEnd);
 }

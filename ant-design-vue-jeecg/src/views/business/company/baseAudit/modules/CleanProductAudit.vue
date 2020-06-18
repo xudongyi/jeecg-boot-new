@@ -70,7 +70,6 @@
           xs: { span: 24 },
           sm: { span: 16 },
         },
-        confirmLoading: false,
         validatorRules: {
           reportName: {
             rules: [

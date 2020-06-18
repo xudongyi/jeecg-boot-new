@@ -12,9 +12,9 @@
         <a-row>
           <a-col span="12">
             <a-form-item label="企业名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-select v-decorator="['companyId', validatorRules.companyId]" show-search style="width: 100%" placeholder="请输入企业名称" :disabled="monitorTag === 'view' || disableSubmit"
-              optionFilterProp="children">
-                <a-select-option v-for="item in items" :key="item.key" :value="item.key">
+              <a-select v-decorator="['companyId', validatorRules.companyId]" show-search style="width: 100%" placeholder="请输入企业名称" :disabled="disabled"
+                        optionFilterProp="children">
+                <a-select-option v-for="item in items" :key="item.value" :value="item.key">
                   {{item.value}}
                 </a-select-option>
               </a-select>
@@ -22,55 +22,83 @@
           </a-col>
           <a-col span="12">
             <a-form-item label="申报年份" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input-number v-decorator="['reportYear', validatorRules.reportYear]" style="width: 100%" :disabled="monitorTag === 'view' || disableSubmit"/>
+              <a-input-number v-decorator="['reportYear', validatorRules.reportYear]" style="width: 100%" :disabled="disabled"/>
             </a-form-item>
           </a-col>
         </a-row>
         <a-row>
           <a-col span="12">
             <a-form-item label="材料类型" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <j-dict-select-tag type="list" v-decorator="['documentType', validatorRules.documentType]" :trigger-change="true" dictCode="supervision_document_type" :disabled="monitorTag === 'view' || disableSubmit"/>
+              <j-dict-select-tag type="list" v-decorator="['documentType', validatorRules.documentType]" :trigger-change="true" dictCode="supervision_document_type" :disabled="disabled"/>
             </a-form-item>
           </a-col>
           <a-col span="12">
             <a-form-item label="材料名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input v-decorator="['documentName', validatorRules.documentName]" :disabled="monitorTag === 'view' || disableSubmit"></a-input>
+              <a-input v-decorator="['documentName', validatorRules.documentName]" :disabled="disabled"></a-input>
             </a-form-item>
           </a-col>
         </a-row>
         <a-row>
           <a-col span="24">
             <a-form-item label="附件上传" :labelCol="labelCols" :wrapperCol="wrapperCols" >
-              <j-upload v-decorator="['content']" :trigger-change="true"></j-upload>
+              <j-upload :trigger-change="true"></j-upload>
             </a-form-item>
           </a-col>
         </a-row>
-        <a-row v-show="monitorTag != 'view'">
+        <a-row>
           <a-col span="12">
             <a-form-item label="申报人" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input v-decorator="['createName']" placeholder="请输入申报人" :disabled="monitorTag !== 'add' || monitorTag !== 'edit' || disableSubmit"></a-input>
+              <a-input v-decorator="['createName']" placeholder="请输入申报人" :disabled="disabled"></a-input>
             </a-form-item>
           </a-col>
           <a-col span="12">
             <a-form-item label="申报时间" :labelCol="labelCol" :wrapperCol="wrapperCol">
               <j-date :showTime="true" :dateFormat="dateFormat"
-                      placeholder="请选择申报时间" v-decorator="['createTime']" :trigger-change="true" style="width: 100%" :disabled="monitorTag !== 'add' || monitorTag !== 'edit' || disableSubmit"/>
+                      placeholder="请选择申报时间" v-decorator="['createTime']" :trigger-change="true" style="width: 100%" :disabled="disabled"/>
             </a-form-item>
           </a-col>
         </a-row>
-        <!--        <a-form-item label="审核人" :labelCol="labelCol" :wrapperCol="wrapperCol">-->
-        <!--          <a-input v-decorator="['updateBy']" placeholder="请输入审核人"></a-input>-->
-        <!--        </a-form-item>-->
-        <!--        <a-form-item label="审核时间" :labelCol="labelCol" :wrapperCol="wrapperCol">-->
-        <!--          <j-date placeholder="请选择审核时间" v-decorator="['updateTime']" :trigger-change="true" style="width: 100%"/>-->
-        <!--        </a-form-item>-->
+
+        <a-row>
+          <a-col span="12">
+          <a-form-item label="审核结果：" :labelCol="labelCol" :wrapperCol="wrapperCol">
+            <a-radio-group v-decorator="['status']" :disabled="disableSubmit">
+              <a-radio value="2">
+                通过
+              </a-radio>
+              <a-radio value="3">
+                不通过
+              </a-radio>
+            </a-radio-group>
+          </a-form-item>
+          </a-col>
+        </a-row>
+
+        <a-row>
+          <a-col span="12">
+            <a-form-item label="不通过原因：" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <a-textarea v-decorator="['content']" placeholder="备注信息" :rows="2" :disabled="disableSubmit"/>
+            </a-form-item>
+          </a-col>
+        </a-row>
+        <a-row>
+          <a-col span="12">
+                <a-form-item label="审核人" :labelCol="labelCol" :wrapperCol="wrapperCol">
+                  <a-input v-decorator="['updateName']" placeholder="请输入审核人" :disabled="disabled"></a-input>
+                </a-form-item>
+          </a-col>
+          <a-col span="12">
+                <a-form-item label="审核时间" :labelCol="labelCol" :wrapperCol="wrapperCol">
+                  <j-date :showTime="true" :dateFormat="dateFormat" placeholder="请选择审核时间" v-decorator="['updateTime']" :trigger-change="true" style="width: 100%" :disabled="disabled"/>
+                </a-form-item>
+          </a-col>
+        </a-row>
 
       </a-form>
     </a-spin>
     <template slot="footer">
+      <a-button type="primary" @click="handleOk" v-if="title !== '查看'">确定</a-button>
       <a-button type="primary" @click="handleCancel">关闭</a-button>
-      <a-button type="primary" @click="handleOk" v-if="monitorTag !== 'view' && (!disableSubmit)">暂存</a-button>
-      <a-button type="primary" @click="handDeclare" v-if="monitorTag !== 'view' && (!disableSubmit)">申报</a-button>
     </template>
   </j-modal>
 </template>
@@ -83,19 +111,18 @@
   import JDate from '@/components/jeecg/JDate'
   import JUpload from '@/components/jeecg/JUpload'
   import JDictSelectTag from "@/components/dict/JDictSelectTag"
-  import {queryCompanyName} from "../../../requestAction/request";
+  import {queryCompanyName} from "../../requestAction/request";
   import moment from 'moment'
 
-
   export default {
-    name: "CompanyDynamicSupervisionModal",
+    name: "DynamicSupervisionAuditModal",
     components: {
       JDate,
       JUpload,
       JDictSelectTag,
     },
     props:{
-      monitor:'',
+
     },
     data () {
       return {
@@ -103,8 +130,10 @@
         dateFormat:"YYYY-MM-DD HH:mm:ss",
         title:"操作",
         width:800,
+        disabled:true,
+        disableSubmit:'',
+        result:'',
         items:[],
-        disableSubmit:false,
         visible: false,
         model: {},
         labelCol: {
@@ -152,54 +181,61 @@
           },
         },
         url: {
-          add: "/cds/companyDynamicSupervision/add",
+          // add: "/cds/companyDynamicSupervision/add",
           edit: "/cds/companyDynamicSupervision/edit",
-          declare:"/cds/companyDynamicSupervision/declare",
         },
-        monitorTag:''
       }
     },
     created () {
-      this.monitorTag = this.monitor;
-      console.log(this.monitorTag==='view')
-      let that = this;
-      //查询企业名称
-      queryCompanyName({companyIds:this.$store.getters.userInfo.companyIds.join(',')}).then((res) => {
-        if(res.success){
-          that.items = res.result;
-        }
-      });
     },
-
+    mounted() {
+      this.queryCompanyName();
+    },
     methods: {
+      //查询企业名称
+      queryCompanyName() {
+        let that = this;
+        queryCompanyName({companyIds:this.$store.getters.userInfo.companyIds.join(',')}).then((res) => {
+          if(res.success){
+            that.items = res.result;
+          }
+        });
+      },
       //获取系统时间
       getTime() {
         let  _this =this;
         this.timer =  setInterval(()=>{
-          _this.model.createTime = moment().format(this.dateFormat);
-          console.log(_this.model.createTime );
-          this.$nextTick(() => { this.form.setFieldsValue(pick(this.model,'createTime'))})
+          _this.model.updateTime = moment().format(this.dateFormat);
+          console.log(_this.model.updateTime );
+          this.$nextTick(() => { this.form.setFieldsValue(pick(this.model,'updateTime'))})
 
         },1000)
       },
-      add () {
-        this.edit({});
-        //新增时自动带入申报人
-        // this.model.createBy = this.$store.getters.userInfo.username;
-        //获取时间
-        this.getTime();
-      },
+      // add () {
+      //   this.edit({});
+      // },
       edit (record) {
         this.form.resetFields();
         this.model = Object.assign({}, record);
         this.visible = true;
-        this.model.createTime = moment().format(this.dateFormat);
-        if(record.createTime)
-          this.model.createTime = moment(record.createTime).format(this.dateFormat);
-        this.model.createName = this.$store.getters.userInfo.realname;
+        //获取时间
+        this.getTime();
+        this.model.updateTime = moment().format(this.dateFormat);
+        if(record.updateTime)
+          this.model.updateTime = moment(record.updateTime).format(this.dateFormat);
+        this.model.updateName = this.$store.getters.userInfo.realname;
 
         this.$nextTick(() => {
-          this.form.setFieldsValue(pick(this.model,'status','companyId','reportYear','documentType','documentName','content','createName','createTime','updateName','updateTime'))
+          this.form.setFieldsValue(pick(this.model, 'companyId',
+            'reportYear',
+            'documentType',
+            'documentName',
+            'createName',
+            'createTime',
+            'content',
+            'status',
+            'updateName',
+            'updateTime'))
         });
 
       },
@@ -223,9 +259,10 @@
               method = 'post';
             }else{
               httpurl+=this.url.edit;
-               method = 'put';
+              method = 'put';
             }
             let formData = Object.assign(this.model, values);
+            formData.updateBy = this.$store.getters.userInfo.id;
             console.log("表单提交数据",formData)
             httpAction(httpurl,formData,method).then((res)=>{
               if(res.success){
@@ -245,35 +282,14 @@
       handleCancel () {
         this.close()
       },
-
+      // filterOption(input, option) {
+      //   return (
+      //     option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+      //   );
+      // }
       // popupCallback(row){
       //   this.form.setFieldsValue(pick(row,'status','companyId','reportYear','documentType','documentName','content','createBy','createTime','updateBy','updateTime'))
       // },
-      handDeclare(){
-        const that = this;
-        // 触发表单验证
-        this.form.validateFields((err, values) => {
-          if (!err) {
-            that.confirmLoading = true;
-            let httpUrl = this.url.declare;
-            let method = 'put';
-            let formData = Object.assign(this.model, values);
-            console.log("表单提交数据",formData)
-            httpAction(httpUrl,formData,method).then((res)=>{
-              if(res.success){
-                that.$message.success(res.message);
-                that.$emit('ok');
-              }else{
-                that.$message.warning(res.message);
-              }
-            }).finally(() => {
-              that.confirmLoading = false;
-              that.close();
-            })
-          }
-
-        })
-      },
 
     }
 

@@ -60,8 +60,8 @@ public class CompanyAdminPenalties implements Serializable {
     @ApiModelProperty(value = "文件编号")
     private java.lang.String documentNo;
 	/**文件上传*/
-	@Excel(name = "文件上传", width = 15)
-    @ApiModelProperty(value = "文件上传")
+	@Excel(name = "内容", width = 15)
+    @ApiModelProperty(value = "内容")
     private java.lang.String content;
 	/**申报人*/
     @ApiModelProperty(value = "申报人")
@@ -77,8 +77,8 @@ public class CompanyAdminPenalties implements Serializable {
     private java.lang.String updateBy;
 	/**审核时间*/
 	@Ignore
-	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
-    @DateTimeFormat(pattern="yyyy-MM-dd")
+	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "审核时间")
     private java.util.Date updateTime;
 }

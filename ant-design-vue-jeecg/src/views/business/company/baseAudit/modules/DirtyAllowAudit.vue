@@ -92,7 +92,7 @@
         disableSubmit: true,
         title: "基础信息审核-排污许可证信息",
         form: this.$form.createForm(this),
-        width: 800,
+        width: 1200,
         visible: false,
         model: {},
         labelCol: {

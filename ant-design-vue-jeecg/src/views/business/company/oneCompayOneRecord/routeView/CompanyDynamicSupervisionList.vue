@@ -11,7 +11,11 @@
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24" v-if="role === 'monitor'">
             <a-form-item label="企业名称">
-              <a-input placeholder="请输入企业名称" v-model="queryParam.companyName"></a-input>
+              <a-select v-model="queryParam.companyId" show-search style="width: 100%" optionFilterProp="children">
+                <a-select-option v-for="item in items" :key="item.value" :value="item.key">
+                  {{item.value}}
+                </a-select-option>
+              </a-select>
             </a-form-item>
           </a-col>
 
@@ -123,6 +127,7 @@
   import CompanyDynamicSupervisionModal from './CompanyDynamicSupervisionModal'
   import store from '@/store/'
   import {getAction} from "../../../../../api/manage";
+  import {queryCompanyName} from "../../../requestAction/request";
 
   export default {
     name: "CompanyDynamicSupervisionList",
@@ -137,10 +142,11 @@
     data () {
       return {
         description: '企业年度动态监管管理页面',
+        items:[],
         companyid:'',
         monitor:'',
         queryParam: {
-          companyId: this.companyId
+          companyIds: this.$store.getters.userInfo.companyIds.join(',')
         },
         // 表头
         columns: [
@@ -269,7 +275,7 @@
         this.$refs.modalForm.title="年度动态监管";
       },
       toSearchReset() {
-        this.queryParam = {companyId:this.companyId};
+        this.queryParam = {companyIds:this.queryParam.companyIds};
         this.loadData(1);
       },
       batchDeclare: function () {
@@ -303,12 +309,14 @@
         }
       },
     },
-    created(){
-      this.monitor = this.role;
-      this.companyid = this.companyId;
-      if(this.companyid==null) {
-        this.companyid = this.$store.getters.userInfo.companyIds[0]
-      }
+    created() {
+      let that = this;
+      //查询企业名称
+      queryCompanyName({companyIds:this.$store.getters.userInfo.companyIds.join(',')}).then((res) => {
+        if(res.success){
+          that.items = res.result;
+        }
+      });
     }
   }
 </script>

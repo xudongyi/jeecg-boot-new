@@ -59,13 +59,16 @@ public class CompanySupervisoryMonitorController extends JeecgController<Company
 								   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
 								   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
 								   HttpServletRequest req) throws ParseException {
-		String companyId = req.getParameter("companyId");
+		String companyIds = req.getParameter("companyIds");
 		String status = req.getParameter("status");
-		String companyName = req.getParameter("companyName");
+		String companyId = req.getParameter("companyId");
 		String reportDateBegin = req.getParameter("reportDate_begin");
 		String reportDateEnd = req.getParameter("reportDate_end");
 		Date dateBegin;
 		Date dateEnd;
+		if(!StrUtil.isEmpty(companyId)) {
+			companyIds= companyId;
+		}
 		if(StrUtil.isEmpty(reportDateBegin) && StrUtil.isEmpty(reportDateEnd)) {
 			dateBegin = null;
 			dateEnd = null;
@@ -74,7 +77,7 @@ public class CompanySupervisoryMonitorController extends JeecgController<Company
 			dateEnd = new SimpleDateFormat("yyyy-MM-dd").parse(reportDateEnd);
 		}
 		Page<CompanySupervisoryMonitorVO> page = new Page<CompanySupervisoryMonitorVO>(pageNo, pageSize);
-		IPage<CompanySupervisoryMonitorVO> pageList = companySupervisoryMonitorService.getCompanySupervisoryMonitor(page, companyId,status,companyName,dateBegin,dateEnd);
+		IPage<CompanySupervisoryMonitorVO> pageList = companySupervisoryMonitorService.getCompanySupervisoryMonitor(page, companyIds,status,dateBegin,dateEnd);
 		return Result.ok(pageList);
 	}
 
