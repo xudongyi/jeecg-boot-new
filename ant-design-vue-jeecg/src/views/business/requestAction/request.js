@@ -26,7 +26,8 @@ const queryAduitBase = (params)=>getAction("/company/apply/queryAduitBase",param
 const submitAudit = (params)=>postAction("/company/apply/submitAudit",params);
 //查询用户所属的企业简称
 const queryShortName = (params)=>getAction("/company/companyBaseinfo/queryShortName",params);
-
+//查询用户所属的企业简称
+const queryenvTrialFiles = (params)=>getAction("/company/envTrial/queryFiles",params);
 export {
   getDetailMenus,
   loadCompanyBaseInfo,
@@ -41,5 +42,6 @@ export {
   queryDynamicSupervision,
   queryAduitBase,
   submitAudit,
-  queryShortName
+  queryShortName,
+  queryenvTrialFiles
 }

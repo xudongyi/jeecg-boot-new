@@ -1,5 +1,6 @@
 package org.jeecg.modules.business.service;
 
+import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.jeecg.modules.business.entity.CompanyFile;
 
@@ -11,4 +12,6 @@ import org.jeecg.modules.business.entity.CompanyFile;
  */
 public interface ICompanyFileService extends IService<CompanyFile> {
 
+
+    boolean saveFiles(String files, String fileType, String fromTable, String tableId);
 }

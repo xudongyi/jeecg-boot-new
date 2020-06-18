@@ -31,7 +31,8 @@ public class Constant {
     //文件类型
     public  static class fileType{
         public static String IMAGE = "image";
-
+        public static String FILE = "file";
+        public static String ALL = "all";
     }
     public  static class tables{
         /**

@@ -23,7 +23,8 @@
           <j-date placeholder="请选择审批时间" v-decorator="['approveDate', validatorRules.approveDate]" :trigger-change="true" style="width: 100%" :disabled="disable"/>
         </a-form-item>
         <a-form-item label="附件" :labelCol="labelCol" :wrapperCol="wrapperCol">
-            <j-upload ></j-upload>
+            <j-upload ref="uploadRef" :disabled="disable" fileType="file" bizPath="envtrial" @change="fileListChange" @delete ="fileDelete"
+                      ></j-upload>
         </a-form-item>
         <!--加一个表格显示-->
 
@@ -40,12 +41,11 @@
 
 <script>
 
-  import { httpAction } from '@/api/manage'
+  import {httpAction} from '@/api/manage'
   import pick from 'lodash.pick'
-  import { validateDuplicateValue } from '@/utils/util'
   import JDate from '@/components/jeecg/JDate'
   import JUpload from '@/components/jeecg/JUpload'
-
+  import {queryenvTrialFiles} from '../../../../requestAction/request'
   export default {
     name: "CompanyEnvTrialModal",
     components: { 
@@ -62,6 +62,8 @@
         visible: false,
         disable:true,
         model: {},
+        fileList:[],
+        deleteFiles:[],
         labelCol: {
           xs: { span: 24 },
           sm: { span: 5 },
@@ -106,13 +108,40 @@
       add () {
         this.edit({});
       },
+      fileListChange(newFileList){
+        console.log(newFileList)
+        this.fileList = newFileList;
+      },
+      fileDelete(file){
+        this.deleteFiles.push(file.response.message);
+      },
       edit (record) {
         this.form.resetFields();
         this.model = Object.assign({}, record);
         this.visible = true;
         this.$nextTick(() => {
           this.form.setFieldsValue(pick(this.model,'projectName','approveFilenum','approveUnit','approveDate','annex'))
-        })
+        });
+        if(record.id){
+            //查询所属文件
+          let _this =this;
+          queryenvTrialFiles({id:record.id}).then((res)=>{
+
+            _this.$nextTick(() => {
+
+              _this.$refs.uploadRef.initFileListArr(res.result);
+            });
+
+          });
+
+
+        }else{
+          //清空上传列表
+          this.$nextTick(() => {
+            this.$refs.uploadRef.initFileList("");
+          });
+        }
+
       },
       close () {
         this.$emit('close');
@@ -134,10 +163,10 @@
               httpurl+=this.url.edit;
                method = 'put';
             }
-            debugger
 
             let formData = Object.assign(this.model, values);
             formData.companyId=that.companyId;
+            formData.fileList = that.fileList;
             httpAction(httpurl,formData,method).then((res)=>{
               if(res.success){
                 that.$message.success(res.message);
@@ -168,6 +197,7 @@
             let method = 'post';
             values.companyId = that.companyId;
             let formData = Object.assign(this.model, values);
+            formData.fileList = that.fileList;
             httpAction(httpurl,formData,method).then((res)=>{
               if(res.success){
                 that.$message.success(res.message);

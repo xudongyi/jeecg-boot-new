@@ -108,7 +108,7 @@
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import CompanyEnvTrialModal from '../../oneCompayOneRecord/routeView/modules/CompanyEnvTrialModal'
-
+  import {getAction} from '@/api/manage'
   export default {
     name: "EnvTrialApplyList",
     mixins:[JeecgListMixin, mixinDevice],

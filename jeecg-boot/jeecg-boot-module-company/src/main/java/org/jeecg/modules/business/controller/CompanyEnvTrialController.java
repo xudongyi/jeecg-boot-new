@@ -1,16 +1,18 @@
 package org.jeecg.modules.business.controller;
 
-import java.util.Arrays;
+import java.awt.*;
+import java.util.*;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
-import org.jeecg.modules.business.entity.CompanyApply;
-import org.jeecg.modules.business.entity.CompanyEnvTrial;
-import org.jeecg.modules.business.entity.CompanyUserinfo;
+import org.jeecg.modules.business.entity.*;
 import org.jeecg.modules.business.service.ICompanyApplyService;
 import org.jeecg.modules.business.service.ICompanyEnvTrialService;
 
@@ -20,6 +22,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 
 import org.jeecg.common.system.base.controller.JeecgController;
+import org.jeecg.modules.business.service.ICompanyFileService;
 import org.jeecg.modules.business.utils.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -43,6 +46,8 @@ public class CompanyEnvTrialController extends JeecgController<CompanyEnvTrial, 
 	private ICompanyEnvTrialService companyEnvTrialService;
 	 @Autowired
 	 private ICompanyApplyService companyApplyService;
+	 @Autowired
+	 private ICompanyFileService companyFileService;
 	/**
 	 * 分页列表查询
 	 *
@@ -68,36 +73,55 @@ public class CompanyEnvTrialController extends JeecgController<CompanyEnvTrial, 
 	/**
 	 *   添加
 	 *
-	 * @param companyEnvTrial
+	 * @param jsonObject
 	 * @return
 	 */
 	@AutoLog(value = "环评审批信息-添加")
 	@ApiOperation(value="环评审批信息-添加", notes="环评审批信息-添加")
 	@PostMapping(value = "/add")
-	public Result<?> add(@RequestBody CompanyEnvTrial companyEnvTrial) {
-
-
+	public Result<?> add(@RequestBody JSONObject jsonObject) {
+		CompanyEnvTrial companyEnvTrial = getCompanyEnvTrial(jsonObject);
 		companyEnvTrial.setStatus(Constant.status.TEMPORARY);//暂存
 		companyEnvTrialService.save(companyEnvTrial);
 		//暂存需要新增  apply表
 		companyApplyService.saveByBase(companyEnvTrial.getCompanyId(),companyEnvTrial.getId(),Constant.status.TEMPORARY
 				,"",Constant.tables.ENVTRIAL);
+		companyFileService.saveFiles(jsonObject.getString("fileList"),Constant.fileType.FILE,Constant.tables.ENVTRIAL,companyEnvTrial.getId());
 		return Result.ok("添加成功！");
 	}
-	
-	/**
+
+	 private CompanyEnvTrial getCompanyEnvTrial(@RequestBody JSONObject jsonObject) {
+		 CompanyEnvTrial companyEnvTrial = new CompanyEnvTrial();
+		 companyEnvTrial.setId(jsonObject.getString("id"));
+		 companyEnvTrial.setCompanyId(jsonObject.getString("companyId"));
+		 companyEnvTrial.setProjectName(jsonObject.getString("projectName"));
+		 companyEnvTrial.setApproveFilenum(jsonObject.getString("approveFilenum"));
+		 companyEnvTrial.setApproveUnit(jsonObject.getString("approveUnit"));
+		 companyEnvTrial.setApproveDate(jsonObject.getDate("approveDate"));
+		 companyEnvTrial.setCreateBy(jsonObject.getString("createBy"));
+		 companyEnvTrial.setCreateTime(jsonObject.getDate("createTime"));
+		 companyEnvTrial.setUpdateBy(jsonObject.getString("updateBy"));
+		 companyEnvTrial.setUpdateTime(jsonObject.getDate("updateTime"));
+		 return companyEnvTrial;
+	 }
+
+	 /**
 	 *  编辑
 	 *
-	 * @param companyEnvTrial
+	 * @param jsonObject
 	 * @return
 	 */
 	@AutoLog(value = "环评审批信息-编辑")
 	@ApiOperation(value="环评审批信息-编辑", notes="环评审批信息-编辑")
 	@PutMapping(value = "/edit")
-	public Result<?> edit(@RequestBody CompanyEnvTrial companyEnvTrial) {
-		if(Constant.status.TEMPORARY.equals(companyEnvTrial.getStatus()))
+	public Result<?> edit(@RequestBody JSONObject jsonObject) {
+		CompanyEnvTrial companyEnvTrial = getCompanyEnvTrial(jsonObject);
+		if(Constant.status.TEMPORARY.equals(companyEnvTrial.getStatus())) {
 			companyEnvTrialService.updateById(companyEnvTrial);
-
+			//删除原有的
+			companyFileService.remove(new QueryWrapper<CompanyFile>().lambda().eq(CompanyFile::getFromTable,Constant.tables.ENVTRIAL)
+			.eq(CompanyFile::getTableId,companyEnvTrial.getId()));
+		}
 		else{
 			String oldId = companyEnvTrial.getId();
 			//不是暂存的编辑  都是新增暂存状态
@@ -105,20 +129,23 @@ public class CompanyEnvTrialController extends JeecgController<CompanyEnvTrial, 
 			companyEnvTrial.setId(null);
 			companyEnvTrialService.save(companyEnvTrial);
 			companyApplyService.saveByBase(companyEnvTrial.getCompanyId(),companyEnvTrial.getId(),Constant.status.TEMPORARY,oldId,Constant.tables.ENVTRIAL);
-		}
 
+		}
+		//保存文件
+		companyFileService.saveFiles(jsonObject.getString("fileList"),Constant.fileType.FILE,Constant.tables.ENVTRIAL,companyEnvTrial.getId());
 		return Result.ok("编辑成功!");
 	}
 	 /**
 	  *  环评审批信息申报
 	  *
-	  * @param companyEnvTrial 环评审批信息
+	  * @param   jsonObject 环评审批信息
 	  * @return
 	  */
 	 @AutoLog(value = "环评审批信息（新增或编辑时直接申报）")
 	 @ApiOperation(value="环评审批信息", notes="新增或编辑时直接申报")
 	 @PostMapping(value = "/editAndApply")
-	 public Result<?> editAndApply(@RequestBody CompanyEnvTrial companyEnvTrial) {
+	 public Result<?> editAndApply(@RequestBody  JSONObject jsonObject) {
+		 CompanyEnvTrial companyEnvTrial = getCompanyEnvTrial(jsonObject);
 
 		 //新增申报记录
 		 String oldId = "";
@@ -137,6 +164,9 @@ public class CompanyEnvTrialController extends JeecgController<CompanyEnvTrial, 
 					 .eq(CompanyApply::getNewId,companyEnvTrial.getId())
 					 .eq(CompanyApply::getStatus,Constant.status.TEMPORARY)
 					 .set(CompanyApply::getStatus,Constant.status.PEND));
+			 //删除原有的
+			 companyFileService.remove(new QueryWrapper<CompanyFile>().lambda().eq(CompanyFile::getFromTable,Constant.tables.ENVTRIAL)
+					 .eq(CompanyFile::getTableId,companyEnvTrial.getId()));
 		 }else{
 			 //编辑申报 3、编辑正常数据
 			 oldId = companyEnvTrial.getId();
@@ -146,6 +176,7 @@ public class CompanyEnvTrialController extends JeecgController<CompanyEnvTrial, 
 			 //新增申报记录
 			 companyApplyService.saveByBase(companyEnvTrial.getCompanyId(),companyEnvTrial.getId(),Constant.status.PEND,oldId,Constant.tables.ENVTRIAL);
 		 }
+		 companyFileService.saveFiles(jsonObject.getString("fileList"),Constant.fileType.FILE,Constant.tables.ENVTRIAL,companyEnvTrial.getId());
 
 		 return Result.ok("申报成功!");
 
@@ -256,5 +287,26 @@ public class CompanyEnvTrialController extends JeecgController<CompanyEnvTrial, 
     public Result<?> importExcel(HttpServletRequest request, HttpServletResponse response) {
         return super.importExcel(request, response, CompanyEnvTrial.class);
     }
+	 /**
+	  * 通过id查询
+	  *
+	  * @param id
+	  * @return
+	  */
+	 @AutoLog(value = "查询环评审批信息附件")
+	 @ApiOperation(value="查询环评审批信息附件", notes="查询环评审批信息附件")
+	 @GetMapping(value = "/queryFiles")
+	 public Result<?> queryFiles(@RequestParam(name="id",required=true) String id) {
+		 List<CompanyFile> files = companyFileService.list(new QueryWrapper<CompanyFile>().lambda().eq(CompanyFile::getFromTable,Constant.tables.ENVTRIAL)
+				 .eq(CompanyFile::getTableId,id));
+		 List<Map<String,String>> result = new ArrayList<>();
+		 for(CompanyFile companyFile:files){
+		 	Map<String,String> temp = new HashMap<>();
+			 temp.put("filePath",companyFile.getFilepath()+companyFile.getFilename());
+			 temp.put("fileName",companyFile.getFilename().substring(0,companyFile.getFilename().lastIndexOf("_"))+companyFile.getFilename().substring(companyFile.getFilename().lastIndexOf(".")));
+			 result.add(temp);
+		 }
+		 return Result.ok(result);
+	 }
 
 }
