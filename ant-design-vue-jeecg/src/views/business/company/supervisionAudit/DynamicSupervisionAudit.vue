@@ -68,7 +68,7 @@
   import '@/assets/less/TableExpand.less'
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import DynamicSupervisionAuditModal from './modules/DynamicSupervisionAuditModal'
+  import DynamicSupervisionAuditModal from './DynamicSupervisionAuditModal'
   import store from '@/store/'
   import {getAction} from "../../../../api/manage";
   import moment from 'moment'

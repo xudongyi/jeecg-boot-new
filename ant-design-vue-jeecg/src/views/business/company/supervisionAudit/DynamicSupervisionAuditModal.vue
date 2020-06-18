@@ -111,7 +111,7 @@
   import JDate from '@/components/jeecg/JDate'
   import JUpload from '@/components/jeecg/JUpload'
   import JDictSelectTag from "@/components/dict/JDictSelectTag"
-  import {queryCompanyName} from "../../../requestAction/request";
+  import {queryCompanyName} from "../../requestAction/request";
   import moment from 'moment'
 
   export default {
