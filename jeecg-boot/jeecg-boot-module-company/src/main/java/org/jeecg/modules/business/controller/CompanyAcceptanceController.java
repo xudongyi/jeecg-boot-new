@@ -16,6 +16,7 @@ import org.jeecg.modules.business.entity.CompanyAcceptance;
 import org.jeecg.modules.business.entity.CompanyApply;
 import org.jeecg.modules.business.service.ICompanyAcceptanceService;
 import org.jeecg.modules.business.service.ICompanyApplyService;
+import org.jeecg.modules.business.utils.Constant;
 import org.jeecg.modules.business.utils.Constant.status;
 import org.jeecg.modules.business.utils.Constant.tables;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -179,6 +180,10 @@ public class CompanyAcceptanceController extends JeecgController<CompanyAcceptan
     @DeleteMapping(value = "/delete")
     public Result<?> delete(@RequestParam(name = "id", required = true) String id) {
         companyAcceptanceService.removeById(id);
+        //删除申报记录
+        companyApplyService.remove(new QueryWrapper<CompanyApply>().lambda()
+                .eq(CompanyApply::getStatus, Constant.status.TEMPORARY)
+                .in(CompanyApply::getNewId,id ));
         return Result.ok("删除成功!");
     }
 
@@ -193,6 +198,10 @@ public class CompanyAcceptanceController extends JeecgController<CompanyAcceptan
     @DeleteMapping(value = "/deleteBatch")
     public Result<?> deleteBatch(@RequestParam(name = "ids", required = true) String ids) {
         this.companyAcceptanceService.removeByIds(Arrays.asList(ids.split(",")));
+        //删除申报记录
+        companyApplyService.remove(new QueryWrapper<CompanyApply>().lambda()
+                .eq(CompanyApply::getStatus,Constant.status.TEMPORARY)
+                .in(CompanyApply::getNewId,Arrays.asList(ids.split(","))) );
         return Result.ok("批量删除成功!");
     }
 

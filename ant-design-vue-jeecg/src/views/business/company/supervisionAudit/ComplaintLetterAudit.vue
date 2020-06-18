@@ -5,10 +5,10 @@
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
           <a-col :xl="10" :lg="11" :md="12" :sm="24">
-            <a-form-item label="报告日期">
-              <j-date placeholder="请选择开始日期" class="query-group-cust" v-model="queryParam.reportDate_begin"></j-date>
+            <a-form-item label="投诉日期">
+              <j-date placeholder="请选择开始日期" class="query-group-cust" v-model="queryParam.complaintDate_begin"></j-date>
               <span class="query-group-split-cust"></span>
-              <j-date placeholder="请选择结束日期" class="query-group-cust" v-model="queryParam.reportDate_end"></j-date>
+              <j-date placeholder="请选择结束日期" class="query-group-cust" v-model="queryParam.complaintDate_end"></j-date>
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
@@ -29,7 +29,7 @@
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <a-button type="primary" @click="toSearchReset" icon="reload" style="margin-left: 8px">重置</a-button>
-              <!--              <a @click="handleToggleSearch" style="margin-left: 8px" v-if="role === 'monitor'">-->
+              <!--              <a @click="handleToggleSearch" style="margin-left: 8px">-->
               <!--                {{ toggleSearchStatus ? '收起' : '展开' }}-->
               <!--                <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>-->
               <!--              </a>-->
@@ -64,7 +64,7 @@
       </a-table>
     </div>
 
-    <supervisory-monitor-audit-modal ref="modalForm" @ok="modalFormOk" ></supervisory-monitor-audit-modal>
+    <complaint-letter-audit-modal ref="modalForm" @ok="modalFormOk"></complaint-letter-audit-modal>
   </a-card>
 </template>
 
@@ -73,28 +73,29 @@
   import '@/assets/less/TableExpand.less'
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import SupervisoryMonitorAuditModal from './SupervisoryMonitorAuditModal'
+  import ComplaintLetterAuditModal from './ComplaintLetterAuditModal'
   import JDate from '@/components/jeecg/JDate.vue'
   import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
   import {getAction} from "../../../../api/manage";
   import {queryCompanyName} from "../../requestAction/request";
+  import moment from 'moment'
 
   export default {
-    name: "SupervisoryMonitorAudit",
+    name: "ComplaintLetterAudit",
     mixins:[JeecgListMixin, mixinDevice],
     components: {
       JDate,
-      SupervisoryMonitorAuditModal
+      ComplaintLetterAuditModal
     },
-    props:{
+    props: {
       companyId:'',
     },
     data () {
       return {
-        description: '监督性监测信息管理页面',
+        description: '信访投诉信息管理页面',
         items:[],
         queryParam: {
-          companyIds:this.$store.getters.userInfo.companyIds.join(",")
+          companyIds: this.$store.getters.userInfo.companyIds.join(',')
         },
         // 表头
         columns: [
@@ -109,24 +110,24 @@
             }
           },
           {
-            title:'报告名称',
+            title:'投诉标题',
             align:"center",
-            dataIndex: 'reportName'
+            dataIndex: 'complaintTitle'
           },
           {
-            title:'报告类型',
+            title:'污染类型',
             align:"center",
-            dataIndex: 'reportType_dictText'
+            dataIndex: 'pollutionType_dictText'
           },
           {
-            title: '企业名称',
-            align: "center",
+            title:'企业名称',
+            align:"center",
             dataIndex: 'companyName'
           },
           {
-            title:'报告日期',
+            title:'投诉日期',
             align:"center",
-            dataIndex: 'reportDate',
+            dataIndex: 'complaintDate',
             customRender:function (text) {
               return !text?"":(text.length>10?text.substr(0,10):text)
             }
@@ -137,7 +138,7 @@
             dataIndex: 'createTime',
           },
           {
-            title:'填报人',
+            title:'申报人',
             align:"center",
             dataIndex: 'createName'
           },
@@ -166,12 +167,12 @@
           }
         ],
         url: {
-          list: "/csm/companySupervisoryMonitor/list",
-          // delete: "/csm/companySupervisoryMonitor/delete",
-          // deleteBatch: "/csm/companySupervisoryMonitor/deleteBatch",
-          // batchDeclare: "/csm/companySupervisoryMonitor/batchDeclare"
-          // exportXlsUrl: "/csm/companySupervisoryMonitor/exportXls",
-          // importExcelUrl: "csm/companySupervisoryMonitor/importExcel",
+          list: "/ccl/companyComplaintLetter/list",
+          // delete: "/ccl/companyComplaintLetter/delete",
+          // deleteBatch: "/ccl/companyComplaintLetter/deleteBatch",
+          // batchDeclare: "/ccl/companyComplaintLetter/batchDeclare"
+          // exportXlsUrl: "/ccl/companyComplaintLetter/exportXls",
+          // importExcelUrl: "ccl/companyComplaintLetter/importExcel",
         },
         dictOptions:{},
       }
@@ -192,13 +193,14 @@
       toHandleEdit:function (record) {
         this.handleEdit(record);
         this.monitor = 'edit';
-        this.$refs.modalForm.title="监督性监测信息";
+        this.$refs.modalForm.title="信访投诉信息";
         this.$refs.modalForm.disableSubmit = false;
       },
       toSearchReset() {
         this.queryParam = {companyIds:this.queryParam.companyIds};
         this.loadData(1);
       },
+
     },
     created() {
       let that = this;
@@ -209,6 +211,7 @@
         }
       });
     }
+
   }
 </script>
 <style scoped>

@@ -127,6 +127,9 @@
     <prevention-audit ref="preventionModal"></prevention-audit>
     <env-tax-audit ref="envTaxModal"></env-tax-audit>
     <dirty-allow-audit ref="dirtyAllowModal"></dirty-allow-audit>
+    <risk-waste-audit ref="riskWasteModal"></risk-waste-audit>
+    <solid-waste-audit ref="solidWasteModal"></solid-waste-audit>
+    <radiate-waste-audit ref="radiateWasteModal"></radiate-waste-audit>
     <clean-product-audit ref="cleanProductModal"></clean-product-audit>
     <online-info-audit ref="onlineInfoModal"></online-info-audit>
     <user-info-audit ref="userInfoModal"/>
@@ -152,6 +155,9 @@
   import OnlineInfoAudit from "./modules/OnlineInfoAudit";
   import UserInfoAudit from "./modules/UserInfoAudit";
   import DirtyAllowAudit from "./modules/DirtyAllowAudit"
+  import RiskWasteAudit from "./modules/RiskWasteAudit";
+  import SolidWasteAudit from "./modules/SolidWasteAudit";
+  import RadiateWasteAudit from "./modules/RadiateWasteAudit";
   import ProductMaterialAudit from "./modules/ProductMaterialAudit";
   import EnvTrialAudit from "./modules/EnvTrialAudit";
   import moment from 'moment'
@@ -167,6 +173,9 @@
       ,PreventionAudit,
       EnvTaxAudit,
       DirtyAllowAudit,
+      RiskWasteAudit,
+      SolidWasteAudit,
+      RadiateWasteAudit,
       CleanProductAudit,
       OnlineInfoAudit
     },
@@ -280,6 +289,7 @@
           this.$refs.preventionModal.visible = false;
           this.$refs.envTaxModal.visible = false;
           this.$refs.dirtyAllowModal.visible = false;
+          this.$refs.riskWasteModal.visible = false;
           this.$refs.cleanProductModal.visible = false;
           this.$refs.onlineInfoModal.visible = false;
           this.$refs.productmaterialModal.visible = false;
@@ -311,6 +321,19 @@
             this.$refs.dirtyAllowModal.visible = true;
             this.$refs.dirtyAllowModal.auditModal(record);
           }
+          if("company_risk_waste"===record.fromTable){
+            this.$refs.riskWasteModal.visible = true;
+            this.$refs.riskWasteModal.auditModal( record);
+          }
+          if("company_solid_waste"===record.fromTable){
+            this.$refs.solidWasteModal.visible = true;
+            this.$refs.solidWasteModal.auditModal( record);
+          }
+          if("company_radiate_waste"===record.fromTable){
+            this.$refs.radiateWasteModal.visible = true;
+            this.$refs.radiateWasteModal.auditModal( record);
+          }
+
           if ("company_clean_product" === record.fromTable) {
             this.$refs.cleanProductModal.visible = true;
             this.$refs.cleanProductModal.auditModal(record);

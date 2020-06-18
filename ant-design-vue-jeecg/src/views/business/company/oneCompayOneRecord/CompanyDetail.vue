@@ -20,12 +20,13 @@
           <company-acceptance-list v-if="leftActive==6 && topActive==1" :companyId="companyId" :listType="0" :operation-show="false"/>
           <prevention v-if="leftActive==7 && topActive==1" :companyId="companyId" :listType="0" :operation-show="false"/>
           <company-dirty-allow-list v-if="leftActive==8 && topActive==1" :companyId="companyId" :listType="0" :operation-show="false"/>
-          <base-info v-if="leftActive==9 && topActive==1"/>
-          <base-info v-if="leftActive==10 && topActive==1"/>
-          <base-info v-if="leftActive==11 && topActive==1"/>
+          <company-risk-waste-list v-if="leftActive==9 && topActive==1" :companyId="companyId" :listType="0" :operation-show="false"/>
+          <company-solid-waste-list v-if="leftActive==10 && topActive==1" :companyId="companyId" :listType="0" :operation-show="false"/>
+          <company-radiate-waste-list v-if="leftActive==11 && topActive==1" :companyId="companyId" :listType="0" :operation-show="false"/>
           <company-env-tax-list v-if="leftActive==12 && topActive==1" :companyId="companyId" listType="0" :operation-show="false"/>
           <company-clean-product-list v-if="leftActive==13 && topActive==1" :companyId="companyId" listType="0" :operation-show="false"/>
           <company-online-info-list v-if="leftActive==14 && topActive==1" :companyId="companyId" listType="0" :operation-show="false"/>
+
 
           <company-dynamic-supervision-list v-if="leftActive==1 && topActive==2" :companyId="companyId" :role="'view'"/>
           <company-admin-penalties-list v-if="leftActive==2 && topActive==2" :companyId="companyId" :role="'view'"/>
@@ -53,6 +54,9 @@
     import ProductMaterialList from "./routeView/ProductMaterialList";
     import Prevention from "./routeView/Prevention";
     import CompanyDirtyAllowList from "./routeView/CompanyDirtyAllowList";
+    import CompanyRiskWasteList from "./routeView/CompanyRiskWasteList";
+    import CompanySolidWasteList from "./routeView/CompanySolidWasteList";
+    import CompanyRadiateWasteList from "./routeView/CompanyRadiateWasteList";
     import CompanyAdminPenaltiesList from "./CompanyAdminPenaltiesList";
     import CompanySupervisoryMonitorList from "./CompanySupervisoryMonitorList";
     import CompanyEnvTaxList from "./routeView/CompanyEnvTaxList";
@@ -64,7 +68,7 @@
       name: "CompanyDetail",
       components: {
         CompanyAcceptanceList,
-        BusinessMenu,BaseInfo,BasicInfo,Qualification,Prevention,CompanyDirtyAllowList,CompanyDynamicSupervisionList, CompanyAdminPenaltiesList,
+        BusinessMenu,BaseInfo,BasicInfo,Qualification,Prevention,CompanyDirtyAllowList,CompanySolidWasteList,CompanyRadiateWasteList,CompanyRiskWasteList,CompanyDynamicSupervisionList, CompanyAdminPenaltiesList,
         CompanySupervisoryMonitorList,CompanyComplaintLetterList,
         UserinfoList,
         ProductMaterialList,

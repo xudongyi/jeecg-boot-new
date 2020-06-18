@@ -5,13 +5,8 @@
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="项目名称">
-              <a-input placeholder="请输入项目名称" v-model="queryParam.projectName"></a-input>
-            </a-form-item>
-          </a-col>
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="审批文号">
-              <a-input placeholder="请输入审批文号" v-model="queryParam.examineNum"></a-input>
+            <a-form-item label="许可证编号">
+              <a-input placeholder="请输入许可证编号" v-model="queryParam.licenceCode"></a-input>
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
@@ -22,6 +17,7 @@
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
+              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
             </span>
           </a-col>
         </a-row>
@@ -34,21 +30,16 @@
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
-          <a-menu-item key="1" @click="batchDel">
-            <a-icon type="delete"/>
-            删除
-          </a-menu-item>
+          <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
         </a-menu>
-        <a-button style="margin-left: 8px"> 批量操作
-          <a-icon type="down"/>
-        </a-button>
+        <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>
       </a-dropdown>
       <a-button @click="batchDeclare" type="primary" icon="snippets">申报</a-button>
     </div>
 
     <!-- table区域-begin -->
     <div>
-      <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;" v-if="operationShow">
+      <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">
         <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a style="font-weight: 600">{{
         selectedRowKeys.length }}</a>项
         <a style="margin-left: 24px" @click="onClearSelected">清空</a>
@@ -98,10 +89,11 @@
                   <a v-if="operationShow  && (record.status=='0' || record.status=='3')">删除</a>
           </a-popconfirm>
         </span>
+
       </a-table>
     </div>
 
-    <companyAcceptance-modal ref="modalForm" @ok="modalFormOk" :companyId="companyId"></companyAcceptance-modal>
+    <company-solid-waste-modal ref="modalForm" @ok="modalFormOk" :companyId="companyId"></company-solid-waste-modal>
   </a-card>
 </template>
 
@@ -110,19 +102,18 @@
   import '@/assets/less/TableExpand.less'
   import {mixinDevice} from '@/utils/mixin'
   import {JeecgListMixin} from '@/mixins/JeecgListMixin'
-  import CompanyAcceptanceModal from './CompanyAcceptanceModal'
+  import CompanySolidWasteModal from './CompanySolidWasteModal'
   import {getAction} from "../../../../../api/manage";
-  import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
 
   export default {
-    name: "CompanyAcceptanceList",
+    name: "CompanySolidWasteList",
     mixins: [JeecgListMixin, mixinDevice],
     components: {
-      CompanyAcceptanceModal
+      CompanySolidWasteModal
     },
     data() {
       return {
-        description: '竣工验收信息管理页面',
+        description: '固废许可证信息管理页面',
         queryParam: {
           companyId: this.companyId
         },
@@ -139,32 +130,54 @@
             }
           },
           {
-            title: '项目名称',
+            title: '许可证编号',
             align: "center",
-            dataIndex: 'projectName'
+            dataIndex: 'licenceCode'
           },
           {
-            title: '审批单位',
+            title: '有效开始时间',
             align: "center",
-            dataIndex: 'examineUnit'
-          },
-          {
-            title: '审批文号',
-            align: "center",
-            dataIndex: 'examineNum'
-          },
-          {
-            title: '审批时间',
-            align: "center",
-            dataIndex: 'examineTime',
+            dataIndex: 'validStarttime',
             customRender: function (text) {
               return !text ? "" : (text.length > 10 ? text.substr(0, 10) : text)
             }
           },
           {
+            title: '有效结束时间',
+            align: "center",
+            dataIndex: 'validEndtime',
+            customRender: function (text) {
+              return !text ? "" : (text.length > 10 ? text.substr(0, 10) : text)
+            }
+          },
+          {
+            title: '发证日期',
+            align: "center",
+            dataIndex: 'certificateTime',
+            customRender: function (text) {
+              return !text ? "" : (text.length > 10 ? text.substr(0, 10) : text)
+            }
+          },
+          {
+            title: '发证机关',
+            align: "center",
+            dataIndex: 'certificateOffice'
+          },
+          {
+            title: '排污类别',
+            align: "center",
+            dataIndex: 'dirtyType'
+          },
+          {
             title: '数据状态',
             align: "center",
             dataIndex: 'status_dictText'
+          },
+          {
+            title: '许可内容附件',
+            align: "center",
+            dataIndex: 'files',
+            scopedSlots: {customRender: 'fileSlot'}
           },
           {
             title: '操作',
@@ -176,10 +189,10 @@
           }
         ],
         url: {
-          list: "/business/companyAcceptance/list/" + this.listType,
-          delete: "/business/companyAcceptance/delete",
-          deleteBatch: "/business/companyAcceptance/deleteBatch",
-          batchDeclare: "/business/companyAcceptance/batchDeclare",
+          list: "/solid/companySolidWaste/list/" + this.listType,
+          delete: "/solid/companySolidWaste/delete",
+          deleteBatch: "/solid/companySolidWaste/deleteBatch",
+          batchDeclare: "/solid/companySolidWaste/batchDeclare",
         },
         dictOptions: {},
       }
@@ -221,6 +234,7 @@
             }
           });
         }
+
       },
     },
     props: {
@@ -241,7 +255,6 @@
           onChange: this.onSelectChange
         };
       },
-
     }
   }
 </script>

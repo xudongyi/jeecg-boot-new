@@ -52,6 +52,19 @@ public class Constant {
          */
         public static String DIRTYALLOW = "company_dirty_allow";
         /**
+         *危废许可证表
+         */
+        public static String RISKWASTE = "company_risk_waste";
+        /**
+         *固废许可证表
+         */
+        public static String SOLIDWASTE = "company_solid_waste";
+        /**
+         *辐射许可证表
+         */
+        public static String RADIATEWASTE = "company_radiate_waste";
+
+        /**
          * 环保税信息表
          */
         public static String ENVTAX = "company_env_tax";

@@ -271,9 +271,9 @@
       handleCancel () {
         this.close()
       },
-      popupCallback(row){
-        this.form.setFieldsValue(pick(row,'status','companyId','reportDate','reportType','reportName','content','createBy','createTime','updateBy','updateTime'))
-      },
+      // popupCallback(row){
+      //   this.form.setFieldsValue(pick(row,'status','companyId','reportDate','reportType','reportName','content','createBy','createTime','updateBy','updateTime'))
+      // },
 
     }
   }

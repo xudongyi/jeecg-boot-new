@@ -5,7 +5,7 @@
         <result column="id" property="id" jdbcType="VARCHAR"/>
         <result column="status" property="status" jdbcType="VARCHAR"/>
         <result column="company_id" property="companyId" jdbcType="VARCHAR"/>
-        <result column="compliant_date" property="compliantDate" jdbcType="TIMESTAMP"/>
+        <result column="complaint_date" property="complaintDate" jdbcType="TIMESTAMP"/>
         <result column="pollution_type" property="pollutionType" jdbcType="VARCHAR"/>
         <result column="complaint_title" property="complaintTitle" jdbcType="VARCHAR"/>
         <result column="content" property="content" jdbcType="VARCHAR"/>
@@ -29,21 +29,18 @@
         LEFT JOIN company_base t2 ON t1.company_id = t2.id
         LEFT JOIN sys_user t3 ON t1.create_by=t3.id
         LEFT JOIN sys_user t4 ON t1.update_by=t4.id
-        where 1=1
-        <if test="companyId != null">
-            and t2.id in (#{companyId})
-        </if>
+        where  t2.id in
+        <foreach collection="companyIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
         <if test="status != null">
-            and status in (#{status})
-        </if>
-        <if test="companyName != null">
-            and company_name like concat('%',#{companyName},'%')
+            and t1.status in (#{status})
         </if>
         <if test="dateBegin != null">
-            and report_date >= (#{dateBegin})
+            and t1.complaint_date >= (#{dateBegin})
         </if>
         <if test="dateEnd != null">
-            and report_date &lt;= (#{dateEnd})
+            and t1.complaint_date &lt;= (#{dateEnd})
         </if>
     </select>
 </mapper>

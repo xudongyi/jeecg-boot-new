@@ -6,9 +6,9 @@
         <a-row :gutter="24">
           <a-col :xl="10" :lg="11" :md="12" :sm="24">
             <a-form-item label="投诉日期">
-              <j-date placeholder="请选择开始日期" class="query-group-cust" v-model="queryParam.compliantDate_begin"></j-date>
+              <j-date placeholder="请选择开始日期" class="query-group-cust" v-model="queryParam.complaintDate_begin"></j-date>
               <span class="query-group-split-cust"></span>
-              <j-date placeholder="请选择结束日期" class="query-group-cust" v-model="queryParam.compliantDate_end"></j-date>
+              <j-date placeholder="请选择结束日期" class="query-group-cust" v-model="queryParam.complaintDate_end"></j-date>
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24" v-if="role === 'monitor'">
@@ -18,7 +18,11 @@
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24" v-if="role === 'monitor'">
             <a-form-item label="企业名称">
-              <a-input placeholder="请输入企业名称" v-model="queryParam.companyName"></a-input>
+              <a-select v-model="queryParam.companyId" show-search style="width: 100%" optionFilterProp="children">
+                <a-select-option v-for="item in items" :key="item.value" :value="item.key">
+                  {{item.value}}
+                </a-select-option>
+              </a-select>
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
@@ -119,6 +123,7 @@
   import JDate from '@/components/jeecg/JDate.vue'
   import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
   import {getAction} from "../../../../../api/manage";
+  import {queryCompanyName} from "../../../requestAction/request";
 
   export default {
     name: "CompanyComplaintLetterList",
@@ -134,10 +139,11 @@
     data () {
       return {
         description: '信访投诉信息管理页面',
+        items:[],
         companyid:'',
         monitor:'',
         queryParam: {
-          companyId:this.companyId
+          companyIds: this.$store.getters.userInfo.companyIds.join(',')
         },
         // 表头
         columns: [
@@ -174,7 +180,7 @@
           {
             title:'投诉日期',
             align:"center",
-            dataIndex: 'compliantDate',
+            dataIndex: 'complaintDate',
             customRender:function (text) {
               return !text?"":(text.length>10?text.substr(0,10):text)
             }
@@ -266,7 +272,7 @@
         this.$refs.modalForm.title="信访投诉信息";
       },
       toSearchReset() {
-        this.queryParam = {companyId:this.companyId};
+        this.queryParam = {companyIds:this.queryParam.companyIds};
         this.loadData(1);
       },
       batchDeclare: function () {
@@ -302,11 +308,13 @@
 
     },
     created() {
-      this.monitor = this.role;
-      this.companyid = this.companyId;
-      if(this.companyid==null) {
-        this.companyid = this.$store.getters.userInfo.companyIds[0]
-      }
+      let that = this;
+      //查询企业名称
+      queryCompanyName({companyIds:this.$store.getters.userInfo.companyIds.join(',')}).then((res) => {
+        if(res.success){
+          that.items = res.result;
+        }
+      });
     }
 
   }
