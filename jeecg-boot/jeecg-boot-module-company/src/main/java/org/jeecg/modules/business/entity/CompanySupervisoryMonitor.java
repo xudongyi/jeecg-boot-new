@@ -78,8 +78,8 @@ public class CompanySupervisoryMonitor implements Serializable {
     private java.lang.String updateBy;
 	/**审核时间*/
 	@Ignore
-	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
-    @DateTimeFormat(pattern="yyyy-MM-dd")
+	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "审核时间")
     private java.util.Date updateTime;
 }
