@@ -103,8 +103,14 @@ public class CompanyProductMaterial implements Serializable {
     @ApiModelProperty(value = "易制毒")
     private java.lang.String precursorChemicals;
 	/**状态*/
+	@Dict(dicCode = "output_status")
 	@Excel(name = "状态", width = 15)
-    @ApiModelProperty(value = "状态")
+	@ApiModelProperty(value = "状态")
+	private java.lang.String outputStatus;
+	/**状态*/
+	@Dict(dicCode = "statue")
+	@Excel(name = "数据状态", width = 15)
+    @ApiModelProperty(value = "数据状态")
     private java.lang.String status;
 	/**是否领证*/
 	@Excel(name = "是否领证", width = 15, dicCode = "yes_or_no")
@@ -124,8 +130,8 @@ public class CompanyProductMaterial implements Serializable {
     @ApiModelProperty(value = "备注")
     private java.lang.String remake;
 
-	/**备注*/
-	@Excel(name = "备注", width = 15)
-	@ApiModelProperty(value = "备注")
+	/**企业Id*/
+	@Excel(name = "企业Id", width = 15)
+	@ApiModelProperty(value = "企业Id")
 	private java.lang.String companyId;
 }

@@ -156,7 +156,7 @@
           {
             title:'性别',
             align:"center",
-            dataIndex: 'sex'
+            dataIndex: 'sex_dictText'
           },
           {
             title:'学历',

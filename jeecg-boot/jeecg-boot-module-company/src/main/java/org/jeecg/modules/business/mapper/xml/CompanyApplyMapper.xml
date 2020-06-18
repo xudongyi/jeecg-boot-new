@@ -11,13 +11,15 @@
             <result column="status" property="status" jdbcType="VARCHAR"/>
             <result column="updateBy" property="update_by" jdbcType="VARCHAR"/>
             <result column="updateTime" property="update_time" jdbcType="VARCHAR"/>
-
+            <result column="newId" property="new_id" jdbcType="VARCHAR"/>
+            <result column="oldId" property="old_id" jdbcType="VARCHAR"/>
         </resultMap>
 
 
 
     <select id="queryCompanyApplyVo"  resultMap="CompanyApplyVo">
-		select b.id,a.company_name,b.from_table,b.create_time,d.realname as create_by,b.status,c.realname as update_by,b.update_time
+		select b.id,a.company_name,b.from_table,b.create_time,d.realname as create_by,b.status,c.realname as update_by,b.update_time,
+        b.new_id,b.old_id
             from company_base a inner join company_apply b  on a.id = b.company_id
             left join sys_user c on  b.update_by = c.id
             left join sys_user d on  b.create_by = d.id

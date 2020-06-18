@@ -5,32 +5,36 @@
     :visible="visible"
     :confirmLoading="confirmLoading"
     switchFullscreen
-    @ok="handleOk"
     @cancel="handleCancel"
     cancelText="关闭">
     <a-spin :spinning="confirmLoading">
       <a-form :form="form">
 
         <a-form-item label="项目名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="['projectName', validatorRules.projectName]" placeholder="请输入项目名称"></a-input>
+          <a-input v-decorator="['projectName', validatorRules.projectName]" placeholder="请输入项目名称" :disabled="disable"></a-input>
         </a-form-item>
         <a-form-item label="批复文件号" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="['approveFilenum', validatorRules.approveFilenum]" placeholder="请输入批复文件号"></a-input>
+          <a-input v-decorator="['approveFilenum', validatorRules.approveFilenum]" placeholder="请输入批复文件号" :disabled="disable"></a-input>
         </a-form-item>
         <a-form-item label="审批单位" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="['approveUnit', validatorRules.approveUnit]" placeholder="请输入审批单位"></a-input>
+          <a-input v-decorator="['approveUnit', validatorRules.approveUnit]" placeholder="请输入审批单位" :disabled="disable"></a-input>
         </a-form-item>
         <a-form-item label="审批时间" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-date placeholder="请选择审批时间" v-decorator="['approveDate', validatorRules.approveDate]" :trigger-change="true" style="width: 100%"/>
+          <j-date placeholder="请选择审批时间" v-decorator="['approveDate', validatorRules.approveDate]" :trigger-change="true" style="width: 100%" :disabled="disable"/>
         </a-form-item>
         <a-form-item label="附件" :labelCol="labelCol" :wrapperCol="wrapperCol">
             <j-upload ></j-upload>
         </a-form-item>
         <!--加一个表格显示-->
 
-
       </a-form>
     </a-spin>
+    <template slot="footer">
+      <a-button type="primary" @click="handleCancel" v-show="disable">关闭</a-button>
+      <a-button type="primary" @click="handleCancel" v-show="!disable">取消</a-button>
+      <a-button type="primary" @click="handleOk" v-show="!disable">暂存</a-button>
+      <a-button type="primary" @click="handDeclare" v-show="!disable">申报</a-button>
+    </template>
   </j-modal>
 </template>
 
@@ -47,12 +51,16 @@
     components: { 
       JDate,JUpload
     },
+    props:{
+      companyId:''
+    },
     data () {
       return {
         form: this.$form.createForm(this),
         title:"操作",
         width:800,
         visible: false,
+        disable:true,
         model: {},
         labelCol: {
           xs: { span: 24 },
@@ -86,8 +94,9 @@
           },
         },
         url: {
-          add: "/testOneDemo/companyEnvTrial/add",
-          edit: "/testOneDemo/companyEnvTrial/edit",
+          add: "/company/envTrial/add",
+          edit: "/company/envTrial/edit",
+          apply:"/company/envTrial/editAndApply"
         }
       }
     },
@@ -108,6 +117,7 @@
       close () {
         this.$emit('close');
         this.visible = false;
+        this.disable = true;
       },
       handleOk () {
         const that = this;
@@ -124,8 +134,10 @@
               httpurl+=this.url.edit;
                method = 'put';
             }
+            debugger
+
             let formData = Object.assign(this.model, values);
-            console.log("表单提交数据",formData)
+            formData.companyId=that.companyId;
             httpAction(httpurl,formData,method).then((res)=>{
               if(res.success){
                 that.$message.success(res.message);
@@ -143,6 +155,33 @@
       },
       handleCancel () {
         this.close()
+      },
+      handDeclare(){
+        const that = this;
+        // 触发表单验证
+        this.form.validateFields((err, values) => {
+          //获取表单数据
+          if (!err) {
+            that.confirmLoading = true;
+
+            let httpurl =this.url.apply;
+            let method = 'post';
+            values.companyId = that.companyId;
+            let formData = Object.assign(this.model, values);
+            httpAction(httpurl,formData,method).then((res)=>{
+              if(res.success){
+                that.$message.success(res.message);
+                that.$emit('ok');
+              }else{
+                that.$message.warning(res.message);
+              }
+            }).finally(() => {
+              that.confirmLoading = false;
+              that.close();
+            })
+          }
+
+        })
       },
       popupCallback(row){
         this.form.setFieldsValue(pick(row,'projectName','approveFilenum','approveUnit','approveDate','annex'))

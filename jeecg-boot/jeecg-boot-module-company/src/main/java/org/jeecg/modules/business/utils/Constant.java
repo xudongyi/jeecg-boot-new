@@ -70,7 +70,14 @@ public class Constant {
          * 员工信息
          */
         public static String USERINFO = "company_userinfo";
-
+        /**
+         * 产品物料信息
+         */
+        public static String PRODUCTMATERIAL = "company_product_material";
+        /**
+         *
+         */
+        public static String ENVTRIAL = "company_env_trial";
     }
 
 }

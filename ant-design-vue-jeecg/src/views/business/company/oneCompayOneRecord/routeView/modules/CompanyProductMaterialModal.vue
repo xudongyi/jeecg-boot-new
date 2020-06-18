@@ -48,20 +48,20 @@
         <a-form-item label="易制毒" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <j-dict-select-tag type="list" v-decorator="['precursorChemicals', validatorRules.precursorChemicals]" :disabled="disable" :trigger-change="true" dictCode="yes_or_no" placeholder="请选择易制毒"/>
         </a-form-item>
-        <a-form-item label="状态" v-if="displayPro" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-dict-select-tag type="list"  v-decorator="['status', validatorRules.status]" :trigger-change="true" :disabled="disable" dictCode="output_status" placeholder="请选择状态"/>
+        <a-form-item label="状态" v-show="displayPro" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <j-dict-select-tag type="list"  v-decorator="['status']" :trigger-change="true" :disabled="disable" dictCode="output_status" placeholder="请选择状态"/>
         </a-form-item>
-        <a-form-item label="是否领证" v-if="displayPro" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-dict-select-tag type="list"  v-decorator="['certified', validatorRules.certified]" :trigger-change="true" :disabled="disable" dictCode="yes_or_no" placeholder="请选择是否领证"/>
+        <a-form-item label="是否领证" v-show="displayPro" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <j-dict-select-tag type="list"  v-decorator="['certified']" :trigger-change="true" :disabled="disable" dictCode="yes_or_no" placeholder="请选择是否领证"/>
         </a-form-item>
-        <a-form-item label="主要原材料"  v-if="displayPro" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-textarea v-decorator="['rawMaterials', validatorRules.rawMaterials]" rows="4" placeholder="请输入主要原材料" :disabled="disable"/>
+        <a-form-item label="主要原材料"  v-show="displayPro" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-textarea v-decorator="['rawMaterials']" rows="4" placeholder="请输入主要原材料" :disabled="disable"/>
         </a-form-item>
-        <a-form-item label="主要生产设备" v-if="displayPro" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-textarea v-decorator="['proEquipment', validatorRules.proEquipment]" rows="4" placeholder="请输入主要生产设备" :disabled="disable"/>
+        <a-form-item label="主要生产设备" v-show="displayPro" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-textarea v-decorator="['proEquipment']" rows="4" placeholder="请输入主要生产设备" :disabled="disable"/>
         </a-form-item>
         <a-form-item label="备注" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-textarea v-decorator="['remake', validatorRules.remake]" rows="4" placeholder="请输入备注" :disabled="disable"/>
+          <a-textarea v-decorator="['remake']" rows="4" placeholder="请输入备注" :disabled="disable"/>
         </a-form-item>
 
       </a-form>
@@ -87,6 +87,9 @@
     name: "CompanyProductMaterialModal",
     components: { 
       JDictSelectTag,
+    },
+    props:{
+      companyId:'',
     },
     data () {
       return {
@@ -157,31 +160,6 @@
               { required: true, message: '请输入易制毒!'},
             ]
           },
-          status: {
-            rules: [
-              { required: true, message: '请输入状态!'},
-            ]
-          },
-          certified: {
-            rules: [
-              { required: true, message: '请输入是否领证!'},
-            ]
-          },
-          rawMaterials: {
-            rules: [
-              { required: true, message: '请输入主要原材料!'},
-            ]
-          },
-          proEquipment: {
-            rules: [
-              { required: true, message: '请输入主要生产设备!'},
-            ]
-          },
-          remake: {
-            rules: [
-              { required: true, message: '请输入备注!'},
-            ]
-          },
         },
         url: {
           add: "/companyProductMaterial/add",
@@ -192,12 +170,14 @@
     },
     computed: {
       displayPro:function(){
+        console.log(this.model.outputType)
         return this.model.outputType==='1';
       }
     },
     methods: {
       add () {
-        this.edit({});
+        //默认选上1
+        this.edit({outputType:'1'});
       },
       edit (record) {
         this.form.resetFields();
@@ -227,7 +207,9 @@
               httpurl+=this.url.edit;
                method = 'put';
             }
+
             let formData = Object.assign(this.model, values);
+            formData.companyId=that.companyId;
             httpAction(httpurl,formData,method).then((res)=>{
               if(res.success){
                 that.$message.success(res.message);
@@ -257,6 +239,7 @@
             values.companyId = that.companyId;
             let formData = Object.assign(this.model, values);
             console.log("表单提交数据",formData)
+
             httpAction(httpurl,formData,method).then((res)=>{
               if(res.success){
                 that.$message.success(res.message);

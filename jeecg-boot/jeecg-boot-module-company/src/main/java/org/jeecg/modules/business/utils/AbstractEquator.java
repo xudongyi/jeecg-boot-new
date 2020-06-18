@@ -13,24 +13,25 @@ public abstract class AbstractEquator implements Equator {
     private static final List<Class<?>> WRAPPER = Arrays.asList(Byte.class, Short.class,
             Integer.class, Long.class, Float.class, Double.class, Character.class,
             Boolean.class, String.class);
-    private final List<String> includeFields;
-    private final List<String> excludeFields;
+    private  List<String> includeFields = Collections.emptyList();
+    private  List<String> excludeFields = Collections.emptyList();
 
-    public AbstractEquator() {
-        includeFields = Collections.emptyList();
-        excludeFields = Collections.emptyList();
-    }
+//    public AbstractEquator() {
+//        includeFields = Collections.emptyList();
+//        excludeFields = Collections.emptyList();
+//    }
 
-    /**
-     * 指定包含或排除某些字段
-     *
-     * @param includeFields 包含字段，若为 null 或空集，则不指定
-     * @param excludeFields 排除字段，若为 null 或空集，则不指定
-     */
-    public AbstractEquator(List<String> includeFields, List<String> excludeFields) {
-        this.includeFields = includeFields;
-        this.excludeFields = excludeFields;
-    }
+//    /**
+//     * 指定包含或排除某些字段
+//     *
+//     * @param includeFields 包含字段，若为 null 或空集，则不指定
+//     * @param excludeFields 排除字段，若为 null 或空集，则不指定
+//     */
+//    public AbstractEquator(List<String> includeFields, List<String> excludeFields) {
+//        this.includeFields = includeFields;
+//        this.excludeFields = excludeFields;
+//    }
+
 
     /**
      * 只要没有不相等的属性，两个对象就全相等
@@ -125,4 +126,19 @@ public abstract class AbstractEquator implements Equator {
         return Objects.deepEquals(first, second);
     }
 
+    public List<String> getIncludeFields() {
+        return includeFields;
+    }
+
+    public void setIncludeFields(List<String> includeFields) {
+        this.includeFields = includeFields;
+    }
+
+    public List<String> getExcludeFields() {
+        return excludeFields;
+    }
+
+    public void setExcludeFields(List<String> excludeFields) {
+        this.excludeFields = excludeFields;
+    }
 }

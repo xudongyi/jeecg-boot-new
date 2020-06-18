@@ -1,9 +1,15 @@
 package org.jeecg.modules.business.utils;
 
 import io.swagger.annotations.ApiModelProperty;
+import org.jeecg.common.aspect.annotation.Dict;
+import org.jeecg.modules.business.mapper.SysDictBussinessMapper;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * 基于属性的比对器
@@ -11,19 +17,24 @@ import java.util.*;
  * @author dadiyang
  * date 2018/11/22
  */
+@Component
 public class FieldBaseEquator extends AbstractEquator {
-    public FieldBaseEquator() {
-    }
 
-    /**
-     * 指定包含或排除某些字段
-     *
-     * @param includeFields 包含字段，若为 null 或空集，则不指定
-     * @param excludeFields 排除字段，若为 null 或空集，则不指定
-     */
-    public FieldBaseEquator(List<String> includeFields, List<String> excludeFields) {
-        super(includeFields, excludeFields);
-    }
+    @Resource
+    private SysDictBussinessMapper dictService;
+
+
+
+//    /**
+//     * 指定包含或排除某些字段
+//     *
+//     * @param includeFields 包含字段，若为 null 或空集，则不指定
+//     * @param excludeFields 排除字段，若为 null 或空集，则不指定
+//     */
+//    public FieldBaseEquator(List<String> includeFields, List<String> excludeFields) {
+//        super(includeFields, excludeFields);
+//    }
+
 
     /**
      * {@inheritDoc}
@@ -56,6 +67,8 @@ public class FieldBaseEquator extends AbstractEquator {
                 boolean eq = isFieldEquals(fieldInfo);
                 if (!eq) {
                     fieldInfo.setFieldName(field.getAnnotation(ApiModelProperty.class).value());
+                    dictText(first, field, firstVal, secondVal, fieldInfo);
+
                     // 记录不相等的字段
                     diffField.add(fieldInfo);
                 }
@@ -65,6 +78,17 @@ public class FieldBaseEquator extends AbstractEquator {
             }
         }
         return diffField;
+    }
+
+    private void dictText(Object first, Field field, Object firstVal, Object secondVal, FieldInfo fieldInfo) {
+        //如果有字典
+        if (field.getAnnotation(Dict.class) != null)
+        {
+            if(first != null)
+                fieldInfo.setFirstVal(dictService.queryDictTextByKey( field.getAnnotation(Dict.class).dicCode(),String.valueOf(firstVal)));
+            if(secondVal != null)
+                fieldInfo.setSecondVal(dictService.queryDictTextByKey( field.getAnnotation(Dict.class).dicCode(),String.valueOf(secondVal)));
+        }
     }
 
     public List<String> getDiffFieldNames(Object first, Object second) {

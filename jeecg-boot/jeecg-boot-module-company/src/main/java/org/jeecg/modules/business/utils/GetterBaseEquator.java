@@ -18,8 +18,8 @@ public class GetterBaseEquator extends AbstractEquator {
     private static final String GET_IS = "get|is";
     private static final String GET_CLASS = "getClass";
 
-    public GetterBaseEquator() {
-    }
+//    public GetterBaseEquator() {
+//    }
 
     /**
      * 指定包含或排除某些字段
@@ -27,9 +27,9 @@ public class GetterBaseEquator extends AbstractEquator {
      * @param includeFields 包含字段，若为 null 或空集，则不指定
      * @param excludeFields 排除字段，若为 null 或空集，则不指定
      */
-    public GetterBaseEquator(List<String> includeFields, List<String> excludeFields) {
-        super(includeFields, excludeFields);
-    }
+//    public GetterBaseEquator(List<String> includeFields, List<String> excludeFields) {
+//        super(includeFields, excludeFields);
+//    }
 
     /**
      * {@inheritDoc}

@@ -129,6 +129,10 @@
     <dirty-allow-audit ref="dirtyAllowModal"></dirty-allow-audit>
     <clean-product-audit ref="cleanProductModal"></clean-product-audit>
     <online-info-audit ref="onlineInfoModal"></online-info-audit>
+    <user-info-audit ref="userInfoModal"/>
+    <product-material-audit ref="productmaterialModal"/>
+    <env-tax-audit ref="envtaxModal"/>
+
   </div>
 
 </template>
@@ -148,12 +152,15 @@
   import OnlineInfoAudit from "./modules/OnlineInfoAudit";
   import UserInfoAudit from "./modules/UserInfoAudit";
   import DirtyAllowAudit from "./modules/DirtyAllowAudit"
+  import ProductMaterialAudit from "./modules/ProductMaterialAudit";
+  import EnvTrialAudit from "./modules/EnvTrialAudit";
   import moment from 'moment'
 
   export default {
     name: "BaseAuditList",
     mixins:[JeecgListMixin, mixinDevice],
     components: {
+      ProductMaterialAudit,
       AcceptanceAudit, JDictSelectTag
       ,BasicInfoAudit//基础信息审核
       ,UserInfoAudit//员工信息审核
@@ -264,49 +271,62 @@
         this.loadData(1);
       },
       handleEdit(record){
-        //先关闭所有浮窗
-        this.$refs.basicInfoModal.visible = false;
-        this.$refs.acceptanceModal.visible = false;
-        this.$refs.userInfoModal.visible = false;
-        this.$refs.preventionModal.visible = false;
-        this.$refs.envTaxModal.visible = false;
-        this.$refs.dirtyAllowModal.visible = false;
-        this.$refs.cleanProductModal.visible = false;
-        this.$refs.onlineInfoModal.visible = false;
-        //打开需要展示的浮窗
-        if("company_baseinfo"=== record.fromTable){
-          this.$refs.basicInfoModal.visible = true;
-          this.$refs.basicInfoModal.auditModal( record);
-        }
-        if("company_acceptance"===record.fromTable){
-          this.$refs.acceptanceModal.visible = true;
-          this.$refs.acceptanceModal.auditModal( record);
-        }
-        if("company_userinfo"===record.fromTable){
-          this.$refs.userInfoModal.visible = true;
-          this.$refs.userInfoModal.auditModal( record);
-        }
-        if("company_prevention"===record.fromTable){
-          this.$refs.preventionModal.visible = true;
-          this.$refs.preventionModal.auditModal( record);
-        }
-        if("company_env_tax"===record.fromTable){
-          this.$refs.envTaxModal.visible = true;
-          this.$refs.envTaxModal.auditModal( record);
-        }
-        if("company_dirty_allow"===record.fromTable){
-          this.$refs.dirtyAllowModal.visible = true;
-          this.$refs.dirtyAllowModal.auditModal( record);
-        }
-        if("company_clean_product"===record.fromTable){
-          this.$refs.cleanProductModal.visible = true;
-          this.$refs.cleanProductModal.auditModal( record);
-        }
-        if("company_online_info"===record.fromTable){
-          this.$refs.onlineInfoModal.visible = true;
-          this.$refs.onlineInfoModal.auditModal( record);
-        }
 
+
+          //先关闭所有浮窗
+          this.$refs.basicInfoModal.visible = false;
+          this.$refs.acceptanceModal.visible = false;
+          this.$refs.userInfoModal.visible = false;
+          this.$refs.preventionModal.visible = false;
+          this.$refs.envTaxModal.visible = false;
+          this.$refs.dirtyAllowModal.visible = false;
+          this.$refs.cleanProductModal.visible = false;
+          this.$refs.onlineInfoModal.visible = false;
+          this.$refs.productmaterialModal.visible = false;
+          this.$refs.envtaxModal.visible = false;
+
+
+          //打开需要展示的浮窗
+          if ("company_baseinfo" === record.fromTable) {
+            this.$refs.basicInfoModal.visible = true;
+            this.$refs.basicInfoModal.auditModal(record);
+          }
+          if ("company_acceptance" === record.fromTable) {
+            this.$refs.acceptanceModal.visible = true;
+            this.$refs.acceptanceModal.auditModal(record);
+          }
+          if ("company_userinfo" === record.fromTable) {
+            this.$refs.userInfoModal.visible = true;
+            this.$refs.userInfoModal.auditModal(record);
+          }
+          if ("company_prevention" === record.fromTable) {
+            this.$refs.preventionModal.visible = true;
+            this.$refs.preventionModal.auditModal(record);
+          }
+          if ("company_env_tax" === record.fromTable) {
+            this.$refs.envTaxModal.visible = true;
+            this.$refs.envTaxModal.auditModal(record);
+          }
+          if ("company_dirty_allow" === record.fromTable) {
+            this.$refs.dirtyAllowModal.visible = true;
+            this.$refs.dirtyAllowModal.auditModal(record);
+          }
+          if ("company_clean_product" === record.fromTable) {
+            this.$refs.cleanProductModal.visible = true;
+            this.$refs.cleanProductModal.auditModal(record);
+          }
+          if ("company_online_info" === record.fromTable) {
+            this.$refs.onlineInfoModal.visible = true;
+            this.$refs.onlineInfoModal.auditModal(record);
+          }
+          if ("company_product_material" === record.fromTable) {
+            this.$refs.productmaterialModal.visible = true;
+            this.$refs.productmaterialModal.auditModal(record);
+          }
+          if ("company_env_trial" === record.fromTable) {
+            this.$refs.envtaxModal.visible = true;
+            this.$refs.envtaxModal.auditModal(record);
+          }
       },
 
     },

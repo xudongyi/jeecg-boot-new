@@ -52,6 +52,7 @@ public class CompanyEnvTrial implements Serializable {
     @ApiModelProperty(value = "更新日期")
     private java.util.Date updateTime;
 	/**数据状态*/
+	@Dict(dicCode = "statue")
 	@Excel(name = "数据状态", width = 15)
     @ApiModelProperty(value = "数据状态")
     private java.lang.String status;

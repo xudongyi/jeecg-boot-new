@@ -55,7 +55,8 @@ public class CompanyApplyController extends JeecgController<CompanyApply, ICompa
     private ICompanyQualificationService companyQualificationService;
     @Autowired
     private ICompanyFileService companyFileService;
-
+    @Autowired
+    FieldBaseEquator fieldBaseEquator;
 
 
     /**
@@ -74,9 +75,12 @@ public class CompanyApplyController extends JeecgController<CompanyApply, ICompa
                                    @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
                                    @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
                                    HttpServletRequest req) {
-        QueryWrapper<CompanyApply> queryWrapper = QueryGenerator.initQueryWrapper(companyApply, req.getParameterMap());
-        Page<CompanyApply> page = new Page<CompanyApply>(pageNo, pageSize);
-        IPage<CompanyApply> pageList = companyApplyService.page(page, queryWrapper);
+
+
+        Page<CompanyApplyVo> page = new Page<>(pageNo, pageSize);
+        IPage<CompanyApplyVo> pageList =  companyApplyService.queryCompanyApplyVo(page,req.getParameter("companyId").split(",")
+                ,"",req.getParameter("fromTable"));
+
         return Result.ok(pageList);
     }
     /**
@@ -99,7 +103,7 @@ public class CompanyApplyController extends JeecgController<CompanyApply, ICompa
                                    HttpServletRequest req) {
 
 
-        Page<CompanyApplyVo> page = new Page<CompanyApplyVo>(pageNo, pageSize);
+        Page<CompanyApplyVo> page = new Page<>(pageNo, pageSize);
         IPage<CompanyApplyVo> pageList =  companyApplyService.queryCompanyApplyVo(page,companyIds.split(","),status,fromTable);
         return Result.ok(pageList);
     }
@@ -170,8 +174,7 @@ public class CompanyApplyController extends JeecgController<CompanyApply, ICompa
         //获取老数据
         Object oldInfo = getObject(companyApply, companyApply.getOldId());
 
-        //新老数据对比
-        FieldBaseEquator fieldBaseEquator = new FieldBaseEquator();
+
         List<String> list = fieldBaseEquator.getDiffFieldNames(newInfo,oldInfo);
         result.put("cueColor","");
         result.put("cueField",list);
@@ -282,8 +285,8 @@ public class CompanyApplyController extends JeecgController<CompanyApply, ICompa
 
         ServiceImpl o = ServiceUtils.getService(fromTable);
         //排除字段
-        List<String> excludeFields = Arrays.asList("serialVersionUID", "id", "createBy", "createTime", "updateBy", "updateTime", "sysOrgCode", "status","type");
-        Equator fieldBaseEquator = new FieldBaseEquator(null, excludeFields);
+        List<String> excludeFields = Arrays.asList("serialVersionUID", "id", "createBy", "createTime", "updateBy", "updateTime", "sysOrgCode", "status","type","companyId");
+        fieldBaseEquator.setExcludeFields(excludeFields);
         return Result.ok(fieldBaseEquator.getDiffFields(o.getById(beforeId), o.getById(afterId)));
     }
 

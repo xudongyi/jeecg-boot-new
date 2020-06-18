@@ -40,7 +40,7 @@ public class CompanyApplyVo {
      *  生效时间
      */
     private String updateTime;
-
-
+    private java.lang.String newId;
+    private String oldId;
 
 }

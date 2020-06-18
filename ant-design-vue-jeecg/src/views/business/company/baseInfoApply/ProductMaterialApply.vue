@@ -10,10 +10,10 @@
 
 <script>
   import CompanyApplyList from "./modules/CompanyApplyList"
-  import {queryLatestArchivedData} from "../../requestAction/request";
   import ProductMaterialApplyList from "./modules/ProductMaterialApplyList";
   import CompanyApplyModal from "./modules/childModules/CompanyApplyModal";
-    export default {
+
+  export default {
       name: "ProductMaterialApply",
       components: {
         CompanyApplyList,
@@ -46,7 +46,8 @@
           console.log(record);
           //查询详情数据
           this.$refs.applyInfoForm.detail(record);
-
+          //单个表比较
+          this.$refs.applyInfoForm.compareDetail(this.fromTable);
         }
 
 

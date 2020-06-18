@@ -5,24 +5,20 @@
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="姓名">
-              <a-input placeholder="请输入姓名" v-model="queryParam.name"></a-input>
+            <a-form-item label="项目名称">
+              <a-input placeholder="请输入项目名称" v-model="queryParam.projectName"></a-input>
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="手机号码">
-              <a-input placeholder="请输入手机号码" v-model="queryParam.pbone"> </a-input>
-          </a-form-item>
-            <!--  <a-form-item :aria-disabled="false">
-              <a-input  v-model="queryParam.companyId">{{companyId}}</a-input>
-
-            </a-form-item>-->
+            <a-form-item label="批复文件号">
+              <a-input placeholder="请输入批复文件号" v-model="queryParam.approveFilenum"></a-input>
+            </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <a-button type="primary" @click="localReset" icon="reload" style="margin-left: 8px">重置</a-button>
-              <!--<a @click="handleToggleSearch" style="margin-left: 8px">
+            <!--  <a @click="handleToggleSearch" style="margin-left: 8px">
                 {{ toggleSearchStatus ? '收起' : '展开' }}
                 <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>
               </a>-->
@@ -34,24 +30,23 @@
     <!-- 查询区域-END -->
     
     <!-- 操作按钮区域 -->
-    <div class="table-operator" v-show="isApply">
+    <div class="table-operator"  v-show="isApply">
       <a-button @click="applyAdd" type="primary" icon="plus">新增</a-button>
-<!--      <a-button type="primary" icon="download" @click="handleExportXls('company_userinfo')">导出</a-button>-->
-<!--      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">-->
-<!--        <a-button type="primary" icon="import">导入</a-button>-->
-<!--      </a-upload>-->
+      <!--<a-button type="primary" icon="download" @click="handleExportXls('环评审批信息')">导出</a-button>
+      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
+        <a-button type="primary" icon="import">导入</a-button>
+      </a-upload>-->
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
           <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
           <a-menu-item key="2" @click="batchApply"><a-icon type="delete"/>申报</a-menu-item>
-
         </a-menu>
         <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>
       </a-dropdown>
     </div>
 
     <!-- table区域-begin -->
-    <div >
+    <div>
       <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;" v-show="isApply">
         <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a style="font-weight: 600">{{ selectedRowKeys.length }}</a>项
         <a style="margin-left: 24px" @click="onClearSelected">清空</a>
@@ -66,10 +61,9 @@
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
-        class="j-table-force-nowrap"
-        @change="handleTableChange"
         :rowSelection="rowSelection"
-      >
+        class="j-table-force-nowrap"
+        @change="handleTableChange">
 
         <template slot="htmlSlot" slot-scope="text">
           <div v-html="text"></div>
@@ -90,9 +84,8 @@
             下载
           </a-button>
         </template>
-        <a slot="name" @click="handleDetail(record)"   slot-scope="text, record">{{ text }}</a>
 
-        <span slot="action"  slot-scope="text, record">
+        <span slot="action" slot-scope="text, record">
            <a @click="handleView(record)"  v-show="!isApply || record.status !== '0' ">查看</a>
           <!-- 编辑和删除-->
           <a @click="applyEdit(record)"  v-show="isApply && record.status === '0' ">编辑</a>
@@ -101,10 +94,11 @@
                   <a>删除</a>
                 </a-popconfirm>
         </span>
+
       </a-table>
     </div>
 
-    <companyUserinfo-modal ref="modalForm" @ok="modalFormOk" :company-id="companyId"></companyUserinfo-modal>
+    <companyEnvTrial-modal ref="modalForm" :company-id="companyId" @ok="modalFormOk"></companyEnvTrial-modal>
   </a-card>
 </template>
 
@@ -113,28 +107,26 @@
   import '@/assets/less/TableExpand.less'
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import CompanyUserinfoModal from "../../oneCompayOneRecord/routeView/modules/CompanyUserinfoModal";
-  import {getAction} from '@/api/manage'
+  import CompanyEnvTrialModal from '../../oneCompayOneRecord/routeView/modules/CompanyEnvTrialModal'
 
   export default {
-    name: "UserinfoApplyList",
+    name: "EnvTrialApplyList",
     mixins:[JeecgListMixin, mixinDevice],
     components: {
-      CompanyUserinfoModal
+      CompanyEnvTrialModal
     },
     props:{
       companyId:'',
       isApply:{
         type:Boolean,
-        default(){
-          return false;
-        }
+        default:false
       }
     },
     data () {
       return {
+        description: '环评审批信息管理页面',
+        queryParam: {companyId:this.companyId},
 
-        queryParam:{companyId:this.companyId},
         // 表头
         columns: [
           {
@@ -148,55 +140,27 @@
             }
           },
           {
-            title:'姓名',
+            title:'项目名称',
             align:"center",
-            dataIndex: 'name',
-            scopedSlots: { customRender: 'name' }
+            dataIndex: 'projectName'
           },
           {
-            title:'性别',
+            title:'批复文件号',
             align:"center",
-            dataIndex: 'sex_dictText'
+            dataIndex: 'approveFilenum'
           },
           {
-            title:'学历',
+            title:'审批单位',
             align:"center",
-            dataIndex: 'education'
+            dataIndex: 'approveUnit'
           },
           {
-            title:'专业',
+            title:'审批时间',
             align:"center",
-            dataIndex: 'profession'
-          },
-          {
-            title:'职称',
-            align:"center",
-            dataIndex: 'jobTitle'
-          },
-          {
-            title:'部门',
-            align:"center",
-            dataIndex: 'department'
-          },
-          {
-            title:'岗位',
-            align:"center",
-            dataIndex: 'post'
-          },
-          {
-            title:'身份证号码',
-            align:"center",
-            dataIndex: 'idCard'
-          },
-          {
-            title:'手机号码',
-            align:"center",
-            dataIndex: 'pbone'
-          },
-          {
-            title:'出生日期',
-            align:"center",
-            dataIndex: 'birthDate'
+            dataIndex: 'approveDate',
+            customRender:function (text) {
+              return !text?"":(text.length>10?text.substr(0,10):text)
+            }
           },
           {
             title:'数据状态',
@@ -213,11 +177,10 @@
           }
         ],
         url: {
-          list: "/companyUserinfo/list",
-          delete:"/companyUserinfo/delete",
-          deleteBatch:"/companyUserinfo/deleteBatch",
-          batchApply:"/companyUserinfo/batchApply"
-
+          list: "/company/envTrial/list",
+          delete:"/company/envTrial/delete",
+          deleteBatch:"/company/envTrial/deleteBatch",
+          batchApply:"/company/envTrial/batchApply"
         },
         dictOptions:{},
       }
@@ -240,6 +203,8 @@
       },
     },
     methods: {
+      initDictConfig(){
+      },
       handleView: function (record) {
         this.$refs.modalForm.edit(record);
         this.$refs.modalForm.title = "查看";
@@ -253,12 +218,9 @@
         this.$refs.modalForm.disable = false;
         this.handleEdit(record);
       },
-      initDictConfig(){
-
-      },
       localReset(){
-          this.queryParam = {companyId:this.companyId};
-          this.loadData(1);
+        this.queryParam = {companyId:this.companyId};
+        this.loadData(1);
       },
       batchApply() {
         if (this.selectedRowKeys.length <= 0) {

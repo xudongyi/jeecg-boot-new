@@ -34,7 +34,7 @@
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
-              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
+              <a-button type="primary" @click="localReset" icon="reload" style="margin-left: 8px">重置</a-button>
              <!-- <a @click="handleToggleSearch" style="margin-left: 8px">
                 {{ toggleSearchStatus ? '收起' : '展开' }}
                 <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>
@@ -64,7 +64,7 @@
 
     <!-- table区域-begin -->
     <div>
-       <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">
+       <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;" v-show="isApply">
          <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a style="font-weight: 600">{{ selectedRowKeys.length }}</a>项
          <a style="margin-left: 24px" @click="onClearSelected">清空</a>
        </div>
@@ -116,7 +116,7 @@
       </a-table>
     </div>
 
-    <companyProductMaterial-modal ref="modalForm" @ok="modalFormOk"></companyProductMaterial-modal>
+    <companyProductMaterial-modal ref="modalForm" :company-id="companyId" @ok="modalFormOk"></companyProductMaterial-modal>
   </a-card>
 </template>
 
@@ -127,6 +127,7 @@
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import CompanyProductMaterialModal from '../../oneCompayOneRecord/routeView/modules/CompanyProductMaterialModal'
   import JDictSelectTag from '@/components/dict/JDictSelectTag.vue'
+  import {getAction} from '@/api/manage'
 
 
   export default {
@@ -204,6 +205,16 @@
             dataIndex: 'precursorChemicals_dictText'
           },
           {
+            title:'状态',
+            align:"center",
+            dataIndex: 'outputStatus_dictText'
+          },
+          {
+            title:'数据状态',
+            align:"center",
+            dataIndex: 'status_dictText'
+          },
+          {
             title: '操作',
             dataIndex: 'action',
             align:"center",
@@ -214,13 +225,15 @@
         ],
         url: {
           list: "/companyProductMaterial/list",
-          // delete: "/testOneDemo/companyProductMaterial/delete",
-          // deleteBatch: "/testOneDemo/companyProductMaterial/deleteBatch",
-          // exportXlsUrl: "/testOneDemo/companyProductMaterial/exportXls",
-          // importExcelUrl: "testOneDemo/companyProductMaterial/importExcel",
+          delete:"/companyProductMaterial/delete",
+          deleteBatch:"/companyProductMaterial/deleteBatch",
+          batchApply:"/companyProductMaterial/batchApply"
         },
         dictOptions:{},
       }
+    },
+    created() {
+      console.log(this.companyId)
     },
     computed: {
       importExcelUrl: function(){
@@ -241,6 +254,7 @@
     },
     methods: {
       handleView: function (record) {
+        console.log(record)
         this.$refs.modalForm.edit(record);
         this.$refs.modalForm.title = "查看";
         this.$refs.modalForm.disableSubmit = false;
@@ -250,12 +264,46 @@
         this.handleAdd();
 
       },
-      applyEdit(){
+      applyEdit(record){
         this.$refs.modalForm.disable = false;
-        this.handleEdit();
+        this.handleEdit(record);
       },
       initDictConfig(){
-      }
+      },
+      localReset(){
+        this.queryParam = {companyId:this.companyId};
+        this.loadData(1);
+      },
+      batchApply() {
+        if (this.selectedRowKeys.length <= 0) {
+          this.$message.warning('请选择一条记录！');
+          return;
+        } else {
+          var ids = "";
+          for (var a = 0; a < this.selectedRowKeys.length; a++) {
+            ids += this.selectedRowKeys[a] + ",";
+          }
+          var that = this;
+          this.$confirm({
+            title: "确认申报",
+            content: "是否申报选中数据?",
+            onOk: function () {
+              that.loading = true;
+              getAction(that.url.batchApply, {ids: ids}).then((res) => {
+                if (res.success) {
+                  that.$message.success(res.message);
+                  that.loadData();
+                  that.onClearSelected();
+                } else {
+                  that.$message.warning(res.message);
+                }
+              }).finally(() => {
+                that.loading = false;
+              });
+            }
+          });
+        }
+      },
     }
   }
 </script>
