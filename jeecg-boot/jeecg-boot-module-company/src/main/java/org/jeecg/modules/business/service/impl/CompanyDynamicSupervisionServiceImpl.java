@@ -32,8 +32,9 @@ public class CompanyDynamicSupervisionServiceImpl extends ServiceImpl<CompanyDyn
     }
 
     @Override
-    public Page<CompanyDynamicSupervisionVO> getCompanyDynamicSupervision(Page<CompanyDynamicSupervisionVO> page, String companyId, String status, String companyName,String reportYear) {
-        return page.setRecords(companyDynamicSupervisionMapper.getCompanyDynamicSupervision(page, companyId, status,companyName,reportYear));
+    public Page<CompanyDynamicSupervisionVO> getCompanyDynamicSupervision(Page<CompanyDynamicSupervisionVO> page, String companyIds, String status,String reportYear) {
+
+        return page.setRecords(companyDynamicSupervisionMapper.getCompanyDynamicSupervision(page, companyIds.split(","), status,reportYear));
     }
 
 //    @Override

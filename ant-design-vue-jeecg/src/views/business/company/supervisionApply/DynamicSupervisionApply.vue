@@ -12,7 +12,7 @@
       computed: {},
       data(){
         return{
-          companyid:this.$store.getters.userInfo.companyIds[0]
+          companyid:this.$store.getters.userInfo.companyIds.join(',')
         }
       },
       methods:{
@@ -100,7 +100,7 @@
         console.log(this.$store.getters.userInfo)
         if(this.companyid==null) {
 
-          this.companyid = this.$store.getters.userInfo.companyIds[0]
+          this.companyid = this.$store.getters.userInfo.companyIds
         }
       }
 

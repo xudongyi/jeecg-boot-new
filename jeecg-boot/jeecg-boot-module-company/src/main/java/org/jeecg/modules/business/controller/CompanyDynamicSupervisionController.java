@@ -106,13 +106,16 @@ public class CompanyDynamicSupervisionController extends JeecgController<Company
 									@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
 									@RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
 									HttpServletRequest req) {
-		 String companyId = req.getParameter("companyId");
+		 String companyIds = req.getParameter("companyIds");
 		 String status = req.getParameter("status");
-		 String companyName = req.getParameter("companyName");
+		 String companyId = req.getParameter("companyId");
 		 String reportYear = req.getParameter("reportYear");
+		 if(!StrUtil.isEmpty(companyId)) {
+			 companyIds= companyId;
+		 }
 //		 QueryWrapper<CompanyDynamicSupervisionVO> queryWrapper = QueryGenerator.initQueryWrapper(companyDynamicSupervision,req.getParameterMap());
 		 Page<CompanyDynamicSupervisionVO> page = new Page<>(pageNo, pageSize);
-		 IPage<CompanyDynamicSupervisionVO> pageList = companyDynamicSupervisionService.getCompanyDynamicSupervision(page,companyId,status,companyName,reportYear);
+		 IPage<CompanyDynamicSupervisionVO> pageList = companyDynamicSupervisionService.getCompanyDynamicSupervision(page,companyIds,status,reportYear);
 		 return Result.ok(pageList);
 	 }
 
