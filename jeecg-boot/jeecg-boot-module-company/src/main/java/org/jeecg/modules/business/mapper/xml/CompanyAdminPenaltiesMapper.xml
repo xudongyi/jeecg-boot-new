@@ -29,21 +29,18 @@
         LEFT JOIN company_base t2 ON t1.company_id = t2.id
         LEFT JOIN sys_user t3 ON t1.create_by=t3.id
         LEFT JOIN sys_user t4 ON t1.update_by=t4.id
-        where 1=1
-        <if test="companyId != null">
-            and t2.id in (#{companyId})
-        </if>
+        where  t2.id in
+        <foreach collection="companyIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
         <if test="status != null">
-            and status in (#{status})
-        </if>
-        <if test="companyName != null">
-            and company_name like concat('%',#{companyName},'%')
+            and t1.status in (#{status})
         </if>
         <if test="dateBegin != null">
-            and report_date >= (#{dateBegin})
+            and t1.report_date >= (#{dateBegin})
         </if>
         <if test="dateEnd != null">
-            and report_date &lt;= (#{dateEnd})
+            and t1.report_date &lt;= (#{dateEnd})
         </if>
     </select>
 </mapper>

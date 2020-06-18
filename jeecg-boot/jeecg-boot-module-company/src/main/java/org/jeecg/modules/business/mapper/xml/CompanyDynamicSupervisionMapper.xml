@@ -31,10 +31,10 @@
             #{id}
         </foreach>
         <if test="status != null">
-            and status in (#{status})
+            and t1.status in (#{status})
         </if>
         <if test="reportYear != null">
-            and report_year = (#{reportYear})
+            and t1.report_year = (#{reportYear})
         </if>
 	</select>
 </mapper>

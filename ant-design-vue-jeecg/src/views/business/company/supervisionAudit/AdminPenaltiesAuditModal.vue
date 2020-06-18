@@ -6,7 +6,8 @@
     :confirmLoading="confirmLoading"
     switchFullscreen
 
-    @cancel="handleCancel">
+    @cancel="handleCancel"
+    cancelText="关闭">
     <a-spin :spinning="confirmLoading">
       <a-form :form="form">
         <a-row>
@@ -21,30 +22,32 @@
             </a-form-item>
           </a-col>
           <a-col span="12">
-            <a-form-item label="申报年份" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input-number v-decorator="['reportYear', validatorRules.reportYear]" style="width: 100%" :disabled="disabled"/>
+            <a-form-item label="发文日期" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <j-date placeholder="请选择发文日期" v-decorator="['reportDate', validatorRules.reportDate]" :trigger-change="true" style="width: 100%" :disabled="disabled"/>
             </a-form-item>
           </a-col>
         </a-row>
         <a-row>
           <a-col span="12">
-            <a-form-item label="材料类型" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <j-dict-select-tag type="list" v-decorator="['documentType', validatorRules.documentType]" :trigger-change="true" dictCode="supervision_document_type" :disabled="disabled"/>
+            <a-form-item label="文件编号" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <a-input v-decorator="['documentNo', validatorRules.documentNo]" placeholder="请输入文件编号" :disabled="disabled"></a-input>
             </a-form-item>
           </a-col>
           <a-col span="12">
-            <a-form-item label="材料名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input v-decorator="['documentName', validatorRules.documentName]" :disabled="disabled"></a-input>
+
+            <a-form-item label="文件名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <a-input v-decorator="['documentName', validatorRules.documentName]" placeholder="请输入文件名称" :disabled="disabled"></a-input>
             </a-form-item>
           </a-col>
         </a-row>
         <a-row>
           <a-col span="24">
-            <a-form-item label="附件上传" :labelCol="labelCols" :wrapperCol="wrapperCols" >
+            <a-form-item label="文件上传" :labelCol="labelCols" :wrapperCol="wrapperCols">
               <j-upload :trigger-change="true"></j-upload>
             </a-form-item>
           </a-col>
         </a-row>
+
         <a-row>
           <a-col span="12">
             <a-form-item label="申报人" :labelCol="labelCol" :wrapperCol="wrapperCol">
@@ -61,16 +64,16 @@
 
         <a-row>
           <a-col span="12">
-          <a-form-item label="审核结果：" :labelCol="labelCol" :wrapperCol="wrapperCol">
-            <a-radio-group v-decorator="['status']" :disabled="disableSubmit">
-              <a-radio value="2">
-                通过
-              </a-radio>
-              <a-radio value="3">
-                不通过
-              </a-radio>
-            </a-radio-group>
-          </a-form-item>
+            <a-form-item label="审核结果：" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <a-radio-group v-decorator="['status']" :disabled="disableSubmit">
+                <a-radio value="2">
+                  通过
+                </a-radio>
+                <a-radio value="3">
+                  不通过
+                </a-radio>
+              </a-radio-group>
+            </a-form-item>
           </a-col>
         </a-row>
 
@@ -83,14 +86,14 @@
         </a-row>
         <a-row>
           <a-col span="12">
-                <a-form-item label="审核人" :labelCol="labelCol" :wrapperCol="wrapperCol">
-                  <a-input v-decorator="['updateName']" placeholder="请输入审核人" :disabled="disabled"></a-input>
-                </a-form-item>
+            <a-form-item label="审核人" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <a-input v-decorator="['updateName']" placeholder="请输入审核人" :disabled="disabled"></a-input>
+            </a-form-item>
           </a-col>
           <a-col span="12">
-                <a-form-item label="审核时间" :labelCol="labelCol" :wrapperCol="wrapperCol">
-                  <j-date :showTime="true" :dateFormat="dateFormat" placeholder="请选择审核时间" v-decorator="['updateTime']" :trigger-change="true" style="width: 100%" :disabled="disabled"/>
-                </a-form-item>
+            <a-form-item label="审核时间" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <j-date :showTime="true" :dateFormat="dateFormat" placeholder="请选择审核时间" v-decorator="['updateTime']" :trigger-change="true" style="width: 100%" :disabled="disabled"/>
+            </a-form-item>
           </a-col>
         </a-row>
 
@@ -115,14 +118,13 @@
   import moment from 'moment'
 
   export default {
-    name: "DynamicSupervisionAuditModal",
+    name: "CompanyAdminPenaltiesModal",
     components: {
       JDate,
       JUpload,
       JDictSelectTag,
     },
-    props:{
-
+    props: {
     },
     data () {
       return {
@@ -130,10 +132,10 @@
         dateFormat:"YYYY-MM-DD HH:mm:ss",
         title:"操作",
         width:800,
+        items:[],
         disabled:true,
         disableSubmit:'',
         result:'',
-        items:[],
         visible: false,
         model: {},
         labelCol: {
@@ -164,26 +166,27 @@
               { required: true, message: '请输入数据状态!'},
             ]
           },
-          reportYear: {
+          reportDate: {
             rules: [
-              { required: true, message: '请输入申报年份!'},
-            ]
-          },
-          documentType: {
-            rules: [
-              { required: true, message: '请输入材料类型!'},
+              { required: true, message: '请输入发文日期!'},
             ]
           },
           documentName: {
             rules: [
-              { required: true, message: '请输入材料名称!'},
+              { required: true, message: '请输入文件名称!'},
+            ]
+          },
+          documentNo: {
+            rules: [
+              { required: true, message: '请输入文件编号!'},
             ]
           },
         },
         url: {
-          // add: "/cds/companyDynamicSupervision/add",
-          edit: "/cds/companyDynamicSupervision/edit",
+          add: "/cap/companyAdminPenalties/add",
+          edit: "/cap/companyAdminPenalties/edit",
         },
+
       }
     },
     created () {
@@ -211,10 +214,8 @@
 
         },1000)
       },
-      // add () {
-      //   this.edit({});
-      // },
       edit (record) {
+        console.log(record);
         this.form.resetFields();
         this.model = Object.assign({}, record);
         this.visible = true;
@@ -226,18 +227,8 @@
         this.model.updateName = this.$store.getters.userInfo.realname;
 
         this.$nextTick(() => {
-          this.form.setFieldsValue(pick(this.model, 'companyId',
-            'reportYear',
-            'documentType',
-            'documentName',
-            'createName',
-            'createTime',
-            'content',
-            'status',
-            'updateName',
-            'updateTime'))
-        });
-
+          this.form.setFieldsValue(pick(this.model,'status','companyId','reportDate','documentName','documentNo','content','createName','createTime','updateName','updateTime'));
+        })
       },
       close () {
         this.$emit('close');
@@ -282,16 +273,10 @@
       handleCancel () {
         this.close()
       },
-      // filterOption(input, option) {
-      //   return (
-      //     option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
-      //   );
-      // }
       // popupCallback(row){
-      //   this.form.setFieldsValue(pick(row,'status','companyId','reportYear','documentType','documentName','content','createBy','createTime','updateBy','updateTime'))
+      //   this.form.setFieldsValue(pick(row,'status','companyId','reportDate','documentName','documentNo','content','createBy','createTime','updateBy','updateTime'))
       // },
 
     }
-
   }
 </script>

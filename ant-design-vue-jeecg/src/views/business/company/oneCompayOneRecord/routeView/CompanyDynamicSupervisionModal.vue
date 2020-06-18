@@ -258,7 +258,7 @@
             let httpUrl = this.url.declare;
             let method = 'put';
             let formData = Object.assign(this.model, values);
-            formData.companyId=this.companyId;
+            console.log("表单提交数据",formData)
             httpAction(httpUrl,formData,method).then((res)=>{
               if(res.success){
                 that.$message.success(res.message);

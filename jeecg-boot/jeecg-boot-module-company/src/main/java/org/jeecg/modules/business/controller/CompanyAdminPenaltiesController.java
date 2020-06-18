@@ -61,13 +61,16 @@ public class CompanyAdminPenaltiesController extends JeecgController<CompanyAdmi
 								   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
 								   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
 								   HttpServletRequest req) throws ParseException {
-		String companyId = req.getParameter("companyId");
+		String companyIds = req.getParameter("companyIds");
 		String status = req.getParameter("status");
-		String companyName = req.getParameter("companyName");
+		String companyId = req.getParameter("companyId");
 		String reportDateBegin = req.getParameter("reportDate_begin");
 		String reportDateEnd = req.getParameter("reportDate_end");
 		Date dateBegin;
 		Date dateEnd;
+		if(!StrUtil.isEmpty(companyId)) {
+			companyIds= companyId;
+		}
 		if(StrUtil.isEmpty(reportDateBegin) && StrUtil.isEmpty(reportDateEnd)) {
 			dateBegin = null;
 			dateEnd = null;
@@ -77,7 +80,7 @@ public class CompanyAdminPenaltiesController extends JeecgController<CompanyAdmi
 		}
 //		QueryWrapper<CompanyAdminPenalties> queryWrapper = QueryGenerator.initQueryWrapper(companyAdminPenalties, parameterMap);
 		Page<CompanyAdminPenaltiesVO> page = new Page<CompanyAdminPenaltiesVO>(pageNo, pageSize);
-		IPage<CompanyAdminPenaltiesVO> pageList = companyAdminPenaltiesService.getCompanyAdminPenalties(page, companyId,status,companyName,dateBegin,dateEnd);
+		IPage<CompanyAdminPenaltiesVO> pageList = companyAdminPenaltiesService.getCompanyAdminPenalties(page, companyIds,status,dateBegin,dateEnd);
 		return Result.ok(pageList);
 	}
 
