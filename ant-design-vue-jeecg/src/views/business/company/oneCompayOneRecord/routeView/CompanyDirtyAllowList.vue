@@ -86,14 +86,14 @@
            <a-divider v-if="operationShow && (record.status=='0' || record.status=='3')" type="vertical"/>
           <a @click="handleview(record)" v-if="!operationShow || (record.status=='1' || record.status=='4')">查看</a>
            <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
-                  <a v-if="operationShow  && (record.status=='0' && record.status=='3')">删除</a>
+                  <a v-if="operationShow  && (record.status=='0' || record.status=='3')">删除</a>
           </a-popconfirm>
         </span>
 
       </a-table>
     </div>
 
-    <companyDirtyAllow-modal ref="modalForm" @ok="modalFormOk" :companyId="companyId"></companyDirtyAllow-modal>
+    <company-dirty-allow-modal ref="modalForm" @ok="modalFormOk" :companyId="companyId"></company-dirty-allow-modal>
   </a-card>
 </template>
 
