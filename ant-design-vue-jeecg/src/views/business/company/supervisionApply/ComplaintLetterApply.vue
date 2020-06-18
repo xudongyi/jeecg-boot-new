@@ -10,7 +10,7 @@
       components: {CompanyComplaintLetterList},
       data(){
         return{
-          companyid:this.$store.getters.userInfo.companyIds[0]
+          companyid:this.$store.getters.userInfo.companyIds.join(",")
         }
       },
       methods:{
@@ -45,7 +45,7 @@
           {
             title:'投诉日期',
             align:"center",
-            dataIndex: 'compliantDate',
+            dataIndex: 'complaintDate',
             customRender:function (text) {
               return !text?"":(text.length>10?text.substr(0,10):text)
             }
@@ -60,9 +60,6 @@
             title:'申报时间',
             align:"center",
             dataIndex: 'createTime',
-            customRender:function (text) {
-              return !text?"":(text.length>10?text.substr(0,10):text)
-            }
           },
           {
             title:'申报人',
@@ -73,9 +70,6 @@
             title:'审核时间',
             align:"center",
             dataIndex: 'updateTime',
-            customRender:function (text) {
-              return !text?"":(text.length>10?text.substr(0,10):text)
-            }
           },
           {
             title:'审核人',
@@ -102,7 +96,7 @@
         console.log(this.$store.getters.userInfo)
         if(this.companyid==null) {
 
-          this.companyid = this.$store.getters.userInfo.companyIds[0]
+          this.companyid = this.$store.getters.userInfo.companyIds
         }
       }
     }

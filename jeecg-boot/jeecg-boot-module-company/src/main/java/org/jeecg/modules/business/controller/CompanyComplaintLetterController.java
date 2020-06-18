@@ -63,13 +63,16 @@ public class CompanyComplaintLetterController extends JeecgController<CompanyCom
 								   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
 								   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
 								   HttpServletRequest req) throws ParseException {
-		String companyId = req.getParameter("companyId");
+		String companyIds = req.getParameter("companyIds");
 		String status = req.getParameter("status");
-		String companyName = req.getParameter("companyName");
-		String reportDateBegin = req.getParameter("compliantDate_begin");
-		String reportDateEnd = req.getParameter("compliantDate_end");
+		String companyId = req.getParameter("companyId");
+		String reportDateBegin = req.getParameter("complaintDate_begin");
+		String reportDateEnd = req.getParameter("complaintDate_end");
 		Date dateBegin;
 		Date dateEnd;
+		if(!StrUtil.isEmpty(companyId)) {
+			companyIds= companyId;
+		}
 		if(StrUtil.isEmpty(reportDateBegin) && StrUtil.isEmpty(reportDateEnd)) {
 			dateBegin = null;
 			dateEnd = null;
@@ -78,7 +81,7 @@ public class CompanyComplaintLetterController extends JeecgController<CompanyCom
 			dateEnd = new SimpleDateFormat("yyyy-MM-dd").parse(reportDateEnd);
 		}
 		Page<CompanyComplaintLetterVO> page = new Page<>(pageNo, pageSize);
-		IPage<CompanyComplaintLetterVO> pageList = companyComplaintLetterService.getCompanyComplaintLetter(page,companyId,status,companyName,dateBegin,dateEnd);
+		IPage<CompanyComplaintLetterVO> pageList = companyComplaintLetterService.getCompanyComplaintLetter(page,companyIds,status,dateBegin,dateEnd);
 		return Result.ok(pageList);
 	}
 

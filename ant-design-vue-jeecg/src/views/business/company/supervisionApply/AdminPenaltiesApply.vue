@@ -66,9 +66,6 @@
               title:'申报时间',
               align:"center",
               dataIndex: 'createTime',
-              customRender:function (text) {
-                return !text?"":(text.length>10?text.substr(0,10):text)
-              }
             },
             {
               title:'申报人',
@@ -79,9 +76,6 @@
               title:'审核时间',
               align:"center",
               dataIndex: 'updateTime',
-              customRender:function (text) {
-                return !text?"":(text.length>10?text.substr(0,10):text)
-              }
             },
             {
               title:'审核人',

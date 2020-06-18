@@ -50,7 +50,7 @@ public class CompanyComplaintLetter implements Serializable {
 	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern="yyyy-MM-dd")
     @ApiModelProperty(value = "投诉日期")
-    private java.util.Date compliantDate;
+    private java.util.Date complaintDate;
 	/**污染类型*/
 	@Excel(name = "污染类型", width = 15, dicCode = "pollution_type")
 	@Dict(dicCode = "pollution_type")
@@ -78,8 +78,8 @@ public class CompanyComplaintLetter implements Serializable {
     private java.lang.String updateBy;
 	/**审核时间*/
 	@Ignore
-	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
-    @DateTimeFormat(pattern="yyyy-MM-dd")
+	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "审核时间")
     private java.util.Date updateTime;
 }

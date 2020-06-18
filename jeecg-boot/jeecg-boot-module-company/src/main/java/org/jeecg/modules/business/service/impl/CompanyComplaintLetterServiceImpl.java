@@ -33,7 +33,7 @@ public class CompanyComplaintLetterServiceImpl extends ServiceImpl<CompanyCompla
     }
 
     @Override
-    public Page<CompanyComplaintLetterVO> getCompanyComplaintLetter(Page<CompanyComplaintLetterVO> page, String companyId, String status, String companyName, Date dateBegin, Date dateEnd) {
-        return page.setRecords(companyComplaintLetterMapper.getCompanyComplaintLetter(page,companyId,status,companyName,dateBegin,dateEnd));
+    public Page<CompanyComplaintLetterVO> getCompanyComplaintLetter(Page<CompanyComplaintLetterVO> page, String companyIds, String status, Date dateBegin, Date dateEnd) {
+        return page.setRecords(companyComplaintLetterMapper.getCompanyComplaintLetter(page,companyIds.split(","),status,dateBegin,dateEnd));
     }
 }

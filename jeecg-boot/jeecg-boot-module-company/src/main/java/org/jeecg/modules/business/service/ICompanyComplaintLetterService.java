@@ -16,5 +16,5 @@ import java.util.Date;
  */
 public interface ICompanyComplaintLetterService extends IService<CompanyComplaintLetter> {
     Integer findCountByCompanyId(String companyId);
-    Page<CompanyComplaintLetterVO> getCompanyComplaintLetter(Page<CompanyComplaintLetterVO> page, String companyId, String status, String companyName, Date dateBegin, Date dateEnd);
+    Page<CompanyComplaintLetterVO> getCompanyComplaintLetter(Page<CompanyComplaintLetterVO> page, String companyIds, String status, Date dateBegin, Date dateEnd);
 }
