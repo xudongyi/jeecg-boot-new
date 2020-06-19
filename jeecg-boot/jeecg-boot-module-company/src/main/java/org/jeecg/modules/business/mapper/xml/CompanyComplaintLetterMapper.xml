@@ -40,10 +40,10 @@
             and t1.status = '2'
         </if>
         <if test="status == null and listType ==1">
-            and t1.status in ('0','1','3')
+            and t1.status in ('0','1','2','3')
         </if>
         <if test="status == null and listType ==2">
-        and t1.status ='1'
+        and t1.status in ('1','2','3')
         </if>
         <if test="dateBegin != null">
             and t1.complaint_date >= (#{dateBegin})
