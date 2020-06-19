@@ -297,16 +297,10 @@ public class CompanyEnvTrialController extends JeecgController<CompanyEnvTrial, 
 	 @ApiOperation(value="查询环评审批信息附件", notes="查询环评审批信息附件")
 	 @GetMapping(value = "/queryFiles")
 	 public Result<?> queryFiles(@RequestParam(name="id",required=true) String id) {
-		 List<CompanyFile> files = companyFileService.list(new QueryWrapper<CompanyFile>().lambda().eq(CompanyFile::getFromTable,Constant.tables.ENVTRIAL)
-				 .eq(CompanyFile::getTableId,id));
-		 List<Map<String,String>> result = new ArrayList<>();
-		 for(CompanyFile companyFile:files){
-		 	Map<String,String> temp = new HashMap<>();
-			 temp.put("filePath",companyFile.getFilepath()+companyFile.getFilename());
-			 temp.put("fileName",companyFile.getFilename().substring(0,companyFile.getFilename().lastIndexOf("_"))+companyFile.getFilename().substring(companyFile.getFilename().lastIndexOf(".")));
-			 result.add(temp);
-		 }
+		 List<Map<String, String>> result = companyFileService.getFileMaps(id,Constant.tables.ENVTRIAL);
 		 return Result.ok(result);
 	 }
 
-}
+
+
+ }

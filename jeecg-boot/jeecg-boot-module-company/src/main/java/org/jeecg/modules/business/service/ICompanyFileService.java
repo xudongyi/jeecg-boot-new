@@ -4,6 +4,9 @@ import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.jeecg.modules.business.entity.CompanyFile;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * @Description: 企业附件表
  * @Author: jeecg-boot
@@ -14,4 +17,5 @@ public interface ICompanyFileService extends IService<CompanyFile> {
 
 
     boolean saveFiles(String files, String fileType, String fromTable, String tableId);
+    List<Map<String, String>> getFileMaps(String id, String fromTable);
 }

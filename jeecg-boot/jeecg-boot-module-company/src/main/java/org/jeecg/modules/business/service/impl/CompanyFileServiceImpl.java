@@ -3,6 +3,7 @@ package org.jeecg.modules.business.service.impl;
 
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONArray;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.jeecg.modules.business.entity.CompanyFile;
 import org.jeecg.modules.business.mapper.CompanyFileMapper;
@@ -11,7 +12,9 @@ import org.jeecg.modules.business.utils.Constant;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description: 企业附件表
@@ -50,5 +53,26 @@ public class CompanyFileServiceImpl extends ServiceImpl<CompanyFileMapper, Compa
             }
         }
         return this.saveBatch(companyFiles);
+    }
+
+
+    /**
+     * 查询文件列表
+     * @param id  关联表ID
+     * @param fromTable 关联表名
+     * @return
+     */
+    @Override
+    public List<Map<String, String>> getFileMaps(String id, String fromTable) {
+        List<CompanyFile> files = this.list(new QueryWrapper<CompanyFile>().lambda().eq(CompanyFile::getFromTable, fromTable)
+                .eq(CompanyFile::getTableId,id));
+        List<Map<String,String>> result = new ArrayList<>();
+        for(CompanyFile companyFile:files){
+            Map<String,String> temp = new HashMap<>();
+            temp.put("filePath",companyFile.getFilepath()+companyFile.getFilename());
+            temp.put("fileName",companyFile.getFilename().substring(0,companyFile.getFilename().lastIndexOf("_"))+companyFile.getFilename().substring(companyFile.getFilename().lastIndexOf(".")));
+            result.add(temp);
+        }
+        return result;
     }
 }

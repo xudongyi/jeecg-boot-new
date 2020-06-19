@@ -325,8 +325,84 @@ public class CompanyApplyController extends JeecgController<CompanyApply, ICompa
         return Result.ok();
     }
 
+    /**
+     * 提交申报考核信息
+     *
+     * @param jsonObject 提交申报考核信息
+     */
+    @PostMapping(value = "/batchFail")
+    @AutoLog(value = "批量不批准考核信息")
+    @ApiOperation(value = "批量不批准考核信息", notes = "通用")
+    public Result<?> batchFail(@RequestBody JSONObject jsonObject) {
+        String[]  ids = jsonObject.getString("ids").split(",");
+        if(ids.length>0){
+            //修改申请表
+            companyApplyService.update(new UpdateWrapper<CompanyApply>().lambda().in(CompanyApply::getId,Arrays.asList(ids))
+                    .set(CompanyApply::getStatus,Constant.status.NOPASS));
+            Collection<CompanyApply> companyApplys = companyApplyService.listByIds(Arrays.asList(ids));
+            //多个
+            Map<String,List<String>> services = new HashMap<>();
+            for(CompanyApply companyApply:companyApplys){
 
+                services.putIfAbsent(companyApply.getFromTable(),new ArrayList<>());
 
+                services.get(companyApply.getFromTable()).add(companyApply.getNewId());
+
+            }
+
+            for(Map.Entry<String,List<String>> entry : services.entrySet()){
+
+                ServiceImpl o = ServiceUtils.getService(entry.getKey());
+                UpdateWrapper updateWrapper = new UpdateWrapper<>().in("id",entry.getValue()).set("status",Constant.status.NOPASS);
+                o.update(updateWrapper);
+
+            }
+
+        }
+
+        return Result.ok();
+    }
+
+    /**
+     * 提交申报考核信息
+     *
+     * @param jsonObject 提交申报考核信息
+     */
+    @PostMapping(value = "/batchPass")
+    @AutoLog(value = "批量批准考核信息")
+    @ApiOperation(value = "批量批准考核信息", notes = "通用")
+    public Result<?> batchPass(@RequestBody JSONObject jsonObject) {
+        String[]  ids = jsonObject.getString("ids").split(",");
+        if(ids.length>0){
+            //修改申请表
+            companyApplyService.update(new UpdateWrapper<CompanyApply>().lambda().in(CompanyApply::getId,Arrays.asList(ids))
+                    .set(CompanyApply::getStatus,Constant.status.NORMAL));
+            Collection<CompanyApply> companyApplys = companyApplyService.listByIds(Arrays.asList(ids));
+            //多个
+            Map<String,Map<String,List<String>>> services = new HashMap<>();
+            for(CompanyApply companyApply:companyApplys){
+
+                services.putIfAbsent(companyApply.getFromTable(),new HashMap<>());
+
+                services.get(companyApply.getFromTable()).putIfAbsent("old",new ArrayList<>());
+                services.get(companyApply.getFromTable()).putIfAbsent("new",new ArrayList<>());
+                services.get(companyApply.getFromTable()).get("new").add(companyApply.getNewId());
+                services.get(companyApply.getFromTable()).get("old").add(companyApply.getOldId());
+
+            }
+
+            for(Map.Entry<String,Map<String,List<String>>> entry : services.entrySet()){
+
+                ServiceImpl o = ServiceUtils.getService(entry.getKey());
+                UpdateWrapper updateWrapper = new UpdateWrapper<>().in("id",entry.getValue().get("new")).set("status",Constant.status.NORMAL);
+                o.update(updateWrapper);
+                o.update(new UpdateWrapper<>().in("id",entry.getValue().get("old")).set("status",Constant.status.EXPIRED));
+            }
+
+        }
+
+        return Result.ok();
+    }
 
 
 
