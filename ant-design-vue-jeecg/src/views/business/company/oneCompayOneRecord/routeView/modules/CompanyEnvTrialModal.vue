@@ -45,7 +45,7 @@
   import pick from 'lodash.pick'
   import JDate from '@/components/jeecg/JDate'
   import JUpload from '@/components/jeecg/JUpload'
-  import {queryenvTrialFiles} from '../../../../requestAction/request'
+  import {queryFiles} from '../../../../requestAction/request'
   export default {
     name: "CompanyEnvTrialModal",
     components: { 
@@ -98,7 +98,8 @@
         url: {
           add: "/company/envTrial/add",
           edit: "/company/envTrial/edit",
-          apply:"/company/envTrial/editAndApply"
+          apply:"/company/envTrial/editAndApply",
+          queryFile:"/company/envTrial/queryFiles"
         }
       }
     },
@@ -125,7 +126,7 @@
         if(record.id){
             //查询所属文件
           let _this =this;
-          queryenvTrialFiles({id:record.id}).then((res)=>{
+          queryFiles({id:record.id},this.$data.url.queryFile).then((res)=>{
 
             _this.$nextTick(() => {
 

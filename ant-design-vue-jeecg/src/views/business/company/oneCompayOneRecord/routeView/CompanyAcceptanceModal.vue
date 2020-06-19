@@ -25,7 +25,8 @@
                   :disabled="disableSubmit"/>
         </a-form-item>
         <a-form-item label="验收附件" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-upload v-decorator="['files']" :trigger-change="true" :disabled="disableSubmit"></j-upload>
+          <j-upload ref="uploadRef" :disabled="disableSubmit" fileType="file" bizPath="envtax" @change="fileListChange" @delete ="fileDelete"
+          ></j-upload>
         </a-form-item>
 
       </a-form>
@@ -45,6 +46,7 @@
   import {validateDuplicateValue} from '@/utils/util'
   import JDate from '@/components/jeecg/JDate'
   import JUpload from '@/components/jeecg/JUpload'
+  import {queryenvTrialFiles} from "../../../requestAction/request";
 
 
   export default {
@@ -97,6 +99,20 @@
         this.$nextTick(() => {
           this.form.setFieldsValue(pick(this.model, 'projectName', 'examineUnit', 'examineNum', 'examineTime', 'files'))
         })
+        if(record.id){
+          //查询所属文件
+          let _this =this;
+          queryenvTrialFiles({id:record.id}).then((res)=>{
+            _this.$nextTick(() => {
+              _this.$refs.uploadRef.initFileListArr(res.result);
+            });
+          });
+        }else{
+          //清空上传列表
+          this.$nextTick(() => {
+            this.$refs.uploadRef.initFileList("");
+          });
+        }
       },
       close() {
         this.$emit('close');
@@ -165,6 +181,12 @@
       },
       popupCallback(row) {
         this.form.setFieldsValue(pick(row, 'projectName', 'examineUnit', 'examineNum', 'examineTime', 'files'))
+      },
+      fileListChange(newFileList){
+        this.fileList = newFileList;
+      },
+      fileDelete(file){
+        this.deleteFiles.push(file.response.message);
       },
     },
     props: {

@@ -79,8 +79,4 @@ public class CompanyAcceptance implements Serializable {
     @DateTimeFormat(pattern="yyyy-MM-dd")
     @ApiModelProperty(value = "审批时间")
     private Date examineTime;
-	/**验收附件*/
-	@Excel(name = "验收附件", width = 15)
-    @ApiModelProperty(value = "验收附件")
-    private String files;
 }

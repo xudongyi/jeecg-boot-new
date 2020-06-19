@@ -2,6 +2,7 @@ package org.jeecg.modules.business.controller;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -14,8 +15,10 @@ import org.jeecg.common.system.base.controller.JeecgController;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.modules.business.entity.CompanyAcceptance;
 import org.jeecg.modules.business.entity.CompanyApply;
+import org.jeecg.modules.business.entity.CompanyFile;
 import org.jeecg.modules.business.service.ICompanyAcceptanceService;
 import org.jeecg.modules.business.service.ICompanyApplyService;
+import org.jeecg.modules.business.service.ICompanyFileService;
 import org.jeecg.modules.business.utils.Constant;
 import org.jeecg.modules.business.utils.Constant.status;
 import org.jeecg.modules.business.utils.Constant.tables;
@@ -29,6 +32,7 @@ import javax.websocket.server.PathParam;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description: company_acceptance
@@ -46,6 +50,9 @@ public class CompanyAcceptanceController extends JeecgController<CompanyAcceptan
 
     @Autowired
     private ICompanyApplyService companyApplyService;
+
+    @Autowired
+    private ICompanyFileService companyFileService;
 
     /**
      * 分页列表查询
@@ -78,30 +85,33 @@ public class CompanyAcceptanceController extends JeecgController<CompanyAcceptan
     /**
      * 添加
      *
-     * @param companyAcceptance
+     * @param jsonObject
      * @return
      */
     @AutoLog(value = "company_acceptance-添加")
     @ApiOperation(value = "company_acceptance-添加", notes = "company_acceptance-添加")
     @PostMapping(value = "/add")
-    public Result<?> add(@RequestBody CompanyAcceptance companyAcceptance) {
+    public Result<?> add(@RequestBody JSONObject jsonObject) {
+        CompanyAcceptance companyAcceptance = this.getCompanyAcceptance(jsonObject);
         companyAcceptance.setStatus(status.TEMPORARY);
         companyAcceptanceService.save(companyAcceptance);
         //新增申报记录（暂存）
-        companyApplyService.saveByBase(companyAcceptance.getCompanyId(),companyAcceptance.getId(),companyAcceptance.getStatus(),"", tables.ACCEPTANCE);
+        companyApplyService.saveByBase(companyAcceptance.getCompanyId(), companyAcceptance.getId(), companyAcceptance.getStatus(), "", tables.ACCEPTANCE);
+        companyFileService.saveFiles(jsonObject.getString("fileList"),Constant.fileType.FILE,Constant.tables.ACCEPTANCE,companyAcceptance.getId());
         return Result.ok("添加成功！");
     }
 
     /**
      * 申报
      *
-     * @param companyAcceptance
+     * @param jsonObject
      * @return
      */
     @AutoLog(value = "company_acceptance-申报")
     @ApiOperation(value = "company_acceptance-申报", notes = "company_acceptance-申报")
     @PutMapping(value = "/declare")
-    public Result<?> declare(@RequestBody CompanyAcceptance companyAcceptance) {
+    public Result<?> declare(@RequestBody JSONObject jsonObject) {
+        CompanyAcceptance companyAcceptance = this.getCompanyAcceptance(jsonObject);
         companyAcceptance.setStatus(status.PEND);
         //判断是新增还是编辑
         if (!StrUtil.isEmpty(companyAcceptance.getId())) {
@@ -117,7 +127,7 @@ public class CompanyAcceptanceController extends JeecgController<CompanyAcceptan
                 companyAcceptance.setId("");
                 companyAcceptanceService.save(companyAcceptance);
                 //新增申报记录
-                companyApplyService.saveByBase(companyAcceptance.getCompanyId(),companyAcceptance.getId(),companyAcceptance.getStatus(),oldCompanyAcceptance.getId(), tables.ACCEPTANCE);
+                companyApplyService.saveByBase(companyAcceptance.getCompanyId(), companyAcceptance.getId(), companyAcceptance.getStatus(), oldCompanyAcceptance.getId(), tables.ACCEPTANCE);
             } else if (status.NOPASS.equals(oldCompanyAcceptance.getStatus()) || status.TEMPORARY.equals(oldCompanyAcceptance.getStatus())) {
                 //状态为审核未通过、暂存（直接修改）
                 companyAcceptanceService.updateById(companyAcceptance);
@@ -125,26 +135,31 @@ public class CompanyAcceptanceController extends JeecgController<CompanyAcceptan
                 CompanyApply companyApply = companyApplyService.findByNewId(companyAcceptance.getId(), tables.ACCEPTANCE);
                 companyApply.setStatus(status.PEND);
                 companyApplyService.updateById(companyApply);
+                //删除原有的
+                companyFileService.remove(new QueryWrapper<CompanyFile>().lambda().eq(CompanyFile::getFromTable,Constant.tables.ACCEPTANCE)
+                        .eq(CompanyFile::getTableId,companyAcceptance.getId()));
             }
         } else {
             //新增
             companyAcceptanceService.save(companyAcceptance);
             //新增申报记录
-            companyApplyService.saveByBase(companyAcceptance.getCompanyId(),companyAcceptance.getId(),companyAcceptance.getStatus(),"", tables.ACCEPTANCE);
+            companyApplyService.saveByBase(companyAcceptance.getCompanyId(), companyAcceptance.getId(), companyAcceptance.getStatus(), "", tables.ACCEPTANCE);
         }
+        companyFileService.saveFiles(jsonObject.getString("fileList"),Constant.fileType.FILE,Constant.tables.ACCEPTANCE,companyAcceptance.getId());
         return Result.ok("申报成功!");
     }
 
     /**
      * 编辑
      *
-     * @param companyAcceptance
+     * @param jsonObject
      * @return
      */
     @AutoLog(value = "company_acceptance-编辑")
     @ApiOperation(value = "company_acceptance-编辑", notes = "company_acceptance-编辑")
     @PutMapping(value = "/edit")
-    public Result<?> edit(@RequestBody CompanyAcceptance companyAcceptance) {
+    public Result<?> edit(@RequestBody JSONObject jsonObject) {
+        CompanyAcceptance companyAcceptance = this.getCompanyAcceptance(jsonObject);
         CompanyAcceptance oldCompanyAcceptance = companyAcceptanceService.getById(companyAcceptance.getId());
         //查询数据状态
         if (status.NORMAL.equals(companyAcceptance.getStatus())) {
@@ -156,17 +171,38 @@ public class CompanyAcceptanceController extends JeecgController<CompanyAcceptan
             companyAcceptance.setId("");
             companyAcceptanceService.save(companyAcceptance);
             //新增申报记录
-            companyApplyService.saveByBase(companyAcceptance.getCompanyId(),companyAcceptance.getId(),companyAcceptance.getStatus(),oldCompanyAcceptance.getId(), tables.ACCEPTANCE);
+            companyApplyService.saveByBase(companyAcceptance.getCompanyId(), companyAcceptance.getId(), companyAcceptance.getStatus(), oldCompanyAcceptance.getId(), tables.ACCEPTANCE);
         } else if (status.NOPASS.equals(oldCompanyAcceptance.getStatus()) || status.TEMPORARY.equals(oldCompanyAcceptance.getStatus())) {
-            companyAcceptance.setStatus(status.TEMPORARY);
             //状态为未通过和暂存的
+            companyAcceptance.setStatus(status.TEMPORARY);
             companyAcceptanceService.updateById(companyAcceptance);
             //修改申报记录状态为暂存
             CompanyApply companyApply = companyApplyService.findByNewId(companyAcceptance.getId(), tables.ACCEPTANCE);
             companyApply.setStatus(status.TEMPORARY);
             companyApplyService.updateById(companyApply);
+            //删除原有的
+            companyFileService.remove(new QueryWrapper<CompanyFile>().lambda().eq(CompanyFile::getFromTable,Constant.tables.ACCEPTANCE)
+                    .eq(CompanyFile::getTableId,companyAcceptance.getId()));
         }
+        //保存文件
+        companyFileService.saveFiles(jsonObject.getString("fileList"), Constant.fileType.FILE, Constant.tables.ACCEPTANCE, companyAcceptance.getId());
         return Result.ok("编辑成功!");
+    }
+
+    private CompanyAcceptance getCompanyAcceptance(JSONObject jsonObject) {
+        CompanyAcceptance companyAcceptance = new CompanyAcceptance();
+        companyAcceptance.setId(jsonObject.getString("id"));
+        companyAcceptance.setCompanyId(jsonObject.getString("companyId"));
+        companyAcceptance.setCreateBy(jsonObject.getString("createBy"));
+        companyAcceptance.setCreateTime(jsonObject.getDate("createTime"));
+        companyAcceptance.setUpdateBy(jsonObject.getString("updateBy"));
+        companyAcceptance.setUpdateTime(jsonObject.getDate("updateTime"));
+        companyAcceptance.setStatus(jsonObject.getString("status"));
+        companyAcceptance.setProjectName(jsonObject.getString("projectName"));
+        companyAcceptance.setExamineUnit(jsonObject.getString("examineUnit"));
+        companyAcceptance.setExamineNum(jsonObject.getString("examineNum"));
+        companyAcceptance.setExamineTime(jsonObject.getDate("examineTime"));
+        return companyAcceptance;
     }
 
     /**
@@ -183,7 +219,7 @@ public class CompanyAcceptanceController extends JeecgController<CompanyAcceptan
         //删除申报记录
         companyApplyService.remove(new QueryWrapper<CompanyApply>().lambda()
                 .eq(CompanyApply::getStatus, Constant.status.TEMPORARY)
-                .in(CompanyApply::getNewId,id ));
+                .in(CompanyApply::getNewId, id));
         return Result.ok("删除成功!");
     }
 
@@ -200,8 +236,8 @@ public class CompanyAcceptanceController extends JeecgController<CompanyAcceptan
         this.companyAcceptanceService.removeByIds(Arrays.asList(ids.split(",")));
         //删除申报记录
         companyApplyService.remove(new QueryWrapper<CompanyApply>().lambda()
-                .eq(CompanyApply::getStatus,Constant.status.TEMPORARY)
-                .in(CompanyApply::getNewId,Arrays.asList(ids.split(","))) );
+                .eq(CompanyApply::getStatus, Constant.status.TEMPORARY)
+                .in(CompanyApply::getNewId, Arrays.asList(ids.split(","))));
         return Result.ok("批量删除成功!");
     }
 
@@ -279,5 +315,17 @@ public class CompanyAcceptanceController extends JeecgController<CompanyAcceptan
         return super.importExcel(request, response, CompanyAcceptance.class);
     }
 
-
+    /**
+     * 通过id查询
+     *
+     * @param id
+     * @return
+     */
+    @AutoLog(value = "查询附件")
+    @ApiOperation(value = "查询附件", notes = "查询附件")
+    @GetMapping(value = "/queryFiles")
+    public Result<?> queryFiles(@RequestParam(name = "id", required = true) String id) {
+        List<Map<String, String>> result = companyFileService.getFileMaps(id, Constant.tables.ACCEPTANCE);
+        return Result.ok(result);
+    }
 }
