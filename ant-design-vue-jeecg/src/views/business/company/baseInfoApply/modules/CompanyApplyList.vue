@@ -97,6 +97,7 @@
   import CompanyApplyModal from "./childModules/CompanyApplyModal";
   import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
   import {queryLatestArchivedData} from "../../../requestAction/request";
+  import moment from "moment";
 
   export default {
     name: "CompanyApplyList",
@@ -135,13 +136,16 @@
             align:"center",
             dataIndex: 'createTime',
             customRender:function (text) {
-              return !text?"":(text.length>10?text.substr(0,10):text)
+              return moment(text).format('YYYY-MM-DD HH:mm:ss')
             }
           },
           {
             title:'生效日期',
             align:"center",
-            dataIndex: 'updateTime'
+            dataIndex: 'updateTime',
+            customRender:function (text) {
+              return text==null||text==="" ? text:moment(text).format('YYYY-MM-DD HH:mm:ss')
+            }
           },
           {
             title: '数据状态',
