@@ -42,5 +42,6 @@ public class CompanyApplyVo {
     private String updateTime;
     private java.lang.String newId;
     private String oldId;
+    private String content;
 
 }

@@ -49,7 +49,7 @@
           this.$refs.baseModal.handleOk();
 
           this.visible = false;
-          that.$emit('submitOk');
+          this.$emit('submitOk');
 
 
         },

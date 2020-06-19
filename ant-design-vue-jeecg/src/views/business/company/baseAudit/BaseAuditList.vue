@@ -358,6 +358,10 @@
           });
         }
       },
+      handleView(record){
+        record.isView = true;
+        this.handleEdit(record);
+      },
       handleEdit(record){
 
 

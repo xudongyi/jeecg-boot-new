@@ -31,8 +31,11 @@
 
       </a-form>
     </a-spin>
-    <audit-footer ref="auditFooter" @success ="success"></audit-footer>
-  </j-modal>
+    <audit-footer ref="auditFooter" @success ="success" :disable="applyInfo.isView"></audit-footer>
+    <template slot="footer">
+      <a-button type="primary" @click="handleCancel" >关闭</a-button>
+      <a-button type="primary" @click="handleOk" v-show="!applyInfo.isView">确认</a-button>
+    </template>  </j-modal>
 </template>
 
 
@@ -54,6 +57,8 @@
         JImageUpload
       },data(){
       return{
+        applyInfo:{},
+
         companyId:'',
         confirmLoading:true,
         disableSubmit:true,
@@ -120,10 +125,14 @@
             }
           }
         });
-        that.$nextTick(() => {
-          that.$refs.auditFooter.applyer = this.applyInfo.createBy;
-          that.$refs.auditFooter.applyTime = this.applyInfo.createTime;
-        })
+        this.$nextTick(() => {
+          that.$refs.auditFooter.edit( this.applyInfo) ;
+        });
+        if(this.applyInfo.isView) {
+        }
+        else {
+          that.applyInfo.isView = false;
+        }
         this.confirmLoading = false;
       },
       modalFormOk(){

@@ -6,13 +6,14 @@
             <result column="id" property="id" jdbcType="VARCHAR"/>
             <result column="companyName" property="company_name" jdbcType="VARCHAR"/>
             <result column="fromTable" property="from_table" jdbcType="VARCHAR"/>
-            <result column="createTime" property="create_time" jdbcType="VARCHAR"/>
+            <result column="createTime" property="create_time" jdbcType="DATE"/>
             <result column="createBy" property="create_by" jdbcType="VARCHAR"/>
             <result column="status" property="status" jdbcType="VARCHAR"/>
             <result column="updateBy" property="update_by" jdbcType="VARCHAR"/>
-            <result column="updateTime" property="update_time" jdbcType="VARCHAR"/>
+            <result column="updateTime" property="update_time" jdbcType="DATE"/>
             <result column="newId" property="new_id" jdbcType="VARCHAR"/>
             <result column="oldId" property="old_id" jdbcType="VARCHAR"/>
+            <result column="content" property="content" jdbcType="VARCHAR"/>
         </resultMap>
 
 

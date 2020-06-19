@@ -68,8 +68,11 @@
 
     </a-form>
 
-    <audit-footer ref="auditFooter" @success ="success"></audit-footer>
-
+    <audit-footer ref="auditFooter" @success ="success" :disable="applyInfo.isView"></audit-footer>
+    <template slot="footer">
+      <a-button type="primary" @click="handleCancel" >关闭</a-button>
+      <a-button type="primary" @click="handleOk" v-show="!applyInfo.isView">确认</a-button>
+    </template>
   </j-modal>
 </template>
 
@@ -86,7 +89,7 @@
       AuditFooter,JDictSelectTag,JDate
     },data(){
       return{
-        applyInfo:'',
+        applyInfo:{},
         outputType:'',
         confirmLoading:true,
         visible: false,
@@ -140,9 +143,13 @@
         });
 
         this.$nextTick(() => {
-          that.$refs.auditFooter.applyer = this.applyInfo.createBy;
-          that.$refs.auditFooter.applyTime = this.applyInfo.createTime;
+          that.$refs.auditFooter.edit( this.applyInfo) ;
         });
+        if(this.applyInfo.isView) {
+        }
+        else {
+          that.applyInfo.isView = false;
+        }
 
         this.confirmLoading = false;
       },

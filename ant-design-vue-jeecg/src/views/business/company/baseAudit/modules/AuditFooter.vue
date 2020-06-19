@@ -14,7 +14,7 @@
 
   <a-form>
     <a-form-item label="审核结果：">
-    <a-radio-group  v-model= "result">
+    <a-radio-group  v-model= "result" :disabled="disable">
       <a-radio value="2">
         通过
       </a-radio>
@@ -24,7 +24,7 @@
     </a-radio-group>
     </a-form-item>
       <a-form-item label="不通过原因：">
-    <a-textarea placeholder="备注信息" :rows="2"  v-model.trim = "message"/>
+    <a-textarea placeholder="备注信息" :rows="2"  v-model.trim = "message" :disabled="disable"/>
     </a-form-item>
   </a-form>
     <a-descriptions >
@@ -55,14 +55,16 @@
           required: false,
 
         },
+        disable:false
       },
       data(){
           return{
+            applyInfo:{},
             applyer:'',
             applyTime:'',
             date:' ',
-        result:'',
-          message:''
+            result:'',
+            message:''
           }
 
       },
@@ -83,25 +85,41 @@
           });
 
 
+        },
+        edit(record){
+          this.applyer = record.createBy;
+          this.applyTime =  moment(record.createTime).format(this.dateFormat);
+          this.result = record.status;
+          this.message = record.content;
+          if(record.updateTime==null){
+            this.date = moment().format(this.dateFormat);
+
+            if (this.timer){
+
+            }else{
+              let _this = this; // 声明一个变量指向Vue实例this，保证作用域一致
+              this.timer = setInterval(() => {
+                _this.date =moment().format(this.dateFormat); // 修改数据date
+              }, 1000);
+            }
+
+          }else{
+            this.date = moment(record.updateTime).format(this.dateFormat);
+            if (this.timer) {
+              clearInterval(this.timer);
+
+            }
+          }
+          if(record.isView) {
+            this.isView = this.applyInfo.isView;
+          }
+          else {
+            this.isView = false;
+          }
         }
       },
-      watch:{
-        applyTime(newVal){
-
-          console.log(newVal)
-          this.applyTime = moment(newVal).format(this.dateFormat);
-        }
-      },
 
 
-
-      mounted() {
-        let _this = this; // 声明一个变量指向Vue实例this，保证作用域一致
-        this.timer = setInterval(() => {
-          _this.date =moment().format(this.dateFormat); // 修改数据date
-        }, 1000);
-
-      },
       beforeDestroy() {
         if (this.timer) {
           clearInterval(this.timer); // 在Vue实例销毁前，清除我们的定时器

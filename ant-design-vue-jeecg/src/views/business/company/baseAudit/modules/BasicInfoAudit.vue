@@ -13,8 +13,11 @@
     >
       <base-info ref="baseModal"  :ftitle="title"  @OK="modalFormOk"></base-info>
 
-      <audit-footer ref="auditFooter" @success ="success"></audit-footer>
-
+      <audit-footer ref="auditFooter" @success ="success" :disable="applyInfo.isView"></audit-footer>
+      <template slot="footer">
+        <a-button type="primary" @click="handleCancel" >关闭</a-button>
+        <a-button type="primary" @click="handleOk" v-show="!applyInfo.isView">确认</a-button>
+      </template>
     </j-modal>
 </template>
 
@@ -31,7 +34,7 @@
         ,AuditFooter
       },data(){
       return{
-        applyInfo:'',
+        applyInfo:{},
         confirmLoading:true,
         visible: false,
         width:1200,
@@ -71,9 +74,13 @@
         });
 
         this.$nextTick(() => {
-          that.$refs.auditFooter.applyer = this.applyInfo.createBy;
-          that.$refs.auditFooter.applyTime = this.applyInfo.createTime;
-        })
+          that.$refs.auditFooter.edit( this.applyInfo) ;
+        });
+        if(this.applyInfo.isView) {
+        }
+        else {
+          that.applyInfo.isView = false;
+        }
 
         this.confirmLoading = false;
       },

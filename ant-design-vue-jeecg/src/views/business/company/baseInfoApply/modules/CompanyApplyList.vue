@@ -67,7 +67,7 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="handleToDetail(record)">详情</a>
+          <a @click="handleToDetail(record)">查看</a>
 
           <!--<a-divider type="vertical" />
           <a-dropdown>
