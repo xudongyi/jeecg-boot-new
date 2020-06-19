@@ -16,5 +16,5 @@ import java.util.List;
  * @Version: V1.0
  */
 public interface CompanyComplaintLetterMapper extends BaseMapper<CompanyComplaintLetter> {
-    List<CompanyComplaintLetterVO> getCompanyComplaintLetter(Page page, String[] companyIds, String status, Date dateBegin, Date dateEnd);
+    List<CompanyComplaintLetterVO> getCompanyComplaintLetter(Page page, String[] companyIds, String status, Date dateBegin, Date dateEnd,Integer listType);
 }

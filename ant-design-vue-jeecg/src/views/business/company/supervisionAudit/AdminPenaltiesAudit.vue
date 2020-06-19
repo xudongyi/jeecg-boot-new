@@ -13,7 +13,7 @@
             </a-form-item>
           </a-col>
 
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+          <a-col :xl="6" :lg="7" :md="8" :sm="24" v-show="false">
             <a-form-item label="申报状态">
               <j-dict-select-tag placeholder="请选择申报状态" v-model="queryParam.status" dictCode="statue"/>
             </a-form-item>
@@ -169,7 +169,7 @@
           }
         ],
         url: {
-          list: "/cap/companyAdminPenalties/list",
+          list: "/cap/companyAdminPenalties/list/2",
           // delete: "/cap/companyAdminPenalties/delete",
           // deleteBatch: "/cap/companyAdminPenalties/deleteBatch",
           // batchDeclare: "/cap/companyAdminPenalties/batchDeclare"
@@ -204,7 +204,7 @@
       },
 
     },
-    created(){
+    mounted(){
       let that = this;
       //查询企业名称
       queryCompanyName({companyIds:this.$store.getters.userInfo.companyIds.join(',')}).then((res) => {

@@ -68,7 +68,7 @@
 
 
 
-      <a-table
+      <a-table v-if="role === 'monitor'"
         ref="table"
         size="middle"
         bordered
@@ -102,20 +102,59 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="toHandleEdit(record)" v-if="role === 'monitor' && (record.status=='0' || record.status=='3')">编辑</a>
-          <a @click="toHandleEdit(record)" v-if="role !== 'monitor'">查看</a>
-          <a @click="handleView(record)" v-if="role === 'monitor' && (record.status=='1' || record.status=='4')">查看</a>
-          <a-divider type="vertical" v-if="role === 'monitor' && (record.status=='0' || record.status=='3')" />
+          <a @click="toHandleEdit(record)" v-if="record.status=='0' || record.status=='3'">编辑</a>
+          <a @click="handleView(record)" v-if="record.status=='1' || record.status=='4'">查看</a>
+          <a-divider type="vertical" v-if="record.status=='0' || record.status=='3'" />
           <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
-            <a v-if="role === 'monitor' && (record.status=='0' || record.status=='3')">删除</a>
+            <a v-if="record.status=='0' || record.status=='3'">删除</a>
           </a-popconfirm>
+        </span>
+
+
+      </a-table>
+
+      <a-table v-if="role !== 'monitor'"
+        ref="table"
+        size="middle"
+        bordered
+        rowKey="id"
+        :columns="columns"
+        :dataSource="dataSource"
+        :pagination="ipagination"
+        :loading="loading"
+
+        class="j-table-force-nowrap"
+        @change="handleTableChange">
+
+        <template slot="htmlSlot" slot-scope="text">
+          <div v-html="text"></div>
+        </template>
+        <template slot="imgSlot" slot-scope="text">
+          <span v-if="!text" style="font-size: 12px;font-style: italic;">无图片</span>
+          <img v-else :src="getImgView(text)" height="25px" alt="" style="max-width:80px;font-size: 12px;font-style: italic;"/>
+        </template>
+        <template slot="fileSlot" slot-scope="text">
+          <span v-if="!text" style="font-size: 12px;font-style: italic;">无文件</span>
+          <a-button
+            v-else
+            :ghost="true"
+            type="primary"
+            icon="download"
+            size="small"
+            @click="uploadFile(text)">
+            下载
+          </a-button>
+        </template>
+
+        <span slot="action" slot-scope="text, record">
+          <a @click="handleView(record)">查看</a>
         </span>
 
 
       </a-table>
     </div>
 
-    <companyDynamicSupervision-modal ref="modalForm" @ok="modalFormOk" :companyId="companyId" :monitor="monitor"></companyDynamicSupervision-modal>
+    <companyDynamicSupervision-modal ref="modalForm" @ok="modalFormOk" :companyId="companyId" :monitor="role"></companyDynamicSupervision-modal>
   </a-card>
 </template>
 
@@ -137,7 +176,8 @@
     },
     props:{
       companyId:'',
-      role:''
+      role:'',
+      listType:''
     },
     data () {
       return {
@@ -230,7 +270,7 @@
           }
         ],
         url: {
-          list: "/cds/companyDynamicSupervision/list",
+          list: "/cds/companyDynamicSupervision/list/"+this.listType,
           delete: "/cds/companyDynamicSupervision/delete",
           deleteBatch: "/cds/companyDynamicSupervision/deleteBatch",
           batchDeclare: "/cds/companyDynamicSupervision/batchDeclare"
@@ -258,6 +298,10 @@
       }
     },
     methods: {
+      yearChange(obj){
+        console.log(obj.year+'-'+obj.month+'-'+obj.day);
+      },
+
       initDictConfig(){
       },
       handleView: function (record) {
@@ -309,7 +353,7 @@
         }
       },
     },
-    created() {
+    mounted() {
       let that = this;
       //查询企业名称
       queryCompanyName({companyIds:this.$store.getters.userInfo.companyIds.join(',')}).then((res) => {

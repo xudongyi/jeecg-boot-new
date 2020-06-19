@@ -15,5 +15,5 @@ import java.util.List;
  * @Version: V1.0
  */
 public interface CompanySupervisoryMonitorMapper extends BaseMapper<CompanySupervisoryMonitor> {
-    List<CompanySupervisoryMonitorVO> getCompanySupervisoryMonitor(Page page, String[] companyIds, String status, Date dateBegin, Date dateEnd);
+    List<CompanySupervisoryMonitorVO> getCompanySupervisoryMonitor(Page page, String[] companyIds, String status, Date dateBegin, Date dateEnd,Integer listType);
 }

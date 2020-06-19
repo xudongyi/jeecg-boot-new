@@ -1,6 +1,6 @@
 <template>
 
-   <company-dynamic-supervision-list ref="modalList" :company-id="companyid" role="monitor"></company-dynamic-supervision-list>
+   <company-dynamic-supervision-list ref="modalList" :company-id="companyid" role="monitor" listType=1></company-dynamic-supervision-list>
 </template>
 
 <script>

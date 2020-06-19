@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.lang.StringUtils;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.modules.business.entity.CompanyDynamicSupervision;
@@ -42,29 +43,7 @@ import org.jeecg.common.aspect.annotation.AutoLog;
 public class CompanyDynamicSupervisionController extends JeecgController<CompanyDynamicSupervision, ICompanyDynamicSupervisionService> {
 	@Autowired
 	private ICompanyDynamicSupervisionService companyDynamicSupervisionService;
-	/**
-	 * 分页列表查询
-	 *
-	 * @param companyDynamicSupervision
-	 * @param pageNo
-	 * @param pageSize
-	 * @param req
-	 * @return
-	 */
-	@AutoLog(value = "企业年度动态监管-分页列表查询")
-	@ApiOperation(value="企业年度动态监管-分页列表查询", notes="企业年度动态监管-分页列表查询")
-	@GetMapping(value = "/list/{companyId}")
-	public Result<?> queryPageList(@PathVariable String companyId, CompanyDynamicSupervision companyDynamicSupervision,
-								   @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
-								   @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
-								   HttpServletRequest req) {
-		Map<String, String[]> parameterMap = new HashMap(req.getParameterMap());
-		parameterMap.put("companyId_MultiString",new String[]{String.join(",", companyId)});
-		QueryWrapper<CompanyDynamicSupervision> queryWrapper = QueryGenerator.initQueryWrapper(companyDynamicSupervision, parameterMap);
-		Page<CompanyDynamicSupervision> page = new Page<CompanyDynamicSupervision>(pageNo, pageSize);
-		IPage<CompanyDynamicSupervision> pageList = companyDynamicSupervisionService.page(page, queryWrapper);
-		return Result.ok(pageList);
-	}
+
 	 /**
 	  * 分页列表查询
 	  *
@@ -101,11 +80,11 @@ public class CompanyDynamicSupervisionController extends JeecgController<Company
 	  */
 	 @AutoLog(value = "企业年度动态监管-分页列表查询")
 	 @ApiOperation(value="企业年度动态监管-分页列表查询", notes="企业年度动态监管-分页列表查询")
-	 @GetMapping(value = "/list")
+	 @GetMapping(value = "/list/{listType}")
 	 public Result<?> queryPageList(CompanyDynamicSupervisionVO companyDynamicSupervision,
 									@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
 									@RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
-									HttpServletRequest req) {
+									HttpServletRequest req,@PathVariable int listType) {
 		 String companyIds = req.getParameter("companyIds");
 		 String status = req.getParameter("status");
 		 String companyId = req.getParameter("companyId");
@@ -115,7 +94,7 @@ public class CompanyDynamicSupervisionController extends JeecgController<Company
 		 }
 //		 QueryWrapper<CompanyDynamicSupervisionVO> queryWrapper = QueryGenerator.initQueryWrapper(companyDynamicSupervision,req.getParameterMap());
 		 Page<CompanyDynamicSupervisionVO> page = new Page<>(pageNo, pageSize);
-		 IPage<CompanyDynamicSupervisionVO> pageList = companyDynamicSupervisionService.getCompanyDynamicSupervision(page,companyIds,status,reportYear);
+		 IPage<CompanyDynamicSupervisionVO> pageList = companyDynamicSupervisionService.getCompanyDynamicSupervision(page,companyIds,status,reportYear,listType);
 		 return Result.ok(pageList);
 	 }
 

@@ -11,7 +11,7 @@
               <j-date placeholder="请选择结束日期" class="query-group-cust" v-model="queryParam.reportDate_end"></j-date>
             </a-form-item>
           </a-col>
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+          <a-col :xl="6" :lg="7" :md="8" :sm="24" v-show="false">
             <a-form-item label="申报状态">
               <j-dict-select-tag placeholder="请选择申报状态" v-model="queryParam.status" dictCode="statue"/>
             </a-form-item>
@@ -29,10 +29,6 @@
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <a-button type="primary" @click="toSearchReset" icon="reload" style="margin-left: 8px">重置</a-button>
-              <!--              <a @click="handleToggleSearch" style="margin-left: 8px" v-if="role === 'monitor'">-->
-              <!--                {{ toggleSearchStatus ? '收起' : '展开' }}-->
-              <!--                <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>-->
-              <!--              </a>-->
             </span>
           </a-col>
         </a-row>
@@ -166,7 +162,7 @@
           }
         ],
         url: {
-          list: "/csm/companySupervisoryMonitor/list",
+          list: "/csm/companySupervisoryMonitor/list/2",
           // delete: "/csm/companySupervisoryMonitor/delete",
           // deleteBatch: "/csm/companySupervisoryMonitor/deleteBatch",
           // batchDeclare: "/csm/companySupervisoryMonitor/batchDeclare"

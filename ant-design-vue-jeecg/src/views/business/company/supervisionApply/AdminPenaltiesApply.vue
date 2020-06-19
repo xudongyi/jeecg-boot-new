@@ -1,5 +1,5 @@
 <template>
-    <company-admin-penalties-list ref="modalList" :company-id="companyid" role="monitor"></company-admin-penalties-list>
+    <company-admin-penalties-list ref="modalList" :company-id="companyid" role="monitor" listType=1></company-admin-penalties-list>
 </template>
 
 <script>

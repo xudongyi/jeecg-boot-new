@@ -4,7 +4,7 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+          <a-col :xl="6" :lg="7" :md="8" :sm="24" v-show="false">
             <a-form-item label="申报状态">
               <j-dict-select-tag placeholder="请选择申报状态" v-model="queryParam.status" dictCode="statue"/>
             </a-form-item>
@@ -164,7 +164,7 @@
           }
         ],
         url: {
-          list: "/cds/companyDynamicSupervision/list",
+          list: "/cds/companyDynamicSupervision/list/2",
           // delete: "/cds/companyDynamicSupervision/delete",
           // deleteBatch: "/cds/companyDynamicSupervision/deleteBatch",
           // batchDeclare: "/cds/companyDynamicSupervision/batchDeclare"
@@ -196,7 +196,7 @@
         this.loadData(1);
       },
     },
-    created(){
+    mounted(){
       // console.log(this.companyIds);
       let that = this;
       //查询企业名称

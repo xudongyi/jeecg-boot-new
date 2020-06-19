@@ -1,5 +1,5 @@
 <template>
-    <company-supervisory-monitor-list ref="modalList" :company-id="companyid" role="monitor"></company-supervisory-monitor-list>
+    <company-supervisory-monitor-list ref="modalList" :company-id="companyid" role="monitor" listType=1></company-supervisory-monitor-list>
 </template>
 
 <script>

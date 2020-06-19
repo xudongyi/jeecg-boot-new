@@ -12,7 +12,7 @@
         <a-row>
           <a-col span="12">
             <a-form-item label="企业名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-select v-decorator="['companyId', validatorRules.companyId]" show-search style="width: 100%" placeholder="请输入企业名称" :disabled="monitorTag === 'view' || disableSubmit"
+              <a-select v-decorator="['companyId', validatorRules.companyId]" show-search style="width: 100%" placeholder="请输入企业名称" :disabled="disableSubmit"
               optionFilterProp="children">
                 <a-select-option v-for="item in items" :key="item.key" :value="item.key">
                   {{item.value}}
@@ -22,48 +22,42 @@
           </a-col>
           <a-col span="12">
             <a-form-item label="申报年份" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input-number v-decorator="['reportYear', validatorRules.reportYear]" style="width: 100%" :disabled="monitorTag === 'view' || disableSubmit"/>
+              <a-input-number v-decorator="['reportYear', validatorRules.reportYear]" style="width: 100%" :disabled="disableSubmit"/>
             </a-form-item>
           </a-col>
         </a-row>
         <a-row>
           <a-col span="12">
             <a-form-item label="材料类型" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <j-dict-select-tag type="list" v-decorator="['documentType', validatorRules.documentType]" :trigger-change="true" dictCode="supervision_document_type" :disabled="monitorTag === 'view' || disableSubmit"/>
+              <j-dict-select-tag type="list" v-decorator="['documentType', validatorRules.documentType]" :trigger-change="true" dictCode="supervision_document_type" :disabled="disableSubmit"/>
             </a-form-item>
           </a-col>
           <a-col span="12">
             <a-form-item label="材料名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input v-decorator="['documentName', validatorRules.documentName]" :disabled="monitorTag === 'view' || disableSubmit"></a-input>
+              <a-input v-decorator="['documentName', validatorRules.documentName]" :disabled="disableSubmit"></a-input>
             </a-form-item>
           </a-col>
         </a-row>
         <a-row>
           <a-col span="24">
             <a-form-item label="附件上传" :labelCol="labelCols" :wrapperCol="wrapperCols" >
-              <j-upload v-decorator="['content']" :trigger-change="true"></j-upload>
+              <j-upload :trigger-change="true"></j-upload>
             </a-form-item>
           </a-col>
         </a-row>
-        <a-row v-show="monitorTag != 'view'">
+        <a-row v-if="monitorTag !== 'view'">
           <a-col span="12">
             <a-form-item label="申报人" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input v-decorator="['createName']" placeholder="请输入申报人" :disabled="monitorTag !== 'add' || monitorTag !== 'edit' || disableSubmit"></a-input>
+              <a-input v-decorator="['createName']" placeholder="请输入申报人" :disabled="true"></a-input>
             </a-form-item>
           </a-col>
           <a-col span="12">
             <a-form-item label="申报时间" :labelCol="labelCol" :wrapperCol="wrapperCol">
               <j-date :showTime="true" :dateFormat="dateFormat"
-                      placeholder="请选择申报时间" v-decorator="['createTime']" :trigger-change="true" style="width: 100%" :disabled="monitorTag !== 'add' || monitorTag !== 'edit' || disableSubmit"/>
+                      placeholder="请选择申报时间" v-decorator="['createTime']" :trigger-change="true" style="width: 100%" :disabled="true"/>
             </a-form-item>
           </a-col>
         </a-row>
-        <!--        <a-form-item label="审核人" :labelCol="labelCol" :wrapperCol="wrapperCol">-->
-        <!--          <a-input v-decorator="['updateBy']" placeholder="请输入审核人"></a-input>-->
-        <!--        </a-form-item>-->
-        <!--        <a-form-item label="审核时间" :labelCol="labelCol" :wrapperCol="wrapperCol">-->
-        <!--          <j-date placeholder="请选择审核时间" v-decorator="['updateTime']" :trigger-change="true" style="width: 100%"/>-->
-        <!--        </a-form-item>-->
 
       </a-form>
     </a-spin>

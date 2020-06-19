@@ -33,7 +33,7 @@ public class CompanyAdminPenaltiesServiceImpl extends ServiceImpl<CompanyAdminPe
     }
 
     @Override
-    public Page<CompanyAdminPenaltiesVO> getCompanyAdminPenalties(Page<CompanyAdminPenaltiesVO> page, String companyIds, String status,Date dateBegin,Date dateEnd) {
-        return page.setRecords(companyAdminPenaltiesMapper.getCompanyAdminPenalties(page,companyIds.split(","),status,dateBegin,dateEnd));
+    public Page<CompanyAdminPenaltiesVO> getCompanyAdminPenalties(Page<CompanyAdminPenaltiesVO> page, String companyIds, String status,Date dateBegin,Date dateEnd,Integer listType) {
+        return page.setRecords(companyAdminPenaltiesMapper.getCompanyAdminPenalties(page,companyIds.split(","),status,dateBegin,dateEnd,listType));
     }
 }

@@ -16,5 +16,5 @@ import java.util.Date;
  */
 public interface ICompanySupervisoryMonitorService extends IService<CompanySupervisoryMonitor> {
     Integer findCountByCompanyId(String companyId);
-    Page<CompanySupervisoryMonitorVO> getCompanySupervisoryMonitor(Page<CompanySupervisoryMonitorVO> page, String companyIds, String status, Date dateBegin, Date dateEnd);
+    Page<CompanySupervisoryMonitorVO> getCompanySupervisoryMonitor(Page<CompanySupervisoryMonitorVO> page, String companyIds, String status, Date dateBegin, Date dateEnd,Integer listType);
 }
