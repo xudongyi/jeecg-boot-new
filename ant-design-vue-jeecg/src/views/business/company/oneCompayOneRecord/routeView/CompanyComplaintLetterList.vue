@@ -173,7 +173,8 @@
     },
     props: {
       companyId:'',
-      role:''
+      role:'',
+      listType:''
     },
     data () {
       return {
@@ -224,7 +225,7 @@
           }
         ],
         url: {
-          list: "/ccl/companyComplaintLetter/list",
+          list: "/ccl/companyComplaintLetter/list/"+this.listType,
           delete: "/ccl/companyComplaintLetter/delete",
           deleteBatch: "/ccl/companyComplaintLetter/deleteBatch",
           batchDeclare: "/ccl/companyComplaintLetter/batchDeclare"

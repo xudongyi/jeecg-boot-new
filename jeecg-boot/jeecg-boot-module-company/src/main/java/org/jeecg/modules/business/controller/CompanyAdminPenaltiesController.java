@@ -116,30 +116,6 @@ public class CompanyAdminPenaltiesController extends JeecgController<CompanyAdmi
 		}
 		return Result.ok("申报成功！");
 	}
-
-	 /**
-	  * 分页列表查询
-	  *
-	  * @param companyAdminPenalties
-	  * @param pageNo
-	  * @param pageSize
-	  * @param req
-	  * @return
-	  */
-//	 @AutoLog(value = "行政处罚信息-分页列表查询")
-//	 @ApiOperation(value="行政处罚信息-分页列表查询", notes="行政处罚信息-分页列表查询")
-//	 @GetMapping(value = "/list/{companyId}")
-//	 public Result<?> queryPageList(@PathVariable String companyId, CompanyAdminPenalties companyAdminPenalties,
-//									@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
-//									@RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
-//									HttpServletRequest req) {
-//		 Map<String, String[]> parameterMap = new HashMap(req.getParameterMap());
-//		 parameterMap.put("companyId_MultiString",new String[]{String.join(",", companyId)});
-//		 QueryWrapper<CompanyAdminPenalties> queryWrapper = QueryGenerator.initQueryWrapper(companyAdminPenalties, parameterMap);
-//		 Page<CompanyAdminPenalties> page = new Page<CompanyAdminPenalties>(pageNo, pageSize);
-//		 IPage<CompanyAdminPenalties> pageList = companyAdminPenaltiesService.page(page, queryWrapper);
-//		 return Result.ok(pageList);
-//	 }
 	
 	/**
 	 *   添加

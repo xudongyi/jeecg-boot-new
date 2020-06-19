@@ -11,7 +11,7 @@
               <j-date placeholder="请选择结束日期" class="query-group-cust" v-model="queryParam.complaintDate_end"></j-date>
             </a-form-item>
           </a-col>
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+          <a-col :xl="6" :lg="7" :md="8" :sm="24" v-show="false">
             <a-form-item label="申报状态">
               <j-dict-select-tag placeholder="请选择申报状态" v-model="queryParam.status" dictCode="statue"/>
             </a-form-item>
@@ -29,10 +29,6 @@
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <a-button type="primary" @click="toSearchReset" icon="reload" style="margin-left: 8px">重置</a-button>
-              <!--              <a @click="handleToggleSearch" style="margin-left: 8px">-->
-              <!--                {{ toggleSearchStatus ? '收起' : '展开' }}-->
-              <!--                <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>-->
-              <!--              </a>-->
             </span>
           </a-col>
         </a-row>
@@ -167,7 +163,7 @@
           }
         ],
         url: {
-          list: "/ccl/companyComplaintLetter/list",
+          list: "/ccl/companyComplaintLetter/list/2",
           // delete: "/ccl/companyComplaintLetter/delete",
           // deleteBatch: "/ccl/companyComplaintLetter/deleteBatch",
           // batchDeclare: "/ccl/companyComplaintLetter/batchDeclare"

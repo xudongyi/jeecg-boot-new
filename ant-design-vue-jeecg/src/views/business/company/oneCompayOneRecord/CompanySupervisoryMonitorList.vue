@@ -173,7 +173,8 @@
     },
     props:{
       companyId:'',
-      role:''
+      role:'',
+      listType:''
     },
     data () {
       return {
@@ -224,7 +225,7 @@
           }
         ],
         url: {
-          list: "/csm/companySupervisoryMonitor/list",
+          list: "/csm/companySupervisoryMonitor/list/"+this.listType,
           delete: "/csm/companySupervisoryMonitor/delete",
           deleteBatch: "/csm/companySupervisoryMonitor/deleteBatch",
           batchDeclare: "/csm/companySupervisoryMonitor/batchDeclare"

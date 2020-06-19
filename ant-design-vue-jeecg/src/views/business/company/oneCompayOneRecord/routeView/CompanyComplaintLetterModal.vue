@@ -44,7 +44,7 @@
         </a-row>
         <a-row>
           <a-col span='24'>
-            <a-form-item label="内容" :labelCol="labelCols" :wrapperCol="wrapperCols">
+            <a-form-item label="附件上传" :labelCol="labelCols" :wrapperCol="wrapperCols">
               <j-upload :trigger-change="true"></j-upload>
             </a-form-item>
           </a-col>

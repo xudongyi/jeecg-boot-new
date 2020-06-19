@@ -34,7 +34,7 @@ public class CompanySupervisoryMonitorServiceImpl extends ServiceImpl<CompanySup
     }
 
     @Override
-    public Page<CompanySupervisoryMonitorVO> getCompanySupervisoryMonitor(Page<CompanySupervisoryMonitorVO> page, String companyIds, String status, Date dateBegin, Date dateEnd) {
-        return page.setRecords(companySupervisoryMonitorMapper.getCompanySupervisoryMonitor(page,companyIds.split(","),status,dateBegin,dateEnd));
+    public Page<CompanySupervisoryMonitorVO> getCompanySupervisoryMonitor(Page<CompanySupervisoryMonitorVO> page, String companyIds, String status, Date dateBegin, Date dateEnd,Integer listType) {
+        return page.setRecords(companySupervisoryMonitorMapper.getCompanySupervisoryMonitor(page,companyIds.split(","),status,dateBegin,dateEnd,listType));
     }
 }

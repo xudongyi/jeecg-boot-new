@@ -58,11 +58,11 @@ public class CompanyComplaintLetterController extends JeecgController<CompanyCom
 	 */
 	@AutoLog(value = "信访投诉信息-分页列表查询")
 	@ApiOperation(value="信访投诉信息-分页列表查询", notes="信访投诉信息-分页列表查询")
-	@GetMapping(value = "/list")
+	@GetMapping(value = "/list/{listType}")
 	public Result<?> queryPageList(CompanyComplaintLetter companyComplaintLetter,
 								   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
 								   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
-								   HttpServletRequest req) throws ParseException {
+								   HttpServletRequest req,@PathVariable int listType) throws ParseException {
 		String companyIds = req.getParameter("companyIds");
 		String status = req.getParameter("status");
 		String companyId = req.getParameter("companyId");
@@ -81,7 +81,7 @@ public class CompanyComplaintLetterController extends JeecgController<CompanyCom
 			dateEnd = new SimpleDateFormat("yyyy-MM-dd").parse(reportDateEnd);
 		}
 		Page<CompanyComplaintLetterVO> page = new Page<>(pageNo, pageSize);
-		IPage<CompanyComplaintLetterVO> pageList = companyComplaintLetterService.getCompanyComplaintLetter(page,companyIds,status,dateBegin,dateEnd);
+		IPage<CompanyComplaintLetterVO> pageList = companyComplaintLetterService.getCompanyComplaintLetter(page,companyIds,status,dateBegin,dateEnd,listType);
 		return Result.ok(pageList);
 	}
 

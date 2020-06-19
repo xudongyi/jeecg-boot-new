@@ -1,5 +1,5 @@
 <template>
-    <company-complaint-letter-list ref="modalList" :company-id="companyid" role="monitor"></company-complaint-letter-list>
+    <company-complaint-letter-list ref="modalList" :company-id="companyid" role="monitor" listType=1></company-complaint-letter-list>
 </template>
 
 <script>

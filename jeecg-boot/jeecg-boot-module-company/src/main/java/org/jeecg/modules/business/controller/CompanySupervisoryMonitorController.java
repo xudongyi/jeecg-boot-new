@@ -54,11 +54,11 @@ public class CompanySupervisoryMonitorController extends JeecgController<Company
 	 */
 	@AutoLog(value = "监督性监测信息-分页列表查询")
 	@ApiOperation(value="监督性监测信息-分页列表查询", notes="监督性监测信息-分页列表查询")
-	@GetMapping(value = "/list")
+	@GetMapping(value = "/list/{listType}")
 	public Result<?> queryPageList(CompanySupervisoryMonitor companySupervisoryMonitor,
 								   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
 								   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
-								   HttpServletRequest req) throws ParseException {
+								   HttpServletRequest req,@PathVariable int listType) throws ParseException {
 		String companyIds = req.getParameter("companyIds");
 		String status = req.getParameter("status");
 		String companyId = req.getParameter("companyId");
@@ -77,7 +77,7 @@ public class CompanySupervisoryMonitorController extends JeecgController<Company
 			dateEnd = new SimpleDateFormat("yyyy-MM-dd").parse(reportDateEnd);
 		}
 		Page<CompanySupervisoryMonitorVO> page = new Page<CompanySupervisoryMonitorVO>(pageNo, pageSize);
-		IPage<CompanySupervisoryMonitorVO> pageList = companySupervisoryMonitorService.getCompanySupervisoryMonitor(page, companyIds,status,dateBegin,dateEnd);
+		IPage<CompanySupervisoryMonitorVO> pageList = companySupervisoryMonitorService.getCompanySupervisoryMonitor(page, companyIds,status,dateBegin,dateEnd,listType);
 		return Result.ok(pageList);
 	}
 
