@@ -26,7 +26,7 @@ const queryAduitBase = (params)=>getAction("/company/apply/queryAduitBase",param
 const submitAudit = (params)=>postAction("/company/apply/submitAudit",params);
 //查询用户所属的企业简称
 const queryShortName = (params)=>getAction("/company/companyBaseinfo/queryShortName",params);
-//查询用户所属的企业简称
+//查询附件
 const queryFiles = (params,url)=>getAction(url,params);
 export {
   getDetailMenus,

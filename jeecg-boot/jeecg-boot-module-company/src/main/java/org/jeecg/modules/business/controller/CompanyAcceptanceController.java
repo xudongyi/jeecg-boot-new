@@ -316,7 +316,7 @@ public class CompanyAcceptanceController extends JeecgController<CompanyAcceptan
     }
 
     /**
-     * 通过id查询
+     * 查询附件
      *
      * @param id
      * @return

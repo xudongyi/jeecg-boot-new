@@ -25,7 +25,7 @@
                   :disabled="disableSubmit"/>
         </a-form-item>
         <a-form-item label="验收附件" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-upload ref="uploadRef" :disabled="disableSubmit" fileType="file" bizPath="envtax" @change="fileListChange" @delete ="fileDelete"
+          <j-upload ref="uploadRef" :disabled="disableSubmit" fileType="file" bizPath="acceptance" @change="fileListChange" @delete ="fileDelete"
           ></j-upload>
         </a-form-item>
 
@@ -46,7 +46,7 @@
   import {validateDuplicateValue} from '@/utils/util'
   import JDate from '@/components/jeecg/JDate'
   import JUpload from '@/components/jeecg/JUpload'
-  import {queryenvTrialFiles} from "../../../requestAction/request";
+  import {queryFiles} from '../../../requestAction/request'
 
 
   export default {
@@ -83,6 +83,7 @@
           add: "/business/companyAcceptance/add",
           declare: "/business/companyAcceptance/declare",
           edit: "/business/companyAcceptance/edit",
+          queryFile:"/business/companyAcceptance/queryFiles"
         }
       }
     },
@@ -97,12 +98,13 @@
         this.model = Object.assign({}, record);
         this.visible = true;
         this.$nextTick(() => {
-          this.form.setFieldsValue(pick(this.model, 'projectName', 'examineUnit', 'examineNum', 'examineTime', 'files'))
+          this.form.setFieldsValue(pick(this.model, 'projectName', 'examineUnit', 'examineNum', 'examineTime'))
         })
+        debugger
         if(record.id){
           //查询所属文件
           let _this =this;
-          queryenvTrialFiles({id:record.id}).then((res)=>{
+          queryFiles({id:record.id},this.$data.url.queryFile).then((res)=>{
             _this.$nextTick(() => {
               _this.$refs.uploadRef.initFileListArr(res.result);
             });
@@ -134,7 +136,8 @@
               method = 'put';
             }
             let formData = Object.assign(this.model, values);
-            formData.companyId = this.companyId;
+            formData.companyId = that.companyId;
+            formData.fileList = that.fileList;
             httpAction(httpurl, formData, method).then((res) => {
               if (res.success) {
                 that.$message.success(res.message);
@@ -160,7 +163,8 @@
             let httpUrl = this.url.declare;
             let method = 'put';
             let formData = Object.assign(this.model, values);
-            formData.companyId = this.companyId;
+            formData.companyId = that.companyId;
+            formData.fileList = that.fileList;
             httpAction(httpUrl, formData, method).then((res) => {
               if (res.success) {
                 that.$message.success(res.message);

@@ -69,8 +69,4 @@ public class CompanyPrevention implements Serializable {
     @ApiModelProperty(value = "类型")
     @Dict(dicCode = "preType")
     private String type;
-	/**附件上传*/
-	@Excel(name = "附件上传", width = 15)
-    @ApiModelProperty(value = "附件上传")
-    private String files;
 }

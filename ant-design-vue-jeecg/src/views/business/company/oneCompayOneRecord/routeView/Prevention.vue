@@ -19,7 +19,7 @@
     name: "Prevention",
     props: {
       companyId: '',
-      operationShow: '',
+      operationShow: true,
       listType: ''
     },
     components: {CompanyPreventionList},

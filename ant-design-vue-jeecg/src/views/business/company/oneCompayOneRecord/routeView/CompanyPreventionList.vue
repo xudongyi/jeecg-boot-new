@@ -33,7 +33,7 @@
           <a-icon type="down"/>
         </a-button>
       </a-dropdown>
-      <a-button @click="batchDeclare" type="primary" icon="snippets">申报</a-button>
+      <a-button @click="batchDeclare" type="primary" icon="snippets">批量申报</a-button>
     </div>
 
     <!-- table区域-begin -->
@@ -93,7 +93,7 @@
     </div>
 
     <companyPrevention-modal ref="modalForm" @ok="modalFormOk" :companyId="companyId"
-                             :type="this.type"></companyPrevention-modal>
+                             :type="this.type" :header_text="this.headerText"></companyPrevention-modal>
   </a-card>
 </template>
 
@@ -148,12 +148,6 @@
             title: '数据状态',
             align: "center",
             dataIndex: 'status_dictText'
-          },
-          {
-            title: '附件',
-            align: "center",
-            dataIndex: 'files',
-            scopedSlots: {customRender: 'fileSlot'}
           },
           {
             title: '操作',

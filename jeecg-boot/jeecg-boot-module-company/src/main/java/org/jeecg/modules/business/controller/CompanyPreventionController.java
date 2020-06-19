@@ -2,6 +2,7 @@ package org.jeecg.modules.business.controller;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -13,8 +14,10 @@ import org.jeecg.common.aspect.annotation.AutoLog;
 import org.jeecg.common.system.base.controller.JeecgController;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.modules.business.entity.CompanyApply;
+import org.jeecg.modules.business.entity.CompanyFile;
 import org.jeecg.modules.business.entity.CompanyPrevention;
 import org.jeecg.modules.business.service.ICompanyApplyService;
+import org.jeecg.modules.business.service.ICompanyFileService;
 import org.jeecg.modules.business.service.ICompanyPreventionService;
 import org.jeecg.modules.business.utils.Constant;
 import org.jeecg.modules.business.utils.Constant.status;
@@ -28,6 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description: 污染防治信息
@@ -45,6 +49,9 @@ public class CompanyPreventionController extends JeecgController<CompanyPreventi
 
     @Autowired
     private ICompanyApplyService companyApplyService;
+
+    @Autowired
+    private ICompanyFileService companyFileService;
 
     /**
      * 分页列表查询
@@ -65,8 +72,8 @@ public class CompanyPreventionController extends JeecgController<CompanyPreventi
         QueryWrapper<CompanyPrevention> queryWrapper = QueryGenerator.initQueryWrapper(companyPrevention, req.getParameterMap());
         if (listType == 0) {
             queryWrapper.ne("status", status.EXPIRED);
-        } else {
-            queryWrapper.eq("status", status.PEND).or().eq("status", status.NORMAL);
+        } else if(listType == 1) {
+            queryWrapper.and(wrapper -> wrapper.eq("status", status.PEND).or().eq("status", status.NORMAL));
         }
         Page<CompanyPrevention> page = new Page<CompanyPrevention>(pageNo, pageSize);
         IPage<CompanyPrevention> pageList = companyPreventionService.page(page, queryWrapper);
@@ -76,30 +83,47 @@ public class CompanyPreventionController extends JeecgController<CompanyPreventi
     /**
      * 添加
      *
-     * @param companyPrevention
+     * @param jsonObject
      * @return
      */
     @AutoLog(value = "污染防治信息-添加")
     @ApiOperation(value = "污染防治信息-添加", notes = "污染防治信息-添加")
     @PostMapping(value = "/add")
-    public Result<?> add(@RequestBody CompanyPrevention companyPrevention) {
+    public Result<?> add(@RequestBody JSONObject jsonObject) {
+        CompanyPrevention companyPrevention = this.getCompanyPrevention(jsonObject);
         companyPrevention.setStatus(status.TEMPORARY);
         companyPreventionService.save(companyPrevention);
         //新增申报记录（暂存）
         companyApplyService.saveByBase(companyPrevention.getCompanyId(), companyPrevention.getId(), companyPrevention.getStatus(), "", tables.PREVENTION);
+        companyFileService.saveFiles(jsonObject.getString("fileList"),Constant.fileType.FILE,Constant.tables.PREVENTION,companyPrevention.getId());
         return Result.ok("添加成功！");
+    }
+
+    private CompanyPrevention getCompanyPrevention(JSONObject jsonObject) {
+        CompanyPrevention companyPrevention = new CompanyPrevention();
+        companyPrevention.setId(jsonObject.getString("id"));
+        companyPrevention.setCompanyId(jsonObject.getString("companyId"));
+        companyPrevention.setCreateBy(jsonObject.getString("createBy"));
+        companyPrevention.setCreateTime(jsonObject.getDate("createTime"));
+        companyPrevention.setUpdateBy(jsonObject.getString("updateBy"));
+        companyPrevention.setUpdateTime(jsonObject.getDate("updateTime"));
+        companyPrevention.setStatus(jsonObject.getString("status"));
+        companyPrevention.setName(jsonObject.getString("name"));
+        companyPrevention.setType(jsonObject.getString("type"));
+        return companyPrevention;
     }
 
     /**
      * 编辑
      *
-     * @param companyPrevention
+     * @param jsonObject
      * @return
      */
     @AutoLog(value = "污染防治信息-编辑")
     @ApiOperation(value = "污染防治信息-编辑", notes = "污染防治信息-编辑")
     @PutMapping(value = "/edit")
-    public Result<?> edit(@RequestBody CompanyPrevention companyPrevention) {
+    public Result<?> edit(@RequestBody JSONObject jsonObject) {
+        CompanyPrevention companyPrevention = this.getCompanyPrevention(jsonObject);
         CompanyPrevention oldcompanyPrevention = companyPreventionService.getById(companyPrevention.getId());
         //查询数据状态
         if (status.NORMAL.equals(companyPrevention.getStatus())) {
@@ -120,20 +144,24 @@ public class CompanyPreventionController extends JeecgController<CompanyPreventi
             CompanyApply companyApply = companyApplyService.findByNewId(companyPrevention.getId(), tables.PREVENTION);
             companyApply.setStatus(status.TEMPORARY);
             companyApplyService.updateById(companyApply);
+            companyFileService.remove(new QueryWrapper<CompanyFile>().lambda().eq(CompanyFile::getFromTable,Constant.tables.PREVENTION)
+                    .eq(CompanyFile::getTableId,companyPrevention.getId()));
         }
+        companyFileService.saveFiles(jsonObject.getString("fileList"),Constant.fileType.FILE,Constant.tables.PREVENTION,companyPrevention.getId());
         return Result.ok("编辑成功!");
     }
 
     /**
      * 申报
      *
-     * @param companyPrevention
+     * @param jsonObject
      * @return
      */
     @AutoLog(value = "污染防治信息-申报")
     @ApiOperation(value = "污染防治信息-申报", notes = "污染防治信息-申报")
     @PutMapping(value = "/declare")
-    public Result<?> declare(@RequestBody CompanyPrevention companyPrevention) {
+    public Result<?> declare(@RequestBody JSONObject jsonObject) {
+        CompanyPrevention companyPrevention = this.getCompanyPrevention(jsonObject);
         companyPrevention.setStatus(status.PEND);
         //判断是新增还是编辑
         if (!StrUtil.isEmpty(companyPrevention.getId())) {
@@ -157,6 +185,9 @@ public class CompanyPreventionController extends JeecgController<CompanyPreventi
                 CompanyApply companyApply = companyApplyService.findByNewId(companyPrevention.getId(), tables.PREVENTION);
                 companyApply.setStatus(status.PEND);
                 companyApplyService.updateById(companyApply);
+                //删除原有的
+                companyFileService.remove(new QueryWrapper<CompanyFile>().lambda().eq(CompanyFile::getFromTable,Constant.tables.PREVENTION)
+                        .eq(CompanyFile::getTableId,companyPrevention.getId()));
             }
         } else {
             //新增
@@ -164,6 +195,7 @@ public class CompanyPreventionController extends JeecgController<CompanyPreventi
             //新增申报记录
             companyApplyService.saveByBase(companyPrevention.getCompanyId(), companyPrevention.getId(), companyPrevention.getStatus(), "", tables.PREVENTION);
         }
+        companyFileService.saveFiles(jsonObject.getString("fileList"),Constant.fileType.FILE,Constant.tables.PREVENTION,companyPrevention.getId());
         return Result.ok("申报成功!");
     }
 
@@ -276,4 +308,17 @@ public class CompanyPreventionController extends JeecgController<CompanyPreventi
         return super.importExcel(request, response, CompanyPrevention.class);
     }
 
+    /**
+     * 查询附件
+     *
+     * @param id
+     * @return
+     */
+    @AutoLog(value = "查询附件")
+    @ApiOperation(value = "查询附件", notes = "查询附件")
+    @GetMapping(value = "/queryFiles")
+    public Result<?> queryFiles(@RequestParam(name = "id", required = true) String id) {
+        List<Map<String, String>> result = companyFileService.getFileMaps(id, Constant.tables.PREVENTION);
+        return Result.ok(result);
+    }
 }

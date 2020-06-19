@@ -11,17 +11,18 @@
     <a-spin :spinning="confirmLoading">
       <a-form :form="form">
 
-        <a-form-item label="名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
+        <a-form-item :label="nameLabel" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-input v-decorator="['name', validatorRules.name]" placeholder="请输入名称" :disabled="disableSubmit"></a-input>
         </a-form-item>
-        <a-form-item label="附件上传" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-upload v-decorator="['files']" :trigger-change="true" :disabled="disableSubmit"></j-upload>
+        <a-form-item :label="fileLabel" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <j-upload ref="uploadRef" :disabled="disableSubmit" fileType="file" bizPath="prevention" @change="fileListChange" @delete ="fileDelete"
+          ></j-upload>
         </a-form-item>
 
       </a-form>
     </a-spin>
     <template slot="footer">
-      <a-button type="primary" @click="handleCancel">取消</a-button>
+      <a-button type="primary" @click="handleCancel">关闭</a-button>
       <a-button type="primary" @click="handleOk"  v-if="!disableSubmit">暂存</a-button>
       <a-button type="primary" @click="handDeclare"  v-if="!disableSubmit">申报</a-button>
     </template>
@@ -34,6 +35,7 @@
   import pick from 'lodash.pick'
   import { validateDuplicateValue } from '@/utils/util'
   import JUpload from '@/components/jeecg/JUpload'
+  import {queryFiles} from '../../../requestAction/request'
 
 
   export default {
@@ -46,6 +48,8 @@
         form: this.$form.createForm(this),
         disableSubmit:false,
         title:"操作",
+        nameLabel:this.header_text+"名称",
+        fileLabel:this.header_text+"附件上传",
         width:800,
         visible: false,
         model: {},
@@ -68,7 +72,8 @@
         url: {
           add: "/prevention/companyPrevention/add",
           edit: "/prevention/companyPrevention/edit",
-          declare:"/prevention/companyPrevention/declare"
+          declare:"/prevention/companyPrevention/declare",
+          queryFile:"/prevention/companyPrevention/queryFiles"
         }
       }
     },
@@ -83,8 +88,22 @@
         this.model = Object.assign({}, record);
         this.visible = true;
         this.$nextTick(() => {
-          this.form.setFieldsValue(pick(this.model,'createTime','name','files'))
+          this.form.setFieldsValue(pick(this.model,'name'))
         })
+        if(record.id){
+          //查询所属文件
+          let _this =this;
+          queryFiles({id:record.id},this.$data.url.queryFile).then((res)=>{
+            _this.$nextTick(() => {
+              _this.$refs.uploadRef.initFileListArr(res.result);
+            });
+          });
+        }else{
+          //清空上传列表
+          this.$nextTick(() => {
+            this.$refs.uploadRef.initFileList("");
+          });
+        }
       },
       close () {
         this.$emit('close');
@@ -102,6 +121,7 @@
             let formData = Object.assign(this.model, values);
             formData.companyId=this.companyId;
             formData.type=this.type;
+            formData.fileList = that.fileList;
             httpAction(httpUrl,formData,method).then((res)=>{
               if(res.success){
                 that.$message.success(res.message);
@@ -135,6 +155,7 @@
             let formData = Object.assign(this.model, values);
             formData.companyId=this.companyId;
             formData.type=this.type;
+            formData.fileList = that.fileList;
             console.log("表单提交数据",formData)
             httpAction(httpurl,formData,method).then((res)=>{
               if(res.success){
@@ -157,10 +178,17 @@
       popupCallback(row){
         this.form.setFieldsValue(pick(row,'createTime','name','files'))
       },
+      fileListChange(newFileList){
+        this.fileList = newFileList;
+      },
+      fileDelete(file){
+        this.deleteFiles.push(file.response.message);
+      },
     },
     props:{
       type:"",
-      companyId:""
+      companyId:"",
+      header_text:""
     }
   }
 </script>
