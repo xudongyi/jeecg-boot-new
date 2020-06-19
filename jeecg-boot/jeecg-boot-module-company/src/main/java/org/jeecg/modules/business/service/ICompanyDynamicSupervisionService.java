@@ -13,5 +13,5 @@ import org.jeecg.modules.business.vo.CompanyDynamicSupervisionVO;
  */
 public interface ICompanyDynamicSupervisionService extends IService<CompanyDynamicSupervision> {
     Integer findCountByCompanyId(String companyId);
-    Page<CompanyDynamicSupervisionVO> getCompanyDynamicSupervision(Page<CompanyDynamicSupervisionVO> page, String companyIds,String status,String reportYear);
+    Page<CompanyDynamicSupervisionVO> getCompanyDynamicSupervision(Page<CompanyDynamicSupervisionVO> page, String companyIds,String status,String reportYear,Integer listType);
 }

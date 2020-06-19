@@ -164,7 +164,7 @@
           }
         ],
         url: {
-          list: "/cds/companyDynamicSupervision/list",
+          list: "/cds/companyDynamicSupervision/list/2",
           // delete: "/cds/companyDynamicSupervision/delete",
           // deleteBatch: "/cds/companyDynamicSupervision/deleteBatch",
           // batchDeclare: "/cds/companyDynamicSupervision/batchDeclare"
@@ -196,7 +196,7 @@
         this.loadData(1);
       },
     },
-    created(){
+    mounted(){
       // console.log(this.companyIds);
       let that = this;
       //查询企业名称

@@ -15,5 +15,5 @@ import java.util.Date;
  */
 public interface ICompanyAdminPenaltiesService extends IService<CompanyAdminPenalties> {
     Integer findCountByCompanyId(String companyId);
-    Page<CompanyAdminPenaltiesVO> getCompanyAdminPenalties(Page<CompanyAdminPenaltiesVO> page, String companyIds, String status, Date dateBegin,Date dateEnd);
+    Page<CompanyAdminPenaltiesVO> getCompanyAdminPenalties(Page<CompanyAdminPenaltiesVO> page, String companyIds, String status, Date dateBegin,Date dateEnd,Integer listType);
 }

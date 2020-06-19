@@ -169,7 +169,7 @@
           }
         ],
         url: {
-          list: "/cap/companyAdminPenalties/list",
+          list: "/cap/companyAdminPenalties/list/2",
           // delete: "/cap/companyAdminPenalties/delete",
           // deleteBatch: "/cap/companyAdminPenalties/deleteBatch",
           // batchDeclare: "/cap/companyAdminPenalties/batchDeclare"
@@ -204,7 +204,7 @@
       },
 
     },
-    created(){
+    mounted(){
       let that = this;
       //查询企业名称
       queryCompanyName({companyIds:this.$store.getters.userInfo.companyIds.join(',')}).then((res) => {
