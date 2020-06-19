@@ -11,10 +11,12 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
 import org.jeecg.common.system.base.controller.JeecgController;
 import org.jeecg.common.system.query.QueryGenerator;
+import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.common.util.SpringContextUtils;
 import org.jeecg.modules.business.entity.CompanyApply;
 import org.jeecg.modules.business.entity.CompanyFile;
@@ -110,7 +112,7 @@ public class CompanyApplyController extends JeecgController<CompanyApply, ICompa
     /**
      * 添加
      *
-     * @param companyApply
+     * @param companyApply 企业申报基础表
      * @return
      */
     @AutoLog(value = "企业申报基础表-添加")
@@ -336,9 +338,10 @@ public class CompanyApplyController extends JeecgController<CompanyApply, ICompa
     public Result<?> batchFail(@RequestBody JSONObject jsonObject) {
         String[]  ids = jsonObject.getString("ids").split(",");
         if(ids.length>0){
+
+            LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
             //修改申请表
-            companyApplyService.update(new UpdateWrapper<CompanyApply>().lambda().in(CompanyApply::getId,Arrays.asList(ids))
-                    .set(CompanyApply::getStatus,Constant.status.NOPASS));
+            companyApplyService.submitApply(sysUser.getId(),jsonObject.getString("ids"), "" ,Constant.status.NOPASS);
             Collection<CompanyApply> companyApplys = companyApplyService.listByIds(Arrays.asList(ids));
             //多个
             Map<String,List<String>> services = new HashMap<>();
@@ -375,8 +378,9 @@ public class CompanyApplyController extends JeecgController<CompanyApply, ICompa
         String[]  ids = jsonObject.getString("ids").split(",");
         if(ids.length>0){
             //修改申请表
-            companyApplyService.update(new UpdateWrapper<CompanyApply>().lambda().in(CompanyApply::getId,Arrays.asList(ids))
-                    .set(CompanyApply::getStatus,Constant.status.NORMAL));
+            LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+            //修改申请表
+            companyApplyService.submitApply(sysUser.getId(),jsonObject.getString("ids"), "" ,Constant.status.NORMAL);
             Collection<CompanyApply> companyApplys = companyApplyService.listByIds(Arrays.asList(ids));
             //多个
             Map<String,Map<String,List<String>>> services = new HashMap<>();

@@ -62,25 +62,25 @@ public class CompanyBaseinfoController extends JeecgController<CompanyBaseinfo, 
 		QueryWrapper<CompanyBaseinfo> queryWrapper = QueryGenerator.initQueryWrapper(companyBaseinfo, req.getParameterMap());
 		Page<CompanyBaseinfo> page = new Page<CompanyBaseinfo>(pageNo, pageSize);
 		IPage<CompanyBaseinfo> pageList = companyBaseinfoService.page(page, queryWrapper);
-		return Result.ok(pageList);
+ 		return Result.ok(pageList);
 	}
-	 @AutoLog(value = "company_baseinfo-通过用户id-分页列表查询")
-	 @ApiOperation(value="company_baseinfo-通过用户id-分页列表查询", notes="company_baseinfo-通过用户id-分页列表查询")
-	 @GetMapping(value = "/listByUserId/{userId}")
-	 public Result<?> queryByUserIdRestful(@PathVariable  String userId,CompanyBaseinfo companyBaseinfo,
-										   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
-										   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
-										   HttpServletRequest req) {
-		 List<String> companyIds = new ArrayList<>();
-		 if (companySysuserService.queryCompanyIds(userId, companyIds)) return Result.error("未找到对应数据");
-		 Map<String, String[]> parameterMap = new HashMap(req.getParameterMap());
-		 parameterMap.put("companyId_MultiString",new String[]{String.join(",", companyIds)});
-		 QueryWrapper<CompanyBaseinfo> queryWrapper = QueryGenerator.initQueryWrapper(companyBaseinfo, parameterMap);
-		 Page<CompanyBaseinfo> page = new Page<>(pageNo, pageSize);
-		 IPage<CompanyBaseinfo> pageList = companyBaseinfoService.page(page, queryWrapper);
-		 return Result.ok(pageList);
-
-	 }
+//	 @AutoLog(value = "company_baseinfo-通过用户id-分页列表查询")
+//	 @ApiOperation(value="company_baseinfo-通过用户id-分页列表查询", notes="company_baseinfo-通过用户id-分页列表查询")
+//	 @GetMapping(value = "/listByUserId/{userId}")
+//	 public Result<?> queryByUserIdRestful(@PathVariable  String userId,CompanyBaseinfo companyBaseinfo,
+//										   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+//										   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
+//										   HttpServletRequest req) {
+//		 List<String> companyIds = new ArrayList<>();
+//		 if (companySysuserService.queryCompanyIds(userId, companyIds)) return Result.error("未找到对应数据");
+//		 Map<String, String[]> parameterMap = new HashMap(req.getParameterMap());
+//		 parameterMap.put("companyId_MultiString",new String[]{String.join(",", companyIds)});
+//		 QueryWrapper<CompanyBaseinfo> queryWrapper = QueryGenerator.initQueryWrapper(companyBaseinfo, parameterMap);
+//		 Page<CompanyBaseinfo> page = new Page<>(pageNo, pageSize);
+//		 IPage<CompanyBaseinfo> pageList = companyBaseinfoService.page(page, queryWrapper);
+//		 return Result.ok(pageList);
+//
+//	 }
 	/**
 	 *   添加
 	 *

@@ -1,6 +1,9 @@
 <template>
 <div>
-  <a-descriptions >
+  <a-row :gutter="24">
+    <a-col :span="3" ></a-col>
+    <a-col :span="20">
+    <a-descriptions >
     <a-descriptions-item label="申报人">
      {{applyer}}
     </a-descriptions-item>
@@ -32,6 +35,8 @@
         {{date}}
       </a-descriptions-item>
     </a-descriptions>
+    </a-col>
+  </a-row>
 
 
 </div>

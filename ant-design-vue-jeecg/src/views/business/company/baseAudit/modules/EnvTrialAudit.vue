@@ -25,7 +25,7 @@
       <j-date placeholder="请选择审批时间" v-decorator="['approveDate']" :trigger-change="true" style="width: 100%" :disabled="disable"/>
     </a-form-item>
     <a-form-item label="附件" :labelCol="labelCol" :wrapperCol="wrapperCol">
-      <j-upload ></j-upload>
+      <j-upload ref="uploadRef" :disabled="disable" fileType="file" bizPath="envtrial"></j-upload>
     </a-form-item>
     <!--加一个表格显示-->
 
@@ -37,22 +37,24 @@
 </template>
 
 <script>
-  import {queryAduitBase} from "../../../requestAction/request"
+  import {queryAduitBase, queryenvTrialFiles, queryFiles} from "../../../requestAction/request"
   import AuditFooter from "../modules/AuditFooter";
   import pick from "lodash.pick";
   import JDictSelectTag from  '@/components/dict/JDictSelectTag.vue'
   import JDate from '@/components/jeecg/JDate'
-    export default {
+  import JUpload from '@/components/jeecg/JUpload'
+
+  export default {
         name: "EnvTrialAudit",
       components:{
-        AuditFooter,JDictSelectTag,JDate
+        AuditFooter,JDictSelectTag,JDate,JUpload
       },data(){
         return{
           applyInfo:'',
           confirmLoading:true,
           visible: false,
           width:1200,
-          title:"基本信息申报审核-员工信息",
+          title:"基本信息申报审核-环评审批信息",
           disable:true,
           form: this.$form.createForm(this),
           labelCol: {
@@ -89,7 +91,7 @@
           queryAduitBase({applyId:record.id}).then((res)=>{
             if(res.success){
               that.$nextTick(() => {
-                this.form.setFieldsValue(pick(res.result.info,'outputType','outputName','yield','maxStore','cas','storeType','hazardousChemicalsCategory','mainRisk','supervision','toxic','precursorChemicals','status','certified','rawMaterials','proEquipment','remake'))
+                this.form.setFieldsValue(pick(res.result.info,'projectName','approveFilenum','approveUnit','approveDate','annex'));
 
               });
 
@@ -98,6 +100,12 @@
 
               }
             }
+          });
+          queryFiles({id:record.newId},"/company/envTrial/queryFiles").then((res)=>{
+            that.$nextTick(() => {
+              that.$refs.uploadRef.initFileListArr(res.result);
+            });
+
           });
 
           this.$nextTick(() => {

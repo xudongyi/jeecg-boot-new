@@ -131,7 +131,7 @@
             }
           },
           {
-            title:'更新日期',
+            title:'申报日期',
             align:"center",
             dataIndex: 'createTime',
             customRender:function (text) {
@@ -180,20 +180,28 @@
       },
       toApply(){
         this.$emit("toApply");
-      }
-    },
-    created() {
-      let that = this;
-      //查询最新归档信息
-      queryLatestArchivedData({companyId:this.companyId,fromTable:this.fromTable}).then((res)=>{
-        console.log(res)
-        if(res.success){
-          that.latestArchived = res.result;
-        }else{
-          that.$message.warning(res.message);
-        }
+      },
+      init(){
+        let that = this;
+        //查询最新归档信息
+        queryLatestArchivedData({companyId:this.companyId,fromTable:this.fromTable}).then((res)=>{
+          console.log(res)
+          if(res.success){
+            that.latestArchived = res.result;
+          }else{
+            that.$message.warning(res.message);
+          }
 
-      })
+        });
+      },
+      reInit(){
+        this.loadData();
+        this.init();
+      }
+
+    },
+    mounted() {
+      this.init();
     }
   }
 </script>

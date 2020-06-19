@@ -3,9 +3,10 @@
 
         <company-apply-list :company-id="companyId"
                             :from-table="fromTable" @applyDetail = "applyDetail"  @toDetail="latestDetail" @toApply="apply"
+                            ref = "applyList"
                             ></company-apply-list>
 
-    <jmodal-base-info ref="baseInfoForm" ></jmodal-base-info>
+    <jmodal-base-info ref="baseInfoForm" @submitOk="OK"></jmodal-base-info>
      <companyApply-modal ref="applyInfoForm" ></companyApply-modal>
    </div>
 </template>
@@ -55,12 +56,14 @@
           },
           applyDetail(record){
 
-
             //查询详情数据
             this.$refs.applyInfoForm.detail(record);
             //单个表比较
             this.$refs.applyInfoForm.compareDetail(this.fromTable);
-          }
+          },
+        OK(){
+          this.$refs.applyList.reInit();
+        }
 
 
       },

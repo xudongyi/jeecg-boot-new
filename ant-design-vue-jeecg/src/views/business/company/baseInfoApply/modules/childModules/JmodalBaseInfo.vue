@@ -49,6 +49,8 @@
           this.$refs.baseModal.handleOk();
 
           this.visible = false;
+          that.$emit('submitOk');
+
 
         },
         modalFormOk(){

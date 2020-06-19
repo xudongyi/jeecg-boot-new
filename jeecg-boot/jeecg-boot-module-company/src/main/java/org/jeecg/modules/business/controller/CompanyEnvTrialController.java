@@ -102,6 +102,7 @@ public class CompanyEnvTrialController extends JeecgController<CompanyEnvTrial, 
 		 companyEnvTrial.setCreateTime(jsonObject.getDate("createTime"));
 		 companyEnvTrial.setUpdateBy(jsonObject.getString("updateBy"));
 		 companyEnvTrial.setUpdateTime(jsonObject.getDate("updateTime"));
+		 companyEnvTrial.setStatus(jsonObject.getString("status"));
 		 return companyEnvTrial;
 	 }
 

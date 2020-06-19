@@ -44,7 +44,23 @@
       </a-form>
     </div>
     <!-- 查询区域-END -->
-    
+    <!-- 操作按钮区域 -->
+    <div class="table-operator" >
+<!--
+      <a-button @click="applyAdd" type="primary" icon="plus">新增</a-button>
+-->
+      <a-button type="primary" icon="download" @click="handleExportXls('企业信息列表')">导出</a-button>
+      <!--<a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
+        <a-button type="primary" icon="import">导入</a-button>
+      </a-upload>-->
+     <!-- <a-dropdown v-if="selectedRowKeys.length > 0">
+        <a-menu slot="overlay">
+          <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
+          <a-menu-item key="2" @click="batchApply"><a-icon type="delete"/>申报</a-menu-item>
+        </a-menu>
+        <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>
+      </a-dropdown>-->
+    </div>
 
 
     <!-- table区域-begin -->
@@ -144,11 +160,13 @@
           }
         ],
         url: {
-          list: "/company/companyBaseinfo/listByUserId/"+store.getters.userInfo.id,
+          list: "/company/companyBaseinfo/list",
+          exportXlsUrl:"/company/companyBaseinfo/exportXls"
         },
         dictOptions:{},
         queryParam:{
-          status:"2"
+          status:"2",
+          companyId_MultiString:store.getters.userInfo.companyIds.join(","),
         }
       }
     },

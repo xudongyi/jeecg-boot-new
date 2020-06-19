@@ -104,7 +104,8 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="handleEdit(record)">审核</a>
+          <a @click="handleEdit(record)" v-show = "record.status==='1'">审核</a>
+          <a @click="handleView(record)"  v-show = "record.status!=='1'">查看</a>
 <!--
           <a-divider type="vertical" />
 -->
@@ -135,7 +136,7 @@
     <online-info-audit ref="onlineInfoModal"></online-info-audit>
     <user-info-audit ref="userInfoModal"/>
     <product-material-audit ref="productmaterialModal"/>
-    <env-tax-audit ref="envtaxModal"/>
+    <env-trial-audit ref="envtrialModal"/>
 
   </div>
 
@@ -179,7 +180,8 @@
       SolidWasteAudit,
       RadiateWasteAudit,
       CleanProductAudit,
-      OnlineInfoAudit
+      OnlineInfoAudit,
+      EnvTrialAudit
     },
 
     data () {
@@ -370,7 +372,7 @@
           this.$refs.cleanProductModal.visible = false;
           this.$refs.onlineInfoModal.visible = false;
           this.$refs.productmaterialModal.visible = false;
-          this.$refs.envtaxModal.visible = false;
+          this.$refs.envtrialModal.visible = false;
 
 
           //打开需要展示的浮窗
@@ -424,8 +426,8 @@
             this.$refs.productmaterialModal.auditModal(record);
           }
           if ("company_env_trial" === record.fromTable) {
-            this.$refs.envtaxModal.visible = true;
-            this.$refs.envtaxModal.auditModal(record);
+            this.$refs.envtrialModal.visible = true;
+            this.$refs.envtrialModal.auditModal(record);
           }
       },
 
