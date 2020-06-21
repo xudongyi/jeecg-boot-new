@@ -5,7 +5,7 @@
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
 
-          <a-col :xl="10" :lg="11" :md="12" :sm="24">
+          <a-col :xl="8" :lg="11" :md="12" :sm="24">
             <a-form-item label="发文日期">
               <j-date placeholder="请选择开始日期" class="query-group-cust" v-model="queryParam.reportDate_begin"></j-date>
               <span class="query-group-split-cust"></span>
@@ -13,7 +13,7 @@
             </a-form-item>
           </a-col>
 
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+          <a-col :xl="4" :lg="7" :md="8" :sm="24">
             <a-form-item label="申报状态">
               <j-dict-select-tag placeholder="请选择申报状态" v-model="queryParam.status" dictCode="statue" :excludeFields="['0','4']"/>
             </a-form-item>
