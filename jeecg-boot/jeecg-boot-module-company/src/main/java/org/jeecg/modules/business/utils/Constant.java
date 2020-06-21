@@ -92,6 +92,22 @@ public class Constant {
          *
          */
         public static String ENVTRIAL = "company_env_trial";
+        /**
+         *企业年度动态监管
+         */
+        public static String DYNAMICSUPERVISION = "company_dynamic_supervision";
+        /**
+         *行政处罚信息
+         */
+        public static String ADMINPENALTIES = "company_admin_penalties";
+        /**
+         *监督性监测信息
+         */
+        public static String SUPERVISORYMONITOR = "company_supervisory_monitor";
+        /**
+         *信访投诉信息
+         */
+        public static String COMPLAINTLETTER = "company_complaint_letter";
     }
 
 }

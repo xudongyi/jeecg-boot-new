@@ -13,9 +13,9 @@
             </a-form-item>
           </a-col>
 
-          <a-col :xl="6" :lg="7" :md="8" :sm="24" v-show="false">
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="申报状态">
-              <j-dict-select-tag placeholder="请选择申报状态" v-model="queryParam.status" dictCode="statue"/>
+              <j-dict-select-tag placeholder="请选择申报状态" v-model="queryParam.status" dictCode="statue" :excludeFields="['0','4']"/>
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
