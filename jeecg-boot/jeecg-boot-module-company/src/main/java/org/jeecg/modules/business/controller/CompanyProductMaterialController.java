@@ -61,7 +61,7 @@ public class CompanyProductMaterialController extends JeecgController<CompanyPro
 								   HttpServletRequest req) {
 		QueryWrapper<CompanyProductMaterial> queryWrapper = QueryGenerator.initQueryWrapper(companyProductMaterial, req.getParameterMap());
 		Page<CompanyProductMaterial> page = new Page<CompanyProductMaterial>(pageNo, pageSize);
-		IPage<CompanyProductMaterial> pageList = companyProductMaterialService.page(page, queryWrapper);
+		IPage<CompanyProductMaterial> pageList = companyProductMaterialService.page(page, queryWrapper.orderByDesc("create_time"));
 		return Result.ok(pageList);
 	}
 	

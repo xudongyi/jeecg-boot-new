@@ -129,12 +129,19 @@
         default(){
           return false;
         }
-      }
+      },
     },
     data () {
       return {
 
-        queryParam:{companyId:this.companyId},
+        queryParam:{
+          companyId:this.companyId,
+
+        },
+        isorter:{
+          column: 'status',
+          order: 'asc',
+        },
         // 表头
         columns: [
           {

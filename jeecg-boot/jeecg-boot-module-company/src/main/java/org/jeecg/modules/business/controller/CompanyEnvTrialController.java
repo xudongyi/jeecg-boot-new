@@ -66,7 +66,7 @@ public class CompanyEnvTrialController extends JeecgController<CompanyEnvTrial, 
 								   HttpServletRequest req) {
 		QueryWrapper<CompanyEnvTrial> queryWrapper = QueryGenerator.initQueryWrapper(companyEnvTrial, req.getParameterMap());
 		Page<CompanyEnvTrial> page = new Page<CompanyEnvTrial>(pageNo, pageSize);
-		IPage<CompanyEnvTrial> pageList = companyEnvTrialService.page(page, queryWrapper);
+		IPage<CompanyEnvTrial> pageList = companyEnvTrialService.page(page, queryWrapper.orderByDesc("create_time"));
 		return Result.ok(pageList);
 	}
 	

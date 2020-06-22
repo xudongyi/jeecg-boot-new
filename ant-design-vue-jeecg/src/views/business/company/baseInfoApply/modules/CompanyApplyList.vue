@@ -116,7 +116,8 @@
         queryParam:{
           companyId:this.companyId,
           fromTable:this.fromTable,
-          status : '!0'
+          status : '!0'//不查询暂存
+
         },
         latestArchived:{},
         // 表头

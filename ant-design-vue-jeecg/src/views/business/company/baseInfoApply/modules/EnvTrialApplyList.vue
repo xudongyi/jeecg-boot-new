@@ -128,7 +128,10 @@
       return {
         description: '环评审批信息管理页面',
         queryParam: {companyId:this.companyId},
-
+        isorter:{
+          column: 'status',
+          order: 'asc',
+        },
         // 表头
         columns: [
           {

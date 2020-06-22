@@ -60,7 +60,7 @@ public class CompanyUserinfoController extends JeecgController<CompanyUserinfo, 
 								   HttpServletRequest req) {
 		QueryWrapper<CompanyUserinfo> queryWrapper = QueryGenerator.initQueryWrapper(companyUserinfo, req.getParameterMap());
 		Page<CompanyUserinfo> page = new Page<CompanyUserinfo>(pageNo, pageSize);
-		IPage<CompanyUserinfo> pageList = companyUserinfoService.page(page, queryWrapper);
+		IPage<CompanyUserinfo> pageList = companyUserinfoService.page(page,queryWrapper.orderByDesc("create_time"));
 		return Result.ok(pageList);
 	}
 	
