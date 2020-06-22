@@ -61,7 +61,7 @@
         visible: false,
         disable:true,
         model: {},
-        fileList:[],
+        fileList:'',
         deleteFiles:[],
         labelCol: {
           xs: { span: 24 },
@@ -109,26 +109,31 @@
         this.edit({});
       },
       fileListChange(newFileList){
+
         this.fileList = newFileList;
       },
       fileDelete(file){
+        
         this.deleteFiles.push(file.response.message);
       },
       edit (record) {
+        let _this =this;
         this.form.resetFields();
         this.model = Object.assign({}, record);
         this.visible = true;
         this.$nextTick(() => {
-          this.form.setFieldsValue(pick(this.model,'projectName','approveFilenum','approveUnit','approveDate','annex'))
+          _this.form.setFieldsValue(pick(this.model,'projectName','approveFilenum','approveUnit','approveDate','annex'))
         });
+
         if(record.id){
             //查询所属文件
-          let _this =this;
           queryFiles({id:record.id},this.$data.url.queryFile).then((res)=>{
 
             _this.$nextTick(() => {
 
               _this.$refs.uploadRef.initFileListArr(res.result);
+              _this.fileList = _this.$refs.fileList
+
             });
 
           });
@@ -136,8 +141,10 @@
 
         }else{
           //清空上传列表
-          this.$nextTick(() => {
-            this.$refs.uploadRef.initFileList("");
+          _this.$nextTick(() => {
+
+            _this.$refs.uploadRef.initFileList("");
+            _this.fileList = _this.$refs.fileList
           });
         }
 
@@ -166,6 +173,7 @@
             let formData = Object.assign(this.model, values);
             formData.companyId=that.companyId;
             formData.fileList = that.fileList;
+
             httpAction(httpurl,formData,method).then((res)=>{
               if(res.success){
                 that.$message.success(res.message);
