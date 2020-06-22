@@ -45,5 +45,6 @@
         <if test="reportYear != null">
             and t1.report_year = (#{reportYear})
         </if>
+        order by t1.status asc ,t1.create_time desc
 	</select>
 </mapper>

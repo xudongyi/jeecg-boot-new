@@ -51,5 +51,6 @@
         <if test="dateEnd != null">
             and t1.complaint_date &lt;= (#{dateEnd})
         </if>
+        order by t1.status asc ,t1.create_time desc
     </select>
 </mapper>
