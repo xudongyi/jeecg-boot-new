@@ -104,7 +104,8 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="handleView(record)"  v-show="!isApply || record.status !== '0' ">查看</a>
+            <a @click="handleView(record)"  v-show="!isApply ">查看</a>
+           <a @click="applyEdit(record)"  v-show="isApply && record.status !== '0' ">申请修改</a>
           <!-- 编辑和删除-->
           <a @click="applyEdit(record)"  v-show="isApply && record.status === '0' ">编辑</a>
           <a-divider type="vertical" v-show="isApply && record.status === '0' "  />

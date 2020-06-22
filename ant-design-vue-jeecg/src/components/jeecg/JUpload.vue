@@ -2,12 +2,12 @@
   <div :id="containerId" style="position: relative">
 
     <!--  ---------------------------- begin 图片左右换位置 ------------------------------------- -->
-    <div class="movety-container" :style="{top:top+'px',left:left+'px',display:moveDisplay}" style="padding:0 8px;position: absolute;z-index: 91;height: 32px;width: 104px;text-align: center;">
+  <!--  <div class="movety-container" :style="{top:top+'px',left:left+'px',display:moveDisplay}" style="padding:0 8px;position: absolute;z-index: 91;height: 32px;width: 104px;text-align: center;">
       <div :id="containerId+'-mover'" :class="showMoverTask?'uploadty-mover-mask':'movety-opt'" style="margin-top: 12px">
         <a @click="moveLast" style="margin: 0 5px;"><a-icon type="arrow-left" style="color: #fff;font-size: 16px"/></a>
         <a @click="moveNext" style="margin: 0 5px;"><a-icon type="arrow-right" style="color: #fff;font-size: 16px"/></a>
       </div>
-    </div>
+    </div>-->
     <!--  ---------------------------- end 图片左右换位置 ------------------------------------- -->
 
     <a-upload
@@ -164,13 +164,15 @@
     created(){
       const token = Vue.ls.get(ACCESS_TOKEN);
       //---------------------------- begin 图片左右换位置 -------------------------------------
-      this.headers = {"X-Access-Token":token};
-      this.containerId = 'container-ty-'+new Date().getTime();
+      // this.headers = {"X-Access-Token":token};
+      // this.containerId = 'container-ty-'+new Date().getTime();
       //---------------------------- end 图片左右换位置 -------------------------------------
     },
 
     methods:{
       initFileListArr(val){
+        console.log("--initFileListArr--")
+
         if(!val || val.length==0){
           this.fileList = [];
           return;
@@ -192,6 +194,7 @@
         this.fileList = fileList
       },
       initFileList(paths){
+        console.log("--initFileList--")
         if(!paths || paths.length==0){
           //return [];
           // update-begin- --- author:os_chengtgen ------ date:20190729 ---- for:issues:326,Jupload组件初始化bug
@@ -362,7 +365,7 @@
       }
     },
     mounted(){
-      const moverObj = document.getElementById(this.containerId+'-mover');
+      /*const moverObj = document.getElementById(this.containerId+'-mover');
       moverObj.addEventListener('mouseover',()=>{
         this.moverHold = true
         this.moveDisplay = 'block';
@@ -370,7 +373,7 @@
       moverObj.addEventListener('mouseout',()=>{
         this.moverHold = false
         this.moveDisplay = 'none';
-      });
+      });*/
       let picList = document.getElementById(this.containerId)?document.getElementById(this.containerId).getElementsByClassName('ant-upload-list-picture-card'):[];
       if(picList && picList.length>0){
         picList[0].addEventListener('mouseover',(ev)=>{

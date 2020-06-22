@@ -3,7 +3,10 @@
   <company-apply-list :company-id="companyId" :hoverable="latestArchived"
                       :from-table="fromTable" @applyDetail = "applyDetail"  @toDetail="latestDetail" @toApply="apply"
                       v-if="!showDetail"></company-apply-list>
+<!--
   <qualification ref="qModal" :company-id="companyId" v-else ></qualification>
+-->
+    <qualification-apply-detail ref="qDetail" :company-id="companyId" v-else></qualification-apply-detail>
 <qualification-apply-modal ref="applyInfoForm"></qualification-apply-modal>
   </div>
 </template>
@@ -13,11 +16,13 @@
   import {queryLatestArchivedData} from "../../requestAction/request";
   import Qualification from "../oneCompayOneRecord/routeView/Qualification";
   import QualificationApplyModal from "./modules/childModules/QualificationApplyModal";
+  import QualificationApplyDetail from "./modules/QualificationApplyDetail";
     export default {
         name: "QualificationApply",
       components:{
         QualificationApplyModal,
         CompanyApplyList,Qualification,
+        QualificationApplyDetail
       },
       data(){
           return {
@@ -55,10 +60,10 @@
         },
         apply(){
           this.showDetail = true;
-          let that = this;
-          this.$nextTick(() => {
-            that.$refs.qModal.isApply = true;
-          });
+          // let that = this;
+          // this.$nextTick(() => {
+          //   that.$refs.qModal.isApply = true;
+          // });
         },
         applyDetail(record){
           //查询详情数据

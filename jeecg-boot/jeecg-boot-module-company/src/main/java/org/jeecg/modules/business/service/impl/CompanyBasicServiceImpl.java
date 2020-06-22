@@ -59,6 +59,16 @@ public class CompanyBasicServiceImpl implements ICompanyBasicService {
 
     @Autowired
     private ICompanyRadiateWasteService companyRadiateWasteService;
+    @Autowired
+    private ICompanyQualificationService companyQualificationService;
+    @Autowired
+    private ICompanyUserinfoService companyUserinfoService;
+    @Autowired
+    private ICompanyProductMaterialService companyProductMaterialService;
+    @Autowired
+    private ICompanyEnvTrialService companyEnvTrialService;
+    @Autowired
+    private ICompanyBaseinfoService companyBaseinfoService;
     /**
      *  根据conpanyId组装 一企一档基础信息的菜单信息
      * @param companyId
@@ -66,11 +76,12 @@ public class CompanyBasicServiceImpl implements ICompanyBasicService {
      */
     public List<Map<String,String>> getbasicInfoMenus(String companyId){
         List<Map<String,String>> basicInfoMenus = new ArrayList<>();
-        addElements("1"," 基本信息",0,basicInfoMenus);
-        addElements("2"," 企业资质",2,basicInfoMenus);
-        addElements("3"," 员工信息",3,basicInfoMenus);
-        addElements("4"," 产品物料信息",2,basicInfoMenus);
-        addElements("5"," 环评审批信息",3,basicInfoMenus);
+        addElements("1"," 基本信息",companyBaseinfoService.findCountByCompanyId(companyId),basicInfoMenus);
+
+        addElements("2"," 企业资质",companyQualificationService.findCountByCompanyId(companyId),basicInfoMenus);
+        addElements("3"," 员工信息",companyUserinfoService.findCountByCompanyId(companyId),basicInfoMenus);
+        addElements("4"," 产品物料信息",companyProductMaterialService.findCountByCompanyId(companyId),basicInfoMenus);
+        addElements("5"," 环评审批信息",companyEnvTrialService.findCountByCompanyId(companyId),basicInfoMenus);
         addElements("6"," 竣工验收信息",companyAcceptanceService.findCountByCompanyId(companyId),basicInfoMenus);
         addElements("7"," 污染防治信息",companyPreventionService.findCountByCompanyId(companyId),basicInfoMenus);
         addElements("8"," 排污许可证信息",companyDirtyAllowService.findCountByCompanyId(companyId),basicInfoMenus);

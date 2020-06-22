@@ -104,11 +104,11 @@
             }
 
           }else{
-            this.date = moment(record.updateTime).format(this.dateFormat);
             if (this.timer) {
               clearInterval(this.timer);
-
             }
+            this.date = moment(record.updateTime).format(this.dateFormat);
+
           }
           if(record.isView) {
             this.isView = this.applyInfo.isView;

@@ -11,4 +11,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface ICompanyEnvTrialService extends IService<CompanyEnvTrial> {
 
+    Integer findCountByCompanyId(String companyId);
 }

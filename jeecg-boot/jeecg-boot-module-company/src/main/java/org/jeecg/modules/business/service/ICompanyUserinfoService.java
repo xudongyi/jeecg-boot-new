@@ -11,4 +11,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface ICompanyUserinfoService extends IService<CompanyUserinfo> {
 
+    Integer findCountByCompanyId(String companyId);
 }

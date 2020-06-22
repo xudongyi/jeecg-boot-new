@@ -2,6 +2,7 @@ package org.jeecg.modules.business.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.jeecg.modules.business.entity.CompanyAcceptance;
 import org.jeecg.modules.business.entity.CompanyQualification;
 import org.jeecg.modules.business.utils.Constant;
 
@@ -21,4 +22,8 @@ public interface ICompanyQualificationService extends IService<CompanyQualificat
      Map<String, List<Map<String,String>>> getQualificationFiles(String companyId);
      Boolean updateQualificationFiles(List<String> ids,Map<String,Object> updateParams);
      Map<String, List<Map<String,String>>> compareQualification(String applyId);
+     /**
+      * @Description:根据companyId查询数量
+      */
+     Integer findCountByCompanyId(String companyId) ;
 }

@@ -3,6 +3,7 @@ package org.jeecg.modules.business.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import org.jeecg.modules.business.entity.CompanyBaseinfo;
+import org.jeecg.modules.business.entity.CompanyEnvTrial;
 import org.jeecg.modules.business.mapper.CompanyBaseinfoMapper;
 import org.jeecg.modules.business.service.ICompanyBaseinfoService;
 import org.jeecg.modules.business.utils.Constant;
@@ -51,5 +52,13 @@ public class CompanyBaseinfoServiceImpl extends ServiceImpl<CompanyBaseinfoMappe
     public CompanyBaseInfoVo getInfoByCompanyId(String companyId) {
         return companyBaseinfoMapper.getInfoByCompanyId(companyId,Constant.status.NORMAL);
     }
-
+    /**
+     * @Description:根据companyId查询数量
+     */
+    @Override
+    public Integer findCountByCompanyId(String companyId) {
+        QueryWrapper<CompanyBaseinfo> queryWrapper = new QueryWrapper<>();
+        return this.count(queryWrapper.lambda().eq(CompanyBaseinfo::getCompanyId, companyId)
+                .eq(CompanyBaseinfo::getStatus, Constant.status.NORMAL));
+    }
 }

@@ -11,4 +11,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface ICompanyProductMaterialService extends IService<CompanyProductMaterial> {
 
+    Integer findCountByCompanyId(String companyId);
 }

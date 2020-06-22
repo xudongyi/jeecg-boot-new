@@ -167,8 +167,9 @@
         //提交完成处理
         this.disable = true;
       }
-    },created(){
+    },mounted(){
       let that =this;
+      console.log(this.images)
       this.images.forEach(
         element => {
 

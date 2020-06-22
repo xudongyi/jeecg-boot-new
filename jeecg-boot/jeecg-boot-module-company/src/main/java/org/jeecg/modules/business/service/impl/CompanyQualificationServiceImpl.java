@@ -1,7 +1,9 @@
 package org.jeecg.modules.business.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.jeecg.modules.business.entity.CompanyAcceptance;
 import org.jeecg.modules.business.entity.CompanyQualification;
 import org.jeecg.modules.business.mapper.CompanyQualificationMapper;
 import org.jeecg.modules.business.service.ICompanyQualificationService;
@@ -82,5 +84,13 @@ public class CompanyQualificationServiceImpl extends ServiceImpl<CompanyQualific
             result.get(key).add(param);
         });
     }
-
+    /**
+     * @Description:根据companyId查询数量
+     */
+    @Override
+    public Integer findCountByCompanyId(String companyId) {
+        QueryWrapper<CompanyQualification> queryWrapper = new QueryWrapper<>();
+        return this.count(queryWrapper.lambda().eq(CompanyQualification::getCompanyId, companyId)
+                .eq(CompanyQualification::getStatus,Constant.status.NORMAL));
+    }
 }
