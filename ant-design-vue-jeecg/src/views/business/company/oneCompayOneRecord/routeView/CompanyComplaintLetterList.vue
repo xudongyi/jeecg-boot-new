@@ -29,10 +29,6 @@
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <a-button type="primary" @click="toSearchReset" icon="reload" style="margin-left: 8px">重置</a-button>
-<!--              <a @click="handleToggleSearch" style="margin-left: 8px">-->
-<!--                {{ toggleSearchStatus ? '收起' : '展开' }}-->
-<!--                <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>-->
-<!--              </a>-->
             </span>
           </a-col>
         </a-row>
@@ -47,13 +43,13 @@
 <!--      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">-->
 <!--        <a-button type="primary" icon="import">导入</a-button>-->
 <!--      </a-upload>-->
+      <a-button @click="batchDeclare" type="primary" icon="snippets">批量申报</a-button>
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
           <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
         </a-menu>
         <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>
       </a-dropdown>
-      <a-button @click="batchDeclare" type="primary" icon="snippets">申报</a-button>
     </div>
 
     <!-- table区域-begin -->
