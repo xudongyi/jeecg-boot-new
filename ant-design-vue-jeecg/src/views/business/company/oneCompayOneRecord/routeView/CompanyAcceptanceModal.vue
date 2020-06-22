@@ -100,7 +100,6 @@
         this.$nextTick(() => {
           this.form.setFieldsValue(pick(this.model, 'projectName', 'examineUnit', 'examineNum', 'examineTime'))
         })
-        debugger
         if(record.id){
           //查询所属文件
           let _this =this;

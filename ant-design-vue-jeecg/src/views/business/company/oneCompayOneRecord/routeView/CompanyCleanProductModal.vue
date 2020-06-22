@@ -12,69 +12,77 @@
       <a-form :form="form">
 
         <a-form-item label="清洁生产报告名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="['reportName', validatorRules.reportName]" placeholder="请输入清洁生产报告名称" :disabled="disableSubmit"></a-input>
+          <a-input v-decorator="['reportName', validatorRules.reportName]" placeholder="请输入清洁生产报告名称"
+                   :disabled="disableSubmit"></a-input>
         </a-form-item>
         <a-form-item label="报告时间" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-date placeholder="请选择报告时间" v-decorator="['reportTime']" :trigger-change="true" style="width: 100%" :disabled="disableSubmit"/>
+          <j-date placeholder="请选择报告时间" v-decorator="['reportTime']" :trigger-change="true" style="width: 100%"
+                  :disabled="disableSubmit"/>
         </a-form-item>
         <a-form-item label="清洁生成报告及专家意见" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-upload v-decorator="['opinionFiles']" :trigger-change="true" :disabled="disableSubmit"></j-upload>
+          <j-upload ref="opinionFiles" :disabled="disableSubmit" fileType="file" bizPath="cleanproduct"
+                    @change="fileListChange" @delete="fileDelete"
+          ></j-upload>
         </a-form-item>
         <a-form-item label="落实情况简要描述" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-textarea v-decorator="['conditionDescribe']" placeholder="请输入落实情况简要描述" :disabled="disableSubmit"></a-textarea>
+          <a-textarea v-decorator="['conditionDescribe']" placeholder="请输入落实情况简要描述"
+                      :disabled="disableSubmit"></a-textarea>
         </a-form-item>
         <a-form-item label="落实情况附件" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-image-upload isMultiple v-decorator="['describeFiles']" :disabled="disableSubmit"></j-image-upload>
+          <j-upload ref="describeFiles" :disabled="disableSubmit" fileType="image" bizPath="cleanproduct"
+                    @change="imgListChange" @delete="imgDelete"
+          ></j-upload>
         </a-form-item>
 
       </a-form>
     </a-spin>
     <template slot="footer">
-      <a-button type="primary" @click="handleCancel">取消</a-button>
-      <a-button type="primary" @click="handleOk"  v-if="!disableSubmit">暂存</a-button>
-      <a-button type="primary" @click="handDeclare"  v-if="!disableSubmit">申报</a-button>
+      <a-button type="primary" @click="handleCancel">关闭</a-button>
+      <a-button type="primary" @click="handleOk" v-if="!disableSubmit">暂存</a-button>
+      <a-button type="primary" @click="handDeclare" v-if="!disableSubmit">申报</a-button>
     </template>
   </j-modal>
 </template>
 
 <script>
 
-  import { httpAction } from '@/api/manage'
+  import {httpAction} from '@/api/manage'
   import pick from 'lodash.pick'
-  import { validateDuplicateValue } from '@/utils/util'
-  import JDate from '@/components/jeecg/JDate'  
+  import {validateDuplicateValue} from '@/utils/util'
+  import JDate from '@/components/jeecg/JDate'
   import JUpload from '@/components/jeecg/JUpload'
   import JImageUpload from '@/components/jeecg/JImageUpload'
+  import {queryFiles} from "../../../requestAction/request";
 
 
   export default {
     name: "CompanyCleanProductModal",
-    components: { 
+    components: {
       JDate,
       JUpload,
       JImageUpload,
     },
-    data () {
+    data() {
       return {
         form: this.$form.createForm(this),
-        title:"操作",
+        title: "操作",
         disableSubmit: false,
-        width:800,
+        width: 800,
         visible: false,
         model: {},
         labelCol: {
-          xs: { span: 24 },
-          sm: { span: 5 },
+          xs: {span: 24},
+          sm: {span: 5},
         },
         wrapperCol: {
-          xs: { span: 24 },
-          sm: { span: 16 },
+          xs: {span: 24},
+          sm: {span: 16},
         },
         confirmLoading: false,
         validatorRules: {
           reportName: {
             rules: [
-              { required: true, message: '请输入清洁生产报告名称!'},
+              {required: true, message: '请输入清洁生产报告名称!'},
             ]
           },
         },
@@ -82,28 +90,46 @@
           add: "/cleanProduct/companyCleanProduct/add",
           edit: "/cleanProduct/companyCleanProduct/edit",
           declare: "/cleanProduct/companyCleanProduct/declare",
+          queryFile: "/cleanProduct/companyCleanProduct/queryFiles"
         }
       }
     },
-    created () {
+    created() {
     },
     methods: {
-      add () {
+      add() {
         this.edit({});
       },
-      edit (record) {
+      edit(record) {
         this.form.resetFields();
         this.model = Object.assign({}, record);
         this.visible = true;
         this.$nextTick(() => {
-          this.form.setFieldsValue(pick(this.model,'reportName','reportTime','opinionFiles','conditionDescribe','describeFiles'))
+          this.form.setFieldsValue(pick(this.model, 'reportName', 'reportTime', 'conditionDescribe'))
         })
+        if (record.id) {
+          //查询所属文件
+          let _this = this;
+          queryFiles({id: record.id}, this.$data.url.queryFile).then((res) => {
+            _this.$nextTick(() => {
+              debugger
+              _this.$refs.opinionFiles.initFileListArr(res.result.fileResult);
+              _this.$refs.describeFiles.initFileListArr(res.result.imgResult);
+            });
+          });
+        } else {
+          //清空上传列表
+          this.$nextTick(() => {
+            this.$refs.opinionFiles.initFileList("");
+            this.$refs.describeFiles.initFileList("");
+          });
+        }
       },
-      close () {
+      close() {
         this.$emit('close');
         this.visible = false;
       },
-      handleOk () {
+      handleOk() {
         const that = this;
         // 触发表单验证
         this.form.validateFields((err, values) => {
@@ -111,21 +137,23 @@
             that.confirmLoading = true;
             let httpurl = '';
             let method = '';
-            if(!this.model.id){
-              httpurl+=this.url.add;
+            if (!this.model.id) {
+              httpurl += this.url.add;
               method = 'post';
-            }else{
-              httpurl+=this.url.edit;
-               method = 'put';
+            } else {
+              httpurl += this.url.edit;
+              method = 'put';
             }
             let formData = Object.assign(this.model, values);
             formData.companyId = this.companyId;
-            console.log("表单提交数据",formData)
-            httpAction(httpurl,formData,method).then((res)=>{
-              if(res.success){
+            formData.fileList = that.fileList;
+            formData.imgList = that.imgList;
+            console.log("表单提交数据", formData)
+            httpAction(httpurl, formData, method).then((res) => {
+              if (res.success) {
                 that.$message.success(res.message);
                 that.$emit('ok');
-              }else{
+              } else {
                 that.$message.warning(res.message);
               }
             }).finally(() => {
@@ -133,7 +161,7 @@
               that.close();
             })
           }
-         
+
         })
       },
       //申报
@@ -147,6 +175,8 @@
             let method = 'put';
             let formData = Object.assign(this.model, values);
             formData.companyId = this.companyId;
+            formData.fileList = that.fileList;
+            formData.imgList = that.imgList;
             httpAction(httpUrl, formData, method).then((res) => {
               if (res.success) {
                 that.$message.success(res.message);
@@ -162,14 +192,25 @@
 
         })
       },
-      handleCancel () {
+      handleCancel() {
         this.close()
       },
-      popupCallback(row){
-        this.form.setFieldsValue(pick(row,'reportName','reportTime','opinionFiles','conditionDescribe','describeFiles'))
+      popupCallback(row) {
+        this.form.setFieldsValue(pick(row, 'reportName', 'reportTime', 'conditionDescribe'))
+      },
+      fileListChange(newFileList) {
+        this.fileList = newFileList;
+      },
+      fileDelete(file) {
+        this.deleteFiles.push(file.response.message);
+      },
+      imgListChange(newImgList) {
+        this.imgList = newImgList;
+      },
+      imgDelete(file) {
+        this.deleteFiles.push(file.response.message);
       },
 
-      
     },
     props: {
       companyId: ""

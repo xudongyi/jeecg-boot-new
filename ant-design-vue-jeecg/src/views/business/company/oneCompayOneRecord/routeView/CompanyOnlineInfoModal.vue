@@ -27,7 +27,8 @@
           <a-input v-decorator="['installLocation']" placeholder="请输入安装位置" :disabled="disableSubmit"></a-input>
         </a-form-item>
         <a-form-item label="在线监控验收材料" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-upload v-decorator="['files']" :trigger-change="true" :disabled="disableSubmit"></j-upload>
+          <j-upload ref="uploadRef" :disabled="disableSubmit" fileType="file" bizPath="onlineinfo" @change="fileListChange" @delete ="fileDelete"
+          ></j-upload>
         </a-form-item>
 
       </a-form>
@@ -47,6 +48,7 @@
   import { validateDuplicateValue } from '@/utils/util'
   import JDate from '@/components/jeecg/JDate'  
   import JUpload from '@/components/jeecg/JUpload'
+  import {queryFiles} from "../../../requestAction/request";
 
 
   export default {
@@ -83,6 +85,7 @@
           add: "/onlineInfo/companyOnlineInfo/add",
           edit: "/onlineInfo/companyOnlineInfo/edit",
           declare: "/onlineInfo/companyOnlineInfo/declare",
+          queryFile:"/onlineInfo/companyOnlineInfo/queryFiles"
         }
       }
     },
@@ -97,8 +100,22 @@
         this.model = Object.assign({}, record);
         this.visible = true;
         this.$nextTick(() => {
-          this.form.setFieldsValue(pick(this.model,'equipmentName','equipmentManufacturers','operationalUnit','usedTime','installLocation','files'))
+          this.form.setFieldsValue(pick(this.model,'equipmentName','equipmentManufacturers','operationalUnit','usedTime','installLocation'))
         })
+        if(record.id){
+          //查询所属文件
+          let _this =this;
+          queryFiles({id:record.id},this.$data.url.queryFile).then((res)=>{
+            _this.$nextTick(() => {
+              _this.$refs.uploadRef.initFileListArr(res.result);
+            });
+          });
+        }else{
+          //清空上传列表
+          this.$nextTick(() => {
+            this.$refs.uploadRef.initFileList("");
+          });
+        }
       },
       close () {
         this.$emit('close');
@@ -121,6 +138,7 @@
             }
             let formData = Object.assign(this.model, values);
             formData.companyId = this.companyId;
+            formData.fileList = that.fileList;
             console.log("表单提交数据",formData)
             httpAction(httpurl,formData,method).then((res)=>{
               if(res.success){
@@ -148,6 +166,7 @@
             let method = 'put';
             let formData = Object.assign(this.model, values);
             formData.companyId = this.companyId;
+            formData.fileList = that.fileList;
             httpAction(httpUrl, formData, method).then((res) => {
               if (res.success) {
                 that.$message.success(res.message);
@@ -167,10 +186,14 @@
         this.close()
       },
       popupCallback(row){
-        this.form.setFieldsValue(pick(row,'equipmentName','equipmentManufacturers','operationalUnit','usedTime','installLocation','files'))
+        this.form.setFieldsValue(pick(row,'equipmentName','equipmentManufacturers','operationalUnit','usedTime','installLocation'))
       },
-
-      
+      fileListChange(newFileList){
+        this.fileList = newFileList;
+      },
+      fileDelete(file){
+        this.deleteFiles.push(file.response.message);
+      },
     },
     props: {
       companyId: ""

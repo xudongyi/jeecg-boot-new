@@ -70,16 +70,8 @@ public class CompanyCleanProduct implements Serializable {
     @DateTimeFormat(pattern="yyyy-MM-dd")
     @ApiModelProperty(value = "报告时间")
     private Date reportTime;
-	/**清洁生成报告及专家意见*/
-	@Excel(name = "清洁生成报告及专家意见", width = 15)
-    @ApiModelProperty(value = "清洁生成报告及专家意见")
-    private String opinionFiles;
 	/**落实情况简要描述*/
 	@Excel(name = "落实情况简要描述", width = 15)
     @ApiModelProperty(value = "落实情况简要描述")
     private String conditionDescribe;
-	/**落实情况附件*/
-	@Excel(name = "落实情况附件", width = 15)
-    @ApiModelProperty(value = "落实情况附件")
-    private String describeFiles;
 }

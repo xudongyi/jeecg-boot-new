@@ -89,8 +89,4 @@ public class CompanyRiskWaste implements Serializable {
 	@Excel(name = "排污类别", width = 15)
     @ApiModelProperty(value = "排污类别")
     private String dirtyType;
-	/**附件表id集合*/
-	@Excel(name = "附件表id集合", width = 15)
-    @ApiModelProperty(value = "附件表id集合")
-    private String files;
 }

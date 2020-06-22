@@ -55,8 +55,9 @@
         </a-row>
         <a-row>
           <a-col span='24'>
-            <a-form-item label="许可内容附件" :labelCol="labelCols" :wrapperCol="wrapperCols">
-              <j-upload v-decorator="['files']" :trigger-change="true" :disabled="disableSubmit"></j-upload>
+            <a-form-item label="许可证附件" :labelCol="labelCols" :wrapperCol="wrapperCols">
+              <j-upload ref="uploadRef" :disabled="disableSubmit" fileType="file" bizPath="solidwaste" @change="fileListChange" @delete ="fileDelete"
+              ></j-upload>
             </a-form-item>
           </a-col>
         </a-row>
@@ -78,6 +79,7 @@
   import JDate from '@/components/jeecg/JDate'
   import JUpload from '@/components/jeecg/JUpload'
   import moment from "moment";
+  import {queryFiles} from "../../../requestAction/request";
 
 
   export default {
@@ -130,6 +132,7 @@
           add: "/solid/companySolidWaste/add",
           edit: "/solid/companySolidWaste/edit",
           declare: "/solid/companySolidWaste/declare",
+          queryFile:"/solid/companySolidWaste/queryFiles"
         }
       }
     },
@@ -147,8 +150,22 @@
           console.log(this.model)
           this.model.validStarttime = !this.model.validStarttime?null:moment(this.model.validStarttime,this.dateFormat)
           this.model.validEndtime = !this.model.validEndtime?null:moment(this.model.validEndtime,this.dateFormat)
-          this.form.setFieldsValue(pick(this.model, 'licenceCode', 'certificateTime', 'validStarttime', 'validEndtime', 'certificateOffice', 'dirtyType', 'files'))
+          this.form.setFieldsValue(pick(this.model, 'licenceCode', 'certificateTime', 'validStarttime', 'validEndtime', 'certificateOffice', 'dirtyType'))
         })
+        if(record.id){
+          //查询所属文件
+          let _this =this;
+          queryFiles({id:record.id},this.$data.url.queryFile).then((res)=>{
+            _this.$nextTick(() => {
+              _this.$refs.uploadRef.initFileListArr(res.result);
+            });
+          });
+        }else{
+          //清空上传列表
+          this.$nextTick(() => {
+            this.$refs.uploadRef.initFileList("");
+          });
+        }
       },
       close() {
         this.$emit('close');
@@ -171,6 +188,7 @@
             }
             let formData = Object.assign(this.model, values);
             formData.companyId = this.companyId;
+            formData.fileList = that.fileList;
             console.log("表单提交数据", formData)
             httpAction(httpurl, formData, method).then((res) => {
               if (res.success) {
@@ -201,6 +219,7 @@
             let method = 'put';
             let formData = Object.assign(this.model, values);
             formData.companyId = this.companyId;
+            formData.fileList = that.fileList;
             httpAction(httpUrl, formData, method).then((res) => {
               if (res.success) {
                 that.$message.success(res.message);
@@ -217,7 +236,7 @@
         })
       },
       popupCallback(row) {
-        this.form.setFieldsValue(pick(row, 'licenceCode', 'certificateTime', 'validStarttime', 'validEndtime', 'certificateOffice', 'dirtyType', 'files'))
+        this.form.setFieldsValue(pick(row, 'licenceCode', 'certificateTime', 'validStarttime', 'validEndtime', 'certificateOffice', 'dirtyType'))
       },
       disabledStartDate(validStarttime) {
         const validEndtime = this.validEndtime;
@@ -246,6 +265,12 @@
       },
       handleEndOpenChange(open) {
         this.endOpen = open;
+      },
+      fileListChange(newFileList){
+        this.fileList = newFileList;
+      },
+      fileDelete(file){
+        this.deleteFiles.push(file.response.message);
       },
     },
     props: {

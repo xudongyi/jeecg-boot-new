@@ -82,8 +82,4 @@ public class CompanyOnlineInfo implements Serializable {
 	@Excel(name = "安装位置", width = 15)
     @ApiModelProperty(value = "安装位置")
     private String installLocation;
-	/**在线监控验收材料*/
-	@Excel(name = "在线监控验收材料", width = 15)
-    @ApiModelProperty(value = "在线监控验收材料")
-    private String files;
 }
