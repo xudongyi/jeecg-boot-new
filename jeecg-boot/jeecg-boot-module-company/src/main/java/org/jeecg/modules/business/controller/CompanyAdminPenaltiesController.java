@@ -8,11 +8,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSONObject;
 import lombok.Data;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.modules.business.entity.CompanyAdminPenalties;
 import org.jeecg.modules.business.entity.CompanyDynamicSupervision;
+import org.jeecg.modules.business.entity.CompanyFile;
 import org.jeecg.modules.business.service.ICompanyAdminPenaltiesService;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -21,6 +23,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 
 import org.jeecg.common.system.base.controller.JeecgController;
+import org.jeecg.modules.business.service.ICompanyFileService;
 import org.jeecg.modules.business.utils.Constant;
 import org.jeecg.modules.business.vo.CompanyAdminPenaltiesVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +47,9 @@ import sun.java2d.pipe.SpanShapeRenderer;
 public class CompanyAdminPenaltiesController extends JeecgController<CompanyAdminPenalties, ICompanyAdminPenaltiesService> {
 	@Autowired
 	private ICompanyAdminPenaltiesService companyAdminPenaltiesService;
-	
+
+	@Autowired
+	private ICompanyFileService companyFileService;
 	/**
 	 * 分页列表查询
 	 *
@@ -87,13 +92,14 @@ public class CompanyAdminPenaltiesController extends JeecgController<CompanyAdmi
 	/**
 	 * 分页列表查询
 	 *
-	 * @param companyAdminPenalties
+	 * @param jsonObject
 	 * @return
 	 */
 	@AutoLog(value = "行政处罚信息-申报")
 	@ApiOperation(value="行政处罚信息-申报", notes="行政处罚信息-申报")
 	@PutMapping(value = "/declare")
-	public Result<?> declare(@RequestBody CompanyAdminPenalties companyAdminPenalties) {
+	public Result<?> declare(@RequestBody JSONObject jsonObject) {
+		CompanyAdminPenalties companyAdminPenalties = getCompanyAdminPenalties(jsonObject);
 		companyAdminPenalties.setStatus(Constant.status.PEND);
 		//判断是新增还是编辑
 		if(!StrUtil.isEmpty(companyAdminPenalties.getId())){
@@ -110,13 +116,32 @@ public class CompanyAdminPenaltiesController extends JeecgController<CompanyAdmi
 				companyAdminPenaltiesService.save(companyAdminPenalties);
 			}else if(Constant.status.NOPASS.equals(oldCompanyAdminPenalties.getStatus()) || Constant.status.TEMPORARY.equals(oldCompanyAdminPenalties.getStatus())){
 				companyAdminPenaltiesService.updateById(companyAdminPenalties);
+				companyFileService.remove(new QueryWrapper<CompanyFile>().lambda().eq(CompanyFile::getFromTable,Constant.tables.ADMINPENALTIES)
+						.eq(CompanyFile::getTableId,companyAdminPenalties.getId()));
 			}
 		}else {
 			companyAdminPenaltiesService.save(companyAdminPenalties);
 		}
+		companyFileService.saveFiles(jsonObject.getString("fileList"),Constant.fileType.FILE,Constant.tables.ADMINPENALTIES,companyAdminPenalties.getId());
 		return Result.ok("申报成功！");
 	}
-	
+
+	private CompanyAdminPenalties getCompanyAdminPenalties(@RequestBody JSONObject jsonObject) {
+		CompanyAdminPenalties companyAdminPenalties = new CompanyAdminPenalties();
+		companyAdminPenalties.setId(jsonObject.getString("id"));
+		companyAdminPenalties.setCompanyId(jsonObject.getString("companyId"));
+		companyAdminPenalties.setStatus(jsonObject.getString("status"));
+		companyAdminPenalties.setReportDate(jsonObject.getDate("reportDate"));
+		companyAdminPenalties.setDocumentName(jsonObject.getString("documentName"));
+		companyAdminPenalties.setDocumentNo(jsonObject.getString("documentNo"));
+		companyAdminPenalties.setContent(jsonObject.getString("content"));
+		companyAdminPenalties.setCreateBy(jsonObject.getString("createBy"));
+		companyAdminPenalties.setCreateTime(jsonObject.getDate("createTime"));
+		companyAdminPenalties.setUpdateBy(jsonObject.getString("updateBy"));
+		companyAdminPenalties.setUpdateTime(jsonObject.getDate("updateTime"));
+		return companyAdminPenalties;
+	}
+
 	/**
 	 *   添加
 	 *
@@ -242,4 +267,17 @@ public class CompanyAdminPenaltiesController extends JeecgController<CompanyAdmi
         return super.importExcel(request, response, CompanyAdminPenalties.class);
     }
 
+	/**
+	 * 通过id查询
+	 *
+	 * @param id
+	 * @return
+	 */
+	@AutoLog(value = "查询行政处罚信息附件")
+	@ApiOperation(value="查询行政处罚信息附件", notes="查询行政处罚信息附件")
+	@GetMapping(value = "/queryFiles")
+	public Result<?> queryFiles(@RequestParam(name="id",required=true) String id) {
+		List<Map<String, String>> result = companyFileService.getFileMaps(id,Constant.tables.ADMINPENALTIES);
+		return Result.ok(result);
+	}
 }

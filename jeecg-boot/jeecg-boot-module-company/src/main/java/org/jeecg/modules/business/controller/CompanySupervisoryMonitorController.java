@@ -8,10 +8,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSONObject;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.modules.business.entity.CompanyAdminPenalties;
+import org.jeecg.modules.business.entity.CompanyFile;
 import org.jeecg.modules.business.entity.CompanySupervisoryMonitor;
+import org.jeecg.modules.business.service.ICompanyFileService;
 import org.jeecg.modules.business.service.ICompanySupervisoryMonitorService;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -42,7 +45,9 @@ import org.jeecg.common.aspect.annotation.AutoLog;
 public class CompanySupervisoryMonitorController extends JeecgController<CompanySupervisoryMonitor, ICompanySupervisoryMonitorService> {
 	@Autowired
 	private ICompanySupervisoryMonitorService companySupervisoryMonitorService;
-	
+
+	 @Autowired
+	 private ICompanyFileService companyFileService;
 	/**
 	 * 分页列表查询
 	 *
@@ -84,13 +89,14 @@ public class CompanySupervisoryMonitorController extends JeecgController<Company
 	 /**
 	  * 分页列表查询
 	  *
-	  * @param companySupervisoryMonitor
+	  * @param jsonObject
 	  * @return
 	  */
 	 @AutoLog(value = "监督性监测信息-申报")
 	 @ApiOperation(value="监督性监测信息-申报", notes="监督性监测信息-申报")
 	 @PutMapping(value = "/declare")
-	 public Result<?> declare(@RequestBody CompanySupervisoryMonitor companySupervisoryMonitor) {
+	 public Result<?> declare(@RequestBody JSONObject jsonObject) {
+	 	 CompanySupervisoryMonitor companySupervisoryMonitor = getCompanySupervisoryMonitor(jsonObject);
 		 companySupervisoryMonitor.setStatus(Constant.status.PEND);
 		 //判断是新增还是编辑
 		 if(!StrUtil.isEmpty(companySupervisoryMonitor.getId())){
@@ -107,11 +113,30 @@ public class CompanySupervisoryMonitorController extends JeecgController<Company
 				 companySupervisoryMonitorService.save(companySupervisoryMonitor);
 			 }else if(Constant.status.NOPASS.equals(oldCompanySupervisoryMonitor.getStatus()) || Constant.status.TEMPORARY.equals(oldCompanySupervisoryMonitor.getStatus())){
 				 companySupervisoryMonitorService.updateById(companySupervisoryMonitor);
+				 companyFileService.remove(new QueryWrapper<CompanyFile>().lambda().eq(CompanyFile::getFromTable,Constant.tables.SUPERVISORYMONITOR)
+						 .eq(CompanyFile::getTableId,companySupervisoryMonitor.getId()));
 			 }
 		 }else {
 			 companySupervisoryMonitorService.save(companySupervisoryMonitor);
 		 }
+		 companyFileService.saveFiles(jsonObject.getString("fileList"),Constant.fileType.FILE,Constant.tables.SUPERVISORYMONITOR,companySupervisoryMonitor.getId());
 		 return Result.ok("申报成功！");
+	 }
+
+	 private CompanySupervisoryMonitor getCompanySupervisoryMonitor(@RequestBody JSONObject jsonObject) {
+	 	CompanySupervisoryMonitor companySupervisoryMonitor = new CompanySupervisoryMonitor();
+		 companySupervisoryMonitor.setId(jsonObject.getString("id"));
+		 companySupervisoryMonitor.setCompanyId(jsonObject.getString("companyId"));
+		 companySupervisoryMonitor.setStatus(jsonObject.getString("status"));
+		 companySupervisoryMonitor.setReportDate(jsonObject.getDate("reportDate"));
+		 companySupervisoryMonitor.setReportType(jsonObject.getString("reportType"));
+		 companySupervisoryMonitor.setReportName(jsonObject.getString("reportName"));
+		 companySupervisoryMonitor.setContent(jsonObject.getString("content"));
+		 companySupervisoryMonitor.setCreateBy(jsonObject.getString("createBy"));
+		 companySupervisoryMonitor.setCreateTime(jsonObject.getDate("createTime"));
+		 companySupervisoryMonitor.setUpdateBy(jsonObject.getString("updateBy"));
+		 companySupervisoryMonitor.setUpdateTime(jsonObject.getDate("updateTime"));
+	 	return companySupervisoryMonitor;
 	 }
 
 	/**
@@ -238,5 +263,19 @@ public class CompanySupervisoryMonitorController extends JeecgController<Company
     public Result<?> importExcel(HttpServletRequest request, HttpServletResponse response) {
         return super.importExcel(request, response, CompanySupervisoryMonitor.class);
     }
+
+	 /**
+	  * 通过id查询
+	  *
+	  * @param id
+	  * @return
+	  */
+	 @AutoLog(value = "查询监督性监测信息附件")
+	 @ApiOperation(value="查询监督性监测信息附件", notes="查询监督性监测信息附件")
+	 @GetMapping(value = "/queryFiles")
+	 public Result<?> queryFiles(@RequestParam(name="id",required=true) String id) {
+		 List<Map<String, String>> result = companyFileService.getFileMaps(id,Constant.tables.SUPERVISORYMONITOR);
+		 return Result.ok(result);
+	 }
 
 }

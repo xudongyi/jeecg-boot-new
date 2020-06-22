@@ -2,19 +2,18 @@ package org.jeecg.modules.business.controller;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSONObject;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.modules.business.entity.CompanyAdminPenalties;
 import org.jeecg.modules.business.entity.CompanyComplaintLetter;
+import org.jeecg.modules.business.entity.CompanyFile;
 import org.jeecg.modules.business.entity.CompanySupervisoryMonitor;
 import org.jeecg.modules.business.service.ICompanyComplaintLetterService;
 
@@ -24,6 +23,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 
 import org.jeecg.common.system.base.controller.JeecgController;
+import org.jeecg.modules.business.service.ICompanyFileService;
 import org.jeecg.modules.business.utils.Constant;
 import org.jeecg.modules.business.vo.CompanyComplaintLetterVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +46,9 @@ import org.jeecg.common.aspect.annotation.AutoLog;
 public class CompanyComplaintLetterController extends JeecgController<CompanyComplaintLetter, ICompanyComplaintLetterService> {
 	@Autowired
 	private ICompanyComplaintLetterService companyComplaintLetterService;
-	
+
+	 @Autowired
+	 private ICompanyFileService companyFileService;
 	/**
 	 * 分页列表查询
 	 *
@@ -88,13 +90,14 @@ public class CompanyComplaintLetterController extends JeecgController<CompanyCom
 	 /**
 	  * 分页列表查询
 	  *
-	  * @param companyComplaintLetter
+	  * @param jsonObject
 	  * @return
 	  */
 	 @AutoLog(value = "信访投诉信息-申报")
 	 @ApiOperation(value="信访投诉信息-申报", notes="信访投诉信息-申报")
 	 @PutMapping(value = "/declare")
-	 public Result<?> declare(@RequestBody CompanyComplaintLetter companyComplaintLetter) {
+	 public Result<?> declare(@RequestBody JSONObject jsonObject) {
+	 	 CompanyComplaintLetter companyComplaintLetter = getCompanyComplaintLetter(jsonObject);
 		 companyComplaintLetter.setStatus(Constant.status.PEND);
 		 //判断是新增还是编辑
 		 if(!StrUtil.isEmpty(companyComplaintLetter.getId())){
@@ -111,11 +114,30 @@ public class CompanyComplaintLetterController extends JeecgController<CompanyCom
 				 companyComplaintLetterService.save(companyComplaintLetter);
 			 }else if(Constant.status.NOPASS.equals(oldCompanyComplaintLetter.getStatus()) || Constant.status.TEMPORARY.equals(oldCompanyComplaintLetter.getStatus())){
 				 companyComplaintLetterService.updateById(companyComplaintLetter);
+				 companyFileService.remove(new QueryWrapper<CompanyFile>().lambda().eq(CompanyFile::getFromTable,Constant.tables.COMPLAINTLETTER)
+						 .eq(CompanyFile::getTableId,companyComplaintLetter.getId()));
 			 }
 		 }else {
 			 companyComplaintLetterService.save(companyComplaintLetter);
 		 }
+		 companyFileService.saveFiles(jsonObject.getString("fileList"),Constant.fileType.FILE,Constant.tables.COMPLAINTLETTER,companyComplaintLetter.getId());
 		 return Result.ok("申报成功！");
+	 }
+
+	 private CompanyComplaintLetter getCompanyComplaintLetter(@RequestBody JSONObject jsonObject) {
+	 	CompanyComplaintLetter companyComplaintLetter = new CompanyComplaintLetter();
+		 companyComplaintLetter.setId(jsonObject.getString("id"));
+		 companyComplaintLetter.setCompanyId(jsonObject.getString("companyId"));
+		 companyComplaintLetter.setStatus(jsonObject.getString("status"));
+		 companyComplaintLetter.setComplaintDate(jsonObject.getDate("complaintDate"));
+		 companyComplaintLetter.setPollutionType(jsonObject.getString("pollutionType"));
+		 companyComplaintLetter.setComplaintTitle(jsonObject.getString("complaintTitle"));
+		 companyComplaintLetter.setContent(jsonObject.getString("content"));
+		 companyComplaintLetter.setCreateBy(jsonObject.getString("createBy"));
+		 companyComplaintLetter.setCreateTime(jsonObject.getDate("createTime"));
+		 companyComplaintLetter.setUpdateBy(jsonObject.getString("updateBy"));
+		 companyComplaintLetter.setUpdateTime(jsonObject.getDate("updateTime"));
+	 	return companyComplaintLetter;
 	 }
 
 	/**
@@ -242,5 +264,19 @@ public class CompanyComplaintLetterController extends JeecgController<CompanyCom
     public Result<?> importExcel(HttpServletRequest request, HttpServletResponse response) {
         return super.importExcel(request, response, CompanyComplaintLetter.class);
     }
+
+	 /**
+	  * 通过id查询
+	  *
+	  * @param id
+	  * @return
+	  */
+	 @AutoLog(value = "查询信访投诉信息附件")
+	 @ApiOperation(value="查询信访投诉信息附件", notes="查询信访投诉信息附件")
+	 @GetMapping(value = "/queryFiles")
+	 public Result<?> queryFiles(@RequestParam(name="id",required=true) String id) {
+		 List<Map<String, String>> result = companyFileService.getFileMaps(id,Constant.tables.COMPLAINTLETTER);
+		 return Result.ok(result);
+	 }
 
 }

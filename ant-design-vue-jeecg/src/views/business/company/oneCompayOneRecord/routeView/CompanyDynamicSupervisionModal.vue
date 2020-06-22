@@ -39,9 +39,16 @@
           </a-col>
         </a-row>
         <a-row>
-          <a-col span="24">
+          <a-col span="24" v-if="monitorTag === 'view'">
             <a-form-item label="附件上传" :labelCol="labelCols" :wrapperCol="wrapperCols" >
-              <j-upload :trigger-change="true"></j-upload>
+              <j-upload ref="uploadRef" :disabled="true" fileType="file" bizPath="DynamicSupervision" @change="fileListChange" @delete ="fileDelete"></j-upload>
+            </a-form-item>
+          </a-col>
+        </a-row>
+        <a-row>
+          <a-col span="24" v-if="monitorTag !== 'view'">
+            <a-form-item label="附件上传" :labelCol="labelCols" :wrapperCol="wrapperCols" >
+              <j-upload ref="uploadRef" :disabled="disableSubmit" fileType="file" bizPath="DynamicSupervision" @change="fileListChange" @delete ="fileDelete"></j-upload>
             </a-form-item>
           </a-col>
         </a-row>
@@ -79,7 +86,7 @@
   import JDictSelectTag from "@/components/dict/JDictSelectTag"
   import {queryCompanyName} from "../../../requestAction/request";
   import moment from 'moment'
-
+  import {queryFiles} from "../../../requestAction/request";
 
   export default {
     name: "CompanyDynamicSupervisionModal",
@@ -101,6 +108,8 @@
         disableSubmit:false,
         visible: false,
         model: {},
+        fileList:[],
+        deleteFiles:[],
         labelCol: {
           xs: { span: 24 },
           sm: { span: 6 },
@@ -149,6 +158,7 @@
           add: "/cds/companyDynamicSupervision/add",
           edit: "/cds/companyDynamicSupervision/edit",
           declare:"/cds/companyDynamicSupervision/declare",
+          queryFile:"/cds/companyDynamicSupervision/queryFiles"
         },
         monitorTag:''
       }
@@ -178,10 +188,15 @@
       },
       add () {
         this.edit({});
-        //新增时自动带入申报人
-        // this.model.createBy = this.$store.getters.userInfo.username;
         //获取时间
         this.getTime();
+      },
+      fileListChange(newFileList){
+        console.log(newFileList)
+        this.fileList = newFileList;
+      },
+      fileDelete(file){
+        this.deleteFiles.push(file.response.message);
       },
       edit (record) {
         this.form.resetFields();
@@ -195,6 +210,26 @@
         this.$nextTick(() => {
           this.form.setFieldsValue(pick(this.model,'status','companyId','reportYear','documentType','documentName','content','createName','createTime','updateName','updateTime'))
         });
+
+        if(record.id){
+          //查询所属文件
+          let _this =this;
+          queryFiles({id:record.id},this.$data.url.queryFile).then((res)=>{
+
+            _this.$nextTick(() => {
+
+              _this.$refs.uploadRef.initFileListArr(res.result);
+            });
+
+          });
+
+
+        }else{
+          //清空上传列表
+          this.$nextTick(() => {
+            this.$refs.uploadRef.initFileList("");
+          });
+        }
 
       },
       close () {
@@ -220,6 +255,7 @@
                method = 'put';
             }
             let formData = Object.assign(this.model, values);
+            formData.fileList = that.fileList;
             console.log("表单提交数据",formData)
             httpAction(httpurl,formData,method).then((res)=>{
               if(res.success){
@@ -252,6 +288,7 @@
             let httpUrl = this.url.declare;
             let method = 'put';
             let formData = Object.assign(this.model, values);
+            formData.fileList = that.fileList;
             console.log("表单提交数据",formData)
             httpAction(httpUrl,formData,method).then((res)=>{
               if(res.success){
