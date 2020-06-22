@@ -124,7 +124,7 @@
         this.$nextTick(() => {
           _this.form.setFieldsValue(pick(this.model,'projectName','approveFilenum','approveUnit','approveDate','annex'))
         });
-
+debugger
         if(record.id){
             //查询所属文件
           queryFiles({id:record.id},this.$data.url.queryFile).then((res)=>{
@@ -132,7 +132,7 @@
             _this.$nextTick(() => {
 
               _this.$refs.uploadRef.initFileListArr(res.result);
-              _this.fileList = _this.$refs.fileList
+              _this.fileList = _this.$refs.uploadRef.fileList
 
             });
 
@@ -144,7 +144,7 @@
           _this.$nextTick(() => {
 
             _this.$refs.uploadRef.initFileList("");
-            _this.fileList = _this.$refs.fileList
+            _this.fileList = _this.$refs.uploadRef.fileList
           });
         }
 
