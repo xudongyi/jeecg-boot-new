@@ -11,6 +11,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.modules.business.entity.CompanyDynamicSupervision;
+import org.jeecg.modules.business.entity.CompanyFile;
 import org.jeecg.modules.business.entity.CompanySupervisoryMonitor;
 import org.jeecg.modules.business.service.ICompanyDynamicSupervisionService;
 
@@ -20,6 +21,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 
 import org.jeecg.common.system.base.controller.JeecgController;
+import org.jeecg.modules.business.service.ICompanyFileService;
 import org.jeecg.modules.business.service.ICompanySysuserService;
 import org.jeecg.modules.business.utils.Constant;
 import org.jeecg.modules.business.vo.CompanyDynamicSupervisionVO;
@@ -44,30 +46,8 @@ public class CompanyDynamicSupervisionController extends JeecgController<Company
 	@Autowired
 	private ICompanyDynamicSupervisionService companyDynamicSupervisionService;
 
-	 /**
-	  * 分页列表查询
-	  *
-	  * @param companyDynamicSupervision
-	  * @param pageNo
-	  * @param pageSize
-	  * @param req
-	  * @return
-	  */
-//	 @AutoLog(value = "企业年度动态监管-分页列表查询")
-//	 @ApiOperation(value="企业年度动态监管-分页列表查询", notes="企业年度动态监管-分页列表查询")
-//	 @GetMapping(value = "/list2/xxx")
-//	 public Result<?> queryPageListVO(@RequestParam(name = "companyId",required = true) String companyId,@RequestParam(name = "status") String status ,CompanyDynamicSupervisionVO companyDynamicSupervision,
-//									@RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
-//									@RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
-//									HttpServletRequest req) {
-//		 Map<String, String[]> parameterMap = new HashMap(req.getParameterMap());
-//		 parameterMap.put("companyId_MultiString",new String[]{String.join(",", companyId)});
-//		 parameterMap.put("status",new String[]{String.join(",",status)});
-//		 QueryWrapper<CompanyDynamicSupervisionVO> queryWrapper = QueryGenerator.initQueryWrapper(companyDynamicSupervision, parameterMap);
-//		 Page<CompanyDynamicSupervisionVO> page = new Page<CompanyDynamicSupervisionVO>(pageNo, pageSize);
-//		 IPage<CompanyDynamicSupervisionVO> pageList = companyDynamicSupervisionService.getCompanyDynamicSupervision(page, String.join(",", companyId),String.join(",",status));
-//		 return Result.ok(pageList);
-//	 }
+	@Autowired
+	private ICompanyFileService companyFileService;
 
 	 /**
 	  * 分页列表查询
@@ -101,16 +81,15 @@ public class CompanyDynamicSupervisionController extends JeecgController<Company
 	 /**
 	  * 分页列表查询
 	  *
-	  * @param companyDynamicSupervision
+	  * @param jsonObject
 	  * @return
 	  */
 	 @AutoLog(value = "企业年度动态监管-申报")
 	 @ApiOperation(value="企业年度动态监管-申报", notes="企业年度动态监管-申报")
 	 @PutMapping(value = "/declare")
-	 public Result<?> declare(@RequestBody CompanyDynamicSupervision companyDynamicSupervision) {
+	 public Result<?> declare(@RequestBody JSONObject jsonObject) {
+	 	CompanyDynamicSupervision companyDynamicSupervision = getCompanyDynamicSupervision(jsonObject);
 	 	companyDynamicSupervision.setStatus(Constant.status.PEND);
-//	 	companyDynamicSupervision.setUpdateBy("");
-//	 	companyDynamicSupervision.setUpdateTime(null);
 		 //判断是新增还是编辑
 	 	if(!StrUtil.isEmpty(companyDynamicSupervision.getId())){
 			//编辑
@@ -126,11 +105,30 @@ public class CompanyDynamicSupervisionController extends JeecgController<Company
 				companyDynamicSupervisionService.save(companyDynamicSupervision);
 			}else if(Constant.status.NOPASS.equals(oldCompanyDynamicSupervision.getStatus()) || Constant.status.TEMPORARY.equals(oldCompanyDynamicSupervision.getStatus())){
 				companyDynamicSupervisionService.updateById(companyDynamicSupervision);
+				companyFileService.remove(new QueryWrapper<CompanyFile>().lambda().eq(CompanyFile::getFromTable,Constant.tables.DYNAMICSUPERVISION)
+					.eq(CompanyFile::getTableId,companyDynamicSupervision.getId()));
 			}
 		}else{
 	 		companyDynamicSupervisionService.save(companyDynamicSupervision);
 		}
+	 	companyFileService.saveFiles(jsonObject.getString("fileList"),Constant.fileType.FILE,Constant.tables.DYNAMICSUPERVISION,companyDynamicSupervision.getId());
 		 return Result.ok("申报成功！");
+	 }
+
+	 private CompanyDynamicSupervision getCompanyDynamicSupervision(@RequestBody JSONObject jsonObject) {
+	 	CompanyDynamicSupervision companyDynamicSupervision = new CompanyDynamicSupervision();
+	 	companyDynamicSupervision.setId(jsonObject.getString("id"));
+	 	companyDynamicSupervision.setCompanyId(jsonObject.getString("companyId"));
+		companyDynamicSupervision.setStatus(jsonObject.getString("status"));
+		companyDynamicSupervision.setReportYear(jsonObject.getString("reportYear"));
+		companyDynamicSupervision.setDocumentType(jsonObject.getString("documentType"));
+		companyDynamicSupervision.setDocumentName(jsonObject.getString("documentName"));
+		companyDynamicSupervision.setContent(jsonObject.getString("content"));
+		companyDynamicSupervision.setCreateBy(jsonObject.getString("createBy"));
+		companyDynamicSupervision.setCreateTime(jsonObject.getDate("createTime"));
+		companyDynamicSupervision.setUpdateBy(jsonObject.getString("updateBy"));
+		companyDynamicSupervision.setUpdateTime(jsonObject.getDate("updateTime"));
+	 	return companyDynamicSupervision;
 	 }
 
 	/**
@@ -257,5 +255,19 @@ public class CompanyDynamicSupervisionController extends JeecgController<Company
     public Result<?> importExcel(HttpServletRequest request, HttpServletResponse response) {
         return super.importExcel(request, response, CompanyDynamicSupervision.class);
     }
+
+	 /**
+	  * 通过id查询
+	  *
+	  * @param id
+	  * @return
+	  */
+	 @AutoLog(value = "查询企业年度动态监管信息附件")
+	 @ApiOperation(value="查询企业年度动态监管信息附件", notes="查询企业年度动态监管信息附件")
+	 @GetMapping(value = "/queryFiles")
+	 public Result<?> queryFiles(@RequestParam(name="id",required=true) String id) {
+		 List<Map<String, String>> result = companyFileService.getFileMaps(id,Constant.tables.DYNAMICSUPERVISION);
+		 return Result.ok(result);
+	 }
 
 }

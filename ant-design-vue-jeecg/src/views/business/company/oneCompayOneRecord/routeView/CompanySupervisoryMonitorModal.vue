@@ -10,13 +10,6 @@
     cancelText="关闭">
     <a-spin :spinning="confirmLoading">
       <a-form :form="form">
-
-<!--        <a-form-item label="数据状态" :labelCol="labelCol" :wrapperCol="wrapperCol">-->
-<!--          <j-dict-select-tag type="list" v-decorator="['status', validatorRules.status]" :trigger-change="true" dictCode="statue" placeholder="请选择数据状态"/>-->
-<!--        </a-form-item>-->
-<!--        <a-form-item label="企业id" :labelCol="labelCol" :wrapperCol="wrapperCol">-->
-<!--          <a-input v-decorator="['companyId', validatorRules.companyId]" placeholder="请输入企业id"></a-input>-->
-<!--        </a-form-item>-->
         <a-row>
           <a-col span="12">
             <a-form-item label="企业名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
@@ -47,9 +40,16 @@
           </a-col>
         </a-row>
         <a-row>
-          <a-col span="24">
-            <a-form-item label="附件上传" :labelCol="labelCols" :wrapperCol="wrapperCols">
-              <j-upload :trigger-change="true"></j-upload>
+          <a-col span="24" v-if="monitorTag === 'view'">
+            <a-form-item label="附件上传" :labelCol="labelCols" :wrapperCol="wrapperCols" >
+              <j-upload ref="uploadRef" :disabled="true" fileType="file" bizPath="SupervisoryMonitor" @change="fileListChange" @delete ="fileDelete"></j-upload>
+            </a-form-item>
+          </a-col>
+        </a-row>
+        <a-row>
+          <a-col span="24" v-if="monitorTag !== 'view'">
+            <a-form-item label="附件上传" :labelCol="labelCols" :wrapperCol="wrapperCols" >
+              <j-upload ref="uploadRef" :disabled="disableSubmit" fileType="file" bizPath="SupervisoryMonitor" @change="fileListChange" @delete ="fileDelete"></j-upload>
             </a-form-item>
           </a-col>
         </a-row>
@@ -87,6 +87,7 @@
   import JDictSelectTag from "@/components/dict/JDictSelectTag"
   import {queryCompanyName} from "../../../requestAction/request";
   import moment from 'moment'
+  import {queryFiles} from "../../../requestAction/request";
 
 
   export default {
@@ -109,6 +110,8 @@
         disableSubmit:false,
         visible: false,
         model: {},
+        fileList:[],
+        deleteFiles:[],
         labelCol: {
           xs: { span: 24 },
           sm: { span: 6 },
@@ -156,7 +159,8 @@
         url: {
           add: "/csm/companySupervisoryMonitor/add",
           edit: "/csm/companySupervisoryMonitor/edit",
-          declare: "/csm/companySupervisoryMonitor/declare"
+          declare: "/csm/companySupervisoryMonitor/declare",
+          queryFile:"/csm/companySupervisoryMonitor/queryFiles"
         },
       monitorTag:''
       }
@@ -188,6 +192,13 @@
         //获取时间
         this.getTime();
       },
+      fileListChange(newFileList){
+        console.log(newFileList)
+        this.fileList = newFileList;
+      },
+      fileDelete(file){
+        this.deleteFiles.push(file.response.message);
+      },
       edit (record) {
         this.form.resetFields();
         this.model = Object.assign({}, record);
@@ -198,7 +209,27 @@
         this.model.createName = this.$store.getters.userInfo.realname;
         this.$nextTick(() => {
           this.form.setFieldsValue(pick(this.model,'status','companyId','reportDate','reportType','reportName','content','createName','createTime','updateName','updateTime'))
-        })
+        });
+
+        if(record.id){
+          //查询所属文件
+          let _this =this;
+          queryFiles({id:record.id},this.$data.url.queryFile).then((res)=>{
+
+            _this.$nextTick(() => {
+
+              _this.$refs.uploadRef.initFileListArr(res.result);
+            });
+
+          });
+
+
+        }else{
+          //清空上传列表
+          this.$nextTick(() => {
+            this.$refs.uploadRef.initFileList("");
+          });
+        }
       },
       close () {
         this.$emit('close');
@@ -223,6 +254,7 @@
                method = 'put';
             }
             let formData = Object.assign(this.model, values);
+            formData.fileList = that.fileList;
             console.log("表单提交数据",formData)
             httpAction(httpurl,formData,method).then((res)=>{
               if(res.success){
@@ -254,7 +286,7 @@
             let httpUrl = this.url.declare;
             let method = 'put';
             let formData = Object.assign(this.model, values);
-            formData.companyId=this.companyId;
+            formData.fileList = that.fileList;
             httpAction(httpUrl,formData,method).then((res)=>{
               if(res.success){
                 that.$message.success(res.message);

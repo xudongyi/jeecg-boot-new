@@ -40,9 +40,9 @@
           </a-col>
         </a-row>
         <a-row>
-          <a-col span='24'>
-            <a-form-item label="附件上传" :labelCol="labelCols" :wrapperCol="wrapperCols">
-              <j-upload :trigger-change="true"></j-upload>
+          <a-col span="24">
+            <a-form-item label="附件上传" :labelCol="labelCols" :wrapperCol="wrapperCols" >
+              <j-upload ref="uploadRef" :disabled="true" fileType="file" bizPath="DynamicSupervision"></j-upload>
             </a-form-item>
           </a-col>
         </a-row>
@@ -115,6 +115,7 @@
   import JDictSelectTag from "@/components/dict/JDictSelectTag"
   import {queryCompanyName} from "../../requestAction/request";
   import moment from 'moment'
+  import {queryFiles} from "../../requestAction/request";
 
 
   export default {
@@ -186,6 +187,7 @@
         url: {
           add: "/ccl/companyComplaintLetter/add",
           edit: "/ccl/companyComplaintLetter/edit",
+          queryFile:"/ccl/companyComplaintLetter/queryFiles"
         },
       }
     },
@@ -227,7 +229,20 @@
 
         this.$nextTick(() => {
           this.form.setFieldsValue(pick(this.model,'status','companyId','complaintDate','pollutionType','complaintTitle','content','createName','createTime','updateName','updateTime'))
-        })
+        });
+
+        if(record.id){
+          //查询所属文件
+          let _this =this;
+          queryFiles({id:record.id},this.$data.url.queryFile).then((res)=>{
+
+            _this.$nextTick(() => {
+
+              _this.$refs.uploadRef.initFileListArr(res.result);
+            });
+
+          });
+        }
       },
       close () {
         this.$emit('close');
