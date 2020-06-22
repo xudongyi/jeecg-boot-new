@@ -12,57 +12,57 @@
   >
     <a-form :form="form">
 
-      <a-form-item label="类别" :labelCol="labelCol" :wrapperCol="wrapperCol">
+      <a-form-item label="类别" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.outputType">
         <j-dict-select-tag type="radio" v-decorator="['outputType']"  @change = "handleTypeChange"  :disabled="disable"
                            :trigger-change="true" dictCode="output_type" placeholder="请选择类别"/>
       </a-form-item>
-      <a-form-item label="产品名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
+      <a-form-item label="产品名称" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.outputName">
         <a-input v-decorator="['outputName']" placeholder="请输入产品名称" :disabled="disable"></a-input>
       </a-form-item>
-      <a-form-item label="产量" :labelCol="labelCol" :wrapperCol="wrapperCol">
+      <a-form-item label="产量" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.yield">
         <a-input-number v-decorator="['yield']" placeholder="请输入产量" style="width: 100%" :disabled="disable"/>
       </a-form-item>
-      <a-form-item label="最大储量" :labelCol="labelCol" :wrapperCol="wrapperCol">
+      <a-form-item label="最大储量" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.maxStore">
         <a-input v-decorator="['maxStore']" placeholder="请输入最大储量" :disabled="disable"></a-input>
       </a-form-item>
-      <a-form-item label="CAS号" :labelCol="labelCol" :wrapperCol="wrapperCol">
+      <a-form-item label="CAS号" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.cas">
         <a-input v-decorator="['cas']" placeholder="请输入CAS号" :disabled="disable"></a-input>
       </a-form-item>
-      <a-form-item label="储存方式" :labelCol="labelCol" :wrapperCol="wrapperCol">
+      <a-form-item label="储存方式" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.storeType">
         <j-dict-select-tag type="list" v-decorator="['storeType']"  :disabled="disable"
                            :trigger-change="true" dictCode="store_type" placeholder="请选择储存方式"/>
       </a-form-item>
-      <a-form-item label="危化品类别" :labelCol="labelCol" :wrapperCol="wrapperCol">
+      <a-form-item label="危化品类别" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.hazardousChemicalsCategory">
         <j-dict-select-tag type="list" v-decorator="['hazardousChemicalsCategory']"  :disabled="disable"
                            :trigger-change="true" dictCode="hazardous_chemicals_category" placeholder="请选择危化品类别"/>
       </a-form-item>
-      <a-form-item label="主要危险性" :labelCol="labelCol" :wrapperCol="wrapperCol">
+      <a-form-item label="主要危险性" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.mainRisk">
         <j-dict-select-tag type="list" v-decorator="['mainRisk']" :trigger-change="true" :disabled="disable"
                            dictCode="main_risk" placeholder="请选择主要危险性"/>
       </a-form-item>
-      <a-form-item label="重点监管" :labelCol="labelCol" :wrapperCol="wrapperCol">
+      <a-form-item label="重点监管" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.supervision">
         <j-dict-select-tag type="list" v-decorator="['supervision']" :disabled="disable"
                            :trigger-change="true" dictCode="yes_or_no" placeholder="请选择重点监管"/>
       </a-form-item>
-      <a-form-item label="剧毒" :labelCol="labelCol" :wrapperCol="wrapperCol">
+      <a-form-item label="剧毒" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.toxic">
         <j-dict-select-tag type="list" v-decorator="['toxic']" :trigger-change="true" :disabled="disable" dictCode="yes_or_no" placeholder="请选择剧毒"/>
       </a-form-item>
-      <a-form-item label="易制毒" :labelCol="labelCol" :wrapperCol="wrapperCol">
+      <a-form-item label="易制毒" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.precursorChemicals">
         <j-dict-select-tag type="list" v-decorator="['precursorChemicals']" :disabled="disable" :trigger-change="true" dictCode="yes_or_no" placeholder="请选择易制毒"/>
       </a-form-item>
-      <a-form-item label="状态" v-show="displayPro" :labelCol="labelCol" :wrapperCol="wrapperCol">
+      <a-form-item label="状态" v-show="displayPro" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.status">
         <j-dict-select-tag type="list"  v-decorator="['status']" :trigger-change="true" :disabled="disable" dictCode="output_status" placeholder="请选择状态"/>
       </a-form-item>
-      <a-form-item label="是否领证" v-show="displayPro" :labelCol="labelCol" :wrapperCol="wrapperCol">
+      <a-form-item label="是否领证" v-show="displayPro" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.certified">
         <j-dict-select-tag type="list"  v-decorator="['certified']" :trigger-change="true" :disabled="disable" dictCode="yes_or_no" placeholder="请选择是否领证"/>
       </a-form-item>
-      <a-form-item label="主要原材料"  v-show="displayPro" :labelCol="labelCol" :wrapperCol="wrapperCol">
+      <a-form-item label="主要原材料"  v-show="displayPro" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.rawMaterials">
         <a-textarea v-decorator="['rawMaterials']" rows="4" placeholder="请输入主要原材料" :disabled="disable"/>
       </a-form-item>
-      <a-form-item label="主要生产设备" v-show="displayPro" :labelCol="labelCol" :wrapperCol="wrapperCol">
+      <a-form-item label="主要生产设备" v-show="displayPro" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.proEquipment">
         <a-textarea v-decorator="['proEquipment']" rows="4" placeholder="请输入主要生产设备" :disabled="disable"/>
       </a-form-item>
-      <a-form-item label="备注" :labelCol="labelCol" :wrapperCol="wrapperCol">
+      <a-form-item label="备注" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.remake">
         <a-textarea v-decorator="['remake']" rows="4" placeholder="请输入备注" :disabled="disable"/>
       </a-form-item>
 
@@ -105,6 +105,7 @@
           xs: { span: 24 },
           sm: { span: 16 },
         },
+        modalStatus:{},
       }
 
     },
@@ -129,15 +130,22 @@
         let that = this;
         //查询对应的待审批数据  并查询出对应的对比数据
         queryAduitBase({applyId:record.id}).then((res)=>{
-          if(res.success){
+          if(res.success) {
             that.$nextTick(() => {
-              this.form.setFieldsValue(pick(res.result.info,'outputType','outputName','yield','maxStore','cas','storeType','hazardousChemicalsCategory','mainRisk','supervision','toxic','precursorChemicals','status','certified','rawMaterials','proEquipment','remake'))
+              this.form.setFieldsValue(pick(res.result.info, 'outputType', 'outputName', 'yield', 'maxStore', 'cas', 'storeType', 'hazardousChemicalsCategory', 'mainRisk', 'supervision', 'toxic', 'precursorChemicals', 'status', 'certified', 'rawMaterials', 'proEquipment', 'remake'))
 
             });
 
-            //判断修改处的  后面需要处理一下
-            if(res.cueColor === ''){
+            //全部
+            if (res.result.cueColor === 'ALL') {
+              for (let i = 0, len = res.result.cueField.length; i < len; i++) {
+                that.modalStatus[res.result.cueField[i]] = "warning";
+              }
 
+            } else {
+              for (let i = 0, len = res.result.cueField.length; i < len; i++) {
+                that.modalStatus[res.result.cueField[i]] = "error";
+              }
             }
           }
         });

@@ -38,6 +38,7 @@
         confirmLoading:true,
         visible: false,
         width:1200,
+
         title:"基本信息申报审核-基础信息"
       }
 
@@ -66,10 +67,19 @@
           if(res.success){
             that.$refs.baseModal.edit(res.result.info);
 
-            //判断修改处的  后面需要处理一下
-            if(res.cueColor === ''){
+           let  modalStatus = {}
+            //全部
+            if(res.result.cueColor === 'ALL'){
+              for(let i = 0, len = res.result.cueField.length; i < len; i++){
+                modalStatus[res.result.cueField[i]] = "warning";
+              }
 
+            }else {
+              for(let i = 0, len = res.result.cueField.length; i < len; i++){
+                modalStatus[res.result.cueField[i]] = "error";
+              }
             }
+            that.$refs.baseModal.modalStatus = modalStatus;
           }
         });
 

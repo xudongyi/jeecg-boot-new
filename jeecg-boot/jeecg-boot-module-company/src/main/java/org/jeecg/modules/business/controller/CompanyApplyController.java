@@ -166,20 +166,20 @@ public class CompanyApplyController extends JeecgController<CompanyApply, ICompa
         Object newInfo = getObject(companyApply, companyApply.getNewId());
         //申请人名字
         result.put("info", newInfo);
-
-        if(StrUtil.isEmpty(companyApply.getOldId())){
-            //提示
-            result.put("cueColor","");
-            return  Result.ok(result);
-        }
-
         //获取老数据
         Object oldInfo = getObject(companyApply, companyApply.getOldId());
 
-
+        List<String> excludeFields = Arrays.asList("serialVersionUID", "id", "createBy", "createTime", "updateBy", "updateTime", "sysOrgCode", "status","type","companyId");
+        fieldBaseEquator.setExcludeFields(excludeFields);
         List<String> list = fieldBaseEquator.getDiffFieldNames(newInfo,oldInfo);
-        result.put("cueColor","");
+        result.put("cueColor","PART");
         result.put("cueField",list);
+        if(StrUtil.isEmpty(companyApply.getOldId())){
+            //提示
+            result.put("cueColor","ALL");
+
+        }
+
         return  Result.ok(result);
     }
 

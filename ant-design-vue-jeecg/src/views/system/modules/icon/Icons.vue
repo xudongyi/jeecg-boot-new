@@ -10,7 +10,7 @@
     :maskClosable="false"
     :mask="false"
     okText="确认"
-    cancelText="取消">
+    cancelText="关闭">
     <a-tabs>
       <a-tab-pane tab="方向性图标" key="1">
         <ul>

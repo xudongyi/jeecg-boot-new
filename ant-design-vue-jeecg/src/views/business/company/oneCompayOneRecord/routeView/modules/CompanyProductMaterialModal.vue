@@ -18,13 +18,13 @@
           <a-input v-decorator="['outputName', validatorRules.outputName]" placeholder="请输入产品名称" :disabled="disable"></a-input>
         </a-form-item>
         <a-form-item label="产量" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input-number v-decorator="['yield', validatorRules.yield]" placeholder="请输入产量" style="width: 100%" :disabled="disable"/>
+          <a-input-number v-decorator="['yield']" placeholder="请输入产量" style="width: 100%" :disabled="disable"/>
         </a-form-item>
         <a-form-item label="最大储量" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="['maxStore', validatorRules.maxStore]" placeholder="请输入最大储量" :disabled="disable"></a-input>
+          <a-input v-decorator="['maxStore']" placeholder="请输入最大储量" :disabled="disable"></a-input>
         </a-form-item>
         <a-form-item label="CAS号" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="['cas', validatorRules.cas]" placeholder="请输入CAS号" :disabled="disable"></a-input>
+          <a-input v-decorator="['cas']" placeholder="请输入CAS号" :disabled="disable"></a-input>
         </a-form-item>
         <a-form-item label="储存方式" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <j-dict-select-tag type="list" v-decorator="['storeType', validatorRules.storeType]"  :disabled="disable"
@@ -67,8 +67,7 @@
       </a-form>
     </a-spin>
     <template slot="footer">
-      <a-button type="primary" @click="handleCancel" v-show="disable">关闭</a-button>
-      <a-button type="primary" @click="handleCancel" v-show="!disable">取消</a-button>
+      <a-button type="primary" @click="handleCancel">关闭</a-button>
       <a-button type="primary" @click="handleOk" v-show="!disable">暂存</a-button>
       <a-button type="primary" @click="handDeclare" v-show="!disable">申报</a-button>
     </template>

@@ -17,34 +17,33 @@
 
         </a-form-item>
         <a-form-item label="学历" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="['education', validatorRules.education]" placeholder="请输入学历" :disabled="disable"></a-input>
+          <a-input v-decorator="['education']" placeholder="请输入学历" :disabled="disable"></a-input>
         </a-form-item>
         <a-form-item label="专业" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="['profession', validatorRules.profession]" placeholder="请输入专业" :disabled="disable"></a-input>
+          <a-input v-decorator="['profession']" placeholder="请输入专业" :disabled="disable"></a-input>
         </a-form-item>
         <a-form-item label="职称" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="['jobTitle', validatorRules.jobTitle]" placeholder="请输入职称" :disabled="disable"></a-input>
+          <a-input v-decorator="['jobTitle']" placeholder="请输入职称" :disabled="disable"></a-input>
         </a-form-item>
         <a-form-item label="部门" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="['department', validatorRules.department]" placeholder="请输入部门" :disabled="disable"></a-input>
+          <a-input v-decorator="['department']" placeholder="请输入部门" :disabled="disable"></a-input>
         </a-form-item>
         <a-form-item label="岗位" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="['post', validatorRules.post]" placeholder="请输入岗位" :disabled="disable"></a-input>
+          <a-input v-decorator="['post']" placeholder="请输入岗位" :disabled="disable"></a-input>
         </a-form-item>
         <a-form-item label="身份证号码" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="['idCard', validatorRules.idCard]" placeholder="请输入身份证号码" :disabled="disable"></a-input>
+          <a-input v-decorator="['idCard']" placeholder="请输入身份证号码" :disabled="disable"></a-input>
         </a-form-item>
         <a-form-item label="手机号码" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-input v-decorator="['pbone', validatorRules.pbone]" placeholder="请输入手机号码" :disabled="disable"></a-input>
         </a-form-item>
         <a-form-item label="出生日期" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-date placeholder="请输入出生日期" v-decorator="['birthDate', validatorRules.birthDate]" :trigger-change="true" style="width: 100%" :disabled="disable" />
+          <j-date placeholder="请输入出生日期" v-decorator="['birthDate']" :trigger-change="true" style="width: 100%" :disabled="disable" />
         </a-form-item>
       </a-form>
     </a-spin>
     <template slot="footer">
-      <a-button type="primary" @click="handleCancel" v-show="disable">关闭</a-button>
-      <a-button type="primary" @click="handleCancel" v-show="!disable">取消</a-button>
+      <a-button type="primary" @click="handleCancel" >关闭</a-button>
       <a-button type="primary" @click="handleOk" v-show="!disable">暂存</a-button>
       <a-button type="primary" @click="handDeclare" v-show="!disable">申报</a-button>
     </template>
@@ -95,46 +94,13 @@
               { required: true, message: '请输入性别!'},
             ]
           },
-          education: {
-            rules: [
-              { required: true, message: '请输入学历!'},
-            ]
-          },
-          profession: {
-            rules: [
-              { required: true, message: '请输入专业!'},
-            ]
-          },
-          jobTitle: {
-            rules: [
-              { required: true, message: '请输入职称!'},
-            ]
-          },
-          department: {
-            rules: [
-              { required: true, message: '请输入部门!'},
-            ]
-          },
-          post: {
-            rules: [
-              { required: true, message: '请输入岗位!'},
-            ]
-          },
-          idCard: {
-            rules: [
-              { required: true, message: '请输入身份证号码!'},
-            ]
-          },
+
           pbone: {
             rules: [
               { required: true, message: '请输入手机号码!'},
             ]
           },
-          birthDate: {
-            rules: [
-              { required: true, message: '请输入出生日期!'},
-            ]
-          },
+
         },
         url: {
           add: "/companyUserinfo/add",

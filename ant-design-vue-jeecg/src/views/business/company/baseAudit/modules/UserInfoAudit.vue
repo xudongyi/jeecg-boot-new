@@ -11,35 +11,35 @@
       cancelText="关闭"
     >
       <a-form :form="form">
-        <a-form-item label="姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" >
+        <a-form-item label="姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.name">
           <a-input v-decorator="['name']" placeholder="请输入姓名" :disabled="disable"></a-input>
         </a-form-item>
-        <a-form-item label="性别" :labelCol="labelCol" :wrapperCol="wrapperCol">
+        <a-form-item label="性别" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.sex">
           <j-dict-select-tag  type="radio" dictCode="sex" v-decorator="['sex']" :disabled="disable"  :trigger-change="true" ></j-dict-select-tag>
 
         </a-form-item>
-        <a-form-item label="学历" :labelCol="labelCol" :wrapperCol="wrapperCol">
+        <a-form-item label="学历" :labelCol="labelCol" :wrapperCol="wrapperCol"  :validate-status="modalStatus.education">
           <a-input v-decorator="['education']" placeholder="请输入学历" :disabled="disable"></a-input>
         </a-form-item>
-        <a-form-item label="专业" :labelCol="labelCol" :wrapperCol="wrapperCol">
+        <a-form-item label="专业" :labelCol="labelCol" :wrapperCol="wrapperCol"  :validate-status="modalStatus.profession">
           <a-input v-decorator="['profession']" placeholder="请输入专业" :disabled="disable"></a-input>
         </a-form-item>
-        <a-form-item label="职称" :labelCol="labelCol" :wrapperCol="wrapperCol">
+        <a-form-item label="职称" :labelCol="labelCol" :wrapperCol="wrapperCol"  :validate-status="modalStatus.jobTitle">
           <a-input v-decorator="['jobTitle']" placeholder="请输入职称" :disabled="disable"></a-input>
         </a-form-item>
-        <a-form-item label="部门" :labelCol="labelCol" :wrapperCol="wrapperCol">
+        <a-form-item label="部门" :labelCol="labelCol" :wrapperCol="wrapperCol"  :validate-status="modalStatus.department">
           <a-input v-decorator="['department']" placeholder="请输入部门" :disabled="disable"></a-input>
         </a-form-item>
-        <a-form-item label="岗位" :labelCol="labelCol" :wrapperCol="wrapperCol">
+        <a-form-item label="岗位" :labelCol="labelCol" :wrapperCol="wrapperCol"  :validate-status="modalStatus.post">
           <a-input v-decorator="['post']" placeholder="请输入岗位" :disabled="disable"></a-input>
         </a-form-item>
-        <a-form-item label="身份证号码" :labelCol="labelCol" :wrapperCol="wrapperCol">
+        <a-form-item label="身份证号码" :labelCol="labelCol" :wrapperCol="wrapperCol"  :validate-status="modalStatus.idCard">
           <a-input v-decorator="['idCard']" placeholder="请输入身份证号码" :disabled="disable"></a-input>
         </a-form-item>
-        <a-form-item label="手机号码" :labelCol="labelCol" :wrapperCol="wrapperCol">
+        <a-form-item label="手机号码" :labelCol="labelCol" :wrapperCol="wrapperCol"  :validate-status="modalStatus.pbone">
           <a-input v-decorator="['pbone']" placeholder="请输入手机号码" :disabled="disable"></a-input>
         </a-form-item>
-        <a-form-item label="出生日期" :labelCol="labelCol" :wrapperCol="wrapperCol">
+        <a-form-item label="出生日期" :labelCol="labelCol" :wrapperCol="wrapperCol"  :validate-status="modalStatus.birthDate">
           <j-date placeholder="请输入出生日期" v-decorator="['birthDate']" :trigger-change="true" style="width: 100%" :disabled="disable" />
         </a-form-item>
       </a-form>
@@ -82,6 +82,9 @@
           xs: { span: 24 },
           sm: { span: 16 },
         },
+        modalStatus:{
+
+        }
       }
 
     },
@@ -109,11 +112,18 @@
           if(res.success){
             that.$nextTick(() => {
               that.form.setFieldsValue(pick(res.result.info,'name','sex','education','profession','jobTitle','department','post','idCard','pbone','birthDate'))
-            })
+            });
 
-            //判断修改处的  后面需要处理一下
-            if(res.cueColor === ''){
+            //全部
+            if(res.result.cueColor === 'ALL'){
+              for(let i = 0, len = res.result.cueField.length; i < len; i++){
+                that.modalStatus[res.result.cueField[i]] = "warning";
+              }
 
+            }else {
+              for(let i = 0, len = res.result.cueField.length; i < len; i++){
+                that.modalStatus[res.result.cueField[i]] = "error";
+              }
             }
           }
         });

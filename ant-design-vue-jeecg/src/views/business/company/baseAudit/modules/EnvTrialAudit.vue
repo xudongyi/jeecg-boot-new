@@ -12,19 +12,19 @@
   >
   <a-form :form="form">
 
-    <a-form-item label="项目名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
+    <a-form-item label="项目名称" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.projectName">
       <a-input v-decorator="['projectName']" placeholder="请输入项目名称" :disabled="disable"></a-input>
     </a-form-item>
-    <a-form-item label="批复文件号" :labelCol="labelCol" :wrapperCol="wrapperCol">
+    <a-form-item label="批复文件号" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.approveFilenum">
       <a-input v-decorator="['approveFilenum']" placeholder="请输入批复文件号" :disabled="disable"></a-input>
     </a-form-item>
-    <a-form-item label="审批单位" :labelCol="labelCol" :wrapperCol="wrapperCol">
+    <a-form-item label="审批单位" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.approveUnit">
       <a-input v-decorator="['approveUnit']" placeholder="请输入审批单位" :disabled="disable"></a-input>
     </a-form-item>
-    <a-form-item label="审批时间" :labelCol="labelCol" :wrapperCol="wrapperCol">
+    <a-form-item label="审批时间" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.approveDate">
       <j-date placeholder="请选择审批时间" v-decorator="['approveDate']" :trigger-change="true" style="width: 100%" :disabled="disable"/>
     </a-form-item>
-    <a-form-item label="附件" :labelCol="labelCol" :wrapperCol="wrapperCol">
+    <a-form-item label="附件" :labelCol="labelCol" :wrapperCol="wrapperCol" >
       <j-upload ref="uploadRef" :disabled="disable" fileType="file" bizPath="envtrial"></j-upload>
     </a-form-item>
     <!--加一个表格显示-->
@@ -68,6 +68,7 @@
             xs: { span: 24 },
             sm: { span: 16 },
           },
+          modalStatus:{},
         }
 
       },
@@ -98,9 +99,16 @@
 
               });
 
-              //判断修改处的  后面需要处理一下
-              if(res.cueColor === ''){
+              //全部
+              if (res.result.cueColor === 'ALL') {
+                for (let i = 0, len = res.result.cueField.length; i < len; i++) {
+                  that.modalStatus[res.result.cueField[i]] = "warning";
+                }
 
+              } else {
+                for (let i = 0, len = res.result.cueField.length; i < len; i++) {
+                  that.modalStatus[res.result.cueField[i]] = "error";
+                }
               }
             }
           });

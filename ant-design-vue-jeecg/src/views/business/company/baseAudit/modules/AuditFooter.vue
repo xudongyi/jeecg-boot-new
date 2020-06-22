@@ -63,7 +63,7 @@
             applyer:'',
             applyTime:'',
             date:' ',
-            result:'',
+            result:'2',
             message:''
           }
 

@@ -31,8 +31,7 @@
       </a-form>
     </a-spin>
     <template slot="footer">
-      <a-button type="primary" @click="handleCancel" v-show="disable">关闭</a-button>
-      <a-button type="primary" @click="handleCancel" v-show="!disable">取消</a-button>
+      <a-button type="primary" @click="handleCancel" >关闭</a-button>
       <a-button type="primary" @click="handleOk" v-show="!disable">暂存</a-button>
       <a-button type="primary" @click="handDeclare" v-show="!disable">申报</a-button>
     </template>
@@ -110,7 +109,6 @@
         this.edit({});
       },
       fileListChange(newFileList){
-        console.log(newFileList)
         this.fileList = newFileList;
       },
       fileDelete(file){

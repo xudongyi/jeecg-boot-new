@@ -49,14 +49,15 @@
     <!-- 操作按钮区域 -->
     <div class="table-operator"  v-show="isApply">
       <a-button @click="applyAdd" type="primary" icon="plus">新增</a-button>
-     <!-- <a-button type="primary" icon="download" @click="handleExportXls('company_product_material')">导出</a-button>
+      <a-button @click="batchApply" type="primary" icon="snippets">批量申报</a-button>
+      <!-- <a-button type="primary" icon="download" @click="handleExportXls('company_product_material')">导出</a-button>
       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
         <a-button type="primary" icon="import">导入</a-button>
       </a-upload>-->
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
           <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
-          <a-menu-item key="2" @click="batchApply"><a-icon type="delete"/>申报</a-menu-item>
+<!--          <a-menu-item key="2" @click="batchApply"><a-icon type="delete"/>申报</a-menu-item>-->
         </a-menu>
         <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>
       </a-dropdown>

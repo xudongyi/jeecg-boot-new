@@ -78,7 +78,7 @@
                   <span v-else>
                     <a @click="saveRow(record.key)">保存</a>
                     <a-divider type="vertical"/>
-                    <a @click="cancelEditRow(record.key)">取消</a>
+                    <a @click="cancelEditRow(record.key)">关闭</a>
                   </span>
                 </template>
                 <span v-else>
