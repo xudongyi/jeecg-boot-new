@@ -35,6 +35,8 @@ public class CompanyFileServiceImpl extends ServiceImpl<CompanyFileMapper, Compa
      */
     @Override
     public boolean saveFiles(String files,String fileType,String fromTable,String tableId){
+        if(files.equals("[]"))
+            return true;
         List<CompanyFile> companyFiles = new ArrayList<>();
         if(!StrUtil.isEmpty(files)) {
             // 遍历 jsonarray 数组，把每一个对象转成 json 对象
