@@ -21,7 +21,11 @@
 
             <a-col :xl="6" :lg="7" :md="8" :sm="24">
               <a-form-item label="申报年份">
-                <a-input placeholder="请输入申报年份" v-model="queryParam.reportYear" ></a-input>
+                <a-select v-model="queryParam.reportYear" show-search @visible-change="yearChange($event)">
+                  <a-select-option v-for="item in years" :key="item.value"  :value="item.value">
+                    {{item.value}}
+                  </a-select-option>
+                </a-select>
               </a-form-item>
             </a-col>
 
@@ -179,6 +183,7 @@
     data () {
       return {
         description: '企业年度动态监管管理页面',
+        years:[],
         items:[],
         companyid:'',
         monitor:'',
@@ -298,10 +303,6 @@
       modalFormOk(){
         this.loadData(1);
       },
-      yearChange(obj){
-        console.log(obj.year+'-'+obj.month+'-'+obj.day);
-      },
-
       initDictConfig(){
       },
       handleView: function (record) {
@@ -352,8 +353,19 @@
           });
         }
       },
+      yearChange () {
+        var myDate = new Date()
+        var startYear = myDate.getFullYear() - 20// 起始年份
+        var endYear = myDate.getFullYear() + 20// 结束年份
+
+        this.years = []
+        for (var i = startYear; i <= endYear; i++) {
+          this.years.push({value: i, label: i})
+        }
+      }
     },
     mounted() {
+      this.yearChange();
       let that = this;
       //查询企业名称
       queryCompanyName({companyIds:this.$store.getters.userInfo.companyIds.join(',')}).then((res) => {

@@ -22,7 +22,11 @@
           </a-col>
           <a-col span="12">
             <a-form-item label="申报年份" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input-number v-decorator="['reportYear', validatorRules.reportYear]" style="width: 100%" :disabled="disableSubmit"/>
+              <a-select v-decorator="['reportYear', validatorRules.reportYear]" show-search @visible-change="yearChange($event)">
+                <a-select-option v-for="item in years" :key="item.value"  :value="item.value">
+                  {{item.value}}
+                </a-select-option>
+              </a-select>
             </a-form-item>
           </a-col>
         </a-row>
@@ -104,6 +108,7 @@
         dateFormat:"YYYY-MM-DD HH:mm:ss",
         title:"操作",
         width:800,
+        years:[],
         items:[],
         disableSubmit:false,
         visible: false,
@@ -164,6 +169,7 @@
       }
     },
     created () {
+      this.yearChange();
       this.monitorTag = this.monitor;
       console.log(this.monitorTag==='view')
       let that = this;
@@ -176,6 +182,16 @@
     },
 
     methods: {
+      yearChange () {
+        var myDate = new Date()
+        var startYear = myDate.getFullYear() - 20// 起始年份
+        var endYear = myDate.getFullYear() + 20// 结束年份
+
+        this.years = []
+        for (var i = startYear; i <= endYear; i++) {
+          this.years.push({value: i, label: i})
+        }
+      },
       //获取系统时间
       getTime() {
         let  _this =this;
