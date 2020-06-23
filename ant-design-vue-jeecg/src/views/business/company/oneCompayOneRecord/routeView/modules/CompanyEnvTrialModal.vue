@@ -109,11 +109,11 @@
         this.edit({});
       },
       fileListChange(newFileList){
-
+        console.log("文件列表改变",newFileList);
         this.fileList = newFileList;
       },
       fileDelete(file){
-        
+
         this.deleteFiles.push(file.response.message);
       },
       edit (record) {
@@ -124,7 +124,7 @@
         this.$nextTick(() => {
           _this.form.setFieldsValue(pick(this.model,'projectName','approveFilenum','approveUnit','approveDate','annex'))
         });
-debugger
+
         if(record.id){
             //查询所属文件
           queryFiles({id:record.id},this.$data.url.queryFile).then((res)=>{
