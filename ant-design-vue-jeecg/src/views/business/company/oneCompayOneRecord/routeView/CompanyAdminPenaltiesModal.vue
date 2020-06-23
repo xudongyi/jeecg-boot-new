@@ -202,6 +202,7 @@
       },
       edit (record) {
         console.log(record);
+        let _this =this;
         this.form.resetFields();
         this.model = Object.assign({}, record);
         this.visible = true;
@@ -211,17 +212,25 @@
         this.model.createName = this.$store.getters.userInfo.realname;
 
         this.$nextTick(() => {
-          this.form.setFieldsValue(pick(this.model,'status','companyId','reportDate','documentName','documentNo','content','createName','createTime','updateName','updateTime'));
+          _this.form.setFieldsValue(pick(this.model,'status','companyId','reportDate','documentName','documentNo','content','createName','createTime','updateName','updateTime'));
         });
 
         if(record.id){
           //查询所属文件
-          let _this =this;
           queryFiles({id:record.id},this.$data.url.queryFile).then((res)=>{
 
             _this.$nextTick(() => {
 
               _this.$refs.uploadRef.initFileListArr(res.result);
+              let arr = [];
+              for(var a=0;a< _this.$refs.uploadRef.fileList.length;a++){
+                arr.push( _this.$refs.uploadRef.fileList[a].response.message)
+              }
+              if(arr.length>0){
+                _this.fileList  = arr.join(",")
+              }else{
+                _this.fileList = '';
+              }
             });
 
           });
@@ -229,8 +238,17 @@
 
         }else{
           //清空上传列表
-          this.$nextTick(() => {
-            this.$refs.uploadRef.initFileList("");
+          _this.$nextTick(() => {
+            _this.$refs.uploadRef.initFileList("");
+            let arr = [];
+            for(var a=0;a< _this.$refs.uploadRef.fileList.length;a++){
+              arr.push( _this.$refs.uploadRef.fileList[a].response.message)
+            }
+            if(arr.length>0){
+              _this.fileList  = arr.join(",")
+            }else{
+              _this.fileList = '';
+            }
           });
         }
       },

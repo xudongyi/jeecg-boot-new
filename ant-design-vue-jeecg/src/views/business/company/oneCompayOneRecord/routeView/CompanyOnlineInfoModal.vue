@@ -96,6 +96,7 @@
         this.edit({});
       },
       edit (record) {
+        let _this =this;
         this.form.resetFields();
         this.model = Object.assign({}, record);
         this.visible = true;
@@ -104,16 +105,17 @@
         })
         if(record.id){
           //查询所属文件
-          let _this =this;
           queryFiles({id:record.id},this.$data.url.queryFile).then((res)=>{
             _this.$nextTick(() => {
               _this.$refs.uploadRef.initFileListArr(res.result);
+              _this.fileList = _this.$refs.uploadRef.fileList
             });
           });
         }else{
           //清空上传列表
-          this.$nextTick(() => {
-            this.$refs.uploadRef.initFileList("");
+          _this.$nextTick(() => {
+            _this.$refs.uploadRef.initFileList("");
+            _this.fileList = _this.$refs.uploadRef.fileList
           });
         }
       },

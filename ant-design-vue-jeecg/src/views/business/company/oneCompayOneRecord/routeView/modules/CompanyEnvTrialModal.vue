@@ -132,7 +132,16 @@
             _this.$nextTick(() => {
 
               _this.$refs.uploadRef.initFileListArr(res.result);
-              _this.fileList = _this.$refs.uploadRef.fileList
+              let arr = [];
+
+              for(var a=0;a< _this.$refs.uploadRef.fileList.length;a++){
+                arr.push( _this.$refs.uploadRef.fileList[a].response.message)
+              }
+              if(arr.length>0){
+                _this.fileList  = arr.join(",")
+              }else{
+                _this.fileList = '';
+              }
 
             });
 
@@ -144,7 +153,16 @@
           _this.$nextTick(() => {
 
             _this.$refs.uploadRef.initFileList("");
-            _this.fileList = _this.$refs.uploadRef.fileList
+            let arr = [];
+
+            for(var a=0;a< _this.$refs.uploadRef.fileList.length;a++){
+              arr.push( _this.$refs.uploadRef.fileList[a].response.message)
+            }
+            if(arr.length>0){
+              _this.fileList  = arr.join(",")
+            }else{
+              _this.fileList = '';
+            }
           });
         }
 
