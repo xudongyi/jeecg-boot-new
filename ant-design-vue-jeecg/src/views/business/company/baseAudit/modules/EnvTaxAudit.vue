@@ -14,14 +14,14 @@
       <a-form :form="form">
         <a-row>
           <a-col span='12'>
-            <a-form-item label="许可证编号" :labelCol="labelCol" :wrapperCol="wrapperCol">
+            <a-form-item label="许可证编号" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.licenceCode">
               <j-search-select-tag placeholder="请输入后进行选择" v-decorator="['licenceCode', validatorRules.licenceCode]"
                                    dict="company_dirty_allow,licence_code,licence_code" :async="true"
                                    :disabled="disableSubmit"/>
             </a-form-item>
           </a-col>
           <a-col span='12'>
-            <a-form-item label="排放口大类" :labelCol="labelCol" :wrapperCol="wrapperCol">
+            <a-form-item label="排放口大类" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.ventCategory">
               <j-dict-select-tag type="list" v-decorator="['ventCategory', validatorRules.ventCategory]"
                                  :trigger-change="true" dictCode="ventcategory"
                                  placeholder="请选择排放口大类" :disabled="disableSubmit"/>
@@ -30,25 +30,25 @@
         </a-row>
         <a-row>
           <a-col span='12'>
-            <a-form-item label="排放口编号" :labelCol="labelCol" :wrapperCol="wrapperCol">
+            <a-form-item label="排放口编号" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.ventCode">
               <a-input v-decorator="['ventCode']" placeholder="请输入排放口编号" :disabled="disableSubmit"></a-input>
             </a-form-item>
           </a-col>
           <a-col span='12'>
-            <a-form-item label="排放口名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
+            <a-form-item label="排放口名称" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.ventName">
               <a-input v-decorator="['ventName']" placeholder="请输入排放口名称" :disabled="disableSubmit"></a-input>
             </a-form-item>
           </a-col>
         </a-row>
         <a-row>
           <a-col span='12'>
-            <a-form-item label="排污口税源编号" :labelCol="labelCol" :wrapperCol="wrapperCol">
+            <a-form-item label="排污口税源编号" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.taxsourceCode">
               <a-input v-decorator="['taxsourceCode', validatorRules.taxsourceCode]" placeholder="请输入排污口税源编号"
                        :disabled="disableSubmit"></a-input>
             </a-form-item>
           </a-col>
           <a-col span='12'>
-            <a-form-item label="排放方式" :labelCol="labelCol" :wrapperCol="wrapperCol">
+            <a-form-item label="排放方式" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.letMode">
               <j-dict-select-tag type="list" v-decorator="['letMode', validatorRules.letMode]" :trigger-change="true"
                                  dictCode="letmode" placeholder="请选择排放方式" :disabled="disableSubmit"/>
             </a-form-item>
@@ -56,7 +56,7 @@
         </a-row>
         <a-row>
           <a-col span='24'>
-            <a-form-item label="排污口位置" :labelCol="labelCols" :wrapperCol="wrapperCols">
+            <a-form-item label="排污口位置" :labelCol="labelCols" :wrapperCol="wrapperCols" :validate-status="modalStatus.ventLocate">
               <a-row>
                 <a-col span='24'>
                   <a-input v-decorator="['ventLocate', validatorRules.ventLocate]" placeholder="请输入排污口位置"
@@ -68,19 +68,19 @@
         </a-row>
         <a-row>
           <a-col span='12'>
-            <a-form-item label="排污口经度" :labelCol="labelCol" :wrapperCol="wrapperCol">
+            <a-form-item label="排污口经度" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.ventLongitude">
               <a-input v-decorator="['ventLongitude']" placeholder="请输入排污口经度" :disabled="disableSubmit"></a-input>
             </a-form-item>
           </a-col>
           <a-col span='12'>
-            <a-form-item label="排污口纬度" :labelCol="labelCol" :wrapperCol="wrapperCol">
+            <a-form-item label="排污口纬度" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.ventLatitude">
               <a-input v-decorator="['ventLatitude']" placeholder="请输入排污口纬度" :disabled="disableSubmit"></a-input>
             </a-form-item>
           </a-col>
         </a-row>
         <a-row>
           <a-col span='24' v-if="model.ventCategory==='1'">
-            <a-form-item label="水污染排污去向" :labelCol="labelCols" :wrapperCol="wrapperCols">
+            <a-form-item label="水污染排污去向" :labelCol="labelCols" :wrapperCol="wrapperCols" :validate-status="modalStatus.letDirection">
               <j-dict-select-tag type="list" v-decorator="['letDirection']" :trigger-change="true"
                                  dictCode="letdirection"
                                  placeholder="请选择水污染排污去向" :disabled="disableSubmit"/>
@@ -89,13 +89,13 @@
         </a-row>
         <a-row>
           <a-col span='12' v-if="model.ventCategory==='0'">
-            <a-form-item label="大气污染排放口类别" :labelCol="labelCol" :wrapperCol="wrapperCol">
+            <a-form-item label="大气污染排放口类别" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.ventType">
               <j-dict-select-tag type="list" v-decorator="['ventType']" :trigger-change="true" dictCode="venttype"
                                  placeholder="请选择大气污染物排放口类别" :disabled="disableSubmit"/>
             </a-form-item>
           </a-col>
           <a-col span='12'>
-            <a-form-item label="主管税务科所" :labelCol="labelCol" :wrapperCol="wrapperCol">
+            <a-form-item label="主管税务科所" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.taxDepartment">
               <a-input v-decorator="['taxDepartment', validatorRules.taxDepartment]" placeholder="请输入主管税务科所"
                        :disabled="disableSubmit"></a-input>
             </a-form-item>
@@ -195,7 +195,10 @@
             ]
           },
         },
-        url: {}
+        url: {},
+        modalStatus:{
+
+        }
 
       }
 
@@ -229,11 +232,15 @@
             that.$nextTick(() => {
               that.form.setFieldsValue(pick(this.model, 'licenceCode', 'ventCategory', 'ventCode', 'ventName', 'taxsourceCode', 'letMode', 'ventLocate', 'ventLongitude', 'ventLatitude', 'letDirection', 'ventType', 'taxDepartment'))
             })
-
-
-            //判断修改处的  后面需要处理一下
-            if (res.cueColor === '') {
-
+            //全部
+            if(res.result.cueColor === 'ALL'){
+              for(let i = 0, len = res.result.cueField.length; i < len; i++){
+                that.modalStatus[res.result.cueField[i]] = "warning";
+              }
+            }else {
+              for(let i = 0, len = res.result.cueField.length; i < len; i++){
+                that.modalStatus[res.result.cueField[i]] = "error";
+              }
             }
           }
         });

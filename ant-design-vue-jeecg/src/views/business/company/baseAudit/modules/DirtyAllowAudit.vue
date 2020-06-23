@@ -14,7 +14,7 @@
       <a-form :form="form">
         <a-row>
           <a-col span='24'>
-            <a-form-item label="许可证编号" :labelCol="labelCols" :wrapperCol="wrapperCols">
+            <a-form-item label="许可证编号" :labelCol="labelCols" :wrapperCol="wrapperCols" :validate-status="modalStatus.licenceCode">
               <a-input v-decorator="['licenceCode', validatorRules.licenceCode]" placeholder="请输入许可证编号"
                        :disabled="disableSubmit"></a-input>
             </a-form-item>
@@ -22,14 +22,14 @@
         </a-row>
         <a-row>
           <a-col span='12'>
-            <a-form-item label="有效期限" :labelCol="labelCol" :wrapperCol="wrapperCol">
+            <a-form-item label="有效期限" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.validStarttime">
               <j-date placeholder="请选择有效开始时间" v-decorator="['validStarttime']" :trigger-change="true"
                              style="width: 100%"
                              :disabled="disableSubmit"/>
             </a-form-item>
           </a-col>
           <a-col span='12'>
-            <a-form-item label="至" :labelCol="labelCol" :wrapperCol="wrapperCol">
+            <a-form-item label="至" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.validEndtime">
               <j-date placeholder="请选择有效结束时间" v-decorator="['validEndtime']" :trigger-change="true"
                              style="width: 100%"
                              :disabled="disableSubmit"/>
@@ -38,20 +38,20 @@
         </a-row>
         <a-row>
           <a-col span='12'>
-            <a-form-item label="发证日期" :labelCol="labelCol" :wrapperCol="wrapperCol">
+            <a-form-item label="发证日期" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.certificateTime">
               <j-date placeholder="请选择发证日期" v-decorator="['certificateTime']" :trigger-change="true" style="width: 100%"
                       :disabled="disableSubmit"/>
             </a-form-item>
           </a-col>
           <a-col span='12'>
-            <a-form-item label="发证机关" :labelCol="labelCol" :wrapperCol="wrapperCol">
+            <a-form-item label="发证机关" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.certificateOffice">
               <a-input v-decorator="['certificateOffice']" placeholder="请输入发证机关" :disabled="disableSubmit"></a-input>
             </a-form-item>
           </a-col>
         </a-row>
         <a-row>
           <a-col span='24'>
-            <a-form-item label="排污类别" :labelCol="labelCols" :wrapperCol="wrapperCols">
+            <a-form-item label="排污类别" :labelCol="labelCols" :wrapperCol="wrapperCols" :validate-status="modalStatus.dirtyType">
               <a-textarea v-decorator="['dirtyType']" placeholder="请输入排污类别" :disabled="disableSubmit"></a-textarea>
             </a-form-item>
           </a-col>
@@ -130,7 +130,10 @@
             ]
           },
         },
-        url: {}
+        url: {},
+        modalStatus:{
+
+      }
 
       }
 
@@ -162,13 +165,17 @@
             that.model = Object.assign({}, res.result.info);
             that.visible = true;
             that.$nextTick(() => {
-              that.form.setFieldsValue(pick(this.model, 'licenceCode', 'certificateTime', 'validStarttime', 'validEndtime', 'certificateOffice', 'dirtyType', 'files'))
+              that.form.setFieldsValue(pick(this.model, 'licenceCode', 'certificateTime', 'validStarttime', 'validEndtime', 'certificateOffice', 'dirtyType'))
             })
-
-
-            //判断修改处的  后面需要处理一下
-            if (res.cueColor === '') {
-
+            //全部
+            if(res.result.cueColor === 'ALL'){
+              for(let i = 0, len = res.result.cueField.length; i < len; i++){
+                that.modalStatus[res.result.cueField[i]] = "warning";
+              }
+            }else {
+              for(let i = 0, len = res.result.cueField.length; i < len; i++){
+                that.modalStatus[res.result.cueField[i]] = "error";
+              }
             }
           }
         });

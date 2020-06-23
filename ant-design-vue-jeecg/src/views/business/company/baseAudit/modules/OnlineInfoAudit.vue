@@ -13,19 +13,19 @@
     <a-spin :spinning="confirmLoading">
       <a-form :form="form">
 
-        <a-form-item label="在线设备名称/型号" :labelCol="labelCol" :wrapperCol="wrapperCol">
+        <a-form-item label="在线设备名称/型号" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.equipmentName">
           <a-input v-decorator="['equipmentName', validatorRules.equipmentName]" placeholder="请输入在线设备名称/型号" :disabled="disableSubmit"></a-input>
         </a-form-item>
-        <a-form-item label="设备生产厂家" :labelCol="labelCol" :wrapperCol="wrapperCol">
+        <a-form-item label="设备生产厂家" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.equipmentManufacturers">
           <a-input v-decorator="['equipmentManufacturers']" placeholder="请输入设备生产厂家" :disabled="disableSubmit"></a-input>
         </a-form-item>
-        <a-form-item label="运维单位" :labelCol="labelCol" :wrapperCol="wrapperCol">
+        <a-form-item label="运维单位" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.operationalUnit">
           <a-input v-decorator="['operationalUnit']" placeholder="请输入运维单位" :disabled="disableSubmit"></a-input>
         </a-form-item>
-        <a-form-item label="投入使用日期" :labelCol="labelCol" :wrapperCol="wrapperCol">
+        <a-form-item label="投入使用日期" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.usedTime">
           <j-date placeholder="请选择投入使用日期" v-decorator="['usedTime']" :trigger-change="true" style="width: 100%" :disabled="disableSubmit"/>
         </a-form-item>
-        <a-form-item label="安装位置" :labelCol="labelCol" :wrapperCol="wrapperCol">
+        <a-form-item label="安装位置" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.installLocation">
           <a-input v-decorator="['installLocation']" placeholder="请输入安装位置" :disabled="disableSubmit"></a-input>
         </a-form-item>
         <a-form-item label="在线监控验收材料" :labelCol="labelCol" :wrapperCol="wrapperCol">
@@ -83,6 +83,9 @@
           },
         },
         url: {
+        },
+        modalStatus:{
+
         }
 
       }
@@ -115,13 +118,17 @@
             that.model = Object.assign({}, res.result.info);
             that.visible = true;
             that.$nextTick(() => {
-              that.form.setFieldsValue(pick(this.model,'equipmentName','equipmentManufacturers','operationalUnit','usedTime','installLocation','files'))
+              that.form.setFieldsValue(pick(this.model,'equipmentName','equipmentManufacturers','operationalUnit','usedTime','installLocation'))
             })
-
-
-            //判断修改处的  后面需要处理一下
-            if(res.cueColor === ''){
-
+            //全部
+            if(res.result.cueColor === 'ALL'){
+              for(let i = 0, len = res.result.cueField.length; i < len; i++){
+                that.modalStatus[res.result.cueField[i]] = "warning";
+              }
+            }else {
+              for(let i = 0, len = res.result.cueField.length; i < len; i++){
+                that.modalStatus[res.result.cueField[i]] = "error";
+              }
             }
           }
         });

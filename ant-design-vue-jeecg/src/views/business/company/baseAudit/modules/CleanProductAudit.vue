@@ -13,16 +13,16 @@
     <a-spin :spinning="confirmLoading">
       <a-form :form="form">
 
-        <a-form-item label="清洁生产报告名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
+        <a-form-item label="清洁生产报告名称" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.reportName">
           <a-input v-decorator="['reportName', validatorRules.reportName]" placeholder="请输入清洁生产报告名称" :disabled="disableSubmit"></a-input>
         </a-form-item>
-        <a-form-item label="报告时间" :labelCol="labelCol" :wrapperCol="wrapperCol">
+        <a-form-item label="报告时间" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.reportTime">
           <j-date placeholder="请选择报告时间" v-decorator="['reportTime']" :trigger-change="true" style="width: 100%" :disabled="disableSubmit"/>
         </a-form-item>
         <a-form-item label="清洁生成报告及专家意见" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <j-upload v-decorator="['opinionFiles']" :trigger-change="true" :disabled="disableSubmit"></j-upload>
         </a-form-item>
-        <a-form-item label="落实情况简要描述" :labelCol="labelCol" :wrapperCol="wrapperCol">
+        <a-form-item label="落实情况简要描述" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.conditionDescribe">
           <a-textarea v-decorator="['conditionDescribe']" placeholder="请输入落实情况简要描述" :disabled="disableSubmit"></a-textarea>
         </a-form-item>
         <a-form-item label="落实情况附件" :labelCol="labelCol" :wrapperCol="wrapperCol">
@@ -83,8 +83,10 @@
           },
         },
         url: {
-        }
+        },
+        modalStatus:{
 
+        }
       }
 
     },
@@ -115,13 +117,17 @@
             that.model = Object.assign({}, res.result.info);
             that.visible = true;
             that.$nextTick(() => {
-              that.form.setFieldsValue(pick(this.model,'reportName','reportTime','opinionFiles','conditionDescribe','describeFiles'))
+              that.form.setFieldsValue(pick(this.model,'reportName','reportTime','conditionDescribe'))
             })
-
-
-            //判断修改处的  后面需要处理一下
-            if(res.cueColor === ''){
-
+            //全部
+            if(res.result.cueColor === 'ALL'){
+              for(let i = 0, len = res.result.cueField.length; i < len; i++){
+                that.modalStatus[res.result.cueField[i]] = "warning";
+              }
+            }else {
+              for(let i = 0, len = res.result.cueField.length; i < len; i++){
+                that.modalStatus[res.result.cueField[i]] = "error";
+              }
             }
           }
         });
