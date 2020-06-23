@@ -184,8 +184,8 @@
           },
         },
         url: {
-          add: "/cap/companyAdminPenalties/add",
-          edit: "/cap/companyAdminPenalties/edit",
+          //add: "/cap/companyAdminPenalties/add",
+          edit: "/cap/companyAdminPenalties/audit",
           queryFile:"/cap/companyAdminPenalties/queryFiles"
         },
 
@@ -221,11 +221,19 @@
         this.form.resetFields();
         this.model = Object.assign({}, record);
         this.visible = true;
-        //获取时间
-        this.getTime();
-        this.model.updateTime = moment().format(this.dateFormat);
-        if(record.updateTime)
+
+        if(record.updateTime){
+          if (this.timer) {
+            clearInterval(this.timer); // 在Vue实例销毁前，清除我们的定时器
+          }
           this.model.updateTime = moment(record.updateTime).format(this.dateFormat);
+        }else {
+          this.model.updateTime = moment().format(this.dateFormat);
+          //如果没有定时器开启一个定时器
+          //获取时间
+          this.getTime();
+        }
+
         this.model.updateName = this.$store.getters.userInfo.realname;
 
         this.$nextTick(() => {

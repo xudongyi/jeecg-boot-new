@@ -13,10 +13,10 @@
     <a-spin :spinning="confirmLoading">
       <a-form :form="form">
 
-        <a-form-item label="名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
+        <a-form-item label="名称" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.name">
           <a-input v-decorator="['name', validatorRules.name]" placeholder="请输入名称" :disabled="disableSubmit"></a-input>
         </a-form-item>
-        <a-form-item label="防治类型" :labelCol="labelCol" :wrapperCol="wrapperCol">
+        <a-form-item label="防治类型" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.type">
           <j-dict-select-tag type="list" v-decorator="['type', validatorRules.type]" :trigger-change="true"
                              dictCode="preType" placeholder="" :disabled="disableSubmit"/>
         </a-form-item>
@@ -80,6 +80,9 @@
         },
         url: {
 
+        },
+        modalStatus:{
+
         }
 
       }
@@ -112,13 +115,17 @@
             that.model = Object.assign({}, res.result.info);
             that.visible = true;
             that.$nextTick(() => {
-              that.form.setFieldsValue(pick(this.model,'name','type','files'))
+              that.form.setFieldsValue(pick(this.model,'name','type'))
             })
-
-
-            //判断修改处的  后面需要处理一下
-            if(res.cueColor === ''){
-
+            //全部
+            if(res.result.cueColor === 'ALL'){
+              for(let i = 0, len = res.result.cueField.length; i < len; i++){
+                that.modalStatus[res.result.cueField[i]] = "warning";
+              }
+            }else {
+              for(let i = 0, len = res.result.cueField.length; i < len; i++){
+                that.modalStatus[res.result.cueField[i]] = "error";
+              }
             }
           }
         });

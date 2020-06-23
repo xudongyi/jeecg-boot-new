@@ -4,9 +4,8 @@ import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.math.BigDecimal;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.jeecg.modules.business.annotation.Ignore;
@@ -78,6 +77,7 @@ public class CompanySupervisoryMonitor implements Serializable {
     private java.lang.String updateBy;
 	/**审核时间*/
 	@Ignore
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
 	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "审核时间")
