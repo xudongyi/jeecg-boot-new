@@ -108,12 +108,18 @@ public class CompanyComplaintLetterController extends JeecgController<CompanyCom
 			 if(Constant.status.NORMAL.equals(oldCompanyComplaintLetter.getStatus())){
 				 //修改老数据状态为过期
 				 oldCompanyComplaintLetter.setStatus(Constant.status.EXPIRED);
-				 companyComplaintLetterService.updateById(companyComplaintLetter);
+				 companyComplaintLetterService.updateById(oldCompanyComplaintLetter);
 				 //新增修改后的为新数据
 				 companyComplaintLetter.setId("");
+				 companyComplaintLetter.setUpdateBy("");
+				 companyComplaintLetter.setUpdateTime(null);
+				 companyComplaintLetter.setContent("");
 				 companyComplaintLetterService.save(companyComplaintLetter);
 			 }else if(Constant.status.NOPASS.equals(oldCompanyComplaintLetter.getStatus()) || Constant.status.TEMPORARY.equals(oldCompanyComplaintLetter.getStatus())){
-				 companyComplaintLetterService.updateById(companyComplaintLetter);
+				 companyComplaintLetter.setUpdateBy("");
+				 companyComplaintLetter.setUpdateTime(null);
+				 companyComplaintLetter.setContent("");
+			 	 companyComplaintLetterService.updateById(companyComplaintLetter);
 				 companyFileService.remove(new QueryWrapper<CompanyFile>().lambda().eq(CompanyFile::getFromTable,Constant.tables.COMPLAINTLETTER)
 						 .eq(CompanyFile::getTableId,companyComplaintLetter.getId()));
 			 }
@@ -143,30 +149,70 @@ public class CompanyComplaintLetterController extends JeecgController<CompanyCom
 	/**
 	 *   添加
 	 *
-	 * @param companyComplaintLetter
+	 * @param jsonObject
 	 * @return
 	 */
 	@AutoLog(value = "信访投诉信息-添加")
 	@ApiOperation(value="信访投诉信息-添加", notes="信访投诉信息-添加")
 	@PostMapping(value = "/add")
-	public Result<?> add(@RequestBody CompanyComplaintLetter companyComplaintLetter) {
+	public Result<?> add(@RequestBody JSONObject jsonObject) {
+		CompanyComplaintLetter companyComplaintLetter = getCompanyComplaintLetter(jsonObject);
+		companyComplaintLetter.setStatus(Constant.status.TEMPORARY);
 		companyComplaintLetterService.save(companyComplaintLetter);
+		companyFileService.saveFiles(jsonObject.getString("fileList"),Constant.fileType.FILE,Constant.tables.COMPLAINTLETTER,companyComplaintLetter.getId());
 		return Result.ok("添加成功！");
 	}
 	
 	/**
 	 *  编辑
 	 *
-	 * @param companyComplaintLetter
+	 * @param jsonObject
 	 * @return
 	 */
 	@AutoLog(value = "信访投诉信息-编辑")
 	@ApiOperation(value="信访投诉信息-编辑", notes="信访投诉信息-编辑")
 	@PutMapping(value = "/edit")
-	public Result<?> edit(@RequestBody CompanyComplaintLetter companyComplaintLetter) {
-		companyComplaintLetterService.updateById(companyComplaintLetter);
+	public Result<?> edit(@RequestBody JSONObject jsonObject) {
+		CompanyComplaintLetter companyComplaintLetter = getCompanyComplaintLetter(jsonObject);
+		CompanyComplaintLetter oldCompanyComplaintLetter = companyComplaintLetterService.getById(companyComplaintLetter.getId());
+		//查询数据状态
+		if(Constant.status.NORMAL.equals(companyComplaintLetter.getStatus())) {
+			companyComplaintLetter.setStatus(Constant.status.TEMPORARY);
+			oldCompanyComplaintLetter.setStatus(Constant.status.EXPIRED);
+			companyComplaintLetterService.updateById(oldCompanyComplaintLetter);
+			//新增修改后的为新数据
+			companyComplaintLetter.setId("");
+			companyComplaintLetter.setUpdateBy("");
+			companyComplaintLetter.setUpdateTime(null);
+			companyComplaintLetter.setContent("");
+			companyComplaintLetterService.save(companyComplaintLetter);
+		}else if (Constant.status.TEMPORARY.equals(oldCompanyComplaintLetter.getStatus()) || Constant.status.NOPASS.equals(oldCompanyComplaintLetter.getStatus())) {
+			//状态为暂存和未通过的
+			companyComplaintLetter.setStatus(Constant.status.TEMPORARY);
+			companyComplaintLetter.setUpdateBy("");
+			companyComplaintLetter.setUpdateTime(null);
+			companyComplaintLetter.setContent("");
+			companyComplaintLetterService.updateById(companyComplaintLetter);
+			companyFileService.remove(new QueryWrapper<CompanyFile>().lambda().eq(CompanyFile::getFromTable,Constant.tables.COMPLAINTLETTER)
+					.eq(CompanyFile::getTableId,companyComplaintLetter.getId()));
+		}
+		companyFileService.saveFiles(jsonObject.getString("fileList"),Constant.fileType.FILE,Constant.tables.COMPLAINTLETTER,companyComplaintLetter.getId());
 		return Result.ok("编辑成功!");
 	}
+
+	 /**
+	  *  审核
+	  *
+	  * @param companyComplaintLetter
+	  * @return
+	  */
+	 @AutoLog(value = "信访投诉信息-审核")
+	 @ApiOperation(value="信访投诉信息-审核", notes="信访投诉信息-审核")
+	 @PutMapping(value = "/audit")
+	 public Result<?> audit(@RequestBody CompanyComplaintLetter companyComplaintLetter) {
+		 companyComplaintLetterService.updateById(companyComplaintLetter);
+		 return Result.ok("编辑成功!");
+	 }
 	
 	/**
 	 *   通过id删除

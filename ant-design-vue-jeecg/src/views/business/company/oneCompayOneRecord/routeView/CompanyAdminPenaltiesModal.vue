@@ -111,7 +111,7 @@
         disableSubmit:false,
         visible: false,
         model: {},
-        fileList:[],
+        fileList:'',
         deleteFiles:[],
         labelCol: {
           xs: { span: 24 },
@@ -257,6 +257,7 @@
               method = 'put';
             }
             let formData = Object.assign(this.model, values);
+            formData.createTime = moment().format(this.dateFormat);
             formData.fileList = that.fileList;
             console.log("表单提交数据",formData)
             httpAction(httpurl,formData,method).then((res)=>{
@@ -289,6 +290,7 @@
             let httpUrl = this.url.declare;
             let method = 'put';
             let formData = Object.assign(this.model, values);
+            formData.createTime = moment().format(this.dateFormat);
             formData.fileList = that.fileList;
             httpAction(httpUrl,formData,method).then((res)=>{
               if(res.success){
