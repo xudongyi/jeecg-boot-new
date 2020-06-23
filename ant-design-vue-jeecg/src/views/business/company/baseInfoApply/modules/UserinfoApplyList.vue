@@ -93,12 +93,12 @@
         <a slot="name" @click="handleDetail(record)"   slot-scope="text, record">{{ text }}</a>
 
         <span slot="action"  slot-scope="text, record">
-           <a @click="handleView(record)"  v-show="!isApply ">查看</a>
-           <a @click="applyEdit(record)"  v-show="isApply && record.status !== '0' ">申请修改</a>
+           <a @click="handleView(record)"  v-show="!isApply || record.status === '1'">查看</a>
+           <a @click="applyEdit(record)"  v-show="isApply && record.status === '2'  ">申请修改</a>
           <!-- 编辑和删除-->
-          <a @click="applyEdit(record)"  v-show="isApply && record.status === '0' ">编辑</a>
-          <a-divider type="vertical" v-show="isApply && record.status === '0' "  />
-                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)" v-show="isApply && record.status === '0'">
+          <a @click="applyEdit(record)"  v-show="isApply && (record.status === '0' || record.status === '3')">编辑</a>
+          <a-divider type="vertical" v-show="isApply && (record.status === '0' || record.status === '3') "  />
+                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)" v-show="isApply && (record.status === '0' || record.status === '3') ">
                   <a>删除</a>
                 </a-popconfirm>
         </span>

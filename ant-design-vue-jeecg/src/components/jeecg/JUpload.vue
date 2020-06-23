@@ -34,9 +34,7 @@
         </a-button>
       </template>
     </a-upload>
-    <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
-      <img alt="example" style="width: 100%" :src="previewImage" />
-    </a-modal>
+
   </div>
 </template>
 
@@ -313,7 +311,7 @@
       handlePreview(file){
         if(this.fileType === FILE_TYPE_IMG){
           this.previewImage = file.url || file.thumbUrl;
-          this.previewVisible = true;
+          this.$emit('previewImage', this.previewImage);
         }else{
           location.href=file.url
         }

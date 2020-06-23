@@ -2,11 +2,9 @@
   <div>
   <company-apply-list :company-id="companyId" :hoverable="latestArchived"
                       :from-table="fromTable" @applyDetail = "applyDetail"  @toDetail="latestDetail" @toApply="apply"
-                      v-if="!showDetail"></company-apply-list>
-<!--
-  <qualification ref="qModal" :company-id="companyId" v-else ></qualification>
--->
-    <qualification-apply-detail ref="qDetail" :company-id="companyId" v-else></qualification-apply-detail>
+                      v-if="showDetail ==='list'"></company-apply-list>
+    <qualification ref="qModal" :company-id="companyId" v-else-if="showDetail ==='view'" ></qualification>
+    <qualification-apply-detail ref="qDetail" :company-id="companyId" v-else = "showDetail ==='apply'"></qualification-apply-detail>
 <qualification-apply-modal ref="applyInfoForm"></qualification-apply-modal>
   </div>
 </template>
@@ -28,7 +26,7 @@
           return {
             fromTable:"company_qualification",
             companyId:this.$store.getters.userInfo.companyIds[0],
-            showDetail:false,
+            showDetail:'list',
             latestArchived:false
           }
       },
@@ -51,7 +49,7 @@
       },
       methods:{
         latestDetail(){
-          this.showDetail = true;
+          this.showDetail = 'view';
           let that = this;
           this.$nextTick(() => {
             that.$refs.qModal.isApply = false;
@@ -59,7 +57,7 @@
 
         },
         apply(){
-          this.showDetail = true;
+          this.showDetail = 'apply';
           // let that = this;
           // this.$nextTick(() => {
           //   that.$refs.qModal.isApply = true;

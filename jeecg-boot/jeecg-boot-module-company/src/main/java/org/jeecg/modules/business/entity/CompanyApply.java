@@ -2,9 +2,7 @@ package org.jeecg.modules.business.entity;
 
 import java.io.Serializable;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.jeecg.common.aspect.annotation.Dict;
@@ -47,6 +45,7 @@ public class CompanyApply implements Serializable {
     @Ignore
     private java.lang.String updateBy;
 	/**更新日期*/
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
 	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern="yyyy-MM-dd")
     @ApiModelProperty(value = "更新日期")

@@ -95,9 +95,18 @@ public class CompanyUserinfoController extends JeecgController<CompanyUserinfo, 
 	@ApiOperation(value="company_userinfo-编辑", notes="company_userinfo-编辑")
 	@PutMapping(value = "/edit")
 	public Result<?> edit(@RequestBody CompanyUserinfo companyUserinfo) {
-		if(Constant.status.TEMPORARY.equals(companyUserinfo.getStatus()))
+		if(Constant.status.TEMPORARY.equals(companyUserinfo.getStatus())
+		||Constant.status.NOPASS.equals(companyUserinfo.getStatus())) {
+			//不通过修改
+			if(Constant.status.NOPASS.equals(companyUserinfo.getStatus())){
+				companyApplyService.update(new UpdateWrapper<CompanyApply>().lambda()
+						.eq(CompanyApply::getNewId,companyUserinfo.getId()).set(CompanyApply::getStatus,Constant.status.TEMPORARY)
+						.set(CompanyApply::getUpdateBy,"").set(CompanyApply::getUpdateTime,null));
+			}
+			companyUserinfo.setStatus(Constant.status.TEMPORARY);//暂存
 			companyUserinfoService.updateById(companyUserinfo);
 
+		}
 		else{
 			String oldId = companyUserinfo.getId();
 			//不是暂存的编辑  都是新增暂存状态
@@ -131,13 +140,16 @@ public class CompanyUserinfoController extends JeecgController<CompanyUserinfo, 
 			companyApplyService.saveByBase(companyUserinfo.getCompanyId(),companyUserinfo.getId(),Constant.status.PEND,oldId,Constant.tables.USERINFO);
 		}
 	 	//编辑申报 2、编辑暂存数据
-	 	else if(Constant.status.TEMPORARY.equals(companyUserinfo.getStatus())) {
+	 	else if(Constant.status.TEMPORARY.equals(companyUserinfo.getStatus())
+				||Constant.status.NOPASS.equals(companyUserinfo.getStatus())) {
 			companyUserinfo.setStatus(Constant.status.PEND);//待审核
 			companyUserinfoService.updateById(companyUserinfo);
 			companyApplyService.update(new UpdateWrapper<CompanyApply>().lambda()
 					.eq(CompanyApply::getNewId,companyUserinfo.getId())
-					.eq(CompanyApply::getStatus,Constant.status.TEMPORARY)
-					.set(CompanyApply::getStatus,Constant.status.PEND));
+					.set(CompanyApply::getStatus,Constant.status.PEND)
+					.set(CompanyApply::getUpdateBy,"")
+					.set(CompanyApply::getUpdateTime,null));
+
 		}else{
 			//编辑申报 3、编辑正常数据
 			oldId = companyUserinfo.getId();

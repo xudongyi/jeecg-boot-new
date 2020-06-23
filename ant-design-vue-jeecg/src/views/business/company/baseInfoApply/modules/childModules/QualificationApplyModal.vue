@@ -26,7 +26,7 @@
                 <div style="float: left;width:104px;height:104px;margin-right: 10px;margin: 0 8px 8px 0;">
                   <div
                     style="width: 100%;height: 100%;position: relative;padding: 8px;border: 1px solid #d9d9d9;border-radius: 4px;">
-                    <img style="width: 100%;" :src="item.url" preview="add">
+                    <img style="width: 100%;height:100%;object-fit:cover;" alt="example" :src="item.url" preview="add">
                   </div>
                 </div>
 
