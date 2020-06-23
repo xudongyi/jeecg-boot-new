@@ -101,6 +101,8 @@
         this.edit({});
       },
       edit(record) {
+        //查询所属文件
+        let _this = this;
         this.form.resetFields();
         this.model = Object.assign({}, record);
         this.visible = true;
@@ -108,20 +110,21 @@
           this.form.setFieldsValue(pick(this.model, 'reportName', 'reportTime', 'conditionDescribe'))
         })
         if (record.id) {
-          //查询所属文件
-          let _this = this;
           queryFiles({id: record.id}, this.$data.url.queryFile).then((res) => {
             _this.$nextTick(() => {
-              debugger
               _this.$refs.opinionFiles.initFileListArr(res.result.fileResult);
+              _this.fileList = _this.$refs.opinionFiles.fileList
               _this.$refs.describeFiles.initFileListArr(res.result.imgResult);
+              _this.imgList = _this.$refs.describeFiles.imgList
             });
           });
         } else {
           //清空上传列表
-          this.$nextTick(() => {
-            this.$refs.opinionFiles.initFileList("");
-            this.$refs.describeFiles.initFileList("");
+          _this.$nextTick(() => {
+            _this.$refs.opinionFiles.initFileList("");
+            _this.fileList = _this.$refs.opinionFiles.fileList
+            _this.$refs.describeFiles.initFileList("");
+            _this.imgList = _this.$refs.describeFiles.imgList
           });
         }
       },
