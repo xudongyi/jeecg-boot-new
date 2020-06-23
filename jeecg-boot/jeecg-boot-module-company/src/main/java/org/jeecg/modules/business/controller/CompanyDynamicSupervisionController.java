@@ -7,9 +7,11 @@ import javax.servlet.http.HttpServletResponse;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import org.apache.commons.lang.StringUtils;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
+import org.jeecg.modules.business.entity.CompanyAdminPenalties;
 import org.jeecg.modules.business.entity.CompanyDynamicSupervision;
 import org.jeecg.modules.business.entity.CompanyFile;
 import org.jeecg.modules.business.entity.CompanySupervisoryMonitor;
@@ -102,8 +104,14 @@ public class CompanyDynamicSupervisionController extends JeecgController<Company
 				companyDynamicSupervisionService.updateById(oldCompanyDynamicSupervision);
 				//新增修改后的为新数据
 				companyDynamicSupervision.setId("");
+				companyDynamicSupervision.setUpdateBy("");
+				companyDynamicSupervision.setUpdateTime(null);
+				companyDynamicSupervision.setContent("");
 				companyDynamicSupervisionService.save(companyDynamicSupervision);
 			}else if(Constant.status.NOPASS.equals(oldCompanyDynamicSupervision.getStatus()) || Constant.status.TEMPORARY.equals(oldCompanyDynamicSupervision.getStatus())){
+				companyDynamicSupervision.setUpdateBy("");
+				companyDynamicSupervision.setUpdateTime(null);
+				companyDynamicSupervision.setContent("");
 				companyDynamicSupervisionService.updateById(companyDynamicSupervision);
 				companyFileService.remove(new QueryWrapper<CompanyFile>().lambda().eq(CompanyFile::getFromTable,Constant.tables.DYNAMICSUPERVISION)
 					.eq(CompanyFile::getTableId,companyDynamicSupervision.getId()));
@@ -134,31 +142,72 @@ public class CompanyDynamicSupervisionController extends JeecgController<Company
 	/**
 	 *   添加
 	 *
-	 * @param companyDynamicSupervision
+	 * @param jsonObject
 	 * @return
 	 */
 	@AutoLog(value = "企业年度动态监管-添加")
 	@ApiOperation(value="企业年度动态监管-添加", notes="企业年度动态监管-添加")
 	@PostMapping(value = "/add")
-	public Result<?> add(@RequestBody CompanyDynamicSupervision companyDynamicSupervision) {
+	public Result<?> add(@RequestBody JSONObject jsonObject) {
+		CompanyDynamicSupervision companyDynamicSupervision = getCompanyDynamicSupervision(jsonObject);
+		companyDynamicSupervision.setStatus(Constant.status.TEMPORARY);
 		companyDynamicSupervisionService.save(companyDynamicSupervision);
+		companyFileService.saveFiles(jsonObject.getString("fileList"),Constant.fileType.FILE,Constant.tables.DYNAMICSUPERVISION,companyDynamicSupervision.getId());
 		return Result.ok("添加成功！");
 	}
 	
 	/**
 	 *  编辑
 	 *
-	 * @param companyDynamicSupervision
+	 * @param jsonObject
 	 * @return
 	 */
 	@AutoLog(value = "企业年度动态监管-编辑")
 	@ApiOperation(value="企业年度动态监管-编辑", notes="企业年度动态监管-编辑")
 	@PutMapping(value = "/edit")
-	public Result<?> edit(@RequestBody CompanyDynamicSupervision companyDynamicSupervision) {
-		companyDynamicSupervisionService.updateById(companyDynamicSupervision);
+	public Result<?> edit(@RequestBody JSONObject jsonObject) {
+		CompanyDynamicSupervision companyDynamicSupervision = getCompanyDynamicSupervision(jsonObject);
+		CompanyDynamicSupervision oldCompanyDynamicSupervision = companyDynamicSupervisionService.getById(companyDynamicSupervision.getId());
+		//查询数据状态
+		if(Constant.status.NORMAL.equals(companyDynamicSupervision.getStatus())) {
+			companyDynamicSupervision.setStatus(Constant.status.TEMPORARY);
+			oldCompanyDynamicSupervision.setStatus(Constant.status.EXPIRED);
+			companyDynamicSupervisionService.updateById(oldCompanyDynamicSupervision);
+			//新增修改后的为新数据
+			companyDynamicSupervision.setId("");
+			companyDynamicSupervision.setUpdateBy("");
+			companyDynamicSupervision.setUpdateTime(null);
+			companyDynamicSupervision.setContent("");
+			companyDynamicSupervisionService.save(companyDynamicSupervision);
+		}else if (Constant.status.TEMPORARY.equals(oldCompanyDynamicSupervision.getStatus()) || Constant.status.NOPASS.equals(oldCompanyDynamicSupervision.getStatus())) {
+			//状态为暂存和未通过的
+			companyDynamicSupervision.setStatus(Constant.status.TEMPORARY);
+			companyDynamicSupervision.setUpdateBy("");
+			companyDynamicSupervision.setUpdateTime(null);
+			companyDynamicSupervision.setContent("");
+			companyDynamicSupervisionService.updateById(companyDynamicSupervision);
+			companyFileService.remove(new QueryWrapper<CompanyFile>().lambda().eq(CompanyFile::getFromTable,Constant.tables.DYNAMICSUPERVISION)
+					.eq(CompanyFile::getTableId,companyDynamicSupervision.getId()));
+		}
+		companyFileService.saveFiles(jsonObject.getString("fileList"),Constant.fileType.FILE,Constant.tables.DYNAMICSUPERVISION,companyDynamicSupervision.getId());
 		return Result.ok("编辑成功!");
 	}
-	
+
+	 /**
+	  *  审核
+	  *
+	  * @param jsonObject
+	  * @return
+	  */
+	 @AutoLog(value = "行政处罚信息-审核")
+	 @ApiOperation(value="行政处罚信息-审核", notes="行政处罚信息-审核")
+	 @PutMapping(value = "/audit")
+	 public Result<?> audit(@RequestBody JSONObject jsonObject) {
+	 	 CompanyDynamicSupervision companyDynamicSupervision = getCompanyDynamicSupervision(jsonObject);
+		 companyDynamicSupervisionService.updateById(companyDynamicSupervision);
+		 return Result.ok("审核成功!");
+	 }
+
 	/**
 	 *   通过id删除
 	 *

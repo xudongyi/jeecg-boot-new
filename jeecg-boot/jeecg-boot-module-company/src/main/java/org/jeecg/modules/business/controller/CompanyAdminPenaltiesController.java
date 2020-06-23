@@ -110,11 +110,17 @@ public class CompanyAdminPenaltiesController extends JeecgController<CompanyAdmi
 			if(Constant.status.NORMAL.equals(oldCompanyAdminPenalties.getStatus())){
 				//修改老数据状态为过期
 				oldCompanyAdminPenalties.setStatus(Constant.status.EXPIRED);
-				companyAdminPenaltiesService.updateById(companyAdminPenalties);
+				companyAdminPenaltiesService.updateById(oldCompanyAdminPenalties);
 				//新增修改后的为新数据
 				companyAdminPenalties.setId("");
+				companyAdminPenalties.setUpdateBy("");
+				companyAdminPenalties.setUpdateTime(null);
+				companyAdminPenalties.setContent("");
 				companyAdminPenaltiesService.save(companyAdminPenalties);
 			}else if(Constant.status.NOPASS.equals(oldCompanyAdminPenalties.getStatus()) || Constant.status.TEMPORARY.equals(oldCompanyAdminPenalties.getStatus())){
+				companyAdminPenalties.setUpdateBy("");
+				companyAdminPenalties.setUpdateTime(null);
+				companyAdminPenalties.setContent("");
 				companyAdminPenaltiesService.updateById(companyAdminPenalties);
 				companyFileService.remove(new QueryWrapper<CompanyFile>().lambda().eq(CompanyFile::getFromTable,Constant.tables.ADMINPENALTIES)
 						.eq(CompanyFile::getTableId,companyAdminPenalties.getId()));
@@ -145,29 +151,70 @@ public class CompanyAdminPenaltiesController extends JeecgController<CompanyAdmi
 	/**
 	 *   添加
 	 *
-	 * @param companyAdminPenalties
+	 * @param jsonObject
 	 * @return
 	 */
 	@AutoLog(value = "行政处罚信息-添加")
 	@ApiOperation(value="行政处罚信息-添加", notes="行政处罚信息-添加")
 	@PostMapping(value = "/add")
-	public Result<?> add(@RequestBody CompanyAdminPenalties companyAdminPenalties) {
+	public Result<?> add(@RequestBody JSONObject jsonObject) {
+		CompanyAdminPenalties companyAdminPenalties = getCompanyAdminPenalties(jsonObject);
+		companyAdminPenalties.setStatus(Constant.status.TEMPORARY);
 		companyAdminPenaltiesService.save(companyAdminPenalties);
+		companyFileService.saveFiles(jsonObject.getString("fileList"),Constant.fileType.FILE,Constant.tables.ADMINPENALTIES,companyAdminPenalties.getId());
 		return Result.ok("添加成功！");
 	}
 	
 	/**
 	 *  编辑
 	 *
-	 * @param companyAdminPenalties
+	 * @param jsonObject
 	 * @return
 	 */
 	@AutoLog(value = "行政处罚信息-编辑")
 	@ApiOperation(value="行政处罚信息-编辑", notes="行政处罚信息-编辑")
 	@PutMapping(value = "/edit")
-	public Result<?> edit(@RequestBody CompanyAdminPenalties companyAdminPenalties) {
-		companyAdminPenaltiesService.updateById(companyAdminPenalties);
+	public Result<?> edit(@RequestBody JSONObject jsonObject) {
+		CompanyAdminPenalties companyAdminPenalties = getCompanyAdminPenalties(jsonObject);
+		CompanyAdminPenalties oldCompanyAdminPenalties = companyAdminPenaltiesService.getById(companyAdminPenalties.getId());
+		//查询数据状态
+		if(Constant.status.NORMAL.equals(companyAdminPenalties.getStatus())) {
+			companyAdminPenalties.setStatus(Constant.status.TEMPORARY);
+			oldCompanyAdminPenalties.setStatus(Constant.status.EXPIRED);
+			companyAdminPenaltiesService.updateById(oldCompanyAdminPenalties);
+			//新增修改后的为新数据
+			companyAdminPenalties.setId("");
+			companyAdminPenalties.setUpdateBy("");
+			companyAdminPenalties.setUpdateTime(null);
+			companyAdminPenalties.setContent("");
+			companyAdminPenaltiesService.save(companyAdminPenalties);
+		}else if (Constant.status.TEMPORARY.equals(oldCompanyAdminPenalties.getStatus()) || Constant.status.NOPASS.equals(oldCompanyAdminPenalties.getStatus())) {
+			//状态为暂存和未通过的
+			companyAdminPenalties.setStatus(Constant.status.TEMPORARY);
+			companyAdminPenalties.setUpdateBy("");
+			companyAdminPenalties.setUpdateTime(null);
+			companyAdminPenalties.setContent("");
+			companyAdminPenaltiesService.updateById(companyAdminPenalties);
+			companyFileService.remove(new QueryWrapper<CompanyFile>().lambda().eq(CompanyFile::getFromTable,Constant.tables.ADMINPENALTIES)
+					.eq(CompanyFile::getTableId,companyAdminPenalties.getId()));
+		}
+		companyFileService.saveFiles(jsonObject.getString("fileList"),Constant.fileType.FILE,Constant.tables.ADMINPENALTIES,companyAdminPenalties.getId());
 		return Result.ok("编辑成功!");
+	}
+
+	/**
+	 *  审核
+	 *
+	 * @param jsonObject
+	 * @return
+	 */
+	@AutoLog(value = "行政处罚信息-审核")
+	@ApiOperation(value="行政处罚信息-审核", notes="行政处罚信息-审核")
+	@PutMapping(value = "/audit")
+	public Result<?> audit(@RequestBody JSONObject jsonObject) {
+		CompanyAdminPenalties companyAdminPenalties = getCompanyAdminPenalties(jsonObject);
+		companyAdminPenaltiesService.updateById(companyAdminPenalties);
+		return Result.ok("审核成功!");
 	}
 	
 	/**

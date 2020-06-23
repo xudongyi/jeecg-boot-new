@@ -99,6 +99,7 @@
 
         <span slot="action" slot-scope="text, record">
           <a @click="toHandleEdit(record)" v-if="record.status=='0' || record.status=='3'">编辑</a>
+          <a @click="toHandleEdit(record)" v-if="record.status=='2'">申请修改</a>
           <a @click="handleView(record)" v-if="record.status=='1' || record.status=='4'">查看</a>
           <a-divider type="vertical" v-if="record.status=='0' || record.status=='3'" />
           <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
@@ -294,6 +295,9 @@
       }
     },
     methods: {
+      modalFormOk(){
+        this.loadData(1);
+      },
       yearChange(obj){
         console.log(obj.year+'-'+obj.month+'-'+obj.day);
       },

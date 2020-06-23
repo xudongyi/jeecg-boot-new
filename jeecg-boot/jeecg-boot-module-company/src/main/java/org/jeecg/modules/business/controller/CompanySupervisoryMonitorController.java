@@ -107,12 +107,18 @@ public class CompanySupervisoryMonitorController extends JeecgController<Company
 			 if(Constant.status.NORMAL.equals(oldCompanySupervisoryMonitor.getStatus())){
 				 //修改老数据状态为过期
 				 oldCompanySupervisoryMonitor.setStatus(Constant.status.EXPIRED);
-				 companySupervisoryMonitorService.updateById(companySupervisoryMonitor);
+				 companySupervisoryMonitorService.updateById(oldCompanySupervisoryMonitor);
 				 //新增修改后的为新数据
 				 companySupervisoryMonitor.setId("");
+				 companySupervisoryMonitor.setUpdateBy("");
+				 companySupervisoryMonitor.setUpdateTime(null);
+				 companySupervisoryMonitor.setContent("");
 				 companySupervisoryMonitorService.save(companySupervisoryMonitor);
 			 }else if(Constant.status.NOPASS.equals(oldCompanySupervisoryMonitor.getStatus()) || Constant.status.TEMPORARY.equals(oldCompanySupervisoryMonitor.getStatus())){
-				 companySupervisoryMonitorService.updateById(companySupervisoryMonitor);
+				 companySupervisoryMonitor.setUpdateBy("");
+				 companySupervisoryMonitor.setUpdateTime(null);
+				 companySupervisoryMonitor.setContent("");
+			 	 companySupervisoryMonitorService.updateById(companySupervisoryMonitor);
 				 companyFileService.remove(new QueryWrapper<CompanyFile>().lambda().eq(CompanyFile::getFromTable,Constant.tables.SUPERVISORYMONITOR)
 						 .eq(CompanyFile::getTableId,companySupervisoryMonitor.getId()));
 			 }
@@ -142,30 +148,70 @@ public class CompanySupervisoryMonitorController extends JeecgController<Company
 	/**
 	 *   添加
 	 *
-	 * @param companySupervisoryMonitor
+	 * @param jsonObject
 	 * @return
 	 */
 	@AutoLog(value = "监督性监测信息-添加")
 	@ApiOperation(value="监督性监测信息-添加", notes="监督性监测信息-添加")
 	@PostMapping(value = "/add")
-	public Result<?> add(@RequestBody CompanySupervisoryMonitor companySupervisoryMonitor) {
+	public Result<?> add(@RequestBody JSONObject jsonObject) {
+		CompanySupervisoryMonitor companySupervisoryMonitor = getCompanySupervisoryMonitor(jsonObject);
+		companySupervisoryMonitor.setStatus(Constant.status.TEMPORARY);
 		companySupervisoryMonitorService.save(companySupervisoryMonitor);
+		companyFileService.saveFiles(jsonObject.getString("fileList"),Constant.fileType.FILE,Constant.tables.SUPERVISORYMONITOR,companySupervisoryMonitor.getId());
 		return Result.ok("添加成功！");
 	}
 	
 	/**
 	 *  编辑
 	 *
-	 * @param companySupervisoryMonitor
+	 * @param jsonObject
 	 * @return
 	 */
 	@AutoLog(value = "监督性监测信息-编辑")
 	@ApiOperation(value="监督性监测信息-编辑", notes="监督性监测信息-编辑")
 	@PutMapping(value = "/edit")
-	public Result<?> edit(@RequestBody CompanySupervisoryMonitor companySupervisoryMonitor) {
-		companySupervisoryMonitorService.updateById(companySupervisoryMonitor);
+	public Result<?> edit(@RequestBody JSONObject jsonObject) {
+		CompanySupervisoryMonitor companySupervisoryMonitor = getCompanySupervisoryMonitor(jsonObject);
+		CompanySupervisoryMonitor oldCompanySupervisoryMonitor = companySupervisoryMonitorService.getById(companySupervisoryMonitor.getId());
+		//查询数据状态
+		if(Constant.status.NORMAL.equals(companySupervisoryMonitor.getStatus())) {
+			companySupervisoryMonitor.setStatus(Constant.status.TEMPORARY);
+			oldCompanySupervisoryMonitor.setStatus(Constant.status.EXPIRED);
+			companySupervisoryMonitorService.updateById(oldCompanySupervisoryMonitor);
+			//新增修改后的为新数据
+			companySupervisoryMonitor.setId("");
+			companySupervisoryMonitor.setUpdateBy("");
+			companySupervisoryMonitor.setUpdateTime(null);
+			companySupervisoryMonitor.setContent("");
+			companySupervisoryMonitorService.save(companySupervisoryMonitor);
+		}else if (Constant.status.TEMPORARY.equals(oldCompanySupervisoryMonitor.getStatus()) || Constant.status.NOPASS.equals(oldCompanySupervisoryMonitor.getStatus())) {
+			//状态为暂存和未通过的
+			companySupervisoryMonitor.setStatus(Constant.status.TEMPORARY);
+			companySupervisoryMonitor.setUpdateBy("");
+			companySupervisoryMonitor.setUpdateTime(null);
+			companySupervisoryMonitor.setContent("");
+			companySupervisoryMonitorService.updateById(companySupervisoryMonitor);
+			companyFileService.remove(new QueryWrapper<CompanyFile>().lambda().eq(CompanyFile::getFromTable,Constant.tables.SUPERVISORYMONITOR)
+					.eq(CompanyFile::getTableId,companySupervisoryMonitor.getId()));
+		}
+		companyFileService.saveFiles(jsonObject.getString("fileList"),Constant.fileType.FILE,Constant.tables.SUPERVISORYMONITOR,companySupervisoryMonitor.getId());
 		return Result.ok("编辑成功!");
 	}
+
+	 /**
+	  *  审核
+	  *
+	  * @param companySupervisoryMonitor
+	  * @return
+	  */
+	 @AutoLog(value = "监督性监测信息-审核")
+	 @ApiOperation(value="监督性监测信息-审核", notes="监督性监测信息-审核")
+	 @PutMapping(value = "/audit")
+	 public Result<?> audit(@RequestBody CompanySupervisoryMonitor companySupervisoryMonitor) {
+		 companySupervisoryMonitorService.updateById(companySupervisoryMonitor);
+		 return Result.ok("编辑成功!");
+	 }
 	
 	/**
 	 *   通过id删除
