@@ -164,8 +164,8 @@
     created(){
       const token = Vue.ls.get(ACCESS_TOKEN);
       //---------------------------- begin 图片左右换位置 -------------------------------------
-      // this.headers = {"X-Access-Token":token};
-      // this.containerId = 'container-ty-'+new Date().getTime();
+      this.headers = {"X-Access-Token":token};
+      this.containerId = 'container-ty-'+new Date().getTime();
       //---------------------------- end 图片左右换位置 -------------------------------------
     },
 
@@ -273,8 +273,20 @@
         }else if(info.file.status === 'removed'){
           this.handleDelete(info.file)
         }
-        this.fileList = fileList
+
+        this.fileList = fileList;
+        if(info.file.status==='done') {
+          if (!info.file.response.success) {
+            this.$error({
+              title: `${info.file.name} 上传失败.`,
+              content: info.file.response.message,
+            });
+            this.fileList[this.fileList .length-1].status='error';
+            return;
+          }
+        }
         if(info.file.status==='done' || info.file.status === 'removed'){
+
           //returnUrl为true时仅返回文件路径
           if(this.returnUrl){
             this.handlePathChange()
