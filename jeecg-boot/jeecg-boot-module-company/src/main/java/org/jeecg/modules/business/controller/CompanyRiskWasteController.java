@@ -133,13 +133,13 @@ public class CompanyRiskWasteController extends JeecgController<CompanyRiskWaste
             CompanyRiskWaste oldCompanyRiskWaste = companyRiskWasteService.getById(companyRiskWaste.getId());
             //状态为正常
             if (Constant.status.NORMAL.equals(oldCompanyRiskWaste.getStatus())) {
-                CompanyApply companyApply = companyApplyService.findByNewId(oldCompanyRiskWaste.getId(), Constant.tables.RISKWASTE);
+              /*  CompanyApply companyApply = companyApplyService.findByNewId(oldCompanyRiskWaste.getId(), Constant.tables.RISKWASTE);
                 //修改老数据状态为过期
                 oldCompanyRiskWaste.setStatus(Constant.status.EXPIRED);
                 companyRiskWasteService.updateById(oldCompanyRiskWaste);
                 //修改老申报记录为过期
                 companyApply.setStatus(Constant.status.EXPIRED);
-                companyApplyService.updateById(companyApply);
+                companyApplyService.updateById(companyApply);*/
                 //新增修改后的为新数据
                 companyRiskWaste.setId("");
                 companyRiskWasteService.save(companyRiskWaste);
@@ -213,13 +213,13 @@ public class CompanyRiskWasteController extends JeecgController<CompanyRiskWaste
         CompanyRiskWaste oldCompanyRiskWaste = companyRiskWasteService.getById(companyRiskWaste.getId());
         //查询数据状态
         if (Constant.status.NORMAL.equals(companyRiskWaste.getStatus())) {
-            CompanyApply companyApply = companyApplyService.findByNewId(oldCompanyRiskWaste.getId(), Constant.tables.RISKWASTE);
             companyRiskWaste.setStatus(Constant.status.TEMPORARY);
+           /* CompanyApply companyApply = companyApplyService.findByNewId(oldCompanyRiskWaste.getId(), Constant.tables.RISKWASTE);
             //正常
             oldCompanyRiskWaste.setStatus(Constant.status.EXPIRED);
             oldCompanyRiskWaste.setUpdateBy("");
             oldCompanyRiskWaste.setUpdateTime(null);
-            companyRiskWasteService.updateById(oldCompanyRiskWaste);
+            companyRiskWasteService.updateById(oldCompanyRiskWaste);*/
             //新增修改后的为新数据
             companyRiskWaste.setId("");
             companyRiskWasteService.save(companyRiskWaste);

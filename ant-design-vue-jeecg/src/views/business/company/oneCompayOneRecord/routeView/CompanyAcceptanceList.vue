@@ -54,7 +54,7 @@
         <a style="margin-left: 24px" @click="onClearSelected">清空</a>
       </div>
 
-      <a-table
+      <a-table  v-if="this.operationShow"
         ref="table"
         size="middle"
         bordered
@@ -99,6 +99,54 @@
           </a-popconfirm>
         </span>
       </a-table>
+
+      <a-table
+        v-if="!this.operationShow"
+        ref="table"
+        size="middle"
+        bordered
+        rowKey="id"
+        :columns="columns"
+        :dataSource="dataSource"
+        :pagination="ipagination"
+        :loading="loading"
+        class="j-table-force-nowrap"
+        @change="handleTableChange">
+
+        <template slot="htmlSlot" slot-scope="text">
+          <div v-html="text"></div>
+        </template>
+        <template slot="imgSlot" slot-scope="text">
+          <span v-if="!text" style="font-size: 12px;font-style: italic;">无图片</span>
+          <img v-else :src="getImgView(text)" height="25px" alt=""
+               style="max-width:80px;font-size: 12px;font-style: italic;"/>
+        </template>
+        <template slot="fileSlot" slot-scope="text">
+          <span v-if="!text" style="font-size: 12px;font-style: italic;">无文件</span>
+          <a-button
+            v-else
+            :ghost="true"
+            type="primary"
+            icon="download"
+            size="small"
+            @click="uploadFile(text)">
+            下载
+          </a-button>
+        </template>
+
+        <span slot="action" slot-scope="text, record">
+          <!--权限控制查看还是编辑，查看只允许查看不允许修改-->
+          <a @click="handleEdit(record)" v-if="operationShow && (record.status=='0' || record.status=='3')">编辑</a>
+          <a @click="handleEdit(record)" v-if="operationShow && (record.status=='2')">申请修改</a>
+           <a-divider v-if="operationShow && (record.status=='0' || record.status=='3')" type="vertical"/>
+          <a @click="handleview(record)" v-if="!operationShow || (record.status=='1' || record.status=='4')">查看</a>
+           <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
+                  <a v-if="operationShow  && (record.status=='0' || record.status=='3')">删除</a>
+          </a-popconfirm>
+        </span>
+      </a-table>
+
+
     </div>
 
     <companyAcceptance-modal ref="modalForm" @ok="modalFormOk" :companyId="companyId"></companyAcceptance-modal>

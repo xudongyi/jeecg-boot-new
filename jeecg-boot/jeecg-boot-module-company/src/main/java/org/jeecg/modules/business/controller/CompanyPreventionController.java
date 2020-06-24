@@ -128,9 +128,9 @@ public class CompanyPreventionController extends JeecgController<CompanyPreventi
         //查询数据状态
         if (status.NORMAL.equals(companyPrevention.getStatus())) {
             companyPrevention.setStatus(status.TEMPORARY);
-            //正常
+           /* //正常
             oldcompanyPrevention.setStatus(status.EXPIRED);
-            companyPreventionService.updateById(oldcompanyPrevention);
+            companyPreventionService.updateById(oldcompanyPrevention);*/
             //新增修改后的为新数据
             companyPrevention.setId("");
             companyPreventionService.save(companyPrevention);
@@ -170,9 +170,9 @@ public class CompanyPreventionController extends JeecgController<CompanyPreventi
             CompanyPrevention oldcompanyPrevention = companyPreventionService.getById(companyPrevention.getId());
             //状态为正常
             if (status.NORMAL.equals(oldcompanyPrevention.getStatus())) {
-                //修改老数据状态为过期
+              /*  //修改老数据状态为过期
                 oldcompanyPrevention.setStatus(status.EXPIRED);
-                companyPreventionService.updateById(oldcompanyPrevention);
+                companyPreventionService.updateById(oldcompanyPrevention);*/
                 //新增修改后的为新数据
                 companyPrevention.setId("");
                 companyPreventionService.save(companyPrevention);

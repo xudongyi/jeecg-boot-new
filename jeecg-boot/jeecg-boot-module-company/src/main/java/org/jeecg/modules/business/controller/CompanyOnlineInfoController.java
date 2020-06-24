@@ -132,9 +132,9 @@ public class CompanyOnlineInfoController extends JeecgController<CompanyOnlineIn
             CompanyOnlineInfo oldCompanyOnlineInfo = companyOnlineInfoService.getById(companyOnlineInfo.getId());
             //状态为正常
             if (Constant.status.NORMAL.equals(oldCompanyOnlineInfo.getStatus())) {
-                //修改老数据状态为过期
+               /* //修改老数据状态为过期
                 oldCompanyOnlineInfo.setStatus(Constant.status.EXPIRED);
-                companyOnlineInfoService.updateById(oldCompanyOnlineInfo);
+                companyOnlineInfoService.updateById(oldCompanyOnlineInfo);*/
                 //新增修改后的为新数据
                 companyOnlineInfo.setId("");
                 companyOnlineInfoService.save(companyOnlineInfo);
@@ -176,9 +176,9 @@ public class CompanyOnlineInfoController extends JeecgController<CompanyOnlineIn
         //查询数据状态
         if (Constant.status.NORMAL.equals(companyOnlineInfo.getStatus())) {
             companyOnlineInfo.setStatus(Constant.status.TEMPORARY);
-            //正常
+           /* //正常
             oldCompanyOnlineInfo.setStatus(Constant.status.EXPIRED);
-            companyOnlineInfoService.updateById(oldCompanyOnlineInfo);
+            companyOnlineInfoService.updateById(oldCompanyOnlineInfo);*/
             //新增修改后的为新数据
             companyOnlineInfo.setId("");
             companyOnlineInfoService.save(companyOnlineInfo);

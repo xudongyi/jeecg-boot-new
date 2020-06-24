@@ -120,9 +120,13 @@ public class CompanyAcceptanceController extends JeecgController<CompanyAcceptan
             CompanyAcceptance oldCompanyAcceptance = companyAcceptanceService.getById(companyAcceptance.getId());
             //状态为正常
             if (status.NORMAL.equals(oldCompanyAcceptance.getStatus())) {
+                /*CompanyApply companyApply = companyApplyService.findByNewId(oldCompanyAcceptance.getId(), Constant.tables.ACCEPTANCE);
                 //修改老数据状态为过期
                 oldCompanyAcceptance.setStatus(status.EXPIRED);
                 companyAcceptanceService.updateById(oldCompanyAcceptance);
+                //修改老申报记录为过期
+                companyApply.setStatus(Constant.status.EXPIRED);
+                companyApplyService.updateById(companyApply);*/
                 //新增修改后的为新数据
                 companyAcceptance.setId("");
                 companyAcceptanceService.save(companyAcceptance);
@@ -165,8 +169,8 @@ public class CompanyAcceptanceController extends JeecgController<CompanyAcceptan
         if (status.NORMAL.equals(companyAcceptance.getStatus())) {
             companyAcceptance.setStatus(status.TEMPORARY);
             //正常
-            oldCompanyAcceptance.setStatus(status.EXPIRED);
-            companyAcceptanceService.updateById(oldCompanyAcceptance);
+           /* oldCompanyAcceptance.setStatus(status.EXPIRED);
+            companyAcceptanceService.updateById(oldCompanyAcceptance);*/
             //新增修改后的为新数据
             companyAcceptance.setId("");
             companyAcceptanceService.save(companyAcceptance);
