@@ -58,8 +58,8 @@
         </a-row>
         <a-row>
           <a-col span='24'>
-            <a-form-item label="许可内容附件" :labelCol="labelCols" :wrapperCol="wrapperCols">
-              <j-upload v-decorator="['files']" :trigger-change="true" :disabled="disableSubmit"></j-upload>
+            <a-form-item label="许可证附件" :labelCol="labelCols" :wrapperCol="wrapperCols">
+              <j-upload ref="uploadRef" :disabled="disableSubmit" fileType="file" bizPath="riskwaste"></j-upload>
             </a-form-item>
           </a-col>
         </a-row>
@@ -77,7 +77,7 @@
 
   import pick from "lodash.pick";
   import AuditFooter from "./AuditFooter";
-  import {queryAduitBase, queryUserByName} from "../../../requestAction/request";
+  import {queryAduitBase, queryFiles, queryUserByName} from "../../../requestAction/request";
   import JDate from '@/components/jeecg/JDate'
   import JUpload from '@/components/jeecg/JUpload'
   import moment from "moment";
@@ -91,12 +91,12 @@
     }, data() {
       return {
         applyInfo:{},
-
         endOpen: false,
         companyId: '',
         disableSubmit: true,
         title: "基础信息审核-危废经营许可证信息",
         form: this.$form.createForm(this),
+        fileList:'',
         width: 1200,
         visible: false,
         model: {},
@@ -129,7 +129,9 @@
             ]
           },
         },
-        url: {},
+        url: {
+          queryFile:"/risk/companyRiskWaste/queryFiles"
+        },
         modalStatus:{
 
         }
@@ -177,6 +179,12 @@
               }
             }
           }
+        });
+        queryFiles({id:record.newId},this.$data.url.queryFile).then((res)=>{
+          that.$nextTick(() => {
+            that.$refs.uploadRef.initFileListArr(res.result);
+          });
+
         });
         this.$nextTick(() => {
           that.$refs.auditFooter.edit( this.applyInfo) ;

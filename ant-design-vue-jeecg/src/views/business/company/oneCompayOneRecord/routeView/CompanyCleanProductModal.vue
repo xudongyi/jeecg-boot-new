@@ -65,6 +65,9 @@
     data() {
       return {
         form: this.$form.createForm(this),
+        fileList:'',
+        imgList:'',
+        deleteFiles:[],
         title: "操作",
         disableSubmit: false,
         width: 800,
@@ -113,9 +116,26 @@
           queryFiles({id: record.id}, this.$data.url.queryFile).then((res) => {
             _this.$nextTick(() => {
               _this.$refs.opinionFiles.initFileListArr(res.result.fileResult);
-              _this.fileList = _this.$refs.opinionFiles.fileList
+              let arr = [];
+              for(var a=0;a< _this.$refs.opinionFiles.fileList.length;a++){
+                arr.push( _this.$refs.opinionFiles.fileList[a].response.message)
+              }
+              if(arr.length>0){
+                _this.fileList  = arr.join(",")
+              }else{
+                _this.fileList = '';
+              }
+
               _this.$refs.describeFiles.initFileListArr(res.result.imgResult);
-              _this.imgList = _this.$refs.describeFiles.imgList
+              let arr1 = [];
+              for(var a=0;a< _this.$refs.describeFiles.imgList.length;a++){
+                arr1.push( _this.$refs.describeFiles.imgList[a].response.message)
+              }
+              if(arr1.length>0){
+                _this.imgList  = arr1.join(",")
+              }else{
+                _this.imgList = '';
+              }
             });
           });
         } else {
