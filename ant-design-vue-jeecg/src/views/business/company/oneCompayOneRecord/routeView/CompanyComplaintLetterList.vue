@@ -19,6 +19,7 @@
           <a-col :xl="6" :lg="7" :md="8" :sm="24" v-if="role === 'monitor'">
             <a-form-item label="企业名称">
               <a-select v-model="queryParam.companyId" show-search style="width: 100%" optionFilterProp="children">
+                <a-select-option :value="companyIds">请选择</a-select-option>
                 <a-select-option v-for="item in items" :key="item.value" :value="item.key">
                   {{item.value}}
                 </a-select-option>
@@ -179,8 +180,9 @@
         items:[],
         companyid:'',
         monitor:'',
+        companyIds: this.companyId,
         queryParam: {
-          companyIds: this.$store.getters.userInfo.companyIds.join(',')
+          companyId: this.companyId
         },
         // 表头
         columns: [
@@ -270,7 +272,7 @@
         this.$refs.modalForm.title="信访投诉信息";
       },
       toSearchReset() {
-        this.queryParam = {companyIds:this.queryParam.companyIds};
+        this.queryParam = {companyIds:this.companyIds};
         this.loadData(1);
       },
       batchDeclare: function () {
