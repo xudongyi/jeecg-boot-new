@@ -20,8 +20,8 @@
           <j-dict-select-tag type="list" v-decorator="['type', validatorRules.type]" :trigger-change="true"
                              dictCode="preType" placeholder="" :disabled="disableSubmit"/>
         </a-form-item>
-        <a-form-item label="附件上传" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-upload v-decorator="['files']" :trigger-change="true" :disabled="disableSubmit"></j-upload>
+        <a-form-item label="附件" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <j-upload ref="uploadRef" :disabled="disableSubmit" fileType="file" bizPath="prevention"></j-upload>
         </a-form-item>
 
       </a-form>
@@ -39,7 +39,7 @@
 
   import pick from "lodash.pick";
   import AuditFooter from "./AuditFooter";
-  import {queryAduitBase, queryUserByName} from "../../../requestAction/request";
+  import {queryAduitBase, queryFiles, queryUserByName} from "../../../requestAction/request";
   import JDictSelectTag from "@/components/dict/JDictSelectTag"
   import JDate from '@/components/jeecg/JDate'
   import JUpload from '@/components/jeecg/JUpload'
@@ -79,7 +79,7 @@
           },
         },
         url: {
-
+          queryFile:"/prevention/companyPrevention/queryFiles"
         },
         modalStatus:{
 
@@ -128,6 +128,12 @@
               }
             }
           }
+        });
+        queryFiles({id:record.newId},this.$data.url.queryFile).then((res)=>{
+          that.$nextTick(() => {
+            that.$refs.uploadRef.initFileListArr(res.result);
+          });
+
         });
         this.$nextTick(() => {
           that.$refs.auditFooter.edit( this.applyInfo) ;

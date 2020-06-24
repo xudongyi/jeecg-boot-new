@@ -95,6 +95,8 @@
         endOpen: false,
         disableSubmit:false,
         form: this.$form.createForm(this),
+        fileList:'',
+        deleteFiles:[],
         title: "操作",
         width: 800,
         visible: false,
@@ -158,14 +160,30 @@
           queryFiles({id:record.id},this.$data.url.queryFile).then((res)=>{
             _this.$nextTick(() => {
               _this.$refs.uploadRef.initFileListArr(res.result);
-              _this.fileList = _this.$refs.uploadRef.fileList
+              let arr = [];
+              for(var a=0;a< _this.$refs.uploadRef.fileList.length;a++){
+                arr.push( _this.$refs.uploadRef.fileList[a].response.message)
+              }
+              if(arr.length>0){
+                _this.fileList  = arr.join(",")
+              }else{
+                _this.fileList = '';
+              }
             });
           });
         }else{
           //清空上传列表
           _this.$nextTick(() => {
             _this.$refs.uploadRef.initFileList("");
-            _this.fileList = _this.$refs.uploadRef.fileList
+            let arr = [];
+            for(var a=0;a< _this.$refs.uploadRef.fileList.length;a++){
+              arr.push( _this.$refs.uploadRef.fileList[a].response.message)
+            }
+            if(arr.length>0){
+              _this.fileList  = arr.join(",")
+            }else{
+              _this.fileList = '';
+            }
           });
         }
       },

@@ -29,7 +29,7 @@
           <a-input v-decorator="['installLocation']" placeholder="请输入安装位置" :disabled="disableSubmit"></a-input>
         </a-form-item>
         <a-form-item label="在线监控验收材料" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-upload v-decorator="['files']" :trigger-change="true" :disabled="disableSubmit"></j-upload>
+          <j-upload ref="uploadRef" :disabled="disableSubmit" fileType="file" bizPath="onlineinfo"></j-upload>
         </a-form-item>
 
       </a-form>
@@ -47,7 +47,7 @@
 
   import pick from "lodash.pick";
   import AuditFooter from "./AuditFooter";
-  import {queryAduitBase, queryUserByName} from "../../../requestAction/request";
+  import {queryAduitBase, queryFiles, queryUserByName} from "../../../requestAction/request";
   import JDate from '@/components/jeecg/JDate'
   import JUpload from '@/components/jeecg/JUpload'
   export default {
@@ -66,6 +66,7 @@
         width:1200,
         title:"基础信息审核-竣工验收信息",
         form: this.$form.createForm(this),
+        fileList:'',
         model: {},
         labelCol: {
           xs: { span: 24 },
@@ -83,6 +84,7 @@
           },
         },
         url: {
+          queryFile:"/onlineInfo/companyOnlineInfo/queryFiles"
         },
         modalStatus:{
 
@@ -131,6 +133,12 @@
               }
             }
           }
+        });
+        queryFiles({id:record.newId},this.$data.url.queryFile).then((res)=>{
+          that.$nextTick(() => {
+            that.$refs.uploadRef.initFileListArr(res.result);
+          });
+
         });
         this.$nextTick(() => {
           that.$refs.auditFooter.edit( this.applyInfo) ;

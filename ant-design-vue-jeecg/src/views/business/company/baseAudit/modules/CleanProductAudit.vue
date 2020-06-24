@@ -20,13 +20,13 @@
           <j-date placeholder="请选择报告时间" v-decorator="['reportTime']" :trigger-change="true" style="width: 100%" :disabled="disableSubmit"/>
         </a-form-item>
         <a-form-item label="清洁生成报告及专家意见" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-upload v-decorator="['opinionFiles']" :trigger-change="true" :disabled="disableSubmit"></j-upload>
+          <j-upload ref="opinionFiles" :disabled="disableSubmit" fileType="file" bizPath="cleanproduct"></j-upload>
         </a-form-item>
         <a-form-item label="落实情况简要描述" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.conditionDescribe">
           <a-textarea v-decorator="['conditionDescribe']" placeholder="请输入落实情况简要描述" :disabled="disableSubmit"></a-textarea>
         </a-form-item>
         <a-form-item label="落实情况附件" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-image-upload isMultiple v-decorator="['describeFiles']" :disabled="disableSubmit"></j-image-upload>
+          <j-upload ref="describeFiles" :disabled="disableSubmit" fileType="image" bizPath="cleanproduct"></j-upload>
         </a-form-item>
 
       </a-form>
@@ -44,7 +44,7 @@
 
   import pick from "lodash.pick";
   import AuditFooter from "./AuditFooter";
-  import {queryAduitBase, queryUserByName} from "../../../requestAction/request";
+  import {queryAduitBase, queryFiles, queryUserByName} from "../../../requestAction/request";
   import JDate from '@/components/jeecg/JDate'
   import JUpload from '@/components/jeecg/JUpload'
   import JImageUpload from '@/components/jeecg/JImageUpload'
@@ -58,7 +58,9 @@
       },data(){
       return{
         applyInfo:{},
-
+        fileList:'',
+        imgList:'',
+        deleteFiles:[],
         companyId:'',
         confirmLoading:true,
         disableSubmit:true,
@@ -83,6 +85,7 @@
           },
         },
         url: {
+          queryFile: "/cleanProduct/companyCleanProduct/queryFiles"
         },
         modalStatus:{
 
@@ -130,6 +133,13 @@
               }
             }
           }
+        });
+        queryFiles({id:record.newId},this.$data.url.queryFile).then((res)=>{
+          that.$nextTick(() => {
+            that.$refs.opinionFiles.initFileListArr(res.result.fileResult);
+            that.$refs.describeFiles.initFileListArr(res.result.imgResult);
+          });
+
         });
         this.$nextTick(() => {
           that.$refs.auditFooter.edit( this.applyInfo) ;
