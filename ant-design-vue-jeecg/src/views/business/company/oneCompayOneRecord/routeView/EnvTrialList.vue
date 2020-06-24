@@ -17,7 +17,7 @@
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
-              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
+              <a-button type="primary" @click="localReset" icon="reload" style="margin-left: 8px">重置</a-button>
             <!--  <a @click="handleToggleSearch" style="margin-left: 8px">
                 {{ toggleSearchStatus ? '收起' : '展开' }}
                 <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>
@@ -126,7 +126,10 @@
     data () {
       return {
         description: '环评审批信息管理页面',
-        queryParam: {companyId:this.companyId},
+        queryParam:{
+          companyId:this.companyId,
+          status:'2'
+        },
 
         // 表头
         columns: [
@@ -189,6 +192,13 @@
     },
     methods: {
       initDictConfig(){
+      },
+      localReset(){
+        this.queryParam={
+          companyId:this.companyId,
+            status:'2'
+        };
+        this.loadData(1);
       }
     }
   }

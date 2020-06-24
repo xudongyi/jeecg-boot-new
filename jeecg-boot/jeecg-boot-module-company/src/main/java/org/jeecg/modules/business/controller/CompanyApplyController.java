@@ -347,6 +347,13 @@ public class CompanyApplyController extends JeecgController<CompanyApply, ICompa
             Map<String,List<String>> services = new HashMap<>();
             for(CompanyApply companyApply:companyApplys){
 
+                if(companyApply.getFromTable().equals(Constant.tables.QUALIFICATION)){
+                    companyQualificationService.update(new UpdateWrapper<CompanyQualification>().lambda()
+                            .eq(CompanyQualification::getApplyAddId,companyApply.getId()).set(CompanyQualification::getStatus,Constant.status.NOPASS));
+                    continue;
+                }
+
+
                 services.putIfAbsent(companyApply.getFromTable(),new ArrayList<>());
 
                 services.get(companyApply.getFromTable()).add(companyApply.getNewId());
@@ -386,6 +393,16 @@ public class CompanyApplyController extends JeecgController<CompanyApply, ICompa
             Map<String,Map<String,List<String>>> services = new HashMap<>();
             for(CompanyApply companyApply:companyApplys){
 
+
+                if(companyApply.getFromTable().equals(Constant.tables.QUALIFICATION)){
+                    companyQualificationService.update(new UpdateWrapper<CompanyQualification>().lambda()
+                            .eq(CompanyQualification::getApplyAddId,companyApply.getId()).set(CompanyQualification::getStatus,Constant.status.NORMAL));
+                    companyQualificationService.update(new UpdateWrapper<CompanyQualification>().lambda().eq(CompanyQualification::getApplyDeleteId,companyApply.getId())
+                            .set(CompanyQualification::getStatus,Constant.status.EXPIRED));
+
+                    continue;
+                }
+
                 services.putIfAbsent(companyApply.getFromTable(),new HashMap<>());
 
                 services.get(companyApply.getFromTable()).putIfAbsent("old",new ArrayList<>());
@@ -423,60 +440,7 @@ public class CompanyApplyController extends JeecgController<CompanyApply, ICompa
 
         return Result.ok(companyQualificationService.compareQualification(applyId));
     }
-    /**
-     * 资质信息申报
-     * @param applyObj  申报信息
-     * @return
-     */
-    @PostMapping(value = "/qualification")
-    public Result<?> qualificationApply(@RequestBody JSONObject applyObj) {
-        String companyId = applyObj.getString("companyId");
-        //先插入 申请表
-        CompanyApply apply = new CompanyApply();
-        apply.setStatus(Constant.status.PEND);
-        apply.setFromTable(Constant.tables.QUALIFICATION);
-        apply.setCompanyId(applyObj.getString("companyId"));
-        companyApplyService.save(apply);
 
-        JSONArray deleteImgs = applyObj.getJSONArray("deleteImgs");
-        if(!deleteImgs.isEmpty()){
-            Map<String,Object> updateparams = new HashMap<>();
-            updateparams.put("APPLY_DELETE_ID",apply.getId());//状态更改为过期
-           companyQualificationService.updateQualificationFiles(deleteImgs.toJavaList(String.class),updateparams);
-        }
-
-        JSONArray addImgs = applyObj.getJSONArray("addImgs");
-        List<CompanyFile> companyFiles = new ArrayList<>();
-        if(!addImgs.isEmpty()){
-            for(int i=0;i<addImgs.size();i++){
-                //新增的
-                CompanyQualification qualification = new CompanyQualification();
-                qualification.setCompanyId(companyId);
-                qualification.setApplyAddId(apply.getId());
-                qualification.setStatus(Constant.status.PEND);//待审核
-                qualification.setType(applyObj.getString("qualificttionType"));//待审核
-                companyQualificationService.save(qualification);
-                CompanyFile companyFile = new CompanyFile();
-                // 遍历 jsonarray 数组，把每一个对象转成 json 对象
-                String file = addImgs.getString(i);
-                // 得到 每个对象中的属性值
-                String[] array =  file.split("/");
-                companyFile.setFilename(array[array.length-1]);
-                array[array.length-1] = "";
-                companyFile.setFilepath(String.join("/",array));
-                companyFile.setFiletype(Constant.fileType.IMAGE);//图片类型
-                companyFile.setFromTable(Constant.tables.QUALIFICATION);
-                companyFile.setTableId(qualification.getId());
-                companyFiles.add(companyFile);
-            }
-            companyFileService.saveBatch(companyFiles);
-        }
-
-
-
-
-        return Result.ok();
-    }
 
 
 

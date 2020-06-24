@@ -89,7 +89,8 @@
         edit(record){
           this.applyer = record.createBy;
           this.applyTime =  moment(record.createTime).format(this.dateFormat);
-          this.result = record.status;
+          if(record.status==='2'||record.status==='3')
+            this.result = record.status;
           this.message = record.content;
           if(record.updateTime==null){
             this.date = moment().format(this.dateFormat);

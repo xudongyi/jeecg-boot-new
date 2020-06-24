@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.jeecg.modules.business.entity.CompanyAcceptance;
+import org.jeecg.modules.business.entity.CompanyApply;
 import org.jeecg.modules.business.entity.CompanyQualification;
 import org.jeecg.modules.business.mapper.CompanyQualificationMapper;
 import org.jeecg.modules.business.service.ICompanyQualificationService;
@@ -74,16 +75,54 @@ public class CompanyQualificationServiceImpl extends ServiceImpl<CompanyQualific
 
         return result;
     }
+    @Override
+    public Map<String, List<Map<String, String>>> queryQualificationAudit(CompanyApply companyApply) {
 
+        Map<String, List<Map<String,String>>> result = new HashMap<>();
+
+
+        List<QualificationBaseInfo> qualificationBaseInfos = qualificationMapper.queryQualificationBaseInfo(companyApply.getCompanyId(),Constant.status.NORMAL);
+        for(QualificationBaseInfo qualificationBaseInfo:qualificationBaseInfos){
+            result.computeIfAbsent(qualificationBaseInfo.getType(),k-> new ArrayList<>());
+            if(companyApply.getId().equals(qualificationBaseInfo.getApplyDeleteId()))
+                continue;
+            Map<String,String> param = new HashMap<>();
+            param.put("id",qualificationBaseInfo.getId());
+            param.put("url",qualificationBaseInfo.getFilepath()+qualificationBaseInfo.getFilename());
+
+            result.get(qualificationBaseInfo.getType()).add(param);
+        }
+
+        qualificationMapper.queryAddQualification(companyApply.getId()).forEach(companyQualification -> {
+            result.computeIfAbsent(companyQualification.getType(),k-> new ArrayList<>());
+            Map<String,String> param = new HashMap<>();
+            param.put("id",companyQualification.getId());
+            param.put("url",companyQualification.getFilepath()+companyQualification.getFilename());
+            param.put("color","green");//删除的用红色
+            result.get(companyQualification.getType()).add(param);
+        });
+        qualificationMapper.queryDeleteQualification(companyApply.getId()).forEach(companyQualification -> {
+            result.computeIfAbsent(companyQualification.getType(),k-> new ArrayList<>());
+            Map<String,String> param = new HashMap<>();
+            param.put("id",companyQualification.getId());
+            param.put("url",companyQualification.getFilepath()+companyQualification.getFilename());
+            param.put("color","red");//删除的用红色
+            result.get(companyQualification.getType()).add(param);
+        });
+
+        return result;
+    }
     private void bulidResult(String key,List<QualificationBaseInfo> addQualifications, Map<String, List<Map<String, String>>> result) {
+        result.computeIfAbsent(key,k-> new ArrayList<>());
         addQualifications.forEach(companyQualification -> {
-            result.computeIfAbsent(key,k-> new ArrayList<>());
+
             Map<String,String> param = new HashMap<>();
             param.put("id",companyQualification.getId());
             param.put("url",companyQualification.getFilepath()+companyQualification.getFilename());
             result.get(key).add(param);
         });
     }
+
     /**
      * @Description:根据companyId查询数量
      */

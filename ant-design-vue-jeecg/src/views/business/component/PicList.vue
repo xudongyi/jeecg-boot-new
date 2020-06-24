@@ -1,26 +1,21 @@
 <template >
-  <a-list :grid="{ gutter: 16, column: 4 }" :data-source="imgsrc" >
-    <a-list-item slot="renderItem" slot-scope="item, index" >
-      <div class="img_div">
-        <img  :id="'img'+index" class="item" :src="item.url" preview/>
+  <a-list :grid="grid" :data-source="imgsrc">
+    <a-list-item slot="renderItem" slot-scope="item, index">
 
-        <div class="mask" v-if="isApply">
-          <div class="icon1">
-            <a-tooltip title="预览文件"  class="icon1" placement="bottomLeft" >
-              <a-icon  type="eye"  @click="previewImg(index)" style="fontSize:25px" />
-            </a-tooltip>
-          </div>
-          <div class="icon2" >
-            <a-popconfirm title="是否确定删除？"  @confirm="deleteFile(index)" >
-              <a-tooltip title="删除文件" placement="bottomLeft" >
-                <a-icon  class="icon2"  type="delete" style="fontSize:25px" />
-              </a-tooltip>
-            </a-popconfirm>
-          </div>
-
+      <div :style="style">
+        <div
+          :style="{
+          width: '100%',
+          height: '100%',
+          position: 'relative',
+          padding: '8px',
+          border: (item.color!=='#d9d9d9'?'medium':'1px') +' solid '+item.color,
+          'border-radius': '4px'
+        }">
+          <img style="width: 100%;height:100%;object-fit:cover;" alt="example" :src="item.url" preview="add">
         </div>
-
       </div>
+
     </a-list-item>
   </a-list>
 
@@ -34,11 +29,12 @@
     name:"PicList",
     components:{Icons},
     props:{
-      images:{
-        type:Array,
+
+      size:{
+        type:Number,
         default(){
-          return [];
-        }
+          return 180;
+        },
       },
       isApply:true,
       qualificttionType:'',
@@ -54,7 +50,14 @@
         //上传图片
         uploadImgs:[],
         uploading:false,
-        disable:false
+        disable:false,
+        style:{float: 'left',
+          width:this.size+'px',
+          height:this.size+'px',
+          'margin-right': 10+'px',
+          margin: '0 4px 4px 0',
+          },
+        grid:{ gutter: 16, xs: 1, sm: 2, md:this.size>110 ?2 : 4, lg: 4, xl: this.size>110 ?4 : 6, xxl: 6 }
 
       }
     },
@@ -144,24 +147,27 @@
 
         let that =this;
         that.imgsrc = [];
-        console.log(images)
-        images.forEach(
-          element => {
-
-            that.imgsrc.push({id:element.id,url:getFileAccessHttpUrl(element.url)});
-          }
-        );
-
-        //查询申报
-        queryQualification({
-          companyId: this.companyId,
-          qualificttionType: this.qualificttionType
-        }).then((res) => {
-
-          if (res.success) {
-            that.disable = res.result;
-          }
-        });
+        if(images) {
+          images.forEach(
+            element => {
+              let color = '#d9d9d9';
+              if(element.color){
+                color = element.color;
+              }
+              that.imgsrc.push({id: element.id, url: getFileAccessHttpUrl(element.url),color:color});
+            }
+          );
+        }
+        // //查询申报
+        // queryQualification({
+        //   companyId: this.companyId,
+        //   qualificttionType: this.qualificttionType
+        // }).then((res) => {
+        //
+        //   if (res.success) {
+        //     that.disable = res.result;
+        //   }
+        // });
 
       }
     },
@@ -177,6 +183,7 @@
     margin-top: 30px;
     width: 25vh;
     height: 20vh;
+    background: green;
     object-fit:cover;
   }
   .img_div {

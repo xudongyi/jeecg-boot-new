@@ -9,7 +9,7 @@ const loadBaiduMap = (params)=>getAction("/envtax/companyEnvTax/loadBaiduMap",pa
 const queryLatestArchivedData = (params)=>getAction("/company/apply/queryLatestArchivedData",params);
 //查询申报前后对比信息
 const queryComparisonData = (params)=>getAction("/company/apply/queryComparisonData",params);
-const qualificationApply = (params)=>postAction("/company/apply/qualification",params);
+const qualificationApply = (params)=>postAction("/companyQualification/qualificationApply",params);
 //查询资质申报待审核
 const queryQualification = (params)=>getAction("/company/apply/queryQualification",params);
 //查询资质申报前后对比
@@ -28,6 +28,10 @@ const submitAudit = (params)=>postAction("/company/apply/submitAudit",params);
 const queryShortName = (params)=>getAction("/company/companyBaseinfo/queryShortName",params);
 //查询附件
 const queryFiles = (params,url)=>getAction(url,params);
+//查询审批详情
+const queryQualificationAudit = (params)=>getAction("/companyQualification/queryQualificationAudit",params);
+const submitQualificationAudit = (params)=>postAction("/companyQualification/submitQualificationAudit",params);
+
 export {
   getDetailMenus,
   loadCompanyBaseInfo,
@@ -43,5 +47,7 @@ export {
   queryAduitBase,
   submitAudit,
   queryShortName,
-  queryFiles
+  queryFiles,
+  queryQualificationAudit,
+  submitQualificationAudit
 }

@@ -4,8 +4,8 @@
                       :from-table="fromTable" @applyDetail = "applyDetail"  @toDetail="latestDetail" @toApply="apply"
                       v-if="showDetail ==='list'"></company-apply-list>
     <qualification ref="qModal" :company-id="companyId" v-else-if="showDetail ==='view'" ></qualification>
-    <qualification-apply-detail ref="qDetail" :company-id="companyId" v-else = "showDetail ==='apply'"></qualification-apply-detail>
-<qualification-apply-modal ref="applyInfoForm"></qualification-apply-modal>
+    <qualification-apply-detail ref="qDetail" :company-id="companyId" v-else = "showDetail ==='apply'" @success="applyOk"></qualification-apply-detail>
+    <qualification-apply-modal ref="applyInfoForm"></qualification-apply-modal>
   </div>
 </template>
 
@@ -63,13 +63,13 @@
           //   that.$refs.qModal.isApply = true;
           // });
         },
+        applyOk(){
+          this.showDetail = 'list';
+        },
         applyDetail(record){
           //查询详情数据
           this.$refs.applyInfoForm.detail(record);
-        }
-
-
-
+          }
         }
 
     }

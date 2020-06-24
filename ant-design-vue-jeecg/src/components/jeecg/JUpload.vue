@@ -282,6 +282,8 @@
             this.fileList[this.fileList .length-1].status='error';
             return;
           }
+          //新增事件
+          this.handleAdd(info.file)
         }
         if(info.file.status==='done' || info.file.status === 'removed'){
 
@@ -305,8 +307,11 @@
       },
       handleDelete(file){
         //如有需要新增 删除逻辑
-        console.log(file)
         this.$emit('delete', file);
+      },
+      handleAdd(file){
+        //如有需要新增 新增逻辑
+        this.$emit('add', file);
       },
       handlePreview(file){
         if(this.fileType === FILE_TYPE_IMG){

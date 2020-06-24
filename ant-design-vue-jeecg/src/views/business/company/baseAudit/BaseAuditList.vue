@@ -137,7 +137,7 @@
     <user-info-audit ref="userInfoModal"/>
     <product-material-audit ref="productmaterialModal"/>
     <env-trial-audit ref="envtrialModal"/>
-
+    <qualification-audit  ref="qualificationAudit"></qualification-audit>
   </div>
 
 </template>
@@ -162,6 +162,7 @@
   import RadiateWasteAudit from "./modules/RadiateWasteAudit";
   import ProductMaterialAudit from "./modules/ProductMaterialAudit";
   import EnvTrialAudit from "./modules/EnvTrialAudit";
+  import QualificationAudit from "./modules/QualificationAudit";
   import moment from 'moment'
   import {postAction} from '@/api/manage'
 
@@ -181,7 +182,8 @@
       RadiateWasteAudit,
       CleanProductAudit,
       OnlineInfoAudit,
-      EnvTrialAudit
+      EnvTrialAudit,
+      QualificationAudit
     },
 
     data () {
@@ -377,7 +379,7 @@
           this.$refs.onlineInfoModal.visible = false;
           this.$refs.productmaterialModal.visible = false;
           this.$refs.envtrialModal.visible = false;
-
+          this.$refs.qualificationAudit.visible = false;
 
           //打开需要展示的浮窗
           if ("company_baseinfo" === record.fromTable) {
@@ -433,6 +435,11 @@
             this.$refs.envtrialModal.visible = true;
             this.$refs.envtrialModal.auditModal(record);
           }
+        //打开需要展示的浮窗
+        if ("company_qualification" === record.fromTable) {
+          this.$refs.qualificationAudit.visible = true;
+          this.$refs.qualificationAudit.auditModal(record);
+        }
       },
 
     },

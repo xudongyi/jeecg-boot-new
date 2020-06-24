@@ -29,7 +29,9 @@
           this.list_visible = true;
 
         }else{
+          //修复只有一个企业没有id的问题
           this.list_visible = false;
+          this.companyId = store.getters.userInfo.companyIds[0];
         }
 
       },

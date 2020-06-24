@@ -20,6 +20,12 @@ public class QualificationBaseInfo {
      * 资质文件名称
      */
     private String filename;
-
-
+    /**
+     * 删除对应的申报
+     */
+    private String applyDeleteId;
+    /**
+     * 新增对应的申报
+     */
+    private String applyAddId;
 }

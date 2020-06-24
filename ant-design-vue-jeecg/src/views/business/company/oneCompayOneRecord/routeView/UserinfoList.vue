@@ -229,7 +229,8 @@
 
       },
       localReset(){
-          this.queryParam = {companyId:this.companyId};
+          this.queryParam = { companyId:this.companyId,
+            status:'2'};
           this.loadData(1);
       },
 

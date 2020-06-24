@@ -19,8 +19,10 @@
 
         <a-descriptions-item label="申报详情" :span="3">
         </a-descriptions-item>
-        <a-descriptions-item label="   新增资质" :span="3" v-if="data.add!==undefined">
-          <a-list :grid="{ gutter: 16, xs: 1, sm: 2, md: 4, lg: 4, xl: 6, xxl: 6 }" :data-source="data.add">
+        <a-descriptions-item label="   新增资质" :span="3" >
+        </a-descriptions-item>
+        <a-descriptions-item :span="3">
+          <a-list  :grid="{ gutter: 16, xs: 1, sm: 2, md: 2, lg: 4, xl: data.add.length>4?6:4, xxl: 6 }" :data-source="data.add">
             <a-list-item slot="renderItem" slot-scope="item, index">
 
                 <div style="float: left;width:104px;height:104px;margin-right: 10px;margin: 0 8px 8px 0;">
@@ -32,15 +34,17 @@
 
             </a-list-item>
           </a-list>
+        </a-descriptions-item >
+        <a-descriptions-item label="   删除资质" :span="3" >
         </a-descriptions-item>
-        <a-descriptions-item label="   删除资质" :span="3" v-if="data.delete!==undefined">
-          <a-list :grid="{ gutter: 16, xs: 1, sm: 2, md: 4, lg: 4, xl: 6, xxl: 3 }" :data-source="data.delete">
+        <a-descriptions-item :span="3">
+          <a-list  :grid="{ gutter: 16, xs: 1, sm: 2, md: 2, lg: 4, xl: data.delete.length>4?6:4, xxl: 6 }" :data-source="data.delete">
             <a-list-item slot="renderItem" slot-scope="item, index">
 
               <div style="float: left;width:104px;height:104px;margin-right: 10px;margin: 0 8px 8px 0;">
                 <div
                   style="width: 100%;height: 100%;position: relative;padding: 8px;border: 1px solid #d9d9d9;border-radius: 4px;">
-                  <img style="width: 100%;object-fit:cover;" :src="item.url" preview="add">
+                  <img style="width: 100%;height:100%;object-fit:cover;" alt="example":src="item.url" preview="delete">
                 </div>
               </div>
 
@@ -83,7 +87,7 @@
         visible: false,
         model: {},
         confirmLoading: false,
-        data : {},
+        data : {add:[],delete:[]},
         spinning:false,
         dictOptions:[]
 

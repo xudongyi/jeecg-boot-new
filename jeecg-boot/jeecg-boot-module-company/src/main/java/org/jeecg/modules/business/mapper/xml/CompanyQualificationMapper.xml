@@ -6,10 +6,12 @@
 		<result column="type" property="type" jdbcType="VARCHAR"/>
 		<result column="filepath" property="filepath" jdbcType="VARCHAR"/>
 		<result column="filename" property="filename" jdbcType="VARCHAR"/>
+		<result column="applyDeleteId" property="apply_delete_id" jdbcType="VARCHAR"/>
+		<result column="applyAddId" property="apply_add_id" jdbcType="VARCHAR"/>
 	</resultMap>
 
     <select id="queryQualificationBaseInfo" parameterType="String"  resultMap="QualificationBaseInfo">
-		select A.id,A.type,B.filepath,B.filename from company_qualification A inner join company_file B ON A.id = B.table_id
+		select A.id,A.type,B.filepath,B.filename,A.apply_delete_id,A.apply_add_id from company_qualification A inner join company_file B ON A.id = B.table_id
 		where A.company_id = #{companyId}
 		and B.from_table = 'company_qualification' and A.status = #{status}
 	</select>

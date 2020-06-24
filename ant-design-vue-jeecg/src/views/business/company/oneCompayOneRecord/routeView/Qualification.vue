@@ -2,20 +2,20 @@
   <div>
     <a-tabs default-active-key="1"  @change="change">
       <a-tab-pane key="1" tab="企业形象">
-          <pic-list ref="companyImage" :companyId="companyId" qualificttion-type="companyImage" :isApply="isApply"/>
+          <pic-list ref="companyImage" :companyId="companyId" qualificttion-type="companyImage" />
       </a-tab-pane>
       <a-tab-pane key="2" tab="营业执照照片" >
-        <pic-list ref="businessLicense" :companyId="companyId" qualificttion-type="businessLicense" :isApply="isApply" />
+        <pic-list ref="businessLicense" :companyId="companyId" qualificttion-type="businessLicense"  />
       </a-tab-pane>
       <a-tab-pane key="3" tab="企业平面图">
-        <pic-list  ref="floorPlan" :companyId="companyId" qualificttion-type="floorPlan" :isApply="isApply" />
+        <pic-list  ref="floorPlan" :companyId="companyId" qualificttion-type="floorPlan" />
       </a-tab-pane>
 
       <a-tab-pane key="4" tab="生产工艺图">
-        <pic-list  ref="produceCrafts" :companyId="companyId" qualificttion-type="produceCrafts" :isApply="isApply" />
+        <pic-list  ref="produceCrafts" :companyId="companyId" qualificttion-type="produceCrafts"  />
       </a-tab-pane>
       <a-tab-pane key="5" tab="治理工艺图">
-        <pic-list  ref="controlCrafts" :companyId="companyId" qualificttion-type="controlCrafts" :isApply="isApply" />
+        <pic-list  ref="controlCrafts" :companyId="companyId" qualificttion-type="controlCrafts"  />
       </a-tab-pane>
     </a-tabs>
 
