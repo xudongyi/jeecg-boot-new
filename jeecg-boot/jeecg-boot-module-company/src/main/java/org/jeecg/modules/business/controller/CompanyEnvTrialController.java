@@ -117,7 +117,14 @@ public class CompanyEnvTrialController extends JeecgController<CompanyEnvTrial, 
 	@PutMapping(value = "/edit")
 	public Result<?> edit(@RequestBody JSONObject jsonObject) {
 		CompanyEnvTrial companyEnvTrial = getCompanyEnvTrial(jsonObject);
-		if(Constant.status.TEMPORARY.equals(companyEnvTrial.getStatus())) {
+		if(Constant.status.TEMPORARY.equals(companyEnvTrial.getStatus())||Constant.status.NOPASS.equals(companyEnvTrial.getStatus())) {
+			//不通过修改
+			if(Constant.status.NOPASS.equals(companyEnvTrial.getStatus())){
+				companyApplyService.update(new UpdateWrapper<CompanyApply>().lambda()
+						.eq(CompanyApply::getNewId,companyEnvTrial.getId()).set(CompanyApply::getStatus,Constant.status.TEMPORARY)
+						.set(CompanyApply::getUpdateBy,"").set(CompanyApply::getUpdateTime,null));
+			}
+
 			companyEnvTrialService.updateById(companyEnvTrial);
 			//删除原有的
 			companyFileService.remove(new QueryWrapper<CompanyFile>().lambda().eq(CompanyFile::getFromTable,Constant.tables.ENVTRIAL)
@@ -158,13 +165,14 @@ public class CompanyEnvTrialController extends JeecgController<CompanyEnvTrial, 
 			 companyApplyService.saveByBase(companyEnvTrial.getCompanyId(),companyEnvTrial.getId(),Constant.status.PEND,oldId,Constant.tables.ENVTRIAL);
 		 }
 		 //编辑申报 2、编辑暂存数据
-		 else if(Constant.status.TEMPORARY.equals(companyEnvTrial.getStatus())) {
+		 else if(Constant.status.TEMPORARY.equals(companyEnvTrial.getStatus())||Constant.status.NOPASS.equals(companyEnvTrial.getStatus())) {
 			 companyEnvTrial.setStatus(Constant.status.PEND);//待审核
 			 companyEnvTrialService.updateById(companyEnvTrial);
 			 companyApplyService.update(new UpdateWrapper<CompanyApply>().lambda()
 					 .eq(CompanyApply::getNewId,companyEnvTrial.getId())
 					 .eq(CompanyApply::getStatus,Constant.status.TEMPORARY)
-					 .set(CompanyApply::getStatus,Constant.status.PEND));
+					 .set(CompanyApply::getStatus,Constant.status.PEND)
+					 .set(CompanyApply::getCreateTime,new Date()));
 			 //删除原有的
 			 companyFileService.remove(new QueryWrapper<CompanyFile>().lambda().eq(CompanyFile::getFromTable,Constant.tables.ENVTRIAL)
 					 .eq(CompanyFile::getTableId,companyEnvTrial.getId()));
@@ -246,7 +254,8 @@ public class CompanyEnvTrialController extends JeecgController<CompanyEnvTrial, 
 		 companyApplyService.update(new UpdateWrapper<CompanyApply>().lambda()
 				 .eq(CompanyApply::getStatus,Constant.status.TEMPORARY)
 				 .in(CompanyApply::getNewId,Arrays.asList(ids.split(",")))
-				 .set(CompanyApply::getStatus,Constant.status.PEND));
+				 .set(CompanyApply::getStatus,Constant.status.PEND)
+				 .set(CompanyApply::getCreateTime,new Date()));
 		 return Result.ok("申报成功!");
 	 }
 	/**

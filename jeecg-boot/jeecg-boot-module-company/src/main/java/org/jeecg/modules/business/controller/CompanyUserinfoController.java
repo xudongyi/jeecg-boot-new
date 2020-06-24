@@ -1,6 +1,7 @@
 package org.jeecg.modules.business.controller;
 
 import java.util.Arrays;
+import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -148,7 +149,8 @@ public class CompanyUserinfoController extends JeecgController<CompanyUserinfo, 
 					.eq(CompanyApply::getNewId,companyUserinfo.getId())
 					.set(CompanyApply::getStatus,Constant.status.PEND)
 					.set(CompanyApply::getUpdateBy,"")
-					.set(CompanyApply::getUpdateTime,null));
+					.set(CompanyApply::getUpdateTime,null)
+					.set(CompanyApply::getCreateTime,new Date()));
 
 		}else{
 			//编辑申报 3、编辑正常数据
@@ -204,7 +206,8 @@ public class CompanyUserinfoController extends JeecgController<CompanyUserinfo, 
 		 companyApplyService.update(new UpdateWrapper<CompanyApply>().lambda()
 				 .eq(CompanyApply::getStatus,Constant.status.TEMPORARY)
 				 .in(CompanyApply::getNewId,Arrays.asList(ids.split(",")))
-				 .set(CompanyApply::getStatus,Constant.status.PEND));
+				 .set(CompanyApply::getStatus,Constant.status.PEND)
+				 .set(CompanyApply::getCreateTime,new Date()));
 		 return Result.ok("申报成功!");
 	 }
 	/**

@@ -1,6 +1,7 @@
 package org.jeecg.modules.business.controller;
 
 import java.util.Arrays;
+import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -93,9 +94,17 @@ public class CompanyProductMaterialController extends JeecgController<CompanyPro
 	@ApiOperation(value="company_product_material-编辑", notes="company_product_material-编辑")
 	@PutMapping(value = "/edit")
 	public Result<?> edit(@RequestBody CompanyProductMaterial companyProductMaterial) {
-		if(Constant.status.TEMPORARY.equals(companyProductMaterial.getStatus()))
+		if(Constant.status.TEMPORARY.equals(companyProductMaterial.getStatus())
+				||Constant.status.NOPASS.equals(companyProductMaterial.getStatus())) {
+			//不通过修改
+			if(Constant.status.NOPASS.equals(companyProductMaterial.getStatus())){
+				companyApplyService.update(new UpdateWrapper<CompanyApply>().lambda()
+						.eq(CompanyApply::getNewId,companyProductMaterial.getId()).set(CompanyApply::getStatus,Constant.status.TEMPORARY)
+						.set(CompanyApply::getUpdateBy,"").set(CompanyApply::getUpdateTime,null));
+			}
+			companyProductMaterial.setStatus(Constant.status.TEMPORARY);//暂存
 			companyProductMaterialService.updateById(companyProductMaterial);
-
+		}
 		else{
 			String oldId = companyProductMaterial.getId();
 			//不是暂存的编辑  都是新增暂存状态
@@ -127,13 +136,15 @@ public class CompanyProductMaterialController extends JeecgController<CompanyPro
 			 companyApplyService.saveByBase(companyProductMaterial.getCompanyId(),companyProductMaterial.getId(),Constant.status.PEND,oldId,Constant.tables.PRODUCTMATERIAL);
 		 }
 		 //编辑申报 2、编辑暂存数据
-		 else if(Constant.status.TEMPORARY.equals(companyProductMaterial.getStatus())) {
+		 else if(Constant.status.TEMPORARY.equals(companyProductMaterial.getStatus())
+				 ||Constant.status.NOPASS.equals(companyProductMaterial.getStatus())) {
 			 companyProductMaterial.setStatus(Constant.status.PEND);//待审核
 			 companyProductMaterialService.updateById(companyProductMaterial);
 			 companyApplyService.update(new UpdateWrapper<CompanyApply>().lambda()
 					 .eq(CompanyApply::getNewId,companyProductMaterial.getId())
 					 .eq(CompanyApply::getStatus,Constant.status.TEMPORARY)
-					 .set(CompanyApply::getStatus,Constant.status.PEND));
+					 .set(CompanyApply::getStatus,Constant.status.PEND)
+					 .set(CompanyApply::getCreateTime,new Date()));
 		 }else{
 			 //编辑申报 3、编辑正常数据
 			 oldId = companyProductMaterial.getId();
@@ -212,7 +223,8 @@ public class CompanyProductMaterialController extends JeecgController<CompanyPro
 		 companyApplyService.update(new UpdateWrapper<CompanyApply>().lambda()
 				 .eq(CompanyApply::getStatus,Constant.status.TEMPORARY)
 				 .in(CompanyApply::getNewId,Arrays.asList(ids.split(",")))
-				 .set(CompanyApply::getStatus,Constant.status.PEND));
+				 .set(CompanyApply::getStatus,Constant.status.PEND)
+				 .set(CompanyApply::getCreateTime,new Date()));
 		 return Result.ok("申报成功!");
 	 }
 
