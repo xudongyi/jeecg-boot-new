@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.jeecg.modules.business.entity.CompanyComplaintLetter;
 import org.jeecg.modules.business.mapper.CompanyComplaintLetterMapper;
 import org.jeecg.modules.business.service.ICompanyComplaintLetterService;
+import org.jeecg.modules.business.utils.Constant;
 import org.jeecg.modules.business.vo.CompanyComplaintLetterVO;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +29,7 @@ public class CompanyComplaintLetterServiceImpl extends ServiceImpl<CompanyCompla
     @Override
     public Integer findCountByCompanyId(String companyId) {
         QueryWrapper<CompanyComplaintLetter> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().eq(CompanyComplaintLetter::getCompanyId,companyId);
+        queryWrapper.lambda().eq(CompanyComplaintLetter::getCompanyId,companyId).eq(CompanyComplaintLetter::getStatus, Constant.status.NORMAL);
         return this.count(queryWrapper);
     }
 

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.jeecg.modules.business.entity.CompanyAdminPenalties;
 import org.jeecg.modules.business.mapper.CompanyAdminPenaltiesMapper;
 import org.jeecg.modules.business.service.ICompanyAdminPenaltiesService;
+import org.jeecg.modules.business.utils.Constant;
 import org.jeecg.modules.business.vo.CompanyAdminPenaltiesVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,7 +29,7 @@ public class CompanyAdminPenaltiesServiceImpl extends ServiceImpl<CompanyAdminPe
     @Override
     public Integer findCountByCompanyId(String companyId) {
         QueryWrapper<CompanyAdminPenalties> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().eq(CompanyAdminPenalties::getCompanyId,companyId);
+        queryWrapper.lambda().eq(CompanyAdminPenalties::getCompanyId,companyId).eq(CompanyAdminPenalties::getStatus, Constant.status.NORMAL);
         return this.count(queryWrapper);
     }
 

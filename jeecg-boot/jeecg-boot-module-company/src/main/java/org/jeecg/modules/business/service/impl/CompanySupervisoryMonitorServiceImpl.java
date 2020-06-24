@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.jeecg.modules.business.entity.CompanySupervisoryMonitor;
 import org.jeecg.modules.business.mapper.CompanySupervisoryMonitorMapper;
 import org.jeecg.modules.business.service.ICompanySupervisoryMonitorService;
+import org.jeecg.modules.business.utils.Constant;
 import org.jeecg.modules.business.vo.CompanyAdminPenaltiesVO;
 import org.jeecg.modules.business.vo.CompanySupervisoryMonitorVO;
 import org.springframework.stereotype.Service;
@@ -29,7 +30,7 @@ public class CompanySupervisoryMonitorServiceImpl extends ServiceImpl<CompanySup
     @Override
     public Integer findCountByCompanyId(String companyId) {
         QueryWrapper<CompanySupervisoryMonitor> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().eq(CompanySupervisoryMonitor::getCompanyId,companyId);
+        queryWrapper.lambda().eq(CompanySupervisoryMonitor::getCompanyId,companyId).eq(CompanySupervisoryMonitor::getStatus, Constant.status.NORMAL);
         return this.count(queryWrapper);
     }
 
