@@ -67,10 +67,12 @@ public class CompanyOnlineInfoController extends JeecgController<CompanyOnlineIn
                                    @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
                                    HttpServletRequest req, @PathVariable int listType) {
         QueryWrapper<CompanyOnlineInfo> queryWrapper = QueryGenerator.initQueryWrapper(companyOnlineInfo, req.getParameterMap());
-        if (listType == 0) {
-            queryWrapper.ne("status", Constant.status.EXPIRED);
-        } else {
-            queryWrapper.eq("status", Constant.status.PEND).or().eq("status", Constant.status.NORMAL);
+        if (listType == 2) {
+            queryWrapper.eq("status", Constant.status.NORMAL);
+        } else if (listType == 1) {
+            queryWrapper.and(wrapper -> wrapper.eq("status", Constant.status.PEND).or().eq("status", Constant.status.NORMAL));
+        } else if (listType == 0) {
+            queryWrapper.ne("status", Constant.status.EXPIRED).orderByDesc("create_time");
         }
         Page<CompanyOnlineInfo> page = new Page<CompanyOnlineInfo>(pageNo, pageSize);
         IPage<CompanyOnlineInfo> pageList = companyOnlineInfoService.page(page, queryWrapper);

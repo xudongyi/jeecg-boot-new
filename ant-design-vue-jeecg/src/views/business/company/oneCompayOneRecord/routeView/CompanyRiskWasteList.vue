@@ -163,6 +163,10 @@
         queryParam: {
           companyId: this.companyId
         },
+        isorter:{
+          column: 'status',
+          order: 'asc',
+        },
         // 表头
         columns: [
           {

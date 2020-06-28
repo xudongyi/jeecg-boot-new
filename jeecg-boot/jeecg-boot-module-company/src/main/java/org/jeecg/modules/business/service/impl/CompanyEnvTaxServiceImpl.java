@@ -1,10 +1,12 @@
 package org.jeecg.modules.business.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import org.jeecg.modules.business.entity.CompanyDirtyAllow;
 import org.jeecg.modules.business.entity.CompanyEnvTax;
 import org.jeecg.modules.business.entity.CompanyPrevention;
 import org.jeecg.modules.business.mapper.CompanyEnvTaxMapper;
 import org.jeecg.modules.business.service.ICompanyEnvTaxService;
+import org.jeecg.modules.business.utils.Constant;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -28,7 +30,7 @@ public class CompanyEnvTaxServiceImpl extends ServiceImpl<CompanyEnvTaxMapper, C
     @Override
     public Integer findCountByCompanyId(String companyId) {
         QueryWrapper<CompanyEnvTax> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().eq(CompanyEnvTax::getCompanyId, companyId);
+        queryWrapper.lambda().eq(CompanyEnvTax::getCompanyId, companyId).eq(CompanyEnvTax::getStatus, Constant.status.NORMAL);
         return this.count(queryWrapper);
     }
 }

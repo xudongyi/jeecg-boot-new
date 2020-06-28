@@ -5,6 +5,7 @@ import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.modules.business.entity.CompanyAcceptance;
 import org.jeecg.modules.business.mapper.CompanyAcceptanceMapper;
 import org.jeecg.modules.business.service.ICompanyAcceptanceService;
+import org.jeecg.modules.business.utils.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +32,7 @@ public class CompanyAcceptanceServiceImpl extends ServiceImpl<CompanyAcceptanceM
     @Override
     public Integer findCountByCompanyId(String companyId) {
         QueryWrapper<CompanyAcceptance> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().eq(CompanyAcceptance::getCompanyId, companyId);
+        queryWrapper.lambda().eq(CompanyAcceptance::getCompanyId, companyId).eq(CompanyAcceptance::getStatus, Constant.status.NORMAL);
         return this.count(queryWrapper);
     }
 

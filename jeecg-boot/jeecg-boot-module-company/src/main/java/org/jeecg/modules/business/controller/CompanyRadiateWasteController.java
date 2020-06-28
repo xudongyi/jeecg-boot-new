@@ -67,10 +67,12 @@ public class CompanyRadiateWasteController extends JeecgController<CompanyRadiat
                                    @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
                                    HttpServletRequest req, @PathVariable int listType) {
         QueryWrapper<CompanyRadiateWaste> queryWrapper = QueryGenerator.initQueryWrapper(companyRadiateWaste, req.getParameterMap());
-        if (listType == 0) {
-            queryWrapper.ne("status", Constant.status.EXPIRED);
-        } else {
-            queryWrapper.eq("status", Constant.status.PEND).or().eq("status", Constant.status.NORMAL);
+        if (listType == 2) {
+            queryWrapper.eq("status", Constant.status.NORMAL);
+        } else if (listType == 1) {
+            queryWrapper.and(wrapper -> wrapper.eq("status", Constant.status.PEND).or().eq("status", Constant.status.NORMAL));
+        } else if (listType == 0) {
+            queryWrapper.ne("status", Constant.status.EXPIRED).orderByDesc("create_time");
         }
         Page<CompanyRadiateWaste> page = new Page<CompanyRadiateWaste>(pageNo, pageSize);
         IPage<CompanyRadiateWaste> pageList = companyRadiateWasteService.page(page, queryWrapper);

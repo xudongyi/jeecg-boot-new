@@ -83,10 +83,12 @@ public class CompanyDirtyAllowController extends JeecgController<CompanyDirtyAll
                                    @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
                                    HttpServletRequest req, @PathVariable int listType) {
         QueryWrapper<CompanyDirtyAllow> queryWrapper = QueryGenerator.initQueryWrapper(companyDirtyAllow, req.getParameterMap());
-        if (listType == 0) {
-            queryWrapper.ne("status", Constant.status.EXPIRED);
-        } else {
-            queryWrapper.eq("status", Constant.status.PEND).or().eq("status", Constant.status.NORMAL);
+        if (listType == 2) {
+            queryWrapper.eq("status", Constant.status.NORMAL);
+        } else if (listType == 1) {
+            queryWrapper.and(wrapper -> wrapper.eq("status", Constant.status.PEND).or().eq("status", Constant.status.NORMAL));
+        } else if (listType == 0) {
+            queryWrapper.ne("status", Constant.status.EXPIRED).orderByDesc("create_time");
         }
         Page<CompanyDirtyAllow> page = new Page<CompanyDirtyAllow>(pageNo, pageSize);
         IPage<CompanyDirtyAllow> pageList = companyDirtyAllowService.page(page, queryWrapper);

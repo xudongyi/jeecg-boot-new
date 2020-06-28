@@ -165,6 +165,10 @@
           companyId: this.companyId,
           type: this.type
         },
+        isorter:{
+          column: 'status',
+          order: 'asc',
+        },
         // 表头
         columns: [
           {
