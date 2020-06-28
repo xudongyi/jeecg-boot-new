@@ -342,21 +342,30 @@
         return !Boolean(this.ftitle==="申请");
       }
     },
-    created () {
-      let that = this;
-      let record = {};
-      if(this.companyId ==null ||this.companyId ===""){
-        that.edit({});
-      }else {
-        loadCompanyBaseInfo({companyId: this.companyId}).then((res) => {
-          if (res.success) {
-            record = res.result;
-            that.edit(record);
-          } else {
-            console.log(res.message);
+    watch: {
+      companyId: {
+        immediate: true,    // 这句重要
+        deep:true,
+        handler (val) {
+          let that = this;
+          let record = {};
+          if(val ==null ||val ===""){
+            that.edit({});
+          }else {
+            loadCompanyBaseInfo({companyId: val}).then((res) => {
+              if (res.success) {
+                record = res.result;
+                that.edit(record);
+              } else {
+                console.log(res.message);
+              }
+            });
           }
-        });
+        }
       }
+    },
+    created () {
+
 
 
 

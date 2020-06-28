@@ -1,5 +1,5 @@
 <template>
-  <a-menu :mode="mode" :style="style" :default-selected-keys="['1']">
+  <a-menu :mode="mode" :style="style" :default-selected-keys="['1']" :selectedKeys="selectedKeys">
     <a-menu-item :key="item.key" v-for="item in itemList" @click = 'menuClick(item.key)'>
 
         {{ item.text }} <a-badge :count="item.point" :number-style="{ backgroundColor: '#52c41a' }" />
@@ -27,7 +27,7 @@
         return {
 
           target: null,
-          selectedKeys: []
+          selectedKeys: ['1']
         }
       },
       computed: {
@@ -38,6 +38,10 @@
       methods:{
         menuClick(key){
           this.$emit("clickHandle",key);
+          this.selectedKeys = [key];
+        },
+        assign(key){
+          this.selectedKeys = [key];
         }
       },
       created() {

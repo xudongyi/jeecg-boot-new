@@ -1,7 +1,7 @@
 <template>
   <a-layout id="components-layout-demo-top-side">
     <a-layout-header class="header">
-      <business-menu :item-list="headMenus" :menu-style="headStyle"  mode="horizontal"  @clickHandle = "headHandle"></business-menu>
+      <business-menu ref = 'headmenu' :item-list="headMenus" :menu-style="headStyle"  mode="horizontal"  @clickHandle = "headHandle" ></business-menu>
 
     </a-layout-header>
     <a-layout-content style="padding: 0 0">
@@ -9,7 +9,7 @@
       <a-layout style="padding: 24px 0;  background: #fff">
         <a-layout-sider width="200" style="background: #fff">
 
-          <business-menu :item-list="leftMenus" :menu-style="leftStyle"  mode="inline"  @clickHandle = "leftHandle"></business-menu>
+          <business-menu  ref = 'leftmenu' :item-list="leftMenus" :menu-style="leftStyle"  mode="inline"  @clickHandle = "leftHandle"></business-menu>
         </a-layout-sider>
         <a-layout-content :style="{ padding: '0 24px', minHeight: '280px' }">
           <base-info v-if="leftActive==1 && topActive==1"  :companyId="companyId"/>
@@ -47,7 +47,6 @@
     import Qualification from "./routeView/Qualification";
     import CompanyAcceptanceList from "./routeView/CompanyAcceptanceList";
     import BaseInfo from "./routeView/BaseInfo";
-    import BasicInfo from "./routeView/BasicInfo";
     import CompanyDynamicSupervisionList from './routeView/CompanyDynamicSupervisionList'
     import UserinfoList from "./routeView/UserinfoList"
     import ProductMaterialList from "./routeView/ProductMaterialList";
@@ -64,7 +63,7 @@
       name: "CompanyDetail",
       components: {
         CompanyAcceptanceList,
-        BusinessMenu,BaseInfo,BasicInfo,Qualification,Prevention,CompanyDirtyAllowList,CompanyDynamicSupervisionList, CompanyAdminPenaltiesList,
+        BusinessMenu,BaseInfo,Qualification,Prevention,CompanyDirtyAllowList,CompanyDynamicSupervisionList, CompanyAdminPenaltiesList,
         CompanySupervisoryMonitorList,CompanyComplaintLetterList,
         UserinfoList,
         ProductMaterialList,
@@ -74,10 +73,11 @@
         ProductMaterialList,
         EnvTrialList},
       props:{
-        companyId:''
+
       },
       data(){
         return {
+          companyId:this.$route.query.companyId,
           topActive:1,
           leftActive:1,
           leftMenus:[],
@@ -105,21 +105,56 @@
           }else{
             this.leftMenus = this.superviseMenus;
           }
+          this.leftActive=1;
         },
         leftHandle(key){
 
           this.leftActive = key;
         }
       },
+      watch:{
+        "$route": {
+          handler(route) {
+            console.log(route.query.companyId);
+            this.companyId = route.query.companyId;
+            let _this = this;
+            //发送请求，查找
+            getDetailMenus({companyId: route.query.companyId}).then((res) => {
+              if (res.success) {
+                _this.basicInfoMenus = res.result.basicInfoMenus;
+                _this.superviseMenus = res.result.superviseMenus;
+                _this.leftMenus = this.basicInfoMenus;
+                _this.topActive=1;
+                _this.leftActive=1;
+              } else {
+                console.log(res.message);
+              }
+            });
+          },
+
+        },
+        topActive:{
+          handler(active) {
+            this.$refs.headmenu.assign(active);
+          }
+        },
+        leftActive:{
+          handler(active) {
+            this.$refs.leftmenu.assign(active);
+          }
+        }
+      },
       created() {
 
+        let _this = this;
         //发送请求，查找
-        getDetailMenus({companyId:this.companyId}).then((res)=>{
-          if(res.success){
-            this.basicInfoMenus = res.result.basicInfoMenus;
-            this.superviseMenus = res.result.superviseMenus;
-            this.leftMenus = this.basicInfoMenus;
-          }else{
+        getDetailMenus({companyId: this.companyId}).then((res) => {
+          if (res.success) {
+            _this.basicInfoMenus = res.result.basicInfoMenus;
+            _this.superviseMenus = res.result.superviseMenus;
+            _this.leftMenus = this.basicInfoMenus;
+
+          } else {
             console.log(res.message);
           }
         });

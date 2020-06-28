@@ -185,10 +185,27 @@
       initDictConfig(){
       },
       handleDetail(record){
-        this.$emit('toDetail',record.companyId);
+        this.$router.push({
+          path: '/CompanyDetail',
+          query: {
+            companyId: record.companyId
+          }
+        })
       }
     },
     mounted() {
+      const companyIds = store.getters.userInfo.companyIds;
+      if(companyIds.length<=1){
+        //修复只有一个企业没有id的问题
+        this.$router.push({
+          path: '/CompanyDetail',
+          query: {
+            companyId: this.$store.getters.userInfo.companyIds[0]
+          }
+        });
+        return;
+      }
+
       let that = this;
       //查询企业名称
       queryShortName({companyIds:this.$store.getters.userInfo.companyIds.join(',')}).then((res) => {

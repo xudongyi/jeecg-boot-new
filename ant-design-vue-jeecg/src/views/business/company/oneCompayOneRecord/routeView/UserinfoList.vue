@@ -112,6 +112,7 @@
   import {mixinDevice} from '@/utils/mixin'
   import {JeecgListMixin} from '@/mixins/JeecgListMixin'
   import CompanyUserinfoModal from "./modules/CompanyUserinfoModal";
+  import {getDetailMenus} from "../../../requestAction/request";
 
   export default {
     name: "UserinfoList",
@@ -234,7 +235,17 @@
           this.loadData(1);
       },
 
-    }
+    },
+    watch:{
+      "$route": {
+        handler(route) {
+
+          this.companyId = route.query.companyId;
+          this.localReset();
+        },
+
+      }
+    },
   }
 </script>
 <style scoped>

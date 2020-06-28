@@ -61,6 +61,7 @@ public class CompanyBaseinfoController extends JeecgController<CompanyBaseinfo, 
 								   HttpServletRequest req) {
 		QueryWrapper<CompanyBaseinfo> queryWrapper = QueryGenerator.initQueryWrapper(companyBaseinfo, req.getParameterMap());
 		Page<CompanyBaseinfo> page = new Page<CompanyBaseinfo>(pageNo, pageSize);
+		queryWrapper.eq("status",Constant.status.NORMAL);
 		IPage<CompanyBaseinfo> pageList = companyBaseinfoService.page(page, queryWrapper);
  		return Result.ok(pageList);
 	}
