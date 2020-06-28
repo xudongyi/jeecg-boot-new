@@ -36,6 +36,22 @@
     </div>
     <!-- 查询区域-END -->
 
+    <!-- 操作按钮区域 -->
+    <div class="table-operator">
+      <!--<a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
+      <a-button type="primary" icon="download" @click="handleExportXls('company_product_material')">导出</a-button>
+      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
+        <a-button type="primary" icon="import">导入</a-button>
+      </a-upload>-->
+      <a-dropdown v-if="selectedRowKeys.length > 0">
+        <a-menu slot="overlay">
+          <a-menu-item key="1" @click="batchPass"><a-icon type="delete"/>审核通过</a-menu-item>
+          <a-menu-item key="2" @click="batchFail"><a-icon type="delete"/>审核不通过</a-menu-item>
+        </a-menu>
+        <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>
+      </a-dropdown>
+    </div>
+
     <!-- table区域-begin -->
     <div>
 
@@ -48,7 +64,7 @@
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
-
+        :rowSelection="rowSelection"
         class="j-table-force-nowrap"
         @change="handleTableChange">
 
@@ -74,6 +90,7 @@
   import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
   import {getAction} from "../../../../api/manage";
   import {queryCompanyName} from "../../requestAction/request";
+  import {postAction} from "../../../../api/manage";
 
   export default {
     name: "SupervisoryMonitorAudit",
@@ -163,8 +180,8 @@
         ],
         url: {
           list: "/csm/companySupervisoryMonitor/list/2",
-          // delete: "/csm/companySupervisoryMonitor/delete",
-          // deleteBatch: "/csm/companySupervisoryMonitor/deleteBatch",
+          batchPass: "/csm/companySupervisoryMonitor/batchPass",
+          batchFail: "/csm/companySupervisoryMonitor/batchFail",
           // batchDeclare: "/csm/companySupervisoryMonitor/batchDeclare"
           // exportXlsUrl: "/csm/companySupervisoryMonitor/exportXls",
           // importExcelUrl: "csm/companySupervisoryMonitor/importExcel",
@@ -175,6 +192,18 @@
     computed: {
       importExcelUrl: function(){
         return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
+      },
+      rowSelection() {
+        return {
+          getCheckboxProps: record => ({
+            props: {
+              disabled: record.status !== '1',
+              name: record.projectName,
+            },
+          }),
+          selectedRowKeys: this.selectedRowKeys,
+          onChange: this.onSelectChange
+        };
       },
     },
     methods: {
@@ -195,6 +224,67 @@
         this.queryParam = {companyIds:this.queryParam.companyIds};
         this.loadData(1);
       },
+      batchPass() {
+        if (this.selectedRowKeys.length <= 0) {
+          this.$message.warning('请选择一条记录！');
+          return;
+        } else {
+          var ids = "";
+          for (var a = 0; a < this.selectedRowKeys.length; a++) {
+            ids += this.selectedRowKeys[a] + ",";
+          }
+          let that = this;
+          this.$confirm({
+            title: "确认通过",
+            content: "是否批准选中数据?",
+            onOk: function () {
+              that.loading = true;
+              postAction(that.url.batchPass, {ids: ids}).then((res) => {
+                if (res.success) {
+                  that.$message.success(res.message);
+                  that.loadData();
+                  that.onClearSelected();
+                } else {
+                  that.$message.warning(res.message);
+                }
+              }).finally(() => {
+                that.loading = false;
+              });
+            }
+          });
+        }
+      },
+
+      batchFail() {
+        if (this.selectedRowKeys.length <= 0) {
+          this.$message.warning('请选择一条记录！');
+          return;
+        } else {
+          var ids = "";
+          for (var a = 0; a < this.selectedRowKeys.length; a++) {
+            ids += this.selectedRowKeys[a] + ",";
+          }
+          let that = this;
+          this.$confirm({
+            title: "确认不通过",
+            content: "是否不批准选中数据?",
+            onOk: function () {
+              that.loading = true;
+              postAction(that.url.batchFail, {ids: ids}).then((res) => {
+                if (res.success) {
+                  that.$message.success(res.message);
+                  that.loadData();
+                  that.onClearSelected();
+                } else {
+                  that.$message.warning(res.message);
+                }
+              }).finally(() => {
+                that.loading = false;
+              });
+            }
+          });
+        }
+      }
     },
     created() {
       let that = this;

@@ -9,9 +9,13 @@ import javax.servlet.http.HttpServletResponse;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import lombok.Data;
+import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
+import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.modules.business.entity.CompanyAdminPenalties;
 import org.jeecg.modules.business.entity.CompanyDynamicSupervision;
 import org.jeecg.modules.business.entity.CompanyFile;
@@ -215,6 +219,48 @@ public class CompanyAdminPenaltiesController extends JeecgController<CompanyAdmi
 		CompanyAdminPenalties companyAdminPenalties = getCompanyAdminPenalties(jsonObject);
 		companyAdminPenaltiesService.updateById(companyAdminPenalties);
 		return Result.ok("审核成功!");
+	}
+
+	/**
+	 * 批量通过
+	 *
+	 * @param jsonObject
+	 */
+	@PostMapping(value = "/batchPass")
+	@AutoLog(value = "批量通过")
+	@ApiOperation(value = "批量通过", notes = "批量通过")
+	public Result<?> batchPass(@RequestBody JSONObject jsonObject) {
+		String[]  ids = jsonObject.getString("ids").split(",");
+		if(ids.length>0){
+			LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+
+			LambdaUpdateWrapper updateWrapper = new UpdateWrapper<CompanyAdminPenalties>().lambda().in(CompanyAdminPenalties::getId,Arrays.asList(ids))
+					.set(CompanyAdminPenalties::getStatus,Constant.status.NORMAL).set(CompanyAdminPenalties::getUpdateTime,new Date())
+					.set(CompanyAdminPenalties::getUpdateBy,sysUser.getId());
+			companyAdminPenaltiesService.update(updateWrapper);
+		}
+		return Result.ok();
+	}
+
+	/**
+	 * 批量不通过
+	 *
+	 * @param jsonObject
+	 */
+	@PostMapping(value = "/batchFail")
+	@AutoLog(value = "批量不通过")
+	@ApiOperation(value = "批量不通过", notes = "批量不通过")
+	public Result<?> batchFail(@RequestBody JSONObject jsonObject) {
+		String[]  ids = jsonObject.getString("ids").split(",");
+		if(ids.length>0){
+			LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+
+			LambdaUpdateWrapper updateWrapper = new UpdateWrapper<CompanyAdminPenalties>().lambda().in(CompanyAdminPenalties::getId,Arrays.asList(ids))
+					.set(CompanyAdminPenalties::getStatus,Constant.status.NOPASS).set(CompanyAdminPenalties::getUpdateTime,new Date())
+					.set(CompanyAdminPenalties::getUpdateBy,sysUser.getId());
+			companyAdminPenaltiesService.update(updateWrapper);
+		}
+		return Result.ok();
 	}
 	
 	/**
