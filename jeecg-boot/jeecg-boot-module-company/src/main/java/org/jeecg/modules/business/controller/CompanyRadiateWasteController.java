@@ -134,9 +134,9 @@ public class CompanyRadiateWasteController extends JeecgController<CompanyRadiat
             //状态为正常
             if (Constant.status.NORMAL.equals(oldCompanyRadiateWaste.getStatus())) {
                 CompanyApply companyApply = companyApplyService.findByNewId(oldCompanyRadiateWaste.getId(), Constant.tables.RADIATEWASTE);
-                //修改老数据状态为过期
+               /* //修改老数据状态为过期
                 oldCompanyRadiateWaste.setStatus(Constant.status.EXPIRED);
-                companyRadiateWasteService.updateById(oldCompanyRadiateWaste);
+                companyRadiateWasteService.updateById(oldCompanyRadiateWaste);*/
                 //修改老申报记录为过期
                 companyApply.setStatus(Constant.status.EXPIRED);
                 companyApplyService.updateById(companyApply);
@@ -216,10 +216,8 @@ public class CompanyRadiateWasteController extends JeecgController<CompanyRadiat
             CompanyApply companyApply = companyApplyService.findByNewId(oldcompanyRadiateWaste.getId(), Constant.tables.RADIATEWASTE);
             companyRadiateWaste.setStatus(Constant.status.TEMPORARY);
             //正常
-            oldcompanyRadiateWaste.setStatus(Constant.status.EXPIRED);
-            oldcompanyRadiateWaste.setUpdateBy("");
-            oldcompanyRadiateWaste.setUpdateTime(null);
-            companyRadiateWasteService.updateById(oldcompanyRadiateWaste);
+           /* oldcompanyRadiateWaste.setStatus(Constant.status.EXPIRED);
+            companyRadiateWasteService.updateById(oldcompanyRadiateWaste);*/
             //新增修改后的为新数据
             companyRadiateWaste.setId("");
             companyRadiateWasteService.save(companyRadiateWaste);

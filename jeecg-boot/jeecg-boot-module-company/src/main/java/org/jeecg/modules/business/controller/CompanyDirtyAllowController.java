@@ -149,13 +149,10 @@ public class CompanyDirtyAllowController extends JeecgController<CompanyDirtyAll
             CompanyDirtyAllow oldCompanyDirtyAllow = companyDirtyAllowService.getById(companyDirtyAllow.getId());
             //状态为正常
             if (Constant.status.NORMAL.equals(oldCompanyDirtyAllow.getStatus())) {
-                CompanyApply companyApply = companyApplyService.findByNewId(oldCompanyDirtyAllow.getId(), Constant.tables.DIRTYALLOW);
                 //修改老数据状态为过期
-                oldCompanyDirtyAllow.setStatus(Constant.status.EXPIRED);
-                companyDirtyAllowService.updateById(oldCompanyDirtyAllow);
+                /*oldCompanyDirtyAllow.setStatus(Constant.status.EXPIRED);
+                companyDirtyAllowService.updateById(oldCompanyDirtyAllow);*/
                 //修改老申报记录为过期
-                companyApply.setStatus(Constant.status.EXPIRED);
-                companyApplyService.updateById(companyApply);
                 //新增修改后的为新数据
                 companyDirtyAllow.setId("");
                 companyDirtyAllowService.save(companyDirtyAllow);
@@ -229,13 +226,10 @@ public class CompanyDirtyAllowController extends JeecgController<CompanyDirtyAll
         CompanyDirtyAllow oldcompanyDirtyAllow = companyDirtyAllowService.getById(companyDirtyAllow.getId());
         //查询数据状态
         if (Constant.status.NORMAL.equals(companyDirtyAllow.getStatus())) {
-            CompanyApply companyApply = companyApplyService.findByNewId(oldcompanyDirtyAllow.getId(), Constant.tables.DIRTYALLOW);
             companyDirtyAllow.setStatus(Constant.status.TEMPORARY);
             //正常
-            oldcompanyDirtyAllow.setStatus(Constant.status.EXPIRED);
-            oldcompanyDirtyAllow.setUpdateBy("");
-            oldcompanyDirtyAllow.setUpdateTime(null);
-            companyDirtyAllowService.updateById(oldcompanyDirtyAllow);
+           /* oldcompanyDirtyAllow.setStatus(Constant.status.EXPIRED);
+            companyDirtyAllowService.updateById(oldcompanyDirtyAllow);*/
             //新增修改后的为新数据
             companyDirtyAllow.setId("");
             companyDirtyAllowService.save(companyDirtyAllow);

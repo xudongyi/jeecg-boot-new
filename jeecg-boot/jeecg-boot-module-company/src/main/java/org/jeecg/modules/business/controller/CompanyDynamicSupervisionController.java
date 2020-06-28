@@ -1,5 +1,6 @@
 package org.jeecg.modules.business.controller;
 
+import java.security.Security;
 import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -7,14 +8,15 @@ import javax.servlet.http.HttpServletResponse;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang.StringUtils;
+import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
-import org.jeecg.modules.business.entity.CompanyAdminPenalties;
-import org.jeecg.modules.business.entity.CompanyDynamicSupervision;
-import org.jeecg.modules.business.entity.CompanyFile;
-import org.jeecg.modules.business.entity.CompanySupervisoryMonitor;
+import org.jeecg.common.system.vo.LoginUser;
+import org.jeecg.modules.business.entity.*;
 import org.jeecg.modules.business.service.ICompanyDynamicSupervisionService;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -26,6 +28,7 @@ import org.jeecg.common.system.base.controller.JeecgController;
 import org.jeecg.modules.business.service.ICompanyFileService;
 import org.jeecg.modules.business.service.ICompanySysuserService;
 import org.jeecg.modules.business.utils.Constant;
+import org.jeecg.modules.business.utils.ServiceUtils;
 import org.jeecg.modules.business.vo.CompanyDynamicSupervisionVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -208,7 +211,49 @@ public class CompanyDynamicSupervisionController extends JeecgController<Company
 		 return Result.ok("审核成功!");
 	 }
 
-	/**
+	 /**
+	  * 批量通过
+	  *
+	  * @param jsonObject
+	  */
+	 @PostMapping(value = "/batchPass")
+	 @AutoLog(value = "批量通过")
+	 @ApiOperation(value = "批量通过", notes = "批量通过")
+	 public Result<?> batchPass(@RequestBody JSONObject jsonObject) {
+		 String[]  ids = jsonObject.getString("ids").split(",");
+		 if(ids.length>0){
+			 LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+
+			 LambdaUpdateWrapper updateWrapper = new UpdateWrapper<CompanyDynamicSupervision>().lambda().in(CompanyDynamicSupervision::getId,Arrays.asList(ids))
+					 .set(CompanyDynamicSupervision::getStatus,Constant.status.NORMAL).set(CompanyDynamicSupervision::getUpdateTime,new Date())
+					 .set(CompanyDynamicSupervision::getUpdateBy,sysUser.getId());
+			 companyDynamicSupervisionService.update(updateWrapper);
+		 }
+		 return Result.ok();
+	 }
+
+	 /**
+	  * 批量不通过
+	  *
+	  * @param jsonObject
+	  */
+	 @PostMapping(value = "/batchFail")
+	 @AutoLog(value = "批量不通过")
+	 @ApiOperation(value = "批量不通过", notes = "批量不通过")
+	 public Result<?> batchFail(@RequestBody JSONObject jsonObject) {
+		 String[]  ids = jsonObject.getString("ids").split(",");
+		 if(ids.length>0){
+			 LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+
+			 LambdaUpdateWrapper updateWrapper = new UpdateWrapper<CompanyDynamicSupervision>().lambda().in(CompanyDynamicSupervision::getId,Arrays.asList(ids))
+					 .set(CompanyDynamicSupervision::getStatus,Constant.status.NOPASS).set(CompanyDynamicSupervision::getUpdateTime,new Date())
+					 .set(CompanyDynamicSupervision::getUpdateBy,sysUser.getId());
+			 companyDynamicSupervisionService.update(updateWrapper);
+		 }
+		 return Result.ok();
+	 }
+
+	 /**
 	 *   通过id删除
 	 *
 	 * @param id

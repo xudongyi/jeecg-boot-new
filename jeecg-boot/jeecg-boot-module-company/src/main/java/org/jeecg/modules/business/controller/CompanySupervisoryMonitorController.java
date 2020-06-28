@@ -9,9 +9,14 @@ import javax.servlet.http.HttpServletResponse;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
+import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.modules.business.entity.CompanyAdminPenalties;
+import org.jeecg.modules.business.entity.CompanyDynamicSupervision;
 import org.jeecg.modules.business.entity.CompanyFile;
 import org.jeecg.modules.business.entity.CompanySupervisoryMonitor;
 import org.jeecg.modules.business.service.ICompanyFileService;
@@ -210,9 +215,51 @@ public class CompanySupervisoryMonitorController extends JeecgController<Company
 	 @PutMapping(value = "/audit")
 	 public Result<?> audit(@RequestBody CompanySupervisoryMonitor companySupervisoryMonitor) {
 		 companySupervisoryMonitorService.updateById(companySupervisoryMonitor);
-		 return Result.ok("编辑成功!");
+		 return Result.ok("审核成功!");
 	 }
-	
+
+	 /**
+	  * 批量通过
+	  *
+	  * @param jsonObject
+	  */
+	 @PostMapping(value = "/batchPass")
+	 @AutoLog(value = "批量通过")
+	 @ApiOperation(value = "批量通过", notes = "批量通过")
+	 public Result<?> batchPass(@RequestBody JSONObject jsonObject) {
+		 String[]  ids = jsonObject.getString("ids").split(",");
+		 if(ids.length>0){
+			 LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+
+			 LambdaUpdateWrapper updateWrapper = new UpdateWrapper<CompanySupervisoryMonitor>().lambda().in(CompanySupervisoryMonitor::getId,Arrays.asList(ids))
+					 .set(CompanySupervisoryMonitor::getStatus,Constant.status.NORMAL).set(CompanySupervisoryMonitor::getUpdateTime,new Date())
+					 .set(CompanySupervisoryMonitor::getUpdateBy,sysUser.getId());
+			 companySupervisoryMonitorService.update(updateWrapper);
+		 }
+		 return Result.ok();
+	 }
+
+	 /**
+	  * 批量不通过
+	  *
+	  * @param jsonObject
+	  */
+	 @PostMapping(value = "/batchFail")
+	 @AutoLog(value = "批量不通过")
+	 @ApiOperation(value = "批量不通过", notes = "批量不通过")
+	 public Result<?> batchFail(@RequestBody JSONObject jsonObject) {
+		 String[]  ids = jsonObject.getString("ids").split(",");
+		 if(ids.length>0){
+			 LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+
+			 LambdaUpdateWrapper updateWrapper = new UpdateWrapper<CompanySupervisoryMonitor>().lambda().in(CompanySupervisoryMonitor::getId,Arrays.asList(ids))
+					 .set(CompanySupervisoryMonitor::getStatus,Constant.status.NOPASS).set(CompanySupervisoryMonitor::getUpdateTime,new Date())
+					 .set(CompanySupervisoryMonitor::getUpdateBy,sysUser.getId());
+			 companySupervisoryMonitorService.update(updateWrapper);
+		 }
+		 return Result.ok();
+	 }
+
 	/**
 	 *   通过id删除
 	 *

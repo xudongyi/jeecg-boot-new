@@ -133,13 +133,13 @@ public class CompanySolidWasteController extends JeecgController<CompanySolidWas
             CompanySolidWaste oldCompanySolidWaste = companySolidWasteService.getById(companySolidWaste.getId());
             //状态为正常
             if (Constant.status.NORMAL.equals(oldCompanySolidWaste.getStatus())) {
-                CompanyApply companyApply = companyApplyService.findByNewId(oldCompanySolidWaste.getId(), Constant.tables.SOLIDWASTE);
+               /* CompanyApply companyApply = companyApplyService.findByNewId(oldCompanySolidWaste.getId(), Constant.tables.SOLIDWASTE);
                 //修改老数据状态为过期
                 oldCompanySolidWaste.setStatus(Constant.status.EXPIRED);
                 companySolidWasteService.updateById(oldCompanySolidWaste);
                 //修改老申报记录为过期
                 companyApply.setStatus(Constant.status.EXPIRED);
-                companyApplyService.updateById(companyApply);
+                companyApplyService.updateById(companyApply);*/
                 //新增修改后的为新数据
                 companySolidWaste.setId("");
                 companySolidWasteService.save(companySolidWaste);
@@ -213,13 +213,13 @@ public class CompanySolidWasteController extends JeecgController<CompanySolidWas
         CompanySolidWaste oldcompanySolidWaste = companySolidWasteService.getById(companySolidWaste.getId());
         //查询数据状态
         if (Constant.status.NORMAL.equals(companySolidWaste.getStatus())) {
-            CompanyApply companyApply = companyApplyService.findByNewId(oldcompanySolidWaste.getId(), Constant.tables.SOLIDWASTE);
             companySolidWaste.setStatus(Constant.status.TEMPORARY);
+          /*  CompanyApply companyApply = companyApplyService.findByNewId(oldcompanySolidWaste.getId(), Constant.tables.SOLIDWASTE);
             //正常
             oldcompanySolidWaste.setStatus(Constant.status.EXPIRED);
             oldcompanySolidWaste.setUpdateBy("");
             oldcompanySolidWaste.setUpdateTime(null);
-            companySolidWasteService.updateById(oldcompanySolidWaste);
+            companySolidWasteService.updateById(oldcompanySolidWaste);*/
             //新增修改后的为新数据
             companySolidWaste.setId("");
             companySolidWasteService.save(companySolidWaste);

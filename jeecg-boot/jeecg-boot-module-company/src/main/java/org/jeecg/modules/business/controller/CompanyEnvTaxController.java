@@ -109,9 +109,9 @@ public class CompanyEnvTaxController extends JeecgController<CompanyEnvTax, ICom
             CompanyEnvTax oldCompanyEnvTax = companyEnvTaxService.getById(companyEnvTax.getId());
             //状态为正常
             if (Constant.status.NORMAL.equals(oldCompanyEnvTax.getStatus())) {
-                //修改老数据状态为过期
+                /*//修改老数据状态为过期
                 oldCompanyEnvTax.setStatus(Constant.status.EXPIRED);
-                companyEnvTaxService.updateById(oldCompanyEnvTax);
+                companyEnvTaxService.updateById(oldCompanyEnvTax);*/
                 //新增修改后的为新数据
                 companyEnvTax.setId("");
                 companyEnvTaxService.save(companyEnvTax);
@@ -148,9 +148,9 @@ public class CompanyEnvTaxController extends JeecgController<CompanyEnvTax, ICom
         //查询数据状态
         if (Constant.status.NORMAL.equals(companyEnvTax.getStatus())) {
             companyEnvTax.setStatus(Constant.status.TEMPORARY);
-            //正常
+           /* //正常
             oldCompanyEnvTax.setStatus(Constant.status.EXPIRED);
-            companyEnvTaxService.updateById(oldCompanyEnvTax);
+            companyEnvTaxService.updateById(oldCompanyEnvTax);*/
             //新增修改后的为新数据
             companyEnvTax.setId("");
             companyEnvTaxService.save(companyEnvTax);

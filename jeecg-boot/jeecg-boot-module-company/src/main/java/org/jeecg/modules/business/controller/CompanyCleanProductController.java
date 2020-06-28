@@ -130,9 +130,9 @@ public class CompanyCleanProductController extends JeecgController<CompanyCleanP
             CompanyCleanProduct oldCompanyCleanProduct = companyCleanProductService.getById(companyCleanProduct.getId());
             //状态为正常
             if (Constant.status.NORMAL.equals(oldCompanyCleanProduct.getStatus())) {
-                //修改老数据状态为过期
+               /* //修改老数据状态为过期
                 oldCompanyCleanProduct.setStatus(Constant.status.EXPIRED);
-                companyCleanProductService.updateById(oldCompanyCleanProduct);
+                companyCleanProductService.updateById(oldCompanyCleanProduct);*/
                 //新增修改后的为新数据
                 companyCleanProduct.setId("");
                 companyCleanProductService.save(companyCleanProduct);
@@ -178,8 +178,8 @@ public class CompanyCleanProductController extends JeecgController<CompanyCleanP
         if (Constant.status.NORMAL.equals(companyCleanProduct.getStatus())) {
             companyCleanProduct.setStatus(Constant.status.TEMPORARY);
             //正常
-            oldCompanyCleanProduct.setStatus(Constant.status.EXPIRED);
-            companyCleanProductService.updateById(oldCompanyCleanProduct);
+           /* oldCompanyCleanProduct.setStatus(Constant.status.EXPIRED);
+            companyCleanProductService.updateById(oldCompanyCleanProduct);*/
             //新增修改后的为新数据
             companyCleanProduct.setId("");
             companyCleanProductService.save(companyCleanProduct);
