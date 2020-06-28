@@ -64,7 +64,7 @@
         <a-row>
           <a-col span="12">
             <a-form-item label="审核结果：" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-radio-group v-decorator="['status']" :disabled="disableSubmit">
+              <a-radio-group v-model="result" :disabled="disableSubmit">
                 <a-radio value="2">
                   通过
                 </a-radio>
@@ -135,7 +135,7 @@
         items:[],
         disabled:true,
         disableSubmit:'',
-        result:'',
+        result:'2',
         visible: false,
         model: {},
         labelCol: {
@@ -218,7 +218,8 @@
         this.form.resetFields();
         this.model = Object.assign({}, record);
         this.visible = true;
-
+        if(record.status==='2'||record.status==='3')
+          this.result = record.status;
         if(record.updateTime){
           if (this.timer) {
             clearInterval(this.timer); // 在Vue实例销毁前，清除我们的定时器
@@ -274,6 +275,7 @@
             }
             let formData = Object.assign(this.model, values);
             formData.updateBy = this.$store.getters.userInfo.id;
+            formData.status = this.result;
             console.log("表单提交数据",formData)
             httpAction(httpurl,formData,method).then((res)=>{
               if(res.success){
