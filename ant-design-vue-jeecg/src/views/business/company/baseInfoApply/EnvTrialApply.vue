@@ -3,7 +3,7 @@
     <company-apply-list :company-id="companyId"
                         :from-table="fromTable" @applyDetail = "applyDetail"  @toDetail="latestDetail" @toApply="apply"
                         v-show="!showDetail" ref = "applyList"></company-apply-list>
-    <env-trial-apply-list v-show="showDetail" :company-id="companyId" :isApply="isApply" @reloadApply="reload"> </env-trial-apply-list>
+    <env-trial-apply-list v-if="showDetail" :company-id="companyId" :isApply="isApply" @reloadApply="reload"> </env-trial-apply-list>
     <companyApply-modal ref="applyInfoForm" ></companyApply-modal>
   </div>
 </template>

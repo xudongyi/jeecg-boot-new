@@ -6,7 +6,7 @@
                         :from-table="fromTable" @applyDetail = "applyDetail"  @toDetail="latestDetail" @toApply="apply"
                          v-show="!showDetail"  ref = "applyList"></company-apply-list>
 
-    <userinfo-apply-list :isApply="isApply" :company-id="companyId" v-show="showDetail" @reloadApply="reload"></userinfo-apply-list>
+    <userinfo-apply-list :isApply="isApply" :company-id="companyId" v-if="showDetail" @reloadApply="reload"></userinfo-apply-list>
     <companyApply-modal ref="applyInfoForm" ></companyApply-modal>
   </div>
 </template>
