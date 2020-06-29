@@ -284,8 +284,11 @@ public class CompanySupervisoryMonitorController extends JeecgController<Company
 	@ApiOperation(value="监督性监测信息-批量删除", notes="监督性监测信息-批量删除")
 	@DeleteMapping(value = "/deleteBatch")
 	public Result<?> deleteBatch(@RequestParam(name="ids",required=true) String ids) {
-		this.companySupervisoryMonitorService.removeByIds(Arrays.asList(ids.split(",")));
-		return Result.ok("批量删除成功!");
+		//删除申报暂存记录
+		companySupervisoryMonitorService.remove(new QueryWrapper<CompanySupervisoryMonitor>().lambda()
+				.eq(CompanySupervisoryMonitor::getStatus, Constant.status.TEMPORARY)
+				.in(CompanySupervisoryMonitor::getId, Arrays.asList(ids.split(","))));
+		return Result.ok("批量删除暂存记录成功!");
 	}
 
 	 /**
@@ -298,23 +301,12 @@ public class CompanySupervisoryMonitorController extends JeecgController<Company
 	 @ApiOperation(value="监督性监测信息-批量申报", notes="监督性监测信息-批量申报")
 	 @GetMapping(value = "/batchDeclare")
 	 public Result<?> batchDeclare(@RequestParam(name="ids",required=true) String ids) {
-		 List<String> idList = Arrays.asList(ids.split(","));
-		 if (CollectionUtil.isNotEmpty(idList)) {
-			 for (Iterator<String> iterator = idList.iterator(); iterator.hasNext(); ) {
-				 String id = iterator.next();
-				 //查询
-				 CompanySupervisoryMonitor companySupervisoryMonitor = companySupervisoryMonitorService.getById(id);
-				 //判断申报的是否是暂存
-				 if (!Constant.status.TEMPORARY.equals(companySupervisoryMonitor.getStatus())) {
-					 return Result.error("请选择暂存的信息申报！");
-				 }
-				 //修改状态为1：待审核状态
-				 companySupervisoryMonitor.setStatus(Constant.status.PEND);
-				 companySupervisoryMonitorService.updateById(companySupervisoryMonitor);
-
-			 }
-		 }
-		 return Result.ok("批量申报成功!");
+		 //修改
+		 companySupervisoryMonitorService.update(new UpdateWrapper<CompanySupervisoryMonitor>().lambda()
+				 .eq(CompanySupervisoryMonitor::getStatus,Constant.status.TEMPORARY)
+				 .in(CompanySupervisoryMonitor::getId,Arrays.asList(ids.split(",")))
+				 .set(CompanySupervisoryMonitor::getStatus,Constant.status.PEND));
+		 return Result.ok("批量申报暂存记录成功!");
 	 }
 	
 	/**

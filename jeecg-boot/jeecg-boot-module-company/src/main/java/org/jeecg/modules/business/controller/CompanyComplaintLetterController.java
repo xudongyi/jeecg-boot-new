@@ -281,8 +281,11 @@ public class CompanyComplaintLetterController extends JeecgController<CompanyCom
 	@ApiOperation(value="信访投诉信息-批量删除", notes="信访投诉信息-批量删除")
 	@DeleteMapping(value = "/deleteBatch")
 	public Result<?> deleteBatch(@RequestParam(name="ids",required=true) String ids) {
-		this.companyComplaintLetterService.removeByIds(Arrays.asList(ids.split(",")));
-		return Result.ok("批量删除成功!");
+		//删除申报暂存记录
+		companyComplaintLetterService.remove(new QueryWrapper<CompanyComplaintLetter>().lambda()
+				.eq(CompanyComplaintLetter::getStatus, Constant.status.TEMPORARY)
+				.in(CompanyComplaintLetter::getId, Arrays.asList(ids.split(","))));
+		return Result.ok("批量删除暂存记录成功!");
 	}
 
 	 /**
@@ -295,23 +298,12 @@ public class CompanyComplaintLetterController extends JeecgController<CompanyCom
 	 @ApiOperation(value="信访投诉信息-批量申报", notes="信访投诉信息-批量申报")
 	 @GetMapping(value = "/batchDeclare")
 	 public Result<?> batchDeclare(@RequestParam(name="ids",required=true) String ids) {
-		 List<String> idList = Arrays.asList(ids.split(","));
-		 if (CollectionUtil.isNotEmpty(idList)) {
-			 for (Iterator<String> iterator = idList.iterator(); iterator.hasNext(); ) {
-				 String id = iterator.next();
-				 //查询
-				 CompanyComplaintLetter companyComplaintLetter = companyComplaintLetterService.getById(id);
-				 //判断申报的是否是暂存
-				 if (!Constant.status.TEMPORARY.equals(companyComplaintLetter.getStatus())) {
-					 return Result.error("请选择暂存的信息申报！");
-				 }
-				 //修改状态为1：待审核状态
-				 companyComplaintLetter.setStatus(Constant.status.PEND);
-				 companyComplaintLetterService.updateById(companyComplaintLetter);
-
-			 }
-		 }
-		 return Result.ok("批量申报成功!");
+		 //修改
+		 companyComplaintLetterService.update(new UpdateWrapper<CompanyComplaintLetter>().lambda()
+				 .eq(CompanyComplaintLetter::getStatus,Constant.status.TEMPORARY)
+				 .in(CompanyComplaintLetter::getId,Arrays.asList(ids.split(",")))
+				 .set(CompanyComplaintLetter::getStatus,Constant.status.PEND));
+		 return Result.ok("批量申报暂存记录成功!");
 	 }
 	
 	/**

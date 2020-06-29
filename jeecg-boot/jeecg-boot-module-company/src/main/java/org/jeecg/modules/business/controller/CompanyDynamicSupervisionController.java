@@ -277,8 +277,11 @@ public class CompanyDynamicSupervisionController extends JeecgController<Company
 	@ApiOperation(value="企业年度动态监管-批量删除", notes="企业年度动态监管-批量删除")
 	@DeleteMapping(value = "/deleteBatch")
 	public Result<?> deleteBatch(@RequestParam(name="ids",required=true) String ids) {
-		this.companyDynamicSupervisionService.removeByIds(Arrays.asList(ids.split(",")));
-		return Result.ok("批量删除成功!");
+		//删除申报暂存记录
+		companyDynamicSupervisionService.remove(new QueryWrapper<CompanyDynamicSupervision>().lambda()
+				.eq(CompanyDynamicSupervision::getStatus, Constant.status.TEMPORARY)
+				.in(CompanyDynamicSupervision::getId, Arrays.asList(ids.split(","))));
+		return Result.ok("批量删除暂存记录成功!");
 	}
 
 	 /**
@@ -291,23 +294,12 @@ public class CompanyDynamicSupervisionController extends JeecgController<Company
 	 @ApiOperation(value="企业年度动态监管-批量申报", notes="企业年度动态监管-批量申报")
 	 @GetMapping(value = "/batchDeclare")
 	 public Result<?> batchDeclare(@RequestParam(name="ids",required=true) String ids) {
-		 List<String> idList = Arrays.asList(ids.split(","));
-		 if (CollectionUtil.isNotEmpty(idList)) {
-			 for (Iterator<String> iterator = idList.iterator(); iterator.hasNext(); ) {
-				 String id = iterator.next();
-				 //查询
-				 CompanyDynamicSupervision companyDynamicSupervision = companyDynamicSupervisionService.getById(id);
-				 //判断申报的是否是暂存
-				 if (!Constant.status.TEMPORARY.equals(companyDynamicSupervision.getStatus())) {
-					 return Result.error("请选择暂存的信息申报！");
-				 }
-				 //修改状态为1：待审核状态
-				 companyDynamicSupervision.setStatus(Constant.status.PEND);
-				 companyDynamicSupervisionService.updateById(companyDynamicSupervision);
-
-			 }
-		 }
-		 return Result.ok("批量申报成功!");
+		 //修改
+		 companyDynamicSupervisionService.update(new UpdateWrapper<CompanyDynamicSupervision>().lambda()
+				 .eq(CompanyDynamicSupervision::getStatus,Constant.status.TEMPORARY)
+				 .in(CompanyDynamicSupervision::getId,Arrays.asList(ids.split(",")))
+				 .set(CompanyDynamicSupervision::getStatus,Constant.status.PEND));
+		 return Result.ok("批量申报暂存记录成功!");
 	 }
 
 	/**

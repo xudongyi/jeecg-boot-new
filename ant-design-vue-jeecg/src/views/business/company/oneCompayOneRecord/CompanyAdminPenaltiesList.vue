@@ -158,6 +158,7 @@
   import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
   import {getAction} from "../../../../api/manage";
   import {queryCompanyName} from "../../requestAction/request";
+  import {deleteAction} from "../../../../api/manage";
 
   export default {
     name: "CompanyAdminPenaltiesList",
@@ -281,7 +282,7 @@
         return {
           getCheckboxProps: record => ({
             props: {
-              disabled: record.status == '1',
+              disabled: record.status != '0',
               name: record.id,
             },
           }),
@@ -343,7 +344,37 @@
             }
           });
         }
-      }
+      },
+      batchDel: function () {
+        if (this.selectedRowKeys.length <= 0) {
+          this.$message.warning('请选择一条记录！');
+          return;
+        } else {
+          let ids = "";
+          for (var a = 0; a < this.selectedRowKeys.length; a++) {
+            ids += this.selectedRowKeys[a] + ",";
+          }
+          let that = this;
+          this.$confirm({
+            title: "确认删除",
+            content: "是否删除选中数据?",
+            onOk: function () {
+              that.loading = true;
+              deleteAction(that.url.deleteBatch, {ids: ids}).then((res) => {
+                if (res.success) {
+                  that.$message.success(res.message);
+                  that.loadData();
+                  that.onClearSelected();
+                } else {
+                  that.$message.warning(res.message);
+                }
+              }).finally(() => {
+                that.loading = false;
+              });
+            }
+          });
+        }
+      },
     },
     mounted(){
       let that = this;
