@@ -138,7 +138,7 @@
       </a-table>
     </div>
 
-    <company-dirty-allow-modal ref="modalForm" @ok="modalFormOk" :companyId="companyId"></company-dirty-allow-modal>
+    <company-dirty-allow-modal ref="modalForm" @ok="modalFormOk" :companyId="companyId" @declare="reloadApply"></company-dirty-allow-modal>
   </a-card>
 </template>
 
@@ -274,6 +274,7 @@
                   that.$message.success(res.message);
                   that.loadData();
                   that.onClearSelected();
+                  that.reloadApply();
                 } else {
                   that.$message.warning(res.message);
                 }
@@ -284,6 +285,9 @@
           });
         }
 
+      },
+      reloadApply(){
+        this.$emit('reloadApply');
       },
     },
     props: {

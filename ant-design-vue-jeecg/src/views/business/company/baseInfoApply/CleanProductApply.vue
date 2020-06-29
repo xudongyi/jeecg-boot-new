@@ -1,9 +1,9 @@
 <template>
   <div>
-    <company-apply-list v-if="!listshow" :company-id="companyId" :from-table="fromTable"
+    <company-apply-list v-show="!listshow" :company-id="companyId" :from-table="fromTable"
                          @toDetail="detail" @toApply="apply"
                         @applyDetail="viewApply"></company-apply-list>
-    <company-clean-product-list v-if="listshow" :company-id="companyId" :operationShow="operationShow" :listType="listType"
+    <company-clean-product-list v-if="listshow" :company-id="companyId" :operationShow="operationShow" :listType="listType" @reloadApply="reload"
     ></company-clean-product-list>
     <companyApply-modal ref="applyInfoForm"></companyApply-modal>
   </div>
@@ -60,6 +60,10 @@
         this.$refs.applyInfoForm.detail(record);
         //单个表比较
         this.$refs.applyInfoForm.compareDetail(this.fromTable);
+      },
+      reload(){
+        this.$refs.applyList.reInit();
+        this.showDetail=false;
       }
 
 

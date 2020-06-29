@@ -145,7 +145,7 @@
             httpAction(httpUrl,formData,method).then((res)=>{
               if(res.success){
                 that.$message.success(res.message);
-                that.$emit('ok');
+                that.$emit('declare');
               }else{
                 that.$message.warning(res.message);
               }

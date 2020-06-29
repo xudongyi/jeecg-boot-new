@@ -149,7 +149,7 @@
 
     </div>
 
-    <companyAcceptance-modal ref="modalForm" @ok="modalFormOk" :companyId="companyId"></companyAcceptance-modal>
+    <companyAcceptance-modal ref="modalForm" @ok="modalFormOk" :companyId="companyId" @declare="reloadApply"></companyAcceptance-modal>
   </a-card>
 </template>
 
@@ -264,6 +264,7 @@
                   that.$message.success(res.message);
                   that.loadData();
                   that.onClearSelected();
+                  that.reloadApply();
                 } else {
                   that.$message.warning(res.message);
                 }
@@ -273,6 +274,9 @@
             }
           });
         }
+      },
+      reloadApply(){
+        this.$emit('reloadApply');
       },
     },
     props: {
@@ -285,7 +289,7 @@
         return {
           getCheckboxProps: record => ({
             props: {
-              disabled: record.status == '1',
+              disabled: record.status != '0',
               name: record.projectName,
             },
           }),

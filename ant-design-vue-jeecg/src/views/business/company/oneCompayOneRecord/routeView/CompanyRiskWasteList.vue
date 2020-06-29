@@ -139,7 +139,7 @@
       </a-table>
     </div>
 
-    <company-risk-waste-modal ref="modalForm" @ok="modalFormOk" :companyId="companyId"></company-risk-waste-modal>
+    <company-risk-waste-modal ref="modalForm" @ok="modalFormOk" :companyId="companyId" @declare="reloadApply"></company-risk-waste-modal>
   </a-card>
 </template>
 
@@ -275,6 +275,7 @@
                   that.$message.success(res.message);
                   that.loadData();
                   that.onClearSelected();
+                  that.reloadApply();
                 } else {
                   that.$message.warning(res.message);
                 }
@@ -285,6 +286,9 @@
           });
         }
 
+      },
+      reloadApply(){
+        this.$emit('reloadApply');
       },
     },
     props: {

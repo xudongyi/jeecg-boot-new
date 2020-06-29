@@ -186,9 +186,10 @@
             formData.companyId = that.companyId;
             formData.fileList = that.fileList;
             httpAction(httpUrl, formData, method).then((res) => {
+
               if (res.success) {
                 that.$message.success(res.message);
-                that.$emit('ok');
+                that.$emit('declare');
               } else {
                 that.$message.warning(res.message);
               }
@@ -204,7 +205,7 @@
         this.close()
       },
       popupCallback(row) {
-        this.form.setFieldsValue(pick(row, 'projectName', 'examineUnit', 'examineNum', 'examineTime', 'files'))
+        this.form.setFieldsValue(pick(row, 'projectName', 'examineUnit', 'examineNum', 'examineTime'))
       },
       fileListChange(newFileList){
         this.fileList = newFileList;
