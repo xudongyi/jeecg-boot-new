@@ -301,7 +301,7 @@
         return {
           getCheckboxProps: record => ({
             props: {
-              disabled: record.status == '1',
+              disabled: record.status != '0',
               name: record.projectName,
             },
           }),
