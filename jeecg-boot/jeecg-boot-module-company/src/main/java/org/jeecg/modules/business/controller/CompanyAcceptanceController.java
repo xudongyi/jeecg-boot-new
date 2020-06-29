@@ -71,10 +71,12 @@ public class CompanyAcceptanceController extends JeecgController<CompanyAcceptan
                                    @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
                                    HttpServletRequest req, @PathVariable int listType) {
         QueryWrapper<CompanyAcceptance> queryWrapper = QueryGenerator.initQueryWrapper(companyAcceptance, req.getParameterMap());
-        if (listType == 0) {
-            queryWrapper.ne("status", status.EXPIRED);
-        } else {
-            queryWrapper.eq("status", status.PEND).or().eq("status", status.NORMAL);
+        if (listType == 2) {
+            queryWrapper.eq("status", status.NORMAL);
+        } else if (listType == 1) {
+            queryWrapper.and(wrapper -> wrapper.eq("status", status.PEND).or().eq("status", status.NORMAL));
+        } else if (listType == 0) {
+            queryWrapper.ne("status",status.EXPIRED).orderByDesc("create_time");
         }
         Page<CompanyAcceptance> page = new Page<CompanyAcceptance>(pageNo, pageSize);
         IPage<CompanyAcceptance> pageList = companyAcceptanceService.page(page, queryWrapper);
@@ -97,7 +99,7 @@ public class CompanyAcceptanceController extends JeecgController<CompanyAcceptan
         companyAcceptanceService.save(companyAcceptance);
         //新增申报记录（暂存）
         companyApplyService.saveByBase(companyAcceptance.getCompanyId(), companyAcceptance.getId(), companyAcceptance.getStatus(), "", tables.ACCEPTANCE);
-        companyFileService.saveFiles(jsonObject.getString("fileList"),Constant.fileType.FILE,Constant.tables.ACCEPTANCE,companyAcceptance.getId());
+        companyFileService.saveFiles(jsonObject.getString("fileList"), Constant.fileType.FILE, Constant.tables.ACCEPTANCE, companyAcceptance.getId());
         return Result.ok("添加成功！");
     }
 
@@ -140,8 +142,8 @@ public class CompanyAcceptanceController extends JeecgController<CompanyAcceptan
                 companyApply.setStatus(status.PEND);
                 companyApplyService.updateById(companyApply);
                 //删除原有的
-                companyFileService.remove(new QueryWrapper<CompanyFile>().lambda().eq(CompanyFile::getFromTable,Constant.tables.ACCEPTANCE)
-                        .eq(CompanyFile::getTableId,companyAcceptance.getId()));
+                companyFileService.remove(new QueryWrapper<CompanyFile>().lambda().eq(CompanyFile::getFromTable, Constant.tables.ACCEPTANCE)
+                        .eq(CompanyFile::getTableId, companyAcceptance.getId()));
             }
         } else {
             //新增
@@ -149,7 +151,7 @@ public class CompanyAcceptanceController extends JeecgController<CompanyAcceptan
             //新增申报记录
             companyApplyService.saveByBase(companyAcceptance.getCompanyId(), companyAcceptance.getId(), companyAcceptance.getStatus(), "", tables.ACCEPTANCE);
         }
-        companyFileService.saveFiles(jsonObject.getString("fileList"),Constant.fileType.FILE,Constant.tables.ACCEPTANCE,companyAcceptance.getId());
+        companyFileService.saveFiles(jsonObject.getString("fileList"), Constant.fileType.FILE, Constant.tables.ACCEPTANCE, companyAcceptance.getId());
         return Result.ok("申报成功!");
     }
 
@@ -185,8 +187,8 @@ public class CompanyAcceptanceController extends JeecgController<CompanyAcceptan
             companyApply.setStatus(status.TEMPORARY);
             companyApplyService.updateById(companyApply);
             //删除原有的
-            companyFileService.remove(new QueryWrapper<CompanyFile>().lambda().eq(CompanyFile::getFromTable,Constant.tables.ACCEPTANCE)
-                    .eq(CompanyFile::getTableId,companyAcceptance.getId()));
+            companyFileService.remove(new QueryWrapper<CompanyFile>().lambda().eq(CompanyFile::getFromTable, Constant.tables.ACCEPTANCE)
+                    .eq(CompanyFile::getTableId, companyAcceptance.getId()));
         }
         //保存文件
         companyFileService.saveFiles(jsonObject.getString("fileList"), Constant.fileType.FILE, Constant.tables.ACCEPTANCE, companyAcceptance.getId());

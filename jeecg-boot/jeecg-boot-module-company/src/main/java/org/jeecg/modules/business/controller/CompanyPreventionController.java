@@ -70,10 +70,12 @@ public class CompanyPreventionController extends JeecgController<CompanyPreventi
                                    @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
                                    HttpServletRequest req, @PathVariable int listType) {
         QueryWrapper<CompanyPrevention> queryWrapper = QueryGenerator.initQueryWrapper(companyPrevention, req.getParameterMap());
-        if (listType == 0) {
-            queryWrapper.ne("status", status.EXPIRED);
-        } else if(listType == 1) {
-            queryWrapper.and(wrapper -> wrapper.eq("status", status.PEND).or().eq("status", status.NORMAL));
+        if (listType == 2) {
+            queryWrapper.eq("status", Constant.status.NORMAL);
+        } else if (listType == 1) {
+            queryWrapper.and(wrapper -> wrapper.eq("status", Constant.status.PEND).or().eq("status", Constant.status.NORMAL));
+        } else if (listType == 0) {
+            queryWrapper.ne("status", Constant.status.EXPIRED).orderByDesc("create_time");
         }
         Page<CompanyPrevention> page = new Page<CompanyPrevention>(pageNo, pageSize);
         IPage<CompanyPrevention> pageList = companyPreventionService.page(page, queryWrapper);

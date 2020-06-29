@@ -55,6 +55,13 @@
         </a-row>
         <a-row v-if="monitorTag !== 'view'">
           <a-col span="12">
+            <a-form-item label="不通过原因：" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <a-textarea v-decorator="['content']" placeholder="备注信息" :rows="2" :disabled="true"/>
+            </a-form-item>
+          </a-col>
+        </a-row>
+        <a-row v-if="monitorTag !== 'view'">
+          <a-col span="12">
             <a-form-item label="申报人" :labelCol="labelCol" :wrapperCol="wrapperCol">
               <a-input v-decorator="['createName']" placeholder="请输入申报人" :disabled="true"></a-input>
             </a-form-item>

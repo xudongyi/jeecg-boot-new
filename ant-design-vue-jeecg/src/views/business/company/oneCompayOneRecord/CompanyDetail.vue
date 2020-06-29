@@ -17,15 +17,15 @@
           <userinfo-list v-if="leftActive==3 && topActive==1" :companyId="companyId"/>
           <product-material-list v-if="leftActive==4 && topActive==1" :companyId="companyId"/>
           <env-trial-list v-if="leftActive==5 && topActive==1" :companyId="companyId"/>
-          <company-acceptance-list v-if="leftActive==6 && topActive==1" :companyId="companyId" :listType="0" :operation-show="false"/>
-          <prevention v-if="leftActive==7 && topActive==1" :companyId="companyId" :listType="0" :operation-show="false"/>
-          <company-dirty-allow-list v-if="leftActive==8 && topActive==1" :companyId="companyId" :listType="0" :operation-show="false"/>
-          <company-risk-waste-list v-if="leftActive==9 && topActive==1" :companyId="companyId" :listType="0" :operation-show="false"/>
-          <company-solid-waste-list v-if="leftActive==10 && topActive==1" :companyId="companyId" :listType="0" :operation-show="false"/>
-          <company-radiate-waste-list v-if="leftActive==11 && topActive==1" :companyId="companyId" :listType="0" :operation-show="false"/>
-          <company-env-tax-list v-if="leftActive==12 && topActive==1" :companyId="companyId" listType="0" :operation-show="false"/>
-          <company-clean-product-list v-if="leftActive==13 && topActive==1" :companyId="companyId" listType="0" :operation-show="false"/>
-          <company-online-info-list v-if="leftActive==14 && topActive==1" :companyId="companyId" listType="0" :operation-show="false"/>
+          <company-acceptance-list v-if="leftActive==6 && topActive==1" :companyId="companyId" :listType="2" :operation-show="false"/>
+          <prevention v-if="leftActive==7 && topActive==1" :companyId="companyId" :listType="2" :operation-show="false"/>
+          <company-dirty-allow-list v-if="leftActive==8 && topActive==1" :companyId="companyId" :listType="2" :operation-show="false"/>
+          <company-risk-waste-list v-if="leftActive==9 && topActive==1" :companyId="companyId" :listType="2" :operation-show="false"/>
+          <company-solid-waste-list v-if="leftActive==10 && topActive==1" :companyId="companyId" :listType="2" :operation-show="false"/>
+          <company-radiate-waste-list v-if="leftActive==11 && topActive==1" :companyId="companyId" :listType="2" :operation-show="false"/>
+          <company-env-tax-list v-if="leftActive==12 && topActive==1" :companyId="companyId" listType="2" :operation-show="false"/>
+          <company-clean-product-list v-if="leftActive==13 && topActive==1" :companyId="companyId" listType="2" :operation-show="false"/>
+          <company-online-info-list v-if="leftActive==14 && topActive==1" :companyId="companyId" listType="2" :operation-show="false"/>
 
           <company-dynamic-supervision-list v-if="leftActive==1 && topActive==2" :companyId="companyId" listType="0" role="view"/>
           <company-admin-penalties-list v-if="leftActive==2 && topActive==2" :companyId="companyId" listType="0" role="view"/>
@@ -58,6 +58,9 @@
     import CompanyComplaintLetterList from "./routeView/CompanyComplaintLetterList";
     import CompanyCleanProductList from "./routeView/CompanyCleanProductList";
     import CompanyOnlineInfoList from "./routeView/CompanyOnlineInfoList";
+    import CompanyRadiateWasteList from "./routeView/CompanyRadiateWasteList";
+    import CompanySolidWasteList from "./routeView/CompanySolidWasteList";
+    import CompanyRiskWasteList from "./routeView/CompanyRiskWasteList";
     import EnvTrialList from "./routeView/EnvTrialList";
     export default {
       name: "CompanyDetail",
@@ -71,7 +74,11 @@
         CompanyCleanProductList,
         CompanyOnlineInfoList,
         ProductMaterialList,
-        EnvTrialList},
+        EnvTrialList,
+        CompanyRadiateWasteList,
+        CompanySolidWasteList,
+        CompanyRiskWasteList
+      },
       props:{
 
       },
