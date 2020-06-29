@@ -62,4 +62,16 @@ public class CompanySysuser implements Serializable {
     @ApiModelProperty(value = "系统用户名")
     private java.lang.String sysUsername;
 
+    public CompanySysuser() {
+        super();
+    }
+
+    public CompanySysuser(String sysUserid, String companyId) {
+        super();
+        this.sysUserid = sysUserid;
+        this.companyId = companyId;
+    }
+
+
+
 }

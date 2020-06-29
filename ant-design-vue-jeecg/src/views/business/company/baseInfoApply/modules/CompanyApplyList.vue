@@ -190,7 +190,6 @@
         let that = this;
         //查询最新归档信息
         queryLatestArchivedData({companyId:this.companyId,fromTable:this.fromTable}).then((res)=>{
-          console.log(res)
           if(res.success){
             that.latestArchived = res.result;
           }else{

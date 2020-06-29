@@ -65,23 +65,7 @@ public class CompanyBaseinfoController extends JeecgController<CompanyBaseinfo, 
 		IPage<CompanyBaseinfo> pageList = companyBaseinfoService.page(page, queryWrapper);
  		return Result.ok(pageList);
 	}
-//	 @AutoLog(value = "company_baseinfo-通过用户id-分页列表查询")
-//	 @ApiOperation(value="company_baseinfo-通过用户id-分页列表查询", notes="company_baseinfo-通过用户id-分页列表查询")
-//	 @GetMapping(value = "/listByUserId/{userId}")
-//	 public Result<?> queryByUserIdRestful(@PathVariable  String userId,CompanyBaseinfo companyBaseinfo,
-//										   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
-//										   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
-//										   HttpServletRequest req) {
-//		 List<String> companyIds = new ArrayList<>();
-//		 if (companySysuserService.queryCompanyIds(userId, companyIds)) return Result.error("未找到对应数据");
-//		 Map<String, String[]> parameterMap = new HashMap(req.getParameterMap());
-//		 parameterMap.put("companyId_MultiString",new String[]{String.join(",", companyIds)});
-//		 QueryWrapper<CompanyBaseinfo> queryWrapper = QueryGenerator.initQueryWrapper(companyBaseinfo, parameterMap);
-//		 Page<CompanyBaseinfo> page = new Page<>(pageNo, pageSize);
-//		 IPage<CompanyBaseinfo> pageList = companyBaseinfoService.page(page, queryWrapper);
-//		 return Result.ok(pageList);
-//
-//	 }
+
 	/**
 	 *   添加
 	 *
@@ -192,20 +176,20 @@ public class CompanyBaseinfoController extends JeecgController<CompanyBaseinfo, 
 		}
 		return Result.ok(companyBaseinfo);
 	}
-	/* *//**
+	 /**
 	  * 通过userid查询
 	  *
 	  * @param userId
 	  * @return
-	  *//*
+	  * */
+
 	 @AutoLog(value = "company_baseinfo-通过用户id查询")
 	 @ApiOperation(value="company_baseinfo-通过用户id查询", notes="company_baseinfo-通过用户id查询")
 	 @GetMapping(value = "/queryByUserId")
 	 public Result<?> queryByUserId(@RequestParam(name="userId",required=true) String userId) {
 		 return resultByUserId(userId);
-	 }*/
+	 }
 
-/*
 	 private Result<?> resultByUserId(@PathVariable String userId) {
 		 List<String> companyIds = new ArrayList<>();
 		 if (companySysuserService.queryCompanyIds(userId, companyIds)) return Result.error("未找到对应数据");
@@ -216,11 +200,11 @@ public class CompanyBaseinfoController extends JeecgController<CompanyBaseinfo, 
 
 		 List<String> companyNameList = new ArrayList<>();
 		 companyBaseinfos.forEach(companySysuser -> {
-			 companyNameList.add(companySysuser.getShortName());
+			 companyNameList.add(companySysuser.getCompanyId());
 		 });
 		 String companyNames = String.join(",", companyNameList);
 		 return Result.ok(companyNames);
-	 }*/
+	 }
 
 
 

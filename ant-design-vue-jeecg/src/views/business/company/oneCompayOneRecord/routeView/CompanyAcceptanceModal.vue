@@ -96,7 +96,7 @@
         this.edit({});
       },
       edit(record) {
-        debugger
+
         //查询所属文件
         let _this =this;
         this.form.resetFields();

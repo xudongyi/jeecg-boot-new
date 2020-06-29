@@ -5,7 +5,7 @@
       <a-row >
         <a-col span = '12'>
         <a-form-item label="企业名称" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.companyName">
-          <a-input v-decorator="['companyName',{}]" placeholder="请输入企业名称":disabled="disable"  ></a-input>
+          <a-input v-decorator="['companyName',{}]" placeholder="请输入企业名称":disabled="true"  ></a-input>
         </a-form-item>
         </a-col>
         <a-col span = '12'>
@@ -62,7 +62,7 @@
         <a-row >
           <a-col span = '12'>
             <a-form-item label="企业法人" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.corporate">
-              <a-input v-decorator="['corporate', {}]" placeholder="请输入企业法人":disabled="disable"  ></a-input>
+              <a-input v-decorator="['corporate', validatorRules.corporate]" placeholder="请输入企业法人":disabled="disable"  ></a-input>
             </a-form-item>
           </a-col>
           <a-col span = '12'>
@@ -327,6 +327,11 @@
             rules: [
               { required: true, message: '请输入纬度!'},
             ]
+          },
+          corporate: {
+            rules: [
+              { required: true, message: '请输入纬度!'},
+            ]
           }
         },
         url: {
@@ -401,7 +406,6 @@
             //    method = 'put';
             // }
             let formData = Object.assign(that.model, values);
-            console.log("表单提交数据",formData)
             httpAction(httpurl,formData,method).then((res)=>{
               if(res.success){
                 that.$message.success(res.message);

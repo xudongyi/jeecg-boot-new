@@ -151,7 +151,6 @@
         this.model = Object.assign({}, record);
         this.visible = true;
         this.$nextTick(() => {
-          console.log(this.model)
           this.model.validStarttime = !this.model.validStarttime?null:moment(this.model.validStarttime,this.dateFormat)
           this.model.validEndtime = !this.model.validEndtime?null:moment(this.model.validEndtime,this.dateFormat)
           this.form.setFieldsValue(pick(this.model, 'licenceCode', 'certificateTime', 'validStarttime', 'validEndtime', 'certificateOffice','dirtyType'))
@@ -209,7 +208,6 @@
             let formData = Object.assign(this.model, values);
             formData.companyId = this.companyId;
             formData.fileList = that.fileList;
-            console.log("表单提交数据", formData)
             httpAction(httpurl, formData, method).then((res) => {
               if (res.success) {
                 that.$message.success(res.message);
@@ -296,13 +294,13 @@
     props: {
       companyId: ""
     },
-    watch: {
-      startValue(val) {
-        console.log('startValue', val);
-      },
-      endValue(val) {
-        console.log('endValue', val);
-      },
-    },
+    // watch: {
+    //   startValue(val) {
+    //     console.log('startValue', val);
+    //   },
+    //   endValue(val) {
+    //     console.log('endValue', val);
+    //   },
+    // },
   }
 </script>

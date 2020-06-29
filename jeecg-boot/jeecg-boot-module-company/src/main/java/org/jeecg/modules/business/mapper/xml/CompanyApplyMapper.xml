@@ -3,17 +3,17 @@
 <mapper namespace="org.jeecg.modules.business.mapper.CompanyApplyMapper">
 
         <resultMap id="CompanyApplyVo" type="org.jeecg.modules.business.vo.CompanyApplyVo" >
-            <result column="id" property="id" jdbcType="VARCHAR"/>
-            <result column="companyName" property="company_name" jdbcType="VARCHAR"/>
-            <result column="fromTable" property="from_table" jdbcType="VARCHAR"/>
-            <result column="createTime" property="create_time" jdbcType="DATE"/>
-            <result column="createBy" property="create_by" jdbcType="VARCHAR"/>
-            <result column="status" property="status" jdbcType="VARCHAR"/>
-            <result column="updateBy" property="update_by" jdbcType="VARCHAR"/>
-            <result column="updateTime" property="update_time" jdbcType="DATE"/>
-            <result column="newId" property="new_id" jdbcType="VARCHAR"/>
-            <result column="oldId" property="old_id" jdbcType="VARCHAR"/>
-            <result column="content" property="content" jdbcType="VARCHAR"/>
+            <result property="id" column="id" jdbcType="VARCHAR"/>
+            <result property="companyName" column="company_name" jdbcType="VARCHAR"/>
+            <result property="fromTable" column="from_table" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="DATE"/>
+            <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+            <result property="status" column="status" jdbcType="VARCHAR"/>
+            <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+            <result property="updateTime" column="update_time" jdbcType="DATE"/>
+            <result property="newId" column="new_id" jdbcType="VARCHAR"/>
+            <result property="oldId" column="old_id" jdbcType="VARCHAR"/>
+            <result property="content" column="content" jdbcType="VARCHAR"/>
         </resultMap>
 
 

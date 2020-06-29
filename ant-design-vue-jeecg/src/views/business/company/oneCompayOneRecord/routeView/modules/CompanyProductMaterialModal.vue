@@ -169,7 +169,6 @@
     },
     computed: {
       displayPro:function(){
-        console.log(this.model.outputType)
         return this.model.outputType==='1';
       }
     },
@@ -237,7 +236,6 @@
             let method = 'post';
             values.companyId = that.companyId;
             let formData = Object.assign(this.model, values);
-            console.log("表单提交数据",formData)
 
             httpAction(httpurl,formData,method).then((res)=>{
               if(res.success){

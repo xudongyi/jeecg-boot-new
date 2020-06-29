@@ -25,6 +25,7 @@
         CompanyApplyModal
       },
         data(){
+          console.log(this.$store.getters.userInfo.companyIds[0])
           return {
             fromTable:"company_baseinfo",
 

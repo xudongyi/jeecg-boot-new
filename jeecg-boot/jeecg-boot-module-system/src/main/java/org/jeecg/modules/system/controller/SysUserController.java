@@ -12,12 +12,14 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.jeecg.common.api.vo.Result;
+import org.jeecg.common.aspect.annotation.AutoLog;
 import org.jeecg.common.aspect.annotation.PermissionData;
 import org.jeecg.common.constant.CommonConstant;
 import org.jeecg.common.system.api.ISysBaseAPI;
@@ -28,6 +30,7 @@ import org.jeecg.common.util.PasswordUtil;
 import org.jeecg.common.util.PmsUtil;
 import org.jeecg.common.util.RedisUtil;
 import org.jeecg.common.util.oConvertUtils;
+import org.jeecg.modules.business.entity.CompanyBase;
 import org.jeecg.modules.business.entity.CompanyBaseinfo;
 import org.jeecg.modules.business.entity.CompanySysuser;
 import org.jeecg.modules.business.service.ICompanyBaseinfoService;
@@ -598,6 +601,27 @@ public class SysUserController {
         return result;
     }
 
+    /**
+     * 分页列表查询
+     *
+     * @param pageNo
+     * @param pageSize
+     * @param req
+     * @return
+     */
+    @AutoLog(value = "企业基础表-分页列表查询")
+    @ApiOperation(value="企业基础表-分页列表查询", notes="企业基础表-分页列表查询")
+    @GetMapping(value = "/companyUserList")
+    public Result<?> companyUserList(@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+                                     @RequestParam(name="pageSize", defaultValue="10") Integer pageSize, HttpServletRequest req) {
+        Result<IPage<SysUser>> result = new Result<IPage<SysUser>>();
+        Page<SysUser> page = new Page<SysUser>(pageNo, pageSize);
+        String companyId = req.getParameter("companyId");
+        IPage<SysUser> pageList = sysUserService.getUserByCompanyId(page, companyId);
+        result.setSuccess(true);
+        result.setResult(pageList);
+        return result;
+    }
     /**
      * 给指定角色添加用户
      *

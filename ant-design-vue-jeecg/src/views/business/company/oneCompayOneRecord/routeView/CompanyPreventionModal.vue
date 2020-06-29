@@ -176,7 +176,6 @@
             formData.companyId=this.companyId;
             formData.type=this.type;
             formData.fileList = that.fileList;
-            console.log("表单提交数据",formData)
             httpAction(httpurl,formData,method).then((res)=>{
               if(res.success){
                 that.$message.success(res.message);

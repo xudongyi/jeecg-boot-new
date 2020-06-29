@@ -63,15 +63,11 @@
             <a @click="handleOpen(record)">用户</a>
             <a-divider type="vertical"/>
 
-
             <a-dropdown>
               <a class="ant-dropdown-link">
                 更多 <a-icon type="down"/>
               </a>
               <a-menu slot="overlay">
-                <a-menu-item>
-                  <a @click="handlePerssion(record.id)">授权</a>
-                </a-menu-item>
                 <a-menu-item>
                   <a @click="handleEdit(record)">编辑</a>
                 </a-menu-item>
@@ -87,7 +83,7 @@
         </div>
         <!-- 右侧的角色权限配置 -->
         <user-role-modal ref="modalUserRole"></user-role-modal>
-        <role-modal ref="modalForm" @ok="modalFormOk"></role-modal>
+        <company-modal ref="modalForm" @ok="modalFormOk"></company-modal>
       </a-card>
     </a-col>
     <a-col :md="rightColMd" :sm="24" v-if="this.rightcolval == 1">
@@ -171,9 +167,9 @@
           </a-table>
         </div>
         <!-- 表单区域 -->
-        <role-modal ref="modalForm" @ok="modalFormOk"></role-modal>
+        <company-modal ref="modalForm" @ok="modalFormOk"></company-modal>
         <user-modal ref="modalForm2" @ok="modalFormOk2"></user-modal>
-        <Select-User-Modal ref="selectUserModal" @selectFinished="selectOK"></Select-User-Modal>
+        <select-user-modal ref="selectUserModal" @selectFinished="selectOK"></select-user-modal>
       </a-card>
     </a-col>
   </a-row>
@@ -182,7 +178,7 @@
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import { deleteAction, postAction, getAction } from '@/api/manage'
   import SelectUserModal from './modules/SelectUserModal'
-  import RoleModal from './modules/RoleModal'
+  import CompanyModal from './modules/CompanyModal'
   import UserModal from './modules/UserModal'
   import { filterObj } from '@/utils/util'
   import UserRoleModal from './modules/UserRoleModal'
@@ -194,7 +190,7 @@
     components: {
       UserRoleModal,
       SelectUserModal,
-      RoleModal,
+      CompanyModal,
       UserModal,
       moment
     },
@@ -252,12 +248,7 @@
             {
               title: '企业名称',
               align: 'center',
-              dataIndex: 'roleCode'
-            },
-            {
-              title: '角色名称',
-              align: 'center',
-              dataIndex: 'roleName'
+              dataIndex: 'companyName'
             },
             {
               title: '创建时间',
@@ -309,12 +300,12 @@
         url: {
           list: '/cb/companyBase/list',
           delete: '/cb/companyBase/delete',
-          list2: '/sys/user/userRoleList',
-          addUserRole: '/sys/user/addSysUserRole',
-          delete2: '/sys/user/deleteUserRole',
-          deleteBatch2: '/sys/user/deleteUserRoleBatch',
-          exportXlsUrl: 'sys/role/exportXls',
-          importExcelUrl: 'sys/role/importExcel'
+          list2: '/sys/user/companyUserList',
+          addUserRole: '/cb/companyBase/addCompanyUser',
+          delete2: '/sys/user/deleteCompanyUser',
+          deleteBatch2: '/sys/user/deleteCompanyUserBatch',
+          // exportXlsUrl: 'sys/role/exportXls',
+          // importExcelUrl: 'sys/role/importExcel'
         }
       }
     },
@@ -407,7 +398,7 @@
         }
         if (this.currentRoleId === '') return
         let params = this.getQueryParams2()//查询条件
-        params.roleId = this.currentRoleId
+        params.companyId = this.currentRoleId
         this.loading2 = true
         getAction(this.url.list2, params).then((res) => {
           if (res.success) {
@@ -474,7 +465,7 @@
       },
       selectOK(data) {
         let params = {}
-        params.roleId = this.currentRoleId
+        params.companyId = this.currentRoleId
         params.userIdList = []
         for (var a = 0; a < data.length; a++) {
           params.userIdList.push(data[a])

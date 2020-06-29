@@ -56,7 +56,6 @@
       //查看
       viewApply(record) {
 
-        console.log(record)
         //查询详情数据
         this.$refs.applyInfoForm.detail(record);
         //单个表比较

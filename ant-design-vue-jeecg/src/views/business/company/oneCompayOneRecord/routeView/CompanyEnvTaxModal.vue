@@ -209,7 +209,6 @@
       },
       ventcategoryChange(value) {
         this.model.ventCategory = value;
-        console.log('ventCategory', this.model.ventCategory, this.model.ventCategory === '0');
       },
       searchMap() {
         let that = this;
@@ -217,7 +216,6 @@
           that.model.ventLocate = values.ventLocate;
         });
         loadBaiduMap({address: this.model.ventLocate}).then((res) => {
-          console.log(res);
           if (res.success) {
             this.form.setFieldsValue({ventLongitude: res.result.lng, ventLatitude: res.result.lat});
           } else {

@@ -167,7 +167,6 @@
     },
     created () {
       this.monitorTag = this.monitor;
-      console.log(this.monitorTag==='view');
       let that = this;
       //查询企业名称
       queryCompanyName({companyIds:this.$store.getters.userInfo.companyIds.join(',')}).then((res) => {
@@ -182,7 +181,6 @@
         let  _this =this;
         this.timer =  setInterval(()=>{
           _this.model.createTime = moment().format(this.dateFormat);
-          console.log(_this.model.createTime );
             this.$nextTick(() => { this.form.setFieldsValue(pick(this.model,'createTime'))})
 
         },1000)
@@ -193,7 +191,6 @@
         this.getTime();
       },
       fileListChange(newFileList){
-        console.log(newFileList)
         this.fileList = newFileList;
       },
       fileDelete(file){
@@ -275,7 +272,6 @@
             let formData = Object.assign(this.model, values);
             formData.createTime = moment().format(this.dateFormat);
             formData.fileList = that.fileList;
-            console.log("表单提交数据",formData)
             httpAction(httpurl,formData,method).then((res)=>{
               if(res.success){
                 that.$message.success(res.message);

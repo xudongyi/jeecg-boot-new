@@ -45,7 +45,6 @@
           // this.close()
         },
         handleOk(){
-          console.log("OK")
           this.$refs.baseModal.handleOk();
 
           this.visible = false;

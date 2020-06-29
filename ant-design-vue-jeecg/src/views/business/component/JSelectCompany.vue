@@ -16,14 +16,15 @@
       return {
         settings: {
           name: '公司',
-          displayKey: 'shortName',
-          returnKeys: [ 'shortName','companyId'],
-          listUrl: '/company/companyBaseinfo/list',
-          queryParamCode: 'shortName',
-          queryParamText: '公司简称',
+          displayKey: 'companyName',
+          returnKeys: [ 'id','companyName'],
+          listUrl: '/cb/companyBase/baseInfolist',
+          queryParamCode: 'companyName',
+          queryParamText: '公司名称',
+          valueKey:'id',
           columns: [
-            { title: '公司简称', dataIndex: 'shortName', align: 'center', width: '30%', widthRight: '70%' },
-            { title: '统一社会信用代码', dataIndex: 'companyId', align: 'center', width: '35%' },
+            { title: '公司名称', dataIndex: 'companyName', align: 'center', width: '30%', widthRight: '70%' },
+            { title: '统一社会信用代码', dataIndex: 'socialCreditCode', align: 'center', width: '35%' },
             { title: '企业法人', dataIndex: 'corporate', align: 'center', width: '25%' }
           ]
         }

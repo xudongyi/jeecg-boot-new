@@ -124,7 +124,6 @@
         comparisonQualification({applyId:index}).then((res)=>{
           if(res.success) {
             that.data = res.result;
-            console.log( res.result)
             if(that.data.add!==undefined)
               that.data.add.forEach(e=>{
                 e.url = getFileAccessHttpUrl(e.url);

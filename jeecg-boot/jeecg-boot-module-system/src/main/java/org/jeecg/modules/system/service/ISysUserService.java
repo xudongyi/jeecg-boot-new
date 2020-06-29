@@ -138,6 +138,13 @@ public interface ISysUserService extends IService<SysUser> {
 	 * @return
 	 */
 	public IPage<SysUser> getUserByRoleId(Page<SysUser> page,String roleId, String username);
+	/**
+	 * 根据companyId查询
+	 * @param
+	 * @return
+	 */
+	public IPage<SysUser> getUserByCompanyId(Page<SysUser> page,String companyId);
+
 
 	/**
 	 * 通过用户名获取用户角色集合

@@ -120,7 +120,6 @@
         this.edit({});
       },
       edit (record) {
-        console.log(this.disable)
         this.form.resetFields();
         this.model = Object.assign({}, record);
         this.visible = true;
@@ -151,7 +150,6 @@
                method = 'put';
             }
             let formData = Object.assign(this.model, values);
-            console.log("表单提交数据",formData)
             httpAction(httpurl,formData,method).then((res)=>{
               if(res.success){
                 that.$message.success(res.message);
@@ -183,7 +181,6 @@
             let method = 'post';
             values.companyId = that.companyId;
             let formData = Object.assign(this.model, values);
-            console.log("表单提交数据",formData)
             httpAction(httpurl,formData,method).then((res)=>{
               if(res.success){
                 that.$message.success(res.message);

@@ -276,6 +276,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 		return userMapper.getUserByRoleId(page,roleId,username);
 	}
 
+	@Override
+	public IPage<SysUser> getUserByCompanyId(Page<SysUser> page, String companyId) {
+		return userMapper.getUserByCompanyId(page,companyId);
+	}
+
 
 	@Override
 	@CacheEvict(value= {CacheConstant.SYS_USERS_CACHE}, key="#username")

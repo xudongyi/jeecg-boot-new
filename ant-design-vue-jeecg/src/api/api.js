@@ -8,7 +8,9 @@ const addRole = (params)=>postAction("/sys/role/add",params);
 const editRole = (params)=>putAction("/sys/role/edit",params);
 const checkRoleCode = (params)=>getAction("/sys/role/checkRoleCode",params);
 const queryall = (params)=>getAction("/sys/role/queryall",params);
-
+//企业管理
+const addCompany = (params)=>postAction("/cb/companyBase/add",params);
+const editCompany = (params)=>putAction("/cb/companyBase/edit",params);
 //用户管理
 const addUser = (params)=>postAction("/sys/user/add",params);
 const editUser = (params)=>putAction("/sys/user/edit",params);
@@ -95,6 +97,8 @@ const getUserNoticeInfo= (params)=>getAction("/sys/sysAnnouncementSend/getMyAnno
 export {
   addRole,
   editRole,
+  addCompany,
+  editCompany,
   checkRoleCode,
   addUser,
   editUser,

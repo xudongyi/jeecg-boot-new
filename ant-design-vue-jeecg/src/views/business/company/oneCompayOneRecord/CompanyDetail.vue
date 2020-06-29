@@ -115,21 +115,23 @@
       watch:{
         "$route": {
           handler(route) {
-            console.log(route.query.companyId);
             this.companyId = route.query.companyId;
-            let _this = this;
-            //发送请求，查找
-            getDetailMenus({companyId: route.query.companyId}).then((res) => {
-              if (res.success) {
-                _this.basicInfoMenus = res.result.basicInfoMenus;
-                _this.superviseMenus = res.result.superviseMenus;
-                _this.leftMenus = this.basicInfoMenus;
-                _this.topActive=1;
-                _this.leftActive=1;
-              } else {
-                console.log(res.message);
-              }
-            });
+            if(route.query.companyId)
+            {
+              let _this = this;
+              //发送请求，查找
+              getDetailMenus({companyId: route.query.companyId}).then((res) => {
+                if (res.success) {
+                  _this.basicInfoMenus = res.result.basicInfoMenus;
+                  _this.superviseMenus = res.result.superviseMenus;
+                  _this.leftMenus = this.basicInfoMenus;
+                  _this.topActive=1;
+                  _this.leftActive=1;
+                } else {
+                  console.log(res.message);
+                }
+              });
+            }
           },
 
         },
@@ -147,17 +149,19 @@
       created() {
 
         let _this = this;
-        //发送请求，查找
-        getDetailMenus({companyId: this.companyId}).then((res) => {
-          if (res.success) {
-            _this.basicInfoMenus = res.result.basicInfoMenus;
-            _this.superviseMenus = res.result.superviseMenus;
-            _this.leftMenus = this.basicInfoMenus;
+        if(this.companyId) {
+          //发送请求，查找
+          getDetailMenus({companyId: this.companyId}).then((res) => {
+            if (res.success) {
+              _this.basicInfoMenus = res.result.basicInfoMenus;
+              _this.superviseMenus = res.result.superviseMenus;
+              _this.leftMenus = this.basicInfoMenus;
 
-          } else {
-            console.log(res.message);
-          }
-        });
+            } else {
+              console.log(res.message);
+            }
+          });
+        }
 
       }
 

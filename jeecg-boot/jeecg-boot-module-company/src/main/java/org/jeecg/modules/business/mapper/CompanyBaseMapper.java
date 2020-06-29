@@ -1,7 +1,12 @@
 package org.jeecg.modules.business.mapper;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.jeecg.modules.business.entity.CompanyBase;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.jeecg.modules.business.vo.CompanyApplyVo;
+import org.jeecg.modules.business.vo.CompanyBaseInfoSimple;
+
+import java.util.List;
 
 /**
  * @Description: 企业基础表
@@ -10,5 +15,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @Version: V1.0
  */
 public interface CompanyBaseMapper extends BaseMapper<CompanyBase> {
-
+    /**
+     * 获取所有公司的简单信息
+     * @return
+     */
+    public List<CompanyBaseInfoSimple> baseInfolist(Page<CompanyBaseInfoSimple> page);
 }

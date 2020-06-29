@@ -93,7 +93,6 @@
         ];
       },
       created(){
-        console.log(this.$store.getters.userInfo)
         if(this.companyid==null) {
 
           this.companyid = this.$store.getters.userInfo.companyIds

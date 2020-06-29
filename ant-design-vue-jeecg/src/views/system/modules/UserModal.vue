@@ -48,7 +48,7 @@
           <j-select-position placeholder="请选择职务" :multiple="false" v-decorator="['post', {}]"/>
         </a-form-item>
         <a-form-item label="管理公司名单" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-select-company placeholder="请选择公司"  v-decorator="['company', {}]"/>
+          <j-select-company placeholder="请选择公司" :multiple="true" v-decorator="['company', {}]"/>
         </a-form-item>
         <a-form-item label="角色分配" :labelCol="labelCol" :wrapperCol="wrapperCol" v-show="!roleDisabled" >
           <a-select
@@ -257,7 +257,7 @@
           userWithDepart: "/sys/user/userDepartList", // 引入为指定用户查看部门信息需要的url
           userId:"/sys/user/generateUserId", // 引入生成添加用户情况下的url
           syncUserByUserName:"/process/extActProcess/doSyncUserByUserName",//同步用户到工作流
-          // companyinfoByUserId: "/company/companyBaseinfo/queryByUserId", // 引入为指定用户查看部门信息需要的url
+          queryCompanyIds: "/cb/companyBase/queryCompanyIds", // 引入为指定用户查看部门信息需要的url
         },
         identity:"1",
         fileList:[],
@@ -304,19 +304,7 @@
           }
         });
       },
-      // queryCompanyByUserId: async function(userId){
-      //   var that = this;
-      //   await  getAction(that.url.companyinfoByUserId,{userId:that.userId}).then((res)=>{
-      //     if(res.success){
-      //       console.log("res.message",res.message)
-      //       //后端String类型默认存在messgae
-      //       that.companys = res.message;
-      //
-      //     }else{
-      //       console.log(res.message);
-      //     }
-      //   })
-      // },
+
       refresh () {
           this.selectedDepartKeys=[];
           this.checkedDepartKeys=[];
@@ -332,7 +320,7 @@
         this.refresh();
         this.edit({activitiSync:'1'});
       },
-      edit: function (record) {
+      edit:  function (record) {
         this.resetScreenSize(); // 调用此方法,根据屏幕宽度自适应调整抽屉的宽度
         let that = this;
         that.initialRoleList();
@@ -346,16 +334,21 @@
         }
         that.userId = record.id;
         that.visible = true;
-
-        //查询所属公司
-        //  that.queryCompanyByUserId(record.id);
-        console.log("USER_INFO",Vue.ls.get(USER_INFO));
-        record.company = Vue.ls.get(USER_INFO).companyIds.join(",");
         that.model = Object.assign({}, record);
+        //查询所属公司
+        getAction(that.url.queryCompanyIds,{userId:record.id}).then((res)=>{
+          that.companys = res.result.join(",")
+          that.model.company =  that.companys;
+          that.$nextTick(() => {
+            that.form.setFieldsValue(pick({company: that.companys },'company' ))
+
+          });
+         });
         that.$nextTick(() => {
-          that.form.setFieldsValue(pick(this.model, 'username', 'sex', 'realname', 'email', 'phone', 'activitiSync', 'workNo', 'telephone', 'post','company'))
+          that.form.setFieldsValue(pick(this.model, 'username', 'sex', 'realname', 'email', 'phone', 'activitiSync', 'workNo', 'telephone', 'post'))
 
         });
+
         //身份为上级显示负责部门，否则不显示
         if(this.model.userIdentity=="2"){
             this.identity="2";
@@ -530,7 +523,6 @@
               dataId: this.userId
             };
             duplicateCheck(params).then((res) => {
-              console.log(res)
               if (res.success) {
                 callback()
               } else {
@@ -578,7 +570,6 @@
       },
 
       normFile  (e) {
-        console.log('Upload event:', e);
         if (Array.isArray(e)) {
           return e
         }

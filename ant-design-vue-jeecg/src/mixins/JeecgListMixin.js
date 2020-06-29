@@ -193,6 +193,7 @@ export const JeecgListMixin = {
       this.$refs.modalForm.disableSubmit = false;
     },
     handleAdd: function () {
+      debugger
       this.$refs.modalForm.add();
       this.$refs.modalForm.title = "新增";
       this.$refs.modalForm.disableSubmit = false;

@@ -109,7 +109,6 @@
         this.edit({});
       },
       fileListChange(newFileList){
-        console.log("文件列表改变",newFileList);
         this.fileList = newFileList;
       },
       fileDelete(file){

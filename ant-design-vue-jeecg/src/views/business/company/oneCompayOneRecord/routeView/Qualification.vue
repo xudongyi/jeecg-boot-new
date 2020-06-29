@@ -63,7 +63,6 @@
           loadQualifications({companyId:that.companyId}).then((res)=>{
             if(res.success){
               that.qualificttionImgs = res.result;
-              console.log(res.result);
               that.$refs.companyImage.initImages(res.result.companyImage);
 
             }else{
