@@ -10,7 +10,7 @@
     cancelText="关闭"
     v-if="visible"
     >
-    <base-info ref="baseModal" :companyId="companyId" :ftitle="title"  @OK="modalFormOk"></base-info>
+    <base-info ref="baseModal" :companyId="companyId" :ftitle="title"  @ok="modalFormOk"></base-info>
 
     <template slot="footer">
       <a-button type="primary" @click="handleCancel">关闭</a-button>
@@ -48,12 +48,12 @@
           this.$refs.baseModal.handleOk();
 
           this.visible = false;
-          this.$emit('submitOk');
+
 
 
         },
         modalFormOk(){
-
+          this.$emit('submitOk');
         }
 
       },created() {

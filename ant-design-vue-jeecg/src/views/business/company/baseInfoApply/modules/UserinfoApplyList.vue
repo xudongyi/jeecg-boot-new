@@ -105,7 +105,7 @@
       </a-table>
     </div>
 
-    <companyUserinfo-modal ref="modalForm" @ok="modalFormOk" :company-id="companyId"></companyUserinfo-modal>
+    <companyUserinfo-modal ref="modalForm" @ok="modalFormOk" @declare="reloadApply" :company-id="companyId"></companyUserinfo-modal>
   </a-card>
 </template>
 
@@ -264,6 +264,9 @@
       initDictConfig(){
 
       },
+      reloadApply(){
+        this.$emit('reloadApply');
+      },
       localReset(){
           this.queryParam = {companyId:this.companyId};
           this.loadData(1);
@@ -288,6 +291,8 @@
                   that.$message.success(res.message);
                   that.loadData();
                   that.onClearSelected();
+                  that.reloadApply();
+
                 } else {
                   that.$message.warning(res.message);
                 }

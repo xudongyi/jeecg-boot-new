@@ -118,7 +118,7 @@
       </a-table>
     </div>
 
-    <companyProductMaterial-modal ref="modalForm" :company-id="companyId" @ok="modalFormOk"></companyProductMaterial-modal>
+    <companyProductMaterial-modal ref="modalForm" :company-id="companyId" @ok="modalFormOk" @declare="reloadApply"></companyProductMaterial-modal>
   </a-card>
 </template>
 
@@ -270,6 +270,9 @@
         this.handleAdd();
 
       },
+      reloadApply(){
+        this.$emit('reloadApply');
+      },
       applyEdit(record){
         this.$refs.modalForm.disable = false;
         this.handleEdit(record);
@@ -300,6 +303,7 @@
                   that.$message.success(res.message);
                   that.loadData();
                   that.onClearSelected();
+                  that.reloadApply();
                 } else {
                   that.$message.warning(res.message);
                 }

@@ -122,16 +122,11 @@
             }
           },
           {
-            title:'所属部门',
+            title:'企业名称',
             align:"center",
-            dataIndex: 'sysOrgCode'
-          },
-          {
-            title:'企业简称',
-            align:"center",
-            dataIndex: 'shortName',
-            key:'shortName',
-            scopedSlots: { customRender: 'shortName' }
+            dataIndex: 'companyName',
+            key:'companyName',
+            scopedSlots: { customRender: 'companyName' }
           },
           {
             title:'统一社会信用代码',

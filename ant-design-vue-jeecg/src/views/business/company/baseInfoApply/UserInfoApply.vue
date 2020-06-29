@@ -4,9 +4,9 @@
 
       <company-apply-list :company-id="companyId"
                         :from-table="fromTable" @applyDetail = "applyDetail"  @toDetail="latestDetail" @toApply="apply"
-                         v-if="!showDetail"></company-apply-list>
+                         v-show="!showDetail"  ref = "applyList"></company-apply-list>
 
-    <userinfo-apply-list :isApply="isApply" :company-id="companyId" v-if="showDetail" ></userinfo-apply-list>
+    <userinfo-apply-list :isApply="isApply" :company-id="companyId" v-show="showDetail" @reloadApply="reload"></userinfo-apply-list>
     <companyApply-modal ref="applyInfoForm" ></companyApply-modal>
   </div>
 </template>
@@ -56,7 +56,10 @@
           //单个表比较
           this.$refs.applyInfoForm.compareDetail(this.fromTable);
         },
-
+        reload(){
+          this.$refs.applyList.reInit();
+          this.showDetail=false;
+        }
 
       },
 

@@ -101,7 +101,7 @@
       </a-table>
     </div>
 
-    <companyEnvTrial-modal ref="modalForm" :company-id="companyId" @ok="modalFormOk"></companyEnvTrial-modal>
+    <companyEnvTrial-modal ref="modalForm" :company-id="companyId" @ok="modalFormOk" @declare="reloadApply"></companyEnvTrial-modal>
   </a-card>
 </template>
 
@@ -228,6 +228,9 @@
         this.queryParam = {companyId:this.companyId};
         this.loadData(1);
       },
+      reloadApply(){
+        this.$emit('reloadApply');
+      },
       batchApply() {
         if (this.selectedRowKeys.length <= 0) {
           this.$message.warning('请选择一条记录！');
@@ -248,6 +251,7 @@
                   that.$message.success(res.message);
                   that.loadData();
                   that.onClearSelected();
+                  that.reloadApply();
                 } else {
                   that.$message.warning(res.message);
                 }

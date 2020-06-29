@@ -17,7 +17,9 @@ import org.jeecg.modules.business.entity.CompanySysuser;
 import org.jeecg.modules.business.service.ICompanyApplyService;
 import org.jeecg.modules.business.service.ICompanyBaseinfoService;
 import org.jeecg.modules.business.service.ICompanySysuserService;
+import org.jeecg.modules.business.service.IViewCompanyBaseService;
 import org.jeecg.modules.business.utils.Constant;
+import org.jeecg.modules.business.vo.ViewCompanyBase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -43,6 +45,8 @@ public class CompanyBaseinfoController extends JeecgController<CompanyBaseinfo, 
 	 private ICompanySysuserService companySysuserService;
 	 @Autowired
 	 private ICompanyApplyService companyApplyService;
+	 @Autowired
+	 private IViewCompanyBaseService viewCompanyBaseService;
 	/**
 	 * 分页列表查询
 	 *
@@ -55,14 +59,13 @@ public class CompanyBaseinfoController extends JeecgController<CompanyBaseinfo, 
 	@AutoLog(value = "company_baseinfo-分页列表查询")
 	@ApiOperation(value="company_baseinfo-分页列表查询", notes="company_baseinfo-分页列表查询")
 	@GetMapping(value = "/list")
-	public Result<?> queryPageList(CompanyBaseinfo companyBaseinfo,
+	public Result<?> queryPageList(ViewCompanyBase viewCompanyBase,
 								   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
 								   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
 								   HttpServletRequest req) {
-		QueryWrapper<CompanyBaseinfo> queryWrapper = QueryGenerator.initQueryWrapper(companyBaseinfo, req.getParameterMap());
-		Page<CompanyBaseinfo> page = new Page<CompanyBaseinfo>(pageNo, pageSize);
-		queryWrapper.eq("status",Constant.status.NORMAL);
-		IPage<CompanyBaseinfo> pageList = companyBaseinfoService.page(page, queryWrapper);
+		QueryWrapper<ViewCompanyBase> queryWrapper = QueryGenerator.initQueryWrapper(viewCompanyBase, req.getParameterMap());
+		Page<ViewCompanyBase> page = new Page<>(pageNo, pageSize);
+		IPage<ViewCompanyBase> pageList = viewCompanyBaseService.page(page, queryWrapper);
  		return Result.ok(pageList);
 	}
 
