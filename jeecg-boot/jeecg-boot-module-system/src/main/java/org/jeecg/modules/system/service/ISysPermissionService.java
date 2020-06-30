@@ -32,7 +32,7 @@ public interface ISysPermissionService extends IService<SysPermission> {
 	
 	public List<SysPermission> queryByUser(String username);
 
-	public List<SysPermission> queryByUserAndSys(String username,String systemCode);
+	public List<SysPermission> queryByUserAndSys(String username,String systemId);
 
 	/**
 	 * 根据permissionId删除其关联的SysPermissionDataRule表中的数据

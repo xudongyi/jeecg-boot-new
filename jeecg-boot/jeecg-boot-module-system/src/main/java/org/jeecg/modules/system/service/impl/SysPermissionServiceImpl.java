@@ -218,8 +218,8 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, S
 	public List<SysPermission> queryByUser(String username) {
 		return this.sysPermissionMapper.queryByUser(username);
 	}
-	public List<SysPermission> queryByUserAndSys(String username,String systemCode){
-		return this.sysPermissionMapper.queryByUserAndSys(username,systemCode);
+	public List<SysPermission> queryByUserAndSys(String username,String systemId){
+		return this.sysPermissionMapper.queryByUserAndSys(username,systemId);
 	}
 
 	/**

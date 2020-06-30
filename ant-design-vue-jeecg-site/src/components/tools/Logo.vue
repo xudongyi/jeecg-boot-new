@@ -21,7 +21,7 @@
     props: {
       title: {
         type: String,
-        default: '一企一档',
+        default: '一站一档',
         required: false
       },
       showTitle: {

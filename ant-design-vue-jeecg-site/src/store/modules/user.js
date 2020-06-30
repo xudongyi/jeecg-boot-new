@@ -123,7 +123,7 @@ const user = {
       console.log("MYP: user GetPermissionList");
       return new Promise((resolve, reject) => {
         let v_token = Vue.ls.get(ACCESS_TOKEN);
-        let params = {token: v_token, systemCode: window._CONFIG['systemCode']};
+        let params = {token: v_token, systemId: window._CONFIG['systemId']};
         queryPermissionsByUser(params).then(response => {
           const menuData = response.result.menu;
           const authData = response.result.auth;
