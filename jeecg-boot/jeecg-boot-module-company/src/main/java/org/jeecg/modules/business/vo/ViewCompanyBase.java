@@ -36,10 +36,10 @@ public class ViewCompanyBase implements Serializable {
     private String companyId;
 
 	/**所属部门*/
-    @ApiModelProperty(value = "所属部门")
+    @Excel(name = "企业名称", width = 15)
+    @ApiModelProperty(value = "企业名称")
     private String companyName;
 	/**数据状态*/
-	@Excel(name = "数据状态", width = 15)
     @ApiModelProperty(value = "数据状态")
     private String status;
 

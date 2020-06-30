@@ -197,7 +197,8 @@ public class SysPermissionController {
 	 * @return
 	 */
 	@RequestMapping(value = "/getUserPermissionByToken", method = RequestMethod.GET)
-	public Result<?> getUserPermissionByToken(@RequestParam(name = "token", required = true) String token) {
+	public Result<?> getUserPermissionByToken(@RequestParam(name = "token", required = true) String token,
+											  @RequestParam(name = "systemCode", required = true) String systemCode) {
 		Result<JSONObject> result = new Result<JSONObject>();
 		try {
 			if (oConvertUtils.isEmpty(token)) {
@@ -205,7 +206,7 @@ public class SysPermissionController {
 			}
 			log.info(" ------ 通过令牌获取用户拥有的访问菜单 ---- TOKEN ------ " + token);
 			String username = JwtUtil.getUsername(token);
-			List<SysPermission> metaList = sysPermissionService.queryByUser(username);
+			List<SysPermission> metaList = sysPermissionService.queryByUserAndSys(username,systemCode);
 			//添加首页路由
 			//update-begin-author:taoyan date:20200211 for: TASK #3368 【路由缓存】首页的缓存设置有问题，需要根据后台的路由配置来实现是否缓存
 			if(!PermissionDataUtil.hasIndexPage(metaList)){

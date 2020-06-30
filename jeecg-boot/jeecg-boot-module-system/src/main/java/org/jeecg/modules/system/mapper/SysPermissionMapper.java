@@ -30,7 +30,12 @@ public interface SysPermissionMapper extends BaseMapper<SysPermission> {
 	  *   根据用户查询用户权限
 	 */
 	public List<SysPermission> queryByUser(@Param("username") String username);
-	
+	/**
+	 *   根据用户查询用户权限
+	 */
+	public List<SysPermission> queryByUserAndSys(@Param("username") String username,@Param("systemCode") String systemCode);
+
+
 	/**
 	 *   修改菜单状态字段： 是否子节点
 	 */

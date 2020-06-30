@@ -38,6 +38,7 @@
 			<groupId>org.jeecgframework.boot</groupId>
 			<artifactId>jeecg-boot-module-company</artifactId>
 		</dependency>
+
 	</dependencies>
 	
 	<build>
