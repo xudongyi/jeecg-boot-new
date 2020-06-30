@@ -17,7 +17,8 @@
 		<module>jeecg-boot-base-common</module>
 		<module>jeecg-boot-module-company</module>
 		<module>jeecg-boot-module-system</module>
-    </modules>
+		<module>jeecg-boot-module-site</module>
+	</modules>
 
 	<distributionManagement>
 	  	<repository>
