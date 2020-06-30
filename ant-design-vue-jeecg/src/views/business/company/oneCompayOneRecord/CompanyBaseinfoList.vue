@@ -80,7 +80,7 @@
         class="j-table-force-nowrap"
         @change="handleTableChange">
 
-        <a slot="shortName" @click="handleDetail(record)" slot-scope="text, record">{{ text }}</a>
+        <a slot="companyName" @click="handleDetail(record)" slot-scope="text, record">{{ text }}</a>
 
 
       </a-table>
@@ -156,7 +156,7 @@
         ],
         url: {
           list: "/company/companyBaseinfo/list",
-          exportXlsUrl:"/company/companyBaseinfo/exportXls"
+          exportXlsUrl:"/company/viewCompanyBase/exportXls"
         },
         dictOptions:{},
         queryParam:{

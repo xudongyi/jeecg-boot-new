@@ -19,6 +19,7 @@ import org.jeecg.modules.business.service.ICompanyBaseinfoService;
 import org.jeecg.modules.business.service.ICompanySysuserService;
 import org.jeecg.modules.business.service.IViewCompanyBaseService;
 import org.jeecg.modules.business.utils.Constant;
+import org.jeecg.modules.business.vo.CompanyBaseInfoSimple;
 import org.jeecg.modules.business.vo.ViewCompanyBase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -249,16 +250,6 @@ public class CompanyBaseinfoController extends JeecgController<CompanyBaseinfo, 
 		 String companyNames = String.join(",", companyNameList);
 		 return Result.ok(companyNames);
 	 }
-    /**
-    * 导出excel
-    *
-    * @param request
-    * @param companyBaseinfo
-    */
-    @RequestMapping(value = "/exportXls")
-    public ModelAndView exportXls(HttpServletRequest request, CompanyBaseinfo companyBaseinfo) {
-        return super.exportXls(request, companyBaseinfo, CompanyBaseinfo.class, Constant.tables.BASEINFO);
-    }
 
     /**
       * 通过excel导入数据

@@ -31,7 +31,9 @@ public interface ISysPermissionService extends IService<SysPermission> {
 	public void editPermission(SysPermission sysPermission) throws JeecgBootException;
 	
 	public List<SysPermission> queryByUser(String username);
-	
+
+	public List<SysPermission> queryByUserAndSys(String username,String systemCode);
+
 	/**
 	 * 根据permissionId删除其关联的SysPermissionDataRule表中的数据
 	 * 

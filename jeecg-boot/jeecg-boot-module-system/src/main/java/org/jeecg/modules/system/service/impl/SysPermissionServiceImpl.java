@@ -218,6 +218,9 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, S
 	public List<SysPermission> queryByUser(String username) {
 		return this.sysPermissionMapper.queryByUser(username);
 	}
+	public List<SysPermission> queryByUserAndSys(String username,String systemCode){
+		return this.sysPermissionMapper.queryByUserAndSys(username,systemCode);
+	}
 
 	/**
 	 * 根据permissionId删除其关联的SysPermissionDataRule表中的数据
