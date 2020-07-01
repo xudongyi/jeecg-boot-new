@@ -19,6 +19,7 @@ import org.jeecg.modules.system.model.SysPermissionTree;
 import org.jeecg.modules.system.model.TreeModel;
 import org.jeecg.modules.system.service.*;
 import org.jeecg.modules.system.util.PermissionDataUtil;
+import org.jeecg.modules.system.vo.ViewSysPermission;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,6 +41,8 @@ public class SysPermissionController {
 
 	@Autowired
 	private ISysPermissionService sysPermissionService;
+	@Autowired
+	private IViewSysPermissionService viewSysPermissionService;
 
 	@Autowired
 	private ISysRolePermissionService sysRolePermissionService;
@@ -60,10 +63,10 @@ public class SysPermissionController {
         long start = System.currentTimeMillis();
 		Result<List<SysPermissionTree>> result = new Result<>();
 		try {
-			LambdaQueryWrapper<SysPermission> query = new LambdaQueryWrapper<SysPermission>();
+			LambdaQueryWrapper<ViewSysPermission> query = new LambdaQueryWrapper<>();
 			query.eq(SysPermission::getDelFlag, CommonConstant.DEL_FLAG_0);
 			query.orderByAsc(SysPermission::getSortNo);
-			List<SysPermission> list = sysPermissionService.list(query);
+			List<ViewSysPermission> list = viewSysPermissionService.list(query);
 			List<SysPermissionTree> treeList = new ArrayList<>();
 			getTreeList(treeList, list, null);
 			result.setResult(treeList);
@@ -209,10 +212,10 @@ public class SysPermissionController {
 			List<SysPermission> metaList = sysPermissionService.queryByUserAndSys(username,systemId);
 			//添加首页路由
 			//update-begin-author:taoyan date:20200211 for: TASK #3368 【路由缓存】首页的缓存设置有问题，需要根据后台的路由配置来实现是否缓存
-			if(!PermissionDataUtil.hasIndexPage(metaList)){
-				SysPermission indexMenu = sysPermissionService.list(new LambdaQueryWrapper<SysPermission>().eq(SysPermission::getName,"首页")).get(0);
-				metaList.add(0,indexMenu);
-			}
+//			if(!PermissionDataUtil.hasIndexPage(metaList)){
+//				SysPermission indexMenu = sysPermissionService.list(new LambdaQueryWrapper<SysPermission>().eq(SysPermission::getName,"首页")).get(0);
+//				metaList.add(0,indexMenu);
+//			}
 			//update-end-author:taoyan date:20200211 for: TASK #3368 【路由缓存】首页的缓存设置有问题，需要根据后台的路由配置来实现是否缓存
 			JSONObject json = new JSONObject();
 			JSONArray menujsonArray = new JSONArray();
@@ -422,7 +425,7 @@ public class SysPermissionController {
 		return result;
 	}
 
-	private void getTreeList(List<SysPermissionTree> treeList, List<SysPermission> metaList, SysPermissionTree temp) {
+	private void getTreeList(List<SysPermissionTree> treeList, List<? extends SysPermission> metaList, SysPermissionTree temp) {
 		for (SysPermission permission : metaList) {
 			String tempPid = permission.getParentId();
 			SysPermissionTree tree = new SysPermissionTree(permission);
@@ -440,6 +443,7 @@ public class SysPermissionController {
 
 		}
 	}
+
 
 	private void getTreeModelList(List<TreeModel> treeList, List<SysPermission> metaList, TreeModel temp) {
 		for (SysPermission permission : metaList) {
@@ -714,7 +718,7 @@ public class SysPermissionController {
 	/**
 	 * 删除菜单权限数据
 	 * 
-	 * @param sysPermissionDataRule
+	 * @param id
 	 * @return
 	 */
 	@RequestMapping(value = "/deletePermissionRule", method = RequestMethod.DELETE)

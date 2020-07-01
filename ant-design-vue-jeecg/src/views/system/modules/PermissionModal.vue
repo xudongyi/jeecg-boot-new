@@ -68,7 +68,23 @@
           :wrapperCol="wrapperCol"
           label="默认跳转地址">
           <a-input placeholder="请输入路由参数 redirect" v-decorator="[ 'redirect',{}]" :readOnly="disableSubmit"/>
+
+
         </a-form-item>
+        <a-form-item
+                :labelCol="labelCol"
+                :wrapperCol="wrapperCol"
+                label="归属系统">
+          <a-select placeholder="请选择所属系统" v-decorator="[ 'systemId',{}]" :readOnly="disableSubmit">
+            <a-select-option v-for="(item, key) in systems" :key="key" :value="item.value">
+              <span style="display: inline-block;width: 100%" :title=" item.text || item.label ">
+                {{ item.text || item.label }}
+              </span>
+            </a-select-option>
+          </a-select>
+        </a-form-item>
+
+
 
         <a-form-item
           v-show="!show"
@@ -174,15 +190,17 @@
 </template>
 
 <script>
-  import {addPermission,editPermission,queryTreeList, duplicateCheck} from '@/api/api'
+  import {addPermission,editPermission,queryTreeList, duplicateCheck,ajaxGetSystemItems} from '@/api/api'
   import Icons from './icon/Icons'
   import pick from 'lodash.pick'
+  import Vue from "vue";
 
   export default {
     name: "PermissionModal",
     components: {Icons},
     data () {
       return {
+        systems:[],
         drawerWidth:700,
         treeData:[],
         treeValue: '0-0-4',
@@ -413,6 +431,27 @@
         }
       },
       initDictConfig() {
+        let key  ='system_id_names';
+        //加载系统列表
+        //优先从缓存中读取字典配置
+        if( Vue.ls.get(key)){
+          this.systems = Vue.ls.get(key);
+          let _this =  this;
+
+          return
+        }
+
+        //根据字典Code, 初始化字典数组
+        ajaxGetSystemItems().then((res) => {
+          if (res.success) {
+//                console.log(res.result);
+            this.systems = res.result;
+            Vue.ls.set(key, res.result, 7 * 24 * 60 * 60 * 1000)
+
+          }
+        })
+
+
       },
       handleParentIdChange(value){
         if(!value){
