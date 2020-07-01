@@ -33,7 +33,7 @@ public interface SysPermissionMapper extends BaseMapper<SysPermission> {
 	/**
 	 *   根据用户查询用户权限
 	 */
-	public List<SysPermission> queryByUserAndSys(@Param("username") String username,@Param("systemCode") String systemCode);
+	public List<SysPermission> queryByUserAndSys(@Param("username") String username,@Param("systemId") String systemId);
 
 
 	/**
