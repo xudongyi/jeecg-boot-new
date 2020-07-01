@@ -154,8 +154,7 @@ public class SysPermission implements Serializable {
 	/*update_begin author:wuxianquan date:20190908 for:实体增加字段 */
     /** 外链菜单打开方式 0/内部打开 1/外部打开 */
     private boolean internalOrExternal;
-	/*update_end author:wuxianquan date:20190908 for:实体增加字段 */
-
+	private String systemId;
     public SysPermission() {
     	
     }

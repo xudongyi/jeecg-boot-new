@@ -33,11 +33,13 @@
         <!-- 操作按钮区域 -->
         <div class="table-operator" style="margin: 5px 0 10px 2px">
           <a-button @click="handleAdd" type="primary" icon="plus">新建企业</a-button>
-          <!--<a-button @click="handleEdit(model1)" type="primary" icon="plus">角色编辑</a-button>-->
-<!--          <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
+<!--
+          <a-button @click="handleEdit(model1)" type="primary" icon="plus">角色编辑</a-button>
+-->
+          <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
             <a-button type="primary" icon="import">导入</a-button>
           </a-upload>
-          <a-button type="primary" icon="download" @click="handleExportXls('角色管理')">导出</a-button>-->
+          <a-button type="primary" icon="download" @click="handleExportXls('企业数据导入模板')">下载模板</a-button>
         </div>
 
         <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">
@@ -304,8 +306,8 @@
           addUserRole: '/cb/companyBase/addCompanyUser',
           delete2: '/sys/user/deleteCompanyUser',
           deleteBatch2: '/sys/user/deleteCompanyUserBatch',
-          // exportXlsUrl: 'sys/role/exportXls',
-          // importExcelUrl: 'sys/role/importExcel'
+          exportXlsUrl: '/sys/system/exportXls',
+          importExcelUrl: '/sys/system/importExcel'
         }
       }
     },

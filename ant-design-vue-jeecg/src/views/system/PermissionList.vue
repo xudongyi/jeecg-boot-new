@@ -106,11 +106,11 @@
           return text
         }
       }
-    },/*{
-      title: '权限编码',
-      dataIndex: 'perms',
-      key: 'permissionCode',
-    },*/{
+    },{
+      title: '所属系统',
+      dataIndex: 'systemName',
+      key: 'systemName',
+    },{
       title: 'icon',
       dataIndex: 'icon',
       key: 'icon'
