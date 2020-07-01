@@ -75,10 +75,10 @@
                 :labelCol="labelCol"
                 :wrapperCol="wrapperCol"
                 label="归属系统">
-          <a-select placeholder="请选择所属系统" v-decorator="[ 'systemId',{}]" :readOnly="disableSubmit">
-            <a-select-option v-for="(item, key) in systems" :key="key" :value="item.value">
-              <span style="display: inline-block;width: 100%" :title=" item.text || item.label ">
-                {{ item.text || item.label }}
+          <a-select placeholder="请选择所属系统" v-decorator="[ 'systemId',{}]" >
+            <a-select-option v-for="(item, key) in systems" :key="key" :value="item.id">
+              <span style="display: inline-block;width: 100%" :title=" item.name ">
+                {{ item.name  }}
               </span>
             </a-select-option>
           </a-select>
@@ -312,7 +312,8 @@
 
         this.visible = true;
         this.loadTree();
-        let fieldsVal = pick(this.model,'name','perms','permsType','component','url','sortNo','menuType','status');
+        // console .log(this.model)
+        let fieldsVal = pick(this.model,'name','perms','permsType','component','systemId','url','sortNo','menuType','status');
         this.$nextTick(() => {
           this.form.setFieldsValue(fieldsVal)
         });
@@ -326,6 +327,7 @@
         const that = this;
         // 触发表单验证
         this.form.validateFields((err, values) => {
+          debugger
           if (!err) {
             this.model.alwaysShow = this.alwaysShow;
             this.model.hidden = this.menuHidden;
@@ -431,6 +433,7 @@
         }
       },
       initDictConfig() {
+        debugger
         let key  ='system_id_names';
         //加载系统列表
         //优先从缓存中读取字典配置
@@ -443,8 +446,8 @@
 
         //根据字典Code, 初始化字典数组
         ajaxGetSystemItems().then((res) => {
+
           if (res.success) {
-//                console.log(res.result);
             this.systems = res.result;
             Vue.ls.set(key, res.result, 7 * 24 * 60 * 60 * 1000)
 

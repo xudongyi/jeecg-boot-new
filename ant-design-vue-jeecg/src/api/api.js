@@ -77,6 +77,8 @@ function getDictItemsFromCache(dictCode) {
   }
 }
 
+export const ajaxGetSystemItems = ()=>getAction("/sys/system/list",{});
+
 //系统通告
 const doReleaseData = (params)=>getAction("/sys/annountCement/doReleaseData",params);
 const doReovkeData = (params)=>getAction("/sys/annountCement/doReovkeData",params);
