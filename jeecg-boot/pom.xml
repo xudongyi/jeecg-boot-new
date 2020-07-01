@@ -390,6 +390,11 @@
 				<artifactId>jeecg-boot-module-company</artifactId>
 				<version>${jeecgboot.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.jeecgframework.boot</groupId>
+				<artifactId>jeecg-boot-module-site</artifactId>
+				<version>${jeecgboot.version}</version>
+			</dependency>
 	    	<!-- 七牛云SDK -->
 			<dependency>
 				<groupId>com.qiniu</groupId>
