@@ -64,7 +64,8 @@ public class SysPollutionCode implements Serializable {
     @ApiModelProperty(value = "计量单位-总量-数学表达式")
     private java.lang.String amountUnitMath;
 	/**是否有折算值*/
-	@Excel(name = "是否有折算值", width = 15)
+	@Excel(name = "是否有折算值", width = 15, dicCode = "yes_or_no")
+	@Dict(dicCode = "yes_or_no")
     @ApiModelProperty(value = "是否有折算值")
     private java.lang.String isZs;
 	/**格式值*/
@@ -77,15 +78,18 @@ public class SysPollutionCode implements Serializable {
     @ApiModelProperty(value = "污染因子类型")
     private java.lang.String type;
 	/**数据是否重复*/
-	@Excel(name = "数据是否重复", width = 15)
+	@Excel(name = "数据是否重复", width = 15, dicCode = "yes_or_no")
+	@Dict(dicCode = "yes_or_no")
     @ApiModelProperty(value = "数据是否重复")
     private java.lang.String isRepeat;
 	/**是否含有排放量*/
-	@Excel(name = "是否含有排放量", width = 15)
+	@Excel(name = "是否含有排放量", width = 15, dicCode = "yes_or_no")
+	@Dict(dicCode = "yes_or_no")
     @ApiModelProperty(value = "是否含有排放量")
     private java.lang.String isTotal;
 	/**是否为主要污染物*/
-	@Excel(name = "是否为主要污染物", width = 15)
+	@Excel(name = "是否为主要污染物", width = 15, dicCode = "yes_or_no")
+	@Dict(dicCode = "yes_or_no")
     @ApiModelProperty(value = "是否为主要污染物")
     private java.lang.String isImportant;
 	/**异常值上限*/
@@ -101,7 +105,8 @@ public class SysPollutionCode implements Serializable {
     @ApiModelProperty(value = "排序")
     private java.lang.String sort;
 	/**是否启用*/
-	@Excel(name = "是否启用", width = 15)
+	@Excel(name = "是否启用", width = 15, dicCode = "yes_or_no")
+	@Dict(dicCode = "yes_or_no")
     @ApiModelProperty(value = "是否启用")
     private java.lang.String isUse;
 	/**备注*/

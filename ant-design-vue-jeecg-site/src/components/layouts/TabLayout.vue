@@ -79,7 +79,7 @@
       }
     },
     created() {
-      debugger
+
       if (this.$route.path != indexKey) {
         this.addIndexToFirst()
       }

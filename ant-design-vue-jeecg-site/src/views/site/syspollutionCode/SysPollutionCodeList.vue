@@ -86,13 +86,15 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="handleEdit(record)">编辑</a>
 
-          <a-divider type="vertical" />
+
+<!--          <a-divider type="vertical" />-->
           <a-dropdown>
             <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
             <a-menu slot="overlay">
               <a-menu-item>
+                <a @click="toHandleEdit(record)">编辑</a>
+                <a @click="handleView(record)">详情</a>
                 <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
                   <a>删除</a>
                 </a-popconfirm>
@@ -140,14 +142,14 @@
             }
           },
           {
-            title:'新国标污染因子',
-            align:"center",
-            dataIndex: 'code'
-          },
-          {
             title:'污染因子名称',
             align:"center",
             dataIndex: 'meaning'
+          },
+          {
+            title:'新国标污染因子',
+            align:"center",
+            dataIndex: 'code'
           },
           {
             title:'老国标污染因子',
@@ -155,47 +157,9 @@
             dataIndex: 'oldCode'
           },
           {
-            title:'浓度单位',
-            align:"center",
-            dataIndex: 'chromaUnit'
-          },
-          {
-            title:'计量单位-浓度-数学表达式',
-            align:"center",
-            dataIndex: 'chromaUnitMath'
-          },
-          {
-            title:'排放量单位',
-            align:"center",
-            dataIndex: 'amountUnit'
-          },
-          {
-            title:'计量单位-总量-数学表达式',
-            align:"center",
-            dataIndex: 'amountUnitMath'
-          },
-          {
-            title:'是否有折算值',
-            align:"center",
-            dataIndex: 'isZs',
-            customRender:function (t) {
-              return t==='1'?'是':'否'
-            }
-          },
-          {
-            title:'格式值',
-            align:"center",
-            dataIndex: 'format'
-          },
-          {
             title:'污染因子类型',
             align:"center",
             dataIndex: 'type_dictText'
-          },
-          {
-            title:'数据是否重复',
-            align:"center",
-            dataIndex: 'isRepeat_dictText'
           },
           {
             title:'是否含有排放量',
@@ -208,49 +172,9 @@
             dataIndex: 'isImportant_dictText'
           },
           {
-            title:'异常值上限',
-            align:"center",
-            dataIndex: 'errorMax'
-          },
-          {
-            title:'异常值下限',
-            align:"center",
-            dataIndex: 'errorMin'
-          },
-          {
-            title:'排序',
-            align:"center",
-            dataIndex: 'sort'
-          },
-          {
             title:'是否启用',
             align:"center",
             dataIndex: 'isUse_dictText'
-          },
-          {
-            title:'备注',
-            align:"center",
-            dataIndex: 'content'
-          },
-          {
-            title:'创建人',
-            align:"center",
-            dataIndex: 'createBy'
-          },
-          {
-            title:'创建时间',
-            align:"center",
-            dataIndex: 'createTime'
-          },
-          {
-            title:'更新人',
-            align:"center",
-            dataIndex: 'updateBy'
-          },
-          {
-            title:'更新时间',
-            align:"center",
-            dataIndex: 'updateTime'
           },
           {
             title: '操作',
@@ -278,7 +202,17 @@
     },
     methods: {
       initDictConfig(){
-      }
+      },
+      handleView: function (record) {
+        this.$refs.modalForm.edit(record);
+        this.$refs.modalForm.title = "详情";
+        this.$refs.modalForm.disableSubmit = true;
+      },
+      toHandleEdit:function(record){
+        this.handleEdit(record);
+        this.$refs.modalForm.title="编辑";
+        this.$refs.modalForm.disableSubmit = false;
+      },
     }
   }
 </script>
