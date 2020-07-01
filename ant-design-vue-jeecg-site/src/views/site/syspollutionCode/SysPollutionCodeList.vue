@@ -119,7 +119,7 @@
   import '@/assets/less/TableExpand.less'
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import SysPollutionCodeModal from '../../../../../jeecg-boot/jeecg-boot-module-site/src/main/java/org/jeecg/modules/business/src/main/java/org/jeecg/modules/business/spc/vue/modules/SysPollutionCodeModal'
+  import SysPollutionCodeModal from '../sysPollutionCode/modules/SysPollutionCodeModal'
   import JDictSelectTag from '@/components/dict/JDictSelectTag.vue'
   import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
 
