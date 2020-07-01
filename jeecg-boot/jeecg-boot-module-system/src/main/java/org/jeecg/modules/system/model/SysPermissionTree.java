@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.jeecg.modules.system.entity.SysPermission;
+import org.jeecg.modules.system.vo.ViewSysPermission;
 
 public class SysPermissionTree implements Serializable {
 
@@ -28,6 +29,9 @@ public class SysPermissionTree implements Serializable {
 	 */
 	private String name;
 
+	private String systemId;
+
+	private String systemName;
 	/**
 	 * 菜单权限编码
 	 */
@@ -159,6 +163,10 @@ public class SysPermissionTree implements Serializable {
 		this.internalOrExternal = permission.isInternalOrExternal();
 		/*update_end author:wuxianquan date:20190908 for:赋值 */
 		this.title=permission.getName();
+		if(permission instanceof ViewSysPermission){
+			this.systemId = ((ViewSysPermission) permission).getSystemId();
+			this.systemName = ((ViewSysPermission) permission).getSystemName();
+		}
 		if (!permission.isLeaf()) {
 			this.children = new ArrayList<SysPermissionTree>();
 		}
@@ -389,6 +397,22 @@ public class SysPermissionTree implements Serializable {
 
 	public void setInternalOrExternal(boolean internalOrExternal) {
 		this.internalOrExternal = internalOrExternal;
+	}
+
+	public String getSystemId() {
+		return systemId;
+	}
+
+	public void setSystemId(String systemId) {
+		this.systemId = systemId;
+	}
+
+	public String getSystemName() {
+		return systemName;
+	}
+
+	public void setSystemName(String systemName) {
+		this.systemName = systemName;
 	}
 	/*update_end author:wuxianquan date:20190908 for:get set 方法 */
 }
