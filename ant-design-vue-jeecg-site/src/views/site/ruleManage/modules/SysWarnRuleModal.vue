@@ -12,28 +12,50 @@
       <a-form :form="form">
 
         <a-form-item label="报警类型" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-dict-select-tag type="list" v-decorator="['ruleType']" :trigger-change="true" dictCode="rule_type" placeholder="请选择报警类型" :disabled="disableSubmit"/>
+          <j-dict-select-tag type="list" v-decorator="['ruleType',validatorRules.ruleType]" :trigger-change="true" dictCode="rule_type" placeholder="请选择报警类型" :disabled="disableSubmit"/>
         </a-form-item>
         <a-form-item label="报警级别" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-dict-select-tag type="list" v-decorator="['ruleLevel']" :trigger-change="true" dictCode="rule_level" placeholder="请选择报警级别" :disabled="disableSubmit"/>
+          <j-dict-select-tag type="list" v-decorator="['ruleLevel',validatorRules.ruleLevel]" :trigger-change="true" dictCode="rule_level" placeholder="请选择报警级别" :disabled="disableSubmit"/>
         </a-form-item>
-        <a-form-item label="是否发送短信" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="['isSendMsg']" placeholder="请输入是否发送短信" :disabled="disableSubmit"></a-input>
+<!--        <a-form-item label="是否发送短信" :labelCol="labelCol" :wrapperCol="wrapperCol">-->
+<!--          <a-input v-decorator="['isSendMsg']" placeholder="请输入是否发送短信" :disabled="disableSubmit"></a-input>-->
+<!--        </a-form-item>-->
+
+        <a-form-item label="是否发送短信：" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-radio-group v-model="resultMsg" :disabled="disableSubmit">
+            <a-radio value="0">
+              发送
+            </a-radio>
+            <a-radio value="1">
+              不发送
+            </a-radio>
+          </a-radio-group>
         </a-form-item>
-        <a-form-item label="发送频率" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="['msgRate']" placeholder="请输入发送频率" :disabled="disableSubmit"></a-input>
+
+        <a-form-item label="发送频率（次/天）" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input-number v-decorator="['msgRate',validatorRules.msgRate]" placeholder="请输入发送频率" style="width: 100%" :disabled="disableSubmit" :max="10" :min="1"/>
         </a-form-item>
         <a-form-item label="发送短信开始时间" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-date placeholder="请选择发送短信开始时间" v-decorator="['warnStarttime']" :trigger-change="true" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" style="width: 100%" :disabled="disableSubmit"/>
+          <j-date placeholder="请选择发送短信开始时间" v-decorator="['warnStarttime',validatorRules.warnStarttime]" :trigger-change="true" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" style="width: 100%" :disabled="disableSubmit"/>
         </a-form-item>
         <a-form-item label="发送短信结束时间" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-date placeholder="请选择发送短信结束时间" v-decorator="['warnEndtime']" :trigger-change="true" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" style="width: 100%" :disabled="disableSubmit"/>
+          <j-date placeholder="请选择发送短信结束时间" v-decorator="['warnEndtime',validatorRules.warnEndtime]" :trigger-change="true" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" style="width: 100%" :disabled="disableSubmit"/>
         </a-form-item>
         <a-form-item label="策略说明" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-textarea v-decorator="['content']" placeholder="请输入策略说明" :rows="2" :disabled="disableSubmit"/>
         </a-form-item>
-        <a-form-item label="策略状态" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="['isUsed']" placeholder="请输入策略状态" :disabled="disableSubmit"></a-input>
+<!--        <a-form-item label="策略状态" :labelCol="labelCol" :wrapperCol="wrapperCol">-->
+<!--          <a-input v-decorator="['isUsed']" placeholder="请输入策略状态" :disabled="disableSubmit"></a-input>-->
+<!--        </a-form-item>-->
+        <a-form-item label="策略状态：" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-radio-group v-model="resultUsed" :disabled="disableSubmit">
+            <a-radio value="0">
+              启用
+            </a-radio>
+            <a-radio value="1">
+              停用
+            </a-radio>
+          </a-radio-group>
         </a-form-item>
 
       </a-form>
@@ -63,6 +85,9 @@
         width:800,
         visible: false,
         disableSubmit:'',
+        resultMsg:'0',
+        resultUsed:'0',
+        rates:[],
         model: {},
         labelCol: {
           xs: { span: 24 },
@@ -74,6 +99,41 @@
         },
         confirmLoading: false,
         validatorRules: {
+          ruleType: {
+            rules: [
+              { required: true, message: '请选择策略类型!'},
+            ]
+          },
+          ruleLevel: {
+            rules: [
+              { required: true, message: '请选择报警级别!'},
+            ]
+          },
+          isSendMsg: {
+            rules: [
+              { required: true},
+            ]
+          },
+          msgRate: {
+            rules: [
+              { required: true, message: '请选择发送频率!'},
+            ]
+          },
+          warnStarttime: {
+            rules: [
+              { required: true, message: '请选择发送开始时间!'},
+            ]
+          },
+          warnEndtime: {
+            rules: [
+              { required: true, message: '请选择发送结束时间!'},
+            ]
+          },
+          isUsed: {
+            rules: [
+              { required: true},
+            ]
+          }
         },
         url: {
           add: "/swr/sysWarnRule/add",
@@ -82,8 +142,15 @@
       }
     },
     created () {
+      this.rateSelect();
     },
     methods: {
+      rateSelect () {
+        this.rates = []
+        for (var i = 0; i <= 10; i++) {
+          this.rates.push({value: i, label: i})
+        }
+      },
       add () {
         this.edit({});
       },
@@ -91,6 +158,10 @@
         this.form.resetFields();
         this.model = Object.assign({}, record);
         this.visible = true;
+        if(record.isSendMsg === '0' || record.isSendMsg === '1')
+          this.resultMsg = record.isSendMsg;
+        if(record.isUsed === '0' || record.isUsed === '1')
+          this.resultUsed = record.isUsed;
         this.$nextTick(() => {
           this.form.setFieldsValue(pick(this.model,'ruleType','ruleLevel','isSendMsg','msgRate','warnStarttime','warnEndtime','content','isUsed'))
         })
@@ -115,6 +186,8 @@
                method = 'put';
             }
             let formData = Object.assign(this.model, values);
+            formData.isSendMsg = this.resultMsg;
+            formData.isUsed = this.resultUsed;
             console.log("表单提交数据",formData)
             httpAction(httpurl,formData,method).then((res)=>{
               if(res.success){

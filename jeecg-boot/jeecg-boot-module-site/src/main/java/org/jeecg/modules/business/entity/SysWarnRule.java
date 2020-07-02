@@ -51,9 +51,9 @@ public class SysWarnRule implements Serializable {
     @ApiModelProperty(value = "是否发送短信")
     private java.lang.String isSendMsg;
 	/**发送频率*/
-	@Excel(name = "发送频率", width = 15)
+    @Excel(name = "发送频率", width = 15)
     @ApiModelProperty(value = "发送频率")
-    private java.lang.String msgRate;
+    private java.lang.Integer msgRate;
 	/**发送短信开始时间*/
 	@Excel(name = "发送短信开始时间", width = 20, format = "yyyy-MM-dd HH:mm:ss")
 	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")

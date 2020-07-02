@@ -80,6 +80,10 @@
           </a-dropdown>
         </span>
 
+        <span slot="isUsed" slot-scope="isUsed">
+          <div :style="{color: isUsed === '停用'? 'red':'black'}">{{isUsed}}</div>
+        </span>
+
       </a-table>
     </div>
 
@@ -127,7 +131,7 @@
             dataIndex: 'isSendMsg_dictText'
           },
           {
-            title:'发送频率',
+            title:'发送频率（次/天）',
             align:"center",
             dataIndex: 'msgRate'
           },
@@ -154,7 +158,8 @@
           {
             title:'策略状态',
             align:"center",
-            dataIndex: 'isUsed_dictText'
+            dataIndex: 'isUsed_dictText',
+            scopedSlots: { customRender: 'isUsed' },
           },
           {
             title: '操作',
