@@ -10,53 +10,76 @@
     cancelText="关闭">
     <a-spin :spinning="confirmLoading">
       <a-form :form="form">
+        <a-row>
+          <a-col span="12">
+            <a-form-item label="报警类型" :labelCol="labelCols" :wrapperCol="wrapperCols">
+              <j-dict-select-tag type="list" v-decorator="['ruleType',validatorRules.ruleType]" :trigger-change="true" dictCode="rule_type" placeholder="请选择报警类型" style="width: 100%" :disabled="disableSubmit"/>
+            </a-form-item>
+          </a-col>
+          <a-col span="12">
+            <a-form-item label="报警级别" :labelCol="labelCols" :wrapperCol="wrapperCols">
+              <j-dict-select-tag type="list" v-decorator="['ruleLevel',validatorRules.ruleLevel]" :trigger-change="true" dictCode="rule_level" placeholder="请选择报警级别" style="width: 100%" :disabled="disableSubmit"/>
+            </a-form-item>
+          </a-col>
+        </a-row>
+        <a-row>
+          <a-col span="24">
+            <a-form-item label="是否发送短信：" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <a-radio-group v-model="resultMsg" :disabled="disableSubmit">
+                <a-radio value="0">
+                  发送
+                </a-radio>
+                <a-radio value="1">
+                  不发送
+                </a-radio>
+              </a-radio-group>
+            </a-form-item>
+          </a-col>
+        </a-row>
 
-        <a-form-item label="报警类型" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-dict-select-tag type="list" v-decorator="['ruleType',validatorRules.ruleType]" :trigger-change="true" dictCode="rule_type" placeholder="请选择报警类型" :disabled="disableSubmit"/>
-        </a-form-item>
-        <a-form-item label="报警级别" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-dict-select-tag type="list" v-decorator="['ruleLevel',validatorRules.ruleLevel]" :trigger-change="true" dictCode="rule_level" placeholder="请选择报警级别" :disabled="disableSubmit"/>
-        </a-form-item>
-<!--        <a-form-item label="是否发送短信" :labelCol="labelCol" :wrapperCol="wrapperCol">-->
-<!--          <a-input v-decorator="['isSendMsg']" placeholder="请输入是否发送短信" :disabled="disableSubmit"></a-input>-->
-<!--        </a-form-item>-->
+        <a-row>
+          <a-col span="24">
+            <a-form-item label="发送频率(次/天)" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <a-input-number v-decorator="['msgRate',validatorRules.msgRate]" placeholder="请输入发送频率" style="width: 100%" :disabled="disableSubmit" :max="10" :min="1"/>
+            </a-form-item>
+          </a-col>
+        </a-row>
 
-        <a-form-item label="是否发送短信：" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-radio-group v-model="resultMsg" :disabled="disableSubmit">
-            <a-radio value="0">
-              发送
-            </a-radio>
-            <a-radio value="1">
-              不发送
-            </a-radio>
-          </a-radio-group>
-        </a-form-item>
+        <a-row>
+          <a-col span="12">
+            <a-form-item label="短信发送时段" :labelCol="labelCols" :wrapperCol="wrapperCols">
+              <a-time-picker format="HH:mm" v-decorator="['warnStarttime',validatorRules.warnStarttime]" style="width: 100%" :disabled="disableSubmit"/>
+            </a-form-item>
+          </a-col>
+          <a-col span="12">
+            <a-form-item label="至" :labelCol="labelCols" :wrapperCol="wrapperCols">
+              <a-time-picker format="HH:mm" v-decorator="['warnEndtime',validatorRules.warnEndtime]" style="width: 100%" :disabled="disableSubmit"/>
+            </a-form-item>
+          </a-col>
+        </a-row>
 
-        <a-form-item label="发送频率（次/天）" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input-number v-decorator="['msgRate',validatorRules.msgRate]" placeholder="请输入发送频率" style="width: 100%" :disabled="disableSubmit" :max="10" :min="1"/>
-        </a-form-item>
-        <a-form-item label="发送短信开始时间" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-date placeholder="请选择发送短信开始时间" v-decorator="['warnStarttime',validatorRules.warnStarttime]" :trigger-change="true" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" style="width: 100%" :disabled="disableSubmit"/>
-        </a-form-item>
-        <a-form-item label="发送短信结束时间" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-date placeholder="请选择发送短信结束时间" v-decorator="['warnEndtime',validatorRules.warnEndtime]" :trigger-change="true" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" style="width: 100%" :disabled="disableSubmit"/>
-        </a-form-item>
-        <a-form-item label="策略说明" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-textarea v-decorator="['content']" placeholder="请输入策略说明" :rows="2" :disabled="disableSubmit"/>
-        </a-form-item>
-<!--        <a-form-item label="策略状态" :labelCol="labelCol" :wrapperCol="wrapperCol">-->
-<!--          <a-input v-decorator="['isUsed']" placeholder="请输入策略状态" :disabled="disableSubmit"></a-input>-->
-<!--        </a-form-item>-->
-        <a-form-item label="策略状态：" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-radio-group v-model="resultUsed" :disabled="disableSubmit">
-            <a-radio value="0">
-              启用
-            </a-radio>
-            <a-radio value="1">
-              停用
-            </a-radio>
-          </a-radio-group>
-        </a-form-item>
+        <a-row>
+          <a-col span="24">
+            <a-form-item label="策略说明" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <a-textarea v-decorator="['content']" placeholder="请输入策略说明" :rows="2" :disabled="disableSubmit"/>
+            </a-form-item>
+          </a-col>
+        </a-row>
+
+        <a-row>
+          <a-col span="24">
+            <a-form-item label="策略状态：" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <a-radio-group v-model="resultUsed" :disabled="disableSubmit">
+                <a-radio value="0">
+                  启用
+                </a-radio>
+                <a-radio value="1">
+                  停用
+                </a-radio>
+              </a-radio-group>
+            </a-form-item>
+          </a-col>
+        </a-row>
 
       </a-form>
     </a-spin>
@@ -70,7 +93,7 @@
   import { validateDuplicateValue } from '@/utils/util'
   import JDate from '@/components/jeecg/JDate'  
   import JDictSelectTag from "@/components/dict/JDictSelectTag"
-
+  import moment from 'moment'
 
   export default {
     name: "SysWarnRuleModal",
@@ -91,11 +114,19 @@
         model: {},
         labelCol: {
           xs: { span: 24 },
-          sm: { span: 5 },
+          sm: { span: 4 },
         },
         wrapperCol: {
           xs: { span: 24 },
-          sm: { span: 16 },
+          sm: { span: 12 },
+        },
+        labelCols: {
+          xs: { span: 24 },
+          sm: { span: 8 },
+        },
+        wrapperCols: {
+          xs: { span: 24 },
+          sm: { span: 14 },
         },
         confirmLoading: false,
         validatorRules: {
@@ -174,6 +205,9 @@
         const that = this;
         // 触发表单验证
         this.form.validateFields((err, values) => {
+          values.warnStarttime = moment(values.warnStarttime).format('HH:mm:ss');
+          values.warnEndtime= moment(values.warnEndtime).format('HH:mm:ss');
+          debugger
           if (!err) {
             that.confirmLoading = true;
             let httpurl = '';

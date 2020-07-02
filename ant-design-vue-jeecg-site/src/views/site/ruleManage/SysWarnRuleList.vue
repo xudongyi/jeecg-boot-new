@@ -131,7 +131,7 @@
             dataIndex: 'isSendMsg_dictText'
           },
           {
-            title:'发送频率（次/天）',
+            title:'发送频率(次/天)',
             align:"center",
             dataIndex: 'msgRate'
           },

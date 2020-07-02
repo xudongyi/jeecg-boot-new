@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.checkerframework.checker.units.qual.Time;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.jeecgframework.poi.excel.annotation.Excel;
 import org.jeecg.common.aspect.annotation.Dict;
@@ -55,17 +56,17 @@ public class SysWarnRule implements Serializable {
     @ApiModelProperty(value = "发送频率")
     private java.lang.Integer msgRate;
 	/**发送短信开始时间*/
-	@Excel(name = "发送短信开始时间", width = 20, format = "yyyy-MM-dd HH:mm:ss")
-	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
-    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	@Excel(name = "发送短信开始时间", width = 20, format = "HH:mm:ss")
+	@JsonFormat(timezone = "GMT+8",pattern = "HH:mm:ss")
+    @DateTimeFormat(pattern="HH:mm:ss",iso = DateTimeFormat.ISO.TIME)
     @ApiModelProperty(value = "发送短信开始时间")
-    private java.util.Date warnStarttime;
+    private java.sql.Time warnStarttime;
 	/**发送短信结束时间*/
-	@Excel(name = "发送短信结束时间", width = 20, format = "yyyy-MM-dd HH:mm:ss")
-	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
-    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	@Excel(name = "发送短信结束时间", width = 20, format = "HH:mm:ss")
+	@JsonFormat(timezone = "GMT+8",pattern = "HH:mm:ss")
+    @DateTimeFormat(pattern="HH:mm:ss",iso = DateTimeFormat.ISO.TIME)
     @ApiModelProperty(value = "发送短信结束时间")
-    private java.util.Date warnEndtime;
+    private java.sql.Time warnEndtime;
 	/**策略说明*/
 	@Excel(name = "策略说明", width = 15)
     @ApiModelProperty(value = "策略说明")
