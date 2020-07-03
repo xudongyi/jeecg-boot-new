@@ -25,7 +25,7 @@
         <a-row>
           <a-col span="24">
             <a-form-item label="是否发送短信：" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-radio-group v-model="resultMsg" @change="msgChange" :trigger-change="true" :disabled="disableSubmit">
+              <a-radio-group v-model="resultMsg"  :trigger-change="true" :disabled="disableSubmit">
                 <a-radio value="0">
                   发送
                 </a-radio>
@@ -48,12 +48,12 @@
         <a-row>
           <a-col span="12" v-show="msgShow">
             <a-form-item label="短信发送时段" :labelCol="labelCols" :wrapperCol="wrapperCols">
-              <a-time-picker format="HH:mm" :minute-step="30" :second-step="60" v-decorator="['warnStarttime',validatorRules.warnStarttime]" style="width: 100%" :disabled="disableSubmit"/>
+              <a-time-picker :minute-step="30" :second-step="60" v-decorator="['warnStarttime',validatorRules.warnStarttime]" style="width: 100%" :disabled="disableSubmit"/>
             </a-form-item>
           </a-col>
           <a-col span="12" v-show="msgShow">
             <a-form-item label="至" :labelCol="labelCols" :wrapperCol="wrapperCols">
-              <a-time-picker format="HH:mm" :minute-step="30" :second-step="60" v-decorator="['warnEndtime',validatorRules.warnEndtime]" style="width: 100%" :disabled="disableSubmit"/>
+              <a-time-picker :minute-step="30" :second-step="60" v-decorator="['warnEndtime',validatorRules.warnEndtime]" style="width: 100%" :disabled="disableSubmit"/>
             </a-form-item>
           </a-col>
         </a-row>
@@ -113,6 +113,7 @@
         disableSubmit:'',
         resultMsg:'0',
         resultUsed:'0',
+        now:moment(),
         rates:[],
         model: {},
         labelCol: {
@@ -190,16 +191,28 @@
         this.edit({});
       },
       edit (record) {
+        console.log(record)
         this.form.resetFields();
+
         this.model = Object.assign({}, record);
         this.visible = true;
-        if(record.isSendMsg === '0' || record.isSendMsg === '1')
-          this.resultMsg = record.isSendMsg;
+        if(!record.isSendMsg)
+          record.isSendMsg = '0'
+        this.resultMsg = record.isSendMsg;
+        // if(record.warnStarttime)
+        //   {record.warnStarttime = moment(record.warnStarttime, 'HH:mm:ss')}
+        //
+        // if(record.warnEndtime)
+        //   {record.warnEndtime = moment(record.warnEndtime, 'HH:mm:ss')}
+
         if(record.isUsed === '0' || record.isUsed === '1')
           this.resultUsed = record.isUsed;
+        console.log(record)
         this.$nextTick(() => {
-          this.form.setFieldsValue(pick(this.model,'ruleType','ruleLevel','isSendMsg','msgRate','warnStarttime','warnEndtime','content','isUsed'))
-          //
+          this.form.setFieldsValue(pick(this.model,'ruleType','ruleLevel','isSendMsg','msgRate','content','isUsed'))
+          this.form.setFieldsValue({warnStarttime: this.model.warnStarttime ? moment(this.model.warnStarttime, 'HH:mm:ss') : null
+                                    ,warnEndtime: this.model.warnEndtime ? moment(this.model.warnEndtime, 'HH:mm:ss') : null})
+
         })
       },
       ruleLevelChange(val){
@@ -211,20 +224,7 @@
           this.validatorRules.ruleLevel= {}
         }
       },
-      msgChange(val){
-        console.log(val)
-        if(val.target.value==='0') {
-          this.msgShow = true;
-          this.validatorRules.msgRate = { rules:[{ required: true, message: '请选择发送频率!'}]};
-          this.validatorRules.warnStarttime ={ rules:[{ required: true, message: '请选择发送开始时间!'}]};
-          this.validatorRules.warnEndtime ={ rules:[{ required: true, message: '请选择发送结束时间!'}]};
-        } else {
-          this.msgShow =false;
-          this.validatorRules.msgRate ={};
-          this.validatorRules.warnStarttime ={};
-          this.validatorRules.warnEndtime ={};
-        }
-      },
+
       close () {
         this.$emit('close');
         this.visible = false;
@@ -233,8 +233,8 @@
         const that = this;
         // 触发表单验证
         this.form.validateFields((err, values) => {
-          values.warnStarttime = moment(values.warnStarttime).format('HH:mm:ss');
-          values.warnEndtime= moment(values.warnEndtime).format('HH:mm:ss');
+          values.warnStarttime = moment(values.warnStarttime,'HH:mm:ss');
+          values.warnEndtime= moment(values.warnEndtime,'HH:mm:ss');
           if (!err) {
             that.confirmLoading = true;
             let httpurl = '';
@@ -277,6 +277,25 @@
       },
 
       
+    },
+    watch:{
+      resultMsg:{
+        handler(val) {
+          console.log(val)
+          if (val === '0') {
+            this.msgShow = true;
+            this.validatorRules.msgRate = {rules: [{required: true, message: '请选择发送频率!'}]};
+            this.validatorRules.warnStarttime = {rules: [{required: true, message: '请选择发送开始时间!'}]};
+            this.validatorRules.warnEndtime = {rules: [{required: true, message: '请选择发送结束时间!'}]};
+          } else {
+            this.msgShow = false;
+            this.validatorRules.msgRate = {};
+            this.validatorRules.warnStarttime = {};
+            this.validatorRules.warnEndtime = {};
+          }
+        },
+        immediate: true
+      },
     }
   }
 </script>
