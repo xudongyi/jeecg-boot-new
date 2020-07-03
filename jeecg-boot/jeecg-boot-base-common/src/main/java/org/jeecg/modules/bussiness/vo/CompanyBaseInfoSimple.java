@@ -1,4 +1,4 @@
-package org.jeecg.modules.business.vo;
+package org.jeecg.modules.bussiness.vo;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -9,22 +9,22 @@ public class CompanyBaseInfoSimple {
     /**companybase id*/
     @Excel(name = "企业id", width = 15)
     @ApiModelProperty(value = "企业id")
-    private String id;
+    private java.lang.String id;
 
     /**企业名称*/
     @Excel(name = "企业名称", width = 15)
     @ApiModelProperty(value = "企业名称")
-    private String companyName;
+    private java.lang.String companyName;
 
 
 
     /**统一社会信用代码*/
     @Excel(name = "统一社会信用代码", width = 15)
     @ApiModelProperty(value = "统一社会信用代码")
-    private String socialCreditCode;
+    private java.lang.String socialCreditCode;
 
     /**企业法人*/
     @Excel(name = "企业法人", width = 15)
     @ApiModelProperty(value = "企业法人")
-    private String corporate;
+    private java.lang.String corporate;
 }

@@ -1,9 +1,7 @@
 package org.jeecg.modules.system.controller;
 
 
-import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.RandomUtil;
-import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -16,8 +14,6 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
 import org.jeecg.common.aspect.annotation.PermissionData;
@@ -30,9 +26,6 @@ import org.jeecg.common.util.PasswordUtil;
 import org.jeecg.common.util.PmsUtil;
 import org.jeecg.common.util.RedisUtil;
 import org.jeecg.common.util.oConvertUtils;
-import org.jeecg.modules.business.entity.CompanyBase;
-import org.jeecg.modules.business.entity.CompanyBaseinfo;
-import org.jeecg.modules.business.entity.CompanySysuser;
 import org.jeecg.modules.business.service.ICompanyBaseinfoService;
 import org.jeecg.modules.business.service.ICompanySysuserService;
 import org.jeecg.modules.system.entity.*;

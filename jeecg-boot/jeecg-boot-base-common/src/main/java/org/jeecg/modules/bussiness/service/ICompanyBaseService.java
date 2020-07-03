@@ -1,10 +1,9 @@
-package org.jeecg.modules.business.service;
+package org.jeecg.modules.bussiness.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.jeecg.modules.business.entity.CompanyBase;
+import org.jeecg.modules.bussiness.entity.CompanyBase;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.jeecg.modules.business.vo.CompanyApplyVo;
-import org.jeecg.modules.business.vo.CompanyBaseInfoSimple;
+import org.jeecg.modules.bussiness.vo.CompanyBaseInfoSimple;
 
 /**
  * @Description: 企业基础表

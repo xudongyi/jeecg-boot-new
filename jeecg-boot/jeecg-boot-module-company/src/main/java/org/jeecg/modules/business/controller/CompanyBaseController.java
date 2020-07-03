@@ -4,13 +4,11 @@ import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
-import org.jeecg.modules.business.entity.CompanyBase;
-import org.jeecg.modules.business.entity.CompanyBaseinfo;
+import org.jeecg.modules.bussiness.entity.CompanyBase;
 import org.jeecg.modules.business.entity.CompanySysuser;
-import org.jeecg.modules.business.service.ICompanyBaseService;
+import org.jeecg.modules.bussiness.service.ICompanyBaseService;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -19,8 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.jeecg.common.system.base.controller.JeecgController;
 import org.jeecg.modules.business.service.ICompanySysuserService;
-import org.jeecg.modules.business.utils.Constant;
-import org.jeecg.modules.business.vo.CompanyBaseInfoSimple;
+import org.jeecg.modules.bussiness.vo.CompanyBaseInfoSimple;
 import org.jeecg.modules.business.vo.CompanySysUserVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

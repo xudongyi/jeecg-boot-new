@@ -19,11 +19,9 @@ import org.jeecg.modules.business.service.ICompanyBaseinfoService;
 import org.jeecg.modules.business.service.ICompanySysuserService;
 import org.jeecg.modules.business.service.IViewCompanyBaseService;
 import org.jeecg.modules.business.utils.Constant;
-import org.jeecg.modules.business.vo.CompanyBaseInfoSimple;
 import org.jeecg.modules.business.vo.ViewCompanyBase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

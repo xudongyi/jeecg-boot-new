@@ -163,13 +163,12 @@ const user = {
         commit('SET_TOKEN', '')
         commit('SET_PERMISSIONLIST', [])
         Vue.ls.remove(ACCESS_TOKEN)
-        Vue.ls.remove(UI_CACHE_DB_DICT_DATA)
         //console.log('logoutToken: '+ logoutToken)
         logout(logoutToken).then(() => {
-          //let sevice = "http://"+window.location.host+"/";
-          //let serviceUrl = encodeURIComponent(sevice);
-          //window.location.href = window._CONFIG['casPrefixUrl']+"/logout?service="+serviceUrl;
-          resolve()
+          var sevice = "http://"+window.location.host+"/";
+          var serviceUrl = encodeURIComponent(sevice);
+          window.location.href = window._CONFIG['casPrefixUrl']+"/logout?service="+serviceUrl;
+          // resolve()
         }).catch(() => {
           resolve()
         })

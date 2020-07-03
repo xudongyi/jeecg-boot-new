@@ -22,19 +22,19 @@
           </a-col>
           <a-col span = '12'>
             <a-form-item label="企业类型" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.companyType">
-              <a-input v-decorator="['companyType', validatorRules.companyType]" placeholder="请输入企业类型":disabled="disable"  ></a-input>
+              <j-dict-select-tag v-decorator="['companyType', validatorRules.companyType]" :triggerChange="true" :disabled="disable" dictCode="company_type"></j-dict-select-tag>
             </a-form-item>
           </a-col>
         </a-row>
         <a-row >
           <a-col span = '12'>
             <a-form-item label="所属行政区" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.administrativeRegion">
-              <a-input v-decorator="['administrativeRegion', validatorRules.administrativeRegion]" placeholder="请输入所属行政区":disabled="disable"  ></a-input>
+              <a-input v-decorator="['administrativeRegion', validatorRules.administrativeRegion]"  placeholder="请输入所属行政区":disabled="disable"  ></a-input>
             </a-form-item>
           </a-col>
           <a-col span = '12'>
             <a-form-item label="所属行业" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.industry">
-              <a-input v-decorator="['industry', validatorRules.industry]" placeholder="请输入所属行业":disabled="disable"  ></a-input>
+              <j-dict-select-tag v-decorator="['industry', validatorRules.industry]" :triggerChange="true":disabled="disable" dictCode="industry"></j-dict-select-tag>
             </a-form-item>
           </a-col>
         </a-row>
@@ -238,9 +238,11 @@
   import { httpAction } from '@/api/manage'
   import pick from 'lodash.pick'
   import {loadCompanyBaseInfo} from '../../../requestAction/request'
+  import JDictSelectTag from  '@/components/dict/JDictSelectTag.vue'
   export default {
     name: "BaseInfo",
-    components: { 
+    components: {
+      JDictSelectTag
     },
     props:{
       companyId:'',

@@ -19,8 +19,8 @@ import org.apache.http.impl.client.HttpClients;
 public class CASServiceUtil {
 	
 	public static void main(String[] args) {
-		String serviceUrl = "https://cas.8f8.com.cn:8443/cas/p3/serviceValidate";
-		String service = "http://localhost:3003/user/login";
+		String serviceUrl = "http://127.0.0.1:8443/cas/p3/serviceValidate";
+		String service = "http://localhost:3000/user/login";
 		String ticket = "ST-5-1g-9cNES6KXNRwq-GuRET103sm0-DESKTOP-VKLS8B3";
 		String res = getSTValidate(serviceUrl,ticket, service);
 		
