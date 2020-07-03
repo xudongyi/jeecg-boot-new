@@ -177,7 +177,7 @@
       console.log(this.monitorTag==='view');
       let that = this;
       //查询企业名称
-      queryCompanyName({companyIds:this.$store.getters.userInfo.companyIds.join(',')}).then((res) => {
+      queryCompanyName().then((res) => {
         if(res.success){
           that.items = res.result;
         }
