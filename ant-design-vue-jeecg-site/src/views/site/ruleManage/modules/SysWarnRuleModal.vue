@@ -13,10 +13,10 @@
         <a-row>
           <a-col span="12">
             <a-form-item label="报警类型" :labelCol="labelCols" :wrapperCol="wrapperCols">
-              <j-dict-select-tag type="list" v-decorator="['ruleType',validatorRules.ruleType]" :trigger-change="true" dictCode="rule_type" placeholder="请选择报警类型" style="width: 100%" :disabled="disableSubmit"/>
+              <j-dict-select-tag type="list" v-decorator="['ruleType',validatorRules.ruleType]" @change="ruleLevelChange" :trigger-change="true" dictCode="rule_type" placeholder="请选择报警类型" style="width: 100%" :disabled="disableSubmit"/>
             </a-form-item>
           </a-col>
-          <a-col span="12">
+          <a-col span="12" v-show="levelShow">
             <a-form-item label="报警级别" :labelCol="labelCols" :wrapperCol="wrapperCols">
               <j-dict-select-tag type="list" v-decorator="['ruleLevel',validatorRules.ruleLevel]" :trigger-change="true" dictCode="rule_level" placeholder="请选择报警级别" style="width: 100%" :disabled="disableSubmit"/>
             </a-form-item>
@@ -25,7 +25,7 @@
         <a-row>
           <a-col span="24">
             <a-form-item label="是否发送短信：" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-radio-group v-model="resultMsg" :disabled="disableSubmit">
+              <a-radio-group v-model="resultMsg" @change="msgChange" :trigger-change="true" :disabled="disableSubmit">
                 <a-radio value="0">
                   发送
                 </a-radio>
@@ -38,7 +38,7 @@
         </a-row>
 
         <a-row>
-          <a-col span="24">
+          <a-col span="24" v-show="msgShow">
             <a-form-item label="发送频率(次/天)" :labelCol="labelCol" :wrapperCol="wrapperCol">
               <a-input-number v-decorator="['msgRate',validatorRules.msgRate]" placeholder="请输入发送频率" style="width: 100%" :disabled="disableSubmit" :max="10" :min="1"/>
             </a-form-item>
@@ -46,14 +46,14 @@
         </a-row>
 
         <a-row>
-          <a-col span="12">
+          <a-col span="12" v-show="msgShow">
             <a-form-item label="短信发送时段" :labelCol="labelCols" :wrapperCol="wrapperCols">
-              <a-time-picker format="HH:mm" v-decorator="['warnStarttime',validatorRules.warnStarttime]" style="width: 100%" :disabled="disableSubmit"/>
+              <a-time-picker format="HH:mm" :minute-step="30" :second-step="60" v-decorator="['warnStarttime',validatorRules.warnStarttime]" style="width: 100%" :disabled="disableSubmit"/>
             </a-form-item>
           </a-col>
-          <a-col span="12">
+          <a-col span="12" v-show="msgShow">
             <a-form-item label="至" :labelCol="labelCols" :wrapperCol="wrapperCols">
-              <a-time-picker format="HH:mm" v-decorator="['warnEndtime',validatorRules.warnEndtime]" style="width: 100%" :disabled="disableSubmit"/>
+              <a-time-picker format="HH:mm" :minute-step="30" :second-step="60" v-decorator="['warnEndtime',validatorRules.warnEndtime]" style="width: 100%" :disabled="disableSubmit"/>
             </a-form-item>
           </a-col>
         </a-row>
@@ -107,6 +107,8 @@
         title:"操作",
         width:800,
         visible: false,
+        levelShow:'',
+        msgShow:'',
         disableSubmit:'',
         resultMsg:'0',
         resultUsed:'0',
@@ -136,9 +138,6 @@
             ]
           },
           ruleLevel: {
-            rules: [
-              { required: true, message: '请选择报警级别!'},
-            ]
           },
           isSendMsg: {
             rules: [
@@ -146,19 +145,10 @@
             ]
           },
           msgRate: {
-            rules: [
-              { required: true, message: '请选择发送频率!'},
-            ]
           },
           warnStarttime: {
-            rules: [
-              { required: true, message: '请选择发送开始时间!'},
-            ]
           },
           warnEndtime: {
-            rules: [
-              { required: true, message: '请选择发送结束时间!'},
-            ]
           },
           isUsed: {
             rules: [
@@ -173,15 +163,8 @@
       }
     },
     created () {
-      this.rateSelect();
     },
     methods: {
-      rateSelect () {
-        this.rates = []
-        for (var i = 0; i <= 10; i++) {
-          this.rates.push({value: i, label: i})
-        }
-      },
       add () {
         this.edit({});
       },
@@ -195,7 +178,31 @@
           this.resultUsed = record.isUsed;
         this.$nextTick(() => {
           this.form.setFieldsValue(pick(this.model,'ruleType','ruleLevel','isSendMsg','msgRate','warnStarttime','warnEndtime','content','isUsed'))
+          //
         })
+      },
+      ruleLevelChange(val){
+        if(val==='4' || val==='5') {
+          this.levelShow = true;
+          this.validatorRules.ruleLevel= { rules:[{ required: true, message: '请选择报警级别!'}]};
+        } else {
+          this.levelShow = false;
+          this.validatorRules.ruleLevel= {}
+        }
+      },
+      msgChange(val){
+        console.log(val)
+        if(val.target.value==='0') {
+          this.msgShow = true;
+          this.validatorRules.msgRate = { rules:[{ required: true, message: '请选择发送频率!'}]};
+          this.validatorRules.warnStarttime ={ rules:[{ required: true, message: '请选择发送开始时间!'}]};
+          this.validatorRules.warnEndtime ={ rules:[{ required: true, message: '请选择发送结束时间!'}]};
+        } else {
+          this.msgShow =false;
+          this.validatorRules.msgRate ={};
+          this.validatorRules.warnStarttime ={};
+          this.validatorRules.warnEndtime ={};
+        }
       },
       close () {
         this.$emit('close');
@@ -207,7 +214,6 @@
         this.form.validateFields((err, values) => {
           values.warnStarttime = moment(values.warnStarttime).format('HH:mm:ss');
           values.warnEndtime= moment(values.warnEndtime).format('HH:mm:ss');
-          debugger
           if (!err) {
             that.confirmLoading = true;
             let httpurl = '';
@@ -222,6 +228,10 @@
             let formData = Object.assign(this.model, values);
             formData.isSendMsg = this.resultMsg;
             formData.isUsed = this.resultUsed;
+            if(formData.isSendMsg ==='1') {
+              formData.warnStarttime = null;
+              formData.warnEndtime = null
+            }
             console.log("表单提交数据",formData)
             httpAction(httpurl,formData,method).then((res)=>{
               if(res.success){
