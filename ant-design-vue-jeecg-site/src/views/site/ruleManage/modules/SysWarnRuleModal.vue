@@ -94,6 +94,7 @@
   import JDate from '@/components/jeecg/JDate'  
   import JDictSelectTag from "@/components/dict/JDictSelectTag"
   import moment from 'moment'
+  import {duplicateCheck } from '@/api/api'
 
   export default {
     name: "SysWarnRuleModal",
@@ -135,6 +136,10 @@
           ruleType: {
             rules: [
               { required: true, message: '请选择策略类型!'},
+              ,{
+                validator: this.validateRuleType,
+              }
+
             ]
           },
           ruleLevel: {
@@ -165,6 +170,22 @@
     created () {
     },
     methods: {
+      //类型重复校验
+      validateRuleType(rule, value, callback){
+        let params = {
+          tableName: 'sys_warn_rule',
+          fieldName: 'rule_type',
+          fieldVal: value,
+          dataId: this.model.id
+        };
+        duplicateCheck(params).then((res) => {
+          if (res.success) {
+            callback()
+          } else {
+            callback("该策略类型已存在!")
+          }
+        })
+      },
       add () {
         this.edit({});
       },

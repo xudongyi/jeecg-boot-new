@@ -121,7 +121,7 @@
             }
           },
           {
-            title:'报警类型',
+            title:'策略类型',
             align:"center",
             dataIndex: 'ruleType_dictText'
           },
