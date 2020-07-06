@@ -1,4 +1,4 @@
-package org.jeecg.modules.bussiness.entity;
+package org.jeecg.modules.business.entity;
 
 import java.io.Serializable;
 

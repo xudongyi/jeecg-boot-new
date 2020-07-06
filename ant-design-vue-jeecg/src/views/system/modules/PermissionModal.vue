@@ -433,7 +433,6 @@
         }
       },
       initDictConfig() {
-        debugger
         let key  ='system_id_names';
         //加载系统列表
         //优先从缓存中读取字典配置

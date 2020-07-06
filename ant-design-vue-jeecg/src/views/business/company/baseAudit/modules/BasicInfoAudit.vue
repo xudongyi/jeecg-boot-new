@@ -79,6 +79,7 @@
                 modalStatus[res.result.cueField[i]] = "error";
               }
             }
+            console.log(modalStatus)
             that.$refs.baseModal.modalStatus = modalStatus;
           }
         });

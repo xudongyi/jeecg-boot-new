@@ -29,7 +29,8 @@
         <a-row >
           <a-col span = '12'>
             <a-form-item label="所属行政区" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.administrativeRegion">
-              <a-input v-decorator="['administrativeRegion', validatorRules.administrativeRegion]"  placeholder="请输入所属行政区":disabled="disable"  ></a-input>
+              <area-link-select type="cascader" v-decorator="['administrativeRegion', validatorRules.administrativeRegion]" :disabled="disable"
+                              placeholder="请选择省市区"/>
             </a-form-item>
           </a-col>
           <a-col span = '12'>
@@ -74,7 +75,7 @@
         <a-row >
           <a-col span = '12'>
             <a-form-item label="经济类型" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.economicType">
-              <a-input v-decorator="['economicType',{}]" placeholder="请输入经济类型":disabled="disable"  ></a-input>
+              <j-dict-select-tag v-decorator="['economicType',{}]" placeholder="请输入经济类型":disabled="disable" :triggerChange="true" dictCode="economic_type" ></j-dict-select-tag>
             </a-form-item>
           </a-col>
           <a-col span = '12'>
@@ -123,7 +124,8 @@
         <a-row >
           <a-col span = '12'>
             <a-form-item label="所属流域" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.drainageArea">
-              <a-input v-decorator="['drainageArea', {}]" placeholder="请输入所属流域":disabled="disable"  ></a-input>
+              <j-dict-select-tag v-decorator="['drainageArea', {}]" placeholder="请输入所属流域" :triggerChange="true" :disabled="disable"  dictCode="watershed"></j-dict-select-tag>
+
             </a-form-item>
           </a-col>
           <a-col span = '12'>
@@ -159,7 +161,7 @@
         <a-row >
           <a-col span = '12'>
             <a-form-item label="企业规模" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.enterpriseSize">
-              <a-input v-decorator="['enterpriseSize', {}]" placeholder="请输入企业规模":disabled="disable"  ></a-input>
+              <j-dict-select-tag v-decorator="['enterpriseSize',{}]" placeholder="请输入企业规模" :triggerChange="true" :disabled="disable" dictCode="company_size" ></j-dict-select-tag>
             </a-form-item>
           </a-col>
           <a-col span = '12'>
@@ -171,12 +173,12 @@
         <a-row >
           <a-col span = '12'>
             <a-form-item label="是否位于化工集中区" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.ischemicals">
-              <a-input v-decorator="['ischemicals', {}]" placeholder="请输入是否位于化工集中区":disabled="disable"  ></a-input>
+              <j-dict-select-tag v-decorator="['ischemicals', {}]" type="radio" :triggerChange="true" @change="ischemicalsChange" placeholder="请输入是否位于化工集中区" :disabled="disable" dictCode="yes_or_no" ></j-dict-select-tag>
             </a-form-item>
           </a-col>
           <a-col span = '12'>
             <a-form-item label="化工集中区名称" :labelCol="labelCol" :wrapperCol="wrapperCol" :validate-status="modalStatus.attachedPark">
-              <a-input v-decorator="['attachedPark', {}]" placeholder="化工集中区名称":disabled="disable"  ></a-input>
+              <a-input v-decorator="['attachedPark', validatorRules.attachedPark]" placeholder="化工集中区名称":disabled="disable"  ></a-input>
             </a-form-item>
           </a-col>
         </a-row>
@@ -234,7 +236,7 @@
 </template>
 
 <script>
-
+  import AreaLinkSelect from "../../../component/AreaLinkSelect";
   import { httpAction } from '@/api/manage'
   import pick from 'lodash.pick'
   import {loadCompanyBaseInfo} from '../../../requestAction/request'
@@ -242,7 +244,7 @@
   export default {
     name: "BaseInfo",
     components: {
-      JDictSelectTag
+      JDictSelectTag,AreaLinkSelect
     },
     props:{
       companyId:'',
@@ -334,7 +336,8 @@
             rules: [
               { required: true, message: '请输入纬度!'},
             ]
-          }
+          },
+          attachedPark:{}
         },
         url: {
           add: "/company/companyBaseinfo/add",
@@ -379,6 +382,18 @@
 
     },
     methods: {
+      ischemicalsChange(val){
+        console.log(val)
+        if(val==='Y'){
+            this.validatorRules.attachedPark={
+              rules: [
+                { required: true, message: '请输入化工集中区名称!'},
+              ]
+          }
+        }else{
+          this.validatorRules.attachedPark={}
+          }
+      },
       add () {
         this.edit({});
       },

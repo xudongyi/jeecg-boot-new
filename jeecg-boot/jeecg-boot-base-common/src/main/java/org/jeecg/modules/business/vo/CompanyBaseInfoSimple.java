@@ -1,4 +1,4 @@
-package org.jeecg.modules.bussiness.vo;
+package org.jeecg.modules.business.vo;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

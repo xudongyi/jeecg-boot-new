@@ -89,6 +89,8 @@
 </template>
 
 <script>
+  import AreaHandler from "../../component/AreaHandler";
+  import {loadAreaDate} from '../../requestAction/areaUtil'
 
   import '@/assets/less/TableExpand.less'
   import { mixinDevice } from '@/utils/mixin'
@@ -141,7 +143,10 @@
           {
             title:'所属行政区',
             align:"center",
-            dataIndex: 'administrativeRegion'
+            dataIndex: 'administrativeRegion',
+            customRender: (text) => {
+               return this.administrativeRegion (text)
+            }
           },
           {
             title:'所属行业',
@@ -163,7 +168,13 @@
           status:"2",
           companyId_MultiString:store.getters.userInfo.companyIds.join(","),
         }
+        ,
+        areaHandler:'',
       }
+    },
+    beforeCreate:async function() {
+      await loadAreaDate()
+      this.areaHandler = new AreaHandler()
     },
     computed: {
       importExcelUrl: function(){
@@ -171,6 +182,11 @@
       },
     },
     methods: {
+      administrativeRegion (t){
+        let arr = [];
+        this.areaHandler.getAreaBycode(t,arr);
+        return arr.join('')
+      },
       localReset(){
         this.queryParam={
           status:"2"

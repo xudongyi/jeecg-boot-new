@@ -1,10 +1,10 @@
-package org.jeecg.modules.bussiness.service.impl;
+package org.jeecg.modules.business.service.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.jeecg.modules.bussiness.entity.CompanyBase;
-import org.jeecg.modules.bussiness.mapper.CompanyBaseMapper;
-import org.jeecg.modules.bussiness.service.ICompanyBaseService;
-import org.jeecg.modules.bussiness.vo.CompanyBaseInfoSimple;
+import org.jeecg.modules.business.entity.CompanyBase;
+import org.jeecg.modules.business.mapper.CompanyBaseMapper;
+import org.jeecg.modules.business.service.ICompanyBaseService;
+import org.jeecg.modules.business.vo.CompanyBaseInfoSimple;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
