@@ -98,6 +98,7 @@
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import SysWarnRuleModal from './modules/SysWarnRuleModal'
   import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
+  import moment from 'moment'
 
   export default {
     name: "SysWarnRuleList",
@@ -136,14 +137,14 @@
             dataIndex: 'msgRate'
           },
           {
-            title:'发送短信开始时间',
+            title:'短信接收时段',
             align:"center",
-            dataIndex: 'warnStarttime'
-          },
-          {
-            title:'发送短信结束时间',
-            align:"center",
-            dataIndex: 'warnEndtime'
+            dataIndex: 'warnStarttime',
+           customRender: function (text,record) {
+            if(text)
+             return text.substring(0,5) + '~' + (record.warnEndtime).substring(0,5);
+           }
+
           },
           {
             title:'策略说明',
