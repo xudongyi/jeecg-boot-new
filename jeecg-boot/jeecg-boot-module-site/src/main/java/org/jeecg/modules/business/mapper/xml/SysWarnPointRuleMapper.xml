@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.business.mapper.SysWarnPointRuleMapper">
+    <resultMap id="SysWarnPointListVO" type="org.jeecg.modules.business.vo.SysWarnPointListVO" >
+        <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="create_by" property="createBy" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_by" property="updateBy" jdbcType="VARCHAR"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="sys_org_code" property="sysOrgCode" jdbcType="VARCHAR"/>
+        <result column="monitor_id" property="monitorId" jdbcType="VARCHAR"/>
+        <result column="rule_id" property="ruleId" jdbcType="VARCHAR"/>
+        <result column="is_used" property="isUsed" jdbcType="VARCHAR"/>
+        <result column="site_name" property="siteName" jdbcType="VARCHAR"/>
+        <result column="site_type" property="siteType" jdbcType="VARCHAR"/>
+        <result column="company_name" property="companyName" jdbcType="VARCHAR"/>
+        <result column="site_level" property="siteLevel" jdbcType="VARCHAR"/>
+        <result column="rule_type" property="ruleType" jdbcType="VARCHAR"/>
+        <result column="is_send_msg" property="isSendMsg" jdbcType="VARCHAR"/>
+        <result column="msg_rate" property="msgRate" jdbcType="VARCHAR"/>
+        <result column="warn_starttime" property="warnStarttime" jdbcType="TIME"/>
+        <result column="warn_endtime" property="warnEndtime" jdbcType="TIME"/>
+        <result column="content" property="content" jdbcType="VARCHAR"/>
+
+    </resultMap>
+
+    <select id="getSysWarnPointList" parameterType="String"  resultMap="SysWarnPointListVO">
+        SELECT
+            t2.site_name,
+            t2.site_type,(
+            SELECT
+                a.company_name
+            FROM
+                company_base a
+            WHERE
+                a.id =(
+                SELECT
+                    c.company_id
+                FROM
+                    sys_warn_point_rule b
+                    LEFT JOIN site_monitor_point c ON b.monitor_id = c.id
+                )) as company_name,
+            t2.site_level,t3.rule_type,t3.content,t3.is_used
+
+        FROM
+            sys_warn_point_rule t1
+            LEFT JOIN site_monitor_point t2 ON t1.monitor_id = t2.id
+            LEFT JOIN sys_warn_rule t3 ON t1.rule_id = t3.id
+    </select>
+
+</mapper>
