@@ -38,7 +38,8 @@
 </template>
 
 <script>
-
+  import AreaHandler from "../../../../component/AreaHandler";
+  import {loadAreaDate} from '../../../../requestAction/areaUtil'
   import { httpAction } from '@/api/manage'
   import pick from 'lodash.pick'
   import { validateDuplicateValue } from '@/utils/util'
@@ -71,45 +72,86 @@
           {
             dataIndex: 'fieldName',
             title:'更改项',
-            key: 'fieldName'
+            key: 'fieldName',
+
           },
           {
             title: '更改前',
             dataIndex: 'firstVal',
-            key: 'firstVal'
+            key: 'firstVal',
+            customRender: (text,record) => {
+              return this.dictVal (text,record)
+            }
           },
           {
             title: '更改后',
             dataIndex: 'secondVal',
-            key: 'secondVal'
+            key: 'secondVal',
+            customRender: (text,record) => {
+              return this.dictVal (text,record)
+            }
           },
 
         ],
         data : [
         ],
-        dictOptions:[]
+        dictOptions:{},
+        areaHandler:''
 
       }
     },
-    created () {
+    created :async  function() {
       this.initDictData("statue");
-
+      await loadAreaDate()
+      this.areaHandler = new AreaHandler()
     },
     methods: {
       initDictData(dictCode) {
 
         //优先从缓存中读取字典配置
         if(getDictItemsFromCache(dictCode)){
-          this.dictOptions = getDictItemsFromCache(dictCode);
+          this.dictOptions[dictCode] = getDictItemsFromCache(dictCode);
           return
         }
-
         //根据字典Code, 初始化字典数组
         ajaxGetDictItems(dictCode, null).then((res) => {
           if (res.success) {
-            this.dictOptions = res.result;
+            this.dictOptions[dictCode] = res.result;
           }
         })
+      },
+      dictVal(text,record){
+        console.log(text,record)
+        if(text===null)
+          return ''
+        if(record.dictCode) {
+          //级联行政地址
+          if(record.dictCode==='AREA') {
+            console.log(this.areaHandler==='')
+            //初始化
+            if(this.areaHandler==='')
+            {
+              this.initArea()
+            }
+
+            let arr = [];
+            this.areaHandler.getAreaBycode(text,arr);
+            return arr.join('')
+          }
+
+          //普通字典数据
+          if(!this.dictOptions[record.dictCode])
+            this.initDictData(record.dictCode)
+          let result =
+            this.dictOptions[record.dictCode].find(e=>{
+              return  e.value===text;
+            });
+          if(result==null)
+            return text;
+          return result.text;
+        }
+       return text;
+
       },
       detail (record) {
         this.form.resetFields();
@@ -172,13 +214,12 @@
         if(status===null)
           return status;
         let result =
-          this.dictOptions.find(e=>{
+          this.dictOptions.statue.find(e=>{
             return  e.value===status;
           });
         if(result==null)
           return status;
         return result.text;
-
       }
 
       

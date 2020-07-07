@@ -2,6 +2,7 @@ package org.jeecg.modules.business.utils;
 
 import io.swagger.annotations.ApiModelProperty;
 import org.jeecg.common.aspect.annotation.Dict;
+import org.jeecg.modules.business.annotation.Area;
 import org.jeecg.modules.business.mapper.SysDictBussinessMapper;
 import org.springframework.stereotype.Component;
 
@@ -67,6 +68,9 @@ public class FieldBaseEquator extends AbstractEquator {
                 boolean eq = isFieldEquals(fieldInfo);
                 if (!eq) {
                     fieldInfo.setFieldName(field.getAnnotation(ApiModelProperty.class).value());
+
+
+
                     dictText(first, field, firstVal, secondVal, fieldInfo);
 
                     // 记录不相等的字段
@@ -84,10 +88,11 @@ public class FieldBaseEquator extends AbstractEquator {
         //如果有字典
         if (field.getAnnotation(Dict.class) != null)
         {
-            if(first != null)
-                fieldInfo.setFirstVal(dictService.queryDictTextByKey( field.getAnnotation(Dict.class).dicCode(),String.valueOf(firstVal)));
-            if(secondVal != null)
-                fieldInfo.setSecondVal(dictService.queryDictTextByKey( field.getAnnotation(Dict.class).dicCode(),String.valueOf(secondVal)));
+            fieldInfo.setDictCode( field.getAnnotation(Dict.class).dicCode());
+        }
+        if(field.getAnnotation(Area.class)!=null){
+            fieldInfo.setDictCode( Constant.AREA);
+
         }
     }
 

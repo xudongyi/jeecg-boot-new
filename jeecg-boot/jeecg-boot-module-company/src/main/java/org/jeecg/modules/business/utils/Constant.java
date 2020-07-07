@@ -1,8 +1,10 @@
 package org.jeecg.modules.business.utils;
 
-import java.util.jar.JarEntry;
-
 public class Constant {
+
+    public static String AREA = "AREA";
+
+
     //状态
     public  static class status{
         /**

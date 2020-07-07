@@ -9,6 +9,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import org.jeecg.common.aspect.annotation.Dict;
+import org.jeecg.modules.business.annotation.Area;
 import org.jeecgframework.poi.excel.annotation.Excel;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -52,14 +54,17 @@ public class ViewCompanyBase implements Serializable {
     @ApiModelProperty(value = "统一社会信用代码")
     private String socialCreditCode;
 	/**企业类型*/
+    @Dict(dicCode = "company_type")
 	@Excel(name = "企业类型", width = 15)
     @ApiModelProperty(value = "企业类型")
     private String companyType;
 	/**所属行政区*/
+    @Area
 	@Excel(name = "所属行政区", width = 15)
     @ApiModelProperty(value = "所属行政区")
     private String administrativeRegion;
 	/**所属行业*/
+    @Dict(dicCode = "industry")
 	@Excel(name = "所属行业", width = 15)
     @ApiModelProperty(value = "所属行业")
     private String industry;
@@ -84,6 +89,7 @@ public class ViewCompanyBase implements Serializable {
     @ApiModelProperty(value = "企业法人电话")
     private String corporatePhone;
 	/**经济类型*/
+    @Dict(dicCode = "economic_type")
 	@Excel(name = "经济类型", width = 15)
     @ApiModelProperty(value = "经济类型")
     private String economicType;
@@ -116,6 +122,7 @@ public class ViewCompanyBase implements Serializable {
     @ApiModelProperty(value = "应急负责人电话")
     private String leaderPhone;
 	/**所属流域*/
+    @Dict(dicCode = "watershed")
 	@Excel(name = "所属流域", width = 15)
     @ApiModelProperty(value = "所属流域")
     private String drainageArea;
@@ -140,6 +147,7 @@ public class ViewCompanyBase implements Serializable {
     @ApiModelProperty(value = "员工人数（人）")
     private String staffCount;
 	/**企业规模*/
+    @Dict(dicCode = "company_size")
 	@Excel(name = "企业规模", width = 15)
     @ApiModelProperty(value = "企业规模")
     private String enterpriseSize;
@@ -148,6 +156,7 @@ public class ViewCompanyBase implements Serializable {
     @ApiModelProperty(value = "厂区面积（平方米）")
     private String factoryArea;
 	/**是否位于化工集中区*/
+    @Dict(dicCode = "yes_or_no")
 	@Excel(name = "是否位于化工集中区", width = 15)
     @ApiModelProperty(value = "是否位于化工集中区")
     private String ischemicals;
