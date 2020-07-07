@@ -20,6 +20,9 @@ public class SysWarnPointListVO extends SysWarnPointRule {
     /**所属单位*/
     private String companyName;
 
+    /**所属单位id*/
+    private String companyId;
+
     /**站点级别*/
     @Dict(dicCode = "siteLevel")
     private String siteLevel;

@@ -21,31 +21,28 @@
         <result column="warn_starttime" property="warnStarttime" jdbcType="TIME"/>
         <result column="warn_endtime" property="warnEndtime" jdbcType="TIME"/>
         <result column="content" property="content" jdbcType="VARCHAR"/>
+        <result column="company_id" property="companyId" jdbcType="VARCHAR"/>
 
     </resultMap>
 
     <select id="getSysWarnPointList" parameterType="String"  resultMap="SysWarnPointListVO">
-        SELECT
+        select A.* , B.company_name from
+	    (SELECT
+            t1.id,
+            t1.monitor_id,
+            t1.rule_id,
+            t1.is_used,
             t2.site_name,
-            t2.site_type,(
-            SELECT
-                a.company_name
-            FROM
-                company_base a
-            WHERE
-                a.id =(
-                SELECT
-                    c.company_id
-                FROM
-                    sys_warn_point_rule b
-                    LEFT JOIN site_monitor_point c ON b.monitor_id = c.id
-                )) as company_name,
-            t2.site_level,t3.rule_type,t3.content,t3.is_used
+            t2.site_type,
+			t2.company_id,
+            t2.site_level,t3.rule_type,t3.content,t3.is_send_msg,t3.msg_rate,t3.warn_starttime,t3.warn_endtime
 
         FROM
             sys_warn_point_rule t1
             LEFT JOIN site_monitor_point t2 ON t1.monitor_id = t2.id
-            LEFT JOIN sys_warn_rule t3 ON t1.rule_id = t3.id
+            LEFT JOIN sys_warn_rule t3 ON t1.rule_id = t3.id) A
+			left join company_base B on A.company_id = B.id
+        order by site_name
     </select>
 
 </mapper>
