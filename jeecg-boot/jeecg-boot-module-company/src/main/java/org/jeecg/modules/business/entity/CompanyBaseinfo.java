@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.jeecg.modules.business.annotation.Area;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.jeecgframework.poi.excel.annotation.Excel;
 import org.jeecg.common.aspect.annotation.Dict;
@@ -71,14 +72,17 @@ public class CompanyBaseinfo implements Serializable {
     @ApiModelProperty(value = "统一社会信用代码")
     private java.lang.String socialCreditCode;
 	/**企业类型*/
+	@Dict(dicCode = "company_type")
 	@Excel(name = "企业类型", width = 15)
     @ApiModelProperty(value = "企业类型")
     private java.lang.String companyType;
 	/**所属行政区*/
+	@Area
 	@Excel(name = "所属行政区", width = 15)
     @ApiModelProperty(value = "所属行政区")
     private java.lang.String administrativeRegion;
 	/**所属行业*/
+	@Dict(dicCode = "industry")
 	@Excel(name = "所属行业", width = 15)
     @ApiModelProperty(value = "所属行业")
     private java.lang.String industry;
@@ -103,6 +107,7 @@ public class CompanyBaseinfo implements Serializable {
     @ApiModelProperty(value = "企业法人电话")
     private java.lang.String corporatePhone;
 	/**经济类型*/
+	@Dict(dicCode = "economic_type")
 	@Excel(name = "经济类型", width = 15)
     @ApiModelProperty(value = "经济类型")
     private java.lang.String economicType;
@@ -135,6 +140,7 @@ public class CompanyBaseinfo implements Serializable {
     @ApiModelProperty(value = "应急负责人电话")
     private java.lang.String leaderPhone;
 	/**所属流域*/
+	@Dict(dicCode = "watershed")
 	@Excel(name = "所属流域", width = 15)
     @ApiModelProperty(value = "所属流域")
     private java.lang.String drainageArea;
@@ -159,6 +165,7 @@ public class CompanyBaseinfo implements Serializable {
     @ApiModelProperty(value = "员工人数（人）")
     private java.lang.String staffCount;
 	/**企业规模*/
+	@Dict(dicCode = "company_size")
 	@Excel(name = "企业规模", width = 15)
     @ApiModelProperty(value = "企业规模")
     private java.lang.String enterpriseSize;
@@ -167,6 +174,7 @@ public class CompanyBaseinfo implements Serializable {
     @ApiModelProperty(value = "厂区面积（平方米）")
     private java.lang.String factoryArea;
 	/**是否位于化工集中区*/
+	@Dict(dicCode = "yes_or_no")
 	@Excel(name = "是否位于化工集中区", width = 15)
     @ApiModelProperty(value = "是否位于化工集中区")
     private java.lang.String ischemicals;

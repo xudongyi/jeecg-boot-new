@@ -12,7 +12,7 @@ public class FieldInfo {
     private Class<?> fieldType;
     private Object firstVal;
     private Object secondVal;
-
+    private Object dictCode;
     public FieldInfo() {
     }
 
@@ -55,6 +55,14 @@ public class FieldInfo {
         this.secondVal = secondVal;
     }
 
+    public Object getDictCode() {
+        return dictCode;
+    }
+
+    public void setDictCode(Object dictCode) {
+        this.dictCode = dictCode;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -82,6 +90,7 @@ public class FieldInfo {
                 ", fieldType=" + fieldType +
                 ", firstVal=" + firstVal +
                 ", secondVal=" + secondVal +
+                ", dictCode=" + dictCode +
                 '}';
     }
 }
