@@ -1,8 +1,10 @@
 package org.jeecg.modules.business.controller;
 
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -60,6 +62,7 @@ public class SysAreaController extends JeecgController<SysArea, ISysAreaService>
 		}
 		return Result.ok(result);
 	}
+
 	/**
 	 *   添加
 	 *
@@ -77,15 +80,18 @@ public class SysAreaController extends JeecgController<SysArea, ISysAreaService>
 	/**
 	 *  编辑
 	 *
-	 * @param sysArea
+	 * @param requset
 	 * @return
 	 */
-	@AutoLog(value = "系统区域表-编辑")
-	@ApiOperation(value="系统区域表-编辑", notes="系统区域表-编辑")
-	@PutMapping(value = "/edit")
-	public Result<?> edit(@RequestBody SysArea sysArea) {
-		sysAreaService.updateById(sysArea);
-		return Result.ok("编辑成功!");
+	@AutoLog(value = "系统区域表-active更新")
+	@ApiOperation(value="系统区域表-active更新", notes="系统区域表-active更新")
+	@PostMapping(value = "/change")
+	public Result<?> edit(@RequestBody JSONObject requset) {
+
+		sysAreaService.update(new UpdateWrapper<SysArea>().lambda().set(SysArea::getActive,"0"));
+		sysAreaService.update(new UpdateWrapper<SysArea>().lambda().in(SysArea::getCode,requset.getJSONArray("keys").toJavaList(String.class))
+				.set(SysArea::getActive,"1"));
+		return Result.ok("系统区域表更新成功!");
 	}
 	
 	/**
