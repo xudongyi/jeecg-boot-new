@@ -19,5 +19,5 @@ public interface ISiteMonitorPointService extends IService<SiteMonitorPoint> {
 
     List<Map<String, String>> getMenus();
 
-    IPage<SiteMonitorPointVO> getSiteMonitorPointList(Page<SiteMonitorPointVO> page);
+    IPage<SiteMonitorPointVO> getSiteMonitorPointList(Page<SiteMonitorPointVO> page,String siteType);
 }

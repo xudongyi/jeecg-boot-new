@@ -28,6 +28,7 @@ public class SiteMonitorPointServiceImpl extends ServiceImpl<SiteMonitorPointMap
     @Resource
     private SiteMonitorPointMapper siteMonitorPointMapper;
 
+
     public List<Map<String,String>> getMenus(){
         List<Map<String,String>> menus = new ArrayList<>();
         addElements("1"," 基本信息",0,menus);
@@ -38,8 +39,9 @@ public class SiteMonitorPointServiceImpl extends ServiceImpl<SiteMonitorPointMap
     }
 
     @Override
-    public IPage<SiteMonitorPointVO> getSiteMonitorPointList(Page<SiteMonitorPointVO> page) {
-        return page.setRecords(siteMonitorPointMapper.getSiteMonitorPointList(page));
+    public Page<SiteMonitorPointVO> getSiteMonitorPointList(Page<SiteMonitorPointVO> page,String siteType) {
+        siteMonitorPointMapper.getSiteMonitorPointList(page, siteType);
+        return page.setRecords(siteMonitorPointMapper.getSiteMonitorPointList(page,siteType));
     }
 
     private void addElements(String key,String value,Integer counts,List<Map<String,String>> basicInfoMenus){

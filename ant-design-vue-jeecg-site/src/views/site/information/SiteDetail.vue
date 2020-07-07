@@ -3,10 +3,10 @@
     <a-layout-content style="padding: 0 0">
       <a-layout style="padding: 24px 0;  background: #fff">
         <a-layout-sider width="200" style="background: #fff">
-          <business-menu  ref = 'leftmenu' :item-list="leftMenus" :menu-style="leftStyle"  mode="inline"  @clickHandle = "leftHandle"></business-menu>
+          <business-menu :item-list="leftMenus" :menu-style="leftStyle"  mode="inline"  @clickHandle = "leftHandle"></business-menu>
         </a-layout-sider>
         <a-layout-content :style="{ padding: '0 24px', minHeight: '280px' }">
-          <siteMonitorPoint-modal ref="modalForm" @ok="modalFormOk" v-if="leftActive==1"></siteMonitorPoint-modal>
+          <siteMonitorPoint-modal ref="modalForm" v-show="leftActive==1" :siteType="siteType" disable="false"></siteMonitorPoint-modal>
     </a-layout-content>
       </a-layout>
     </a-layout-content>
@@ -26,7 +26,7 @@
         SiteMonitorPointModal
       },
       props:{
-        id:''
+        id:""
       },
       data(){
         return {
@@ -37,16 +37,20 @@
             top: '0px',
             left:'0px'
           },
+          siteType:''
         }
       },
       methods:{
         leftHandle(key){
           this.leftActive = key;
+        },
+        edit(record){
+          this.siteType=record.siteType;
+          this.$refs.modalForm.edit(record);
         }
       },
       created() {
         let _this = this;
-        debugger
         if(_this.id) {
           //发送请求，查找
           getDetailMenus().then((res) => {
@@ -58,7 +62,6 @@
             }
           });
         }
-
       }
 
     }

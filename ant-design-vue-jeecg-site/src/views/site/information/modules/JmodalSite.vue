@@ -9,10 +9,10 @@
     @cancel="handleCancel"
     cancelText="关闭"
     >
-    <site-monitor-point-modal ref="siteModal" :ftitle="title" :siteType="this.$data.siteType" ></site-monitor-point-modal>
+    <site-monitor-point-modal ref="siteModal" :ftitle="title" :siteType="this.$data.siteType" @close="close" @ok="submitOk" isjmodal="true" :disable="disable"></site-monitor-point-modal>
     <template slot="footer">
-      <a-button type="primary" @click="handleCancel">关闭</a-button>
-      <a-button type="primary" @click="handleOk">保存</a-button>
+      <a-button type="primary" @click="handleCancel" >关闭</a-button>
+      <a-button type="primary" @click="handleOk" v-if="!disable">保存</a-button>
     </template>
   </j-modal>
 </template>
@@ -42,15 +42,27 @@
             this.$refs.siteModal.add();
           });
         },
+        viewClick(record){
+          this.$nextTick(() => {
+            this.$refs.siteModal.edit(record);
+          });
+        },
         handleOk(){
           this.$refs.siteModal.handleOk();
-          this.visible = false;
+        },
+        submitOk(){
+          this.$emit('ok');
         },
         handleCancel() {
           this.$refs.siteModal.handleCancel();
         },
+        close() {
+          this.visible = false;
+        },
       },created() {
 
+    },props:{
+      disable:false
     }
   }
 </script>

@@ -36,6 +36,7 @@ public class SiteMonitorPointVO{
     private String siteType;
 	/**所属单位*/
     private String companyName;
+	private String companyId;
 	/**站点级别*/
 	@Dict(dicCode = "siteLevel")
     private String siteLevel;

@@ -1,7 +1,7 @@
 <template>
   <div>
-    <site-monitor-point-list v-if="!isDetail" @detail="handleDetail" :siteType="this.siteType"></site-monitor-point-list>
-    <site-detail v-if="isDetail" :id="id"></site-detail>
+    <site-monitor-point-list v-if="!isDetail" @detail="handleDetail" :siteType="siteType"></site-monitor-point-list>
+    <site-detail ref="site" v-if="isDetail" :id="id"></site-detail>
   </div>
 </template>
 
@@ -21,13 +21,15 @@
       return {
         siteType: this.$route.params.siteType,
         isDetail:false,
-        id:''
       }
     },
     methods:{
-      handleDetail(id){
+      handleDetail(record){
         this.isDetail=true;
-        this.id=id;
+        this.id=record.id;
+        this.$nextTick(() => {
+           this.$refs.site.edit(record);
+        })
       }
     }
   }

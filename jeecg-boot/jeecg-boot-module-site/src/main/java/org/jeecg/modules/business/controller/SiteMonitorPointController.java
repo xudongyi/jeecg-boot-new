@@ -1,5 +1,6 @@
 package org.jeecg.modules.business.controller;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -55,8 +56,9 @@ public class SiteMonitorPointController extends JeecgController<SiteMonitorPoint
 								   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
 								   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
 								   HttpServletRequest req) {
+		String siteType = req.getParameter("siteType");
 		Page<SiteMonitorPointVO> page = new Page<>(pageNo, pageSize);
-		IPage<SiteMonitorPointVO> pageList = siteMonitorPointService.getSiteMonitorPointList(page);
+		IPage<SiteMonitorPointVO> pageList = siteMonitorPointService.getSiteMonitorPointList(page,siteType);
 		return Result.ok(pageList);
 	}
 	
@@ -70,6 +72,7 @@ public class SiteMonitorPointController extends JeecgController<SiteMonitorPoint
 	@ApiOperation(value="监测站点表-添加", notes="监测站点表-添加")
 	@PostMapping(value = "/add")
 	public Result<?> add(@RequestBody SiteMonitorPoint siteMonitorPoint) {
+
 		siteMonitorPointService.save(siteMonitorPoint);
 		return Result.ok("添加成功！");
 	}

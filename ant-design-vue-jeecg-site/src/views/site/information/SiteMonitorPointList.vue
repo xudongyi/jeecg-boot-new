@@ -131,7 +131,7 @@
             <a class="ant-dropdown-link">更多 <a-icon type="down"/></a>
             <a-menu slot="overlay">
               <a-menu-item><a @click="handleDetail(record)">编辑</a></a-menu-item>
-              <a-menu-item><a @click="handleEdit(record)">详情</a></a-menu-item>
+              <a-menu-item><a @click="viewDetail(record)">详情</a></a-menu-item>
               <a-menu-item>
                 <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
                   <a>删除</a>
@@ -143,7 +143,7 @@
 
       </a-table>
     </div>
-    <jmodal-site ref="modalForm"></jmodal-site>
+    <jmodal-site ref="modalForm" @ok="ok" :disable="disable"></jmodal-site>
   </a-card>
 </template>
 
@@ -174,10 +174,11 @@
     data() {
       return {
         description: '监测站点表管理页面',
-        isDetail:false,
+        isDetail: false,
         queryParam: {
           siteType: this.$route.params.siteType
         },
+        disable: true,
         // 表头
         columns: [
           {
@@ -203,7 +204,7 @@
           {
             title: '所属单位',
             align: "center",
-            dataIndex: 'companyId_dictText'
+            dataIndex: 'companyName'
           },
           {
             title: '站点级别',
@@ -281,14 +282,23 @@
       },
       initDictConfig() {
       },
-      handleDetail(record){
-        this.$emit("detail",record.id)
+      handleDetail(record) {
+        this.$emit("detail", record)
       },
-      addClick(){
-        this.$refs.modalForm.visible=true;
-        this.$refs.modalForm.confirmLoading=false;
-        let that = this
-        that.$refs.modalForm.addClick(this.queryParam.siteType)
+      addClick() {
+        this.$refs.modalForm.visible = true;
+        this.$refs.modalForm.confirmLoading = false;
+        this.$refs.modalForm.addClick(this.queryParam.siteType)
+        this.disable = false;
+      },
+      viewDetail(record) {
+        this.$refs.modalForm.visible = true;
+        this.$refs.modalForm.viewClick(record)
+        this.disable = true;
+      },
+      ok() {
+        debugger
+        this.loadData(1)
       }
     }
   }
