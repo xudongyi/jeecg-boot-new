@@ -11,9 +11,11 @@ import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
 import org.jeecg.common.system.base.controller.JeecgController;
 import org.jeecg.modules.business.entity.CompanyBase;
+import org.jeecg.modules.business.entity.SiteDataCollection;
 import org.jeecg.modules.business.service.ICompanyBaseService;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.modules.business.entity.SiteMonitorPoint;
+import org.jeecg.modules.business.service.ISiteDataCollectionService;
 import org.jeecg.modules.business.service.ISiteMonitorPointService;
 import org.jeecg.modules.business.vo.SiteMonitorPointVO;
 import org.jeecg.modules.business.vo.SysWarnPointListVO;
@@ -39,8 +41,11 @@ public class SiteMonitorPointController extends JeecgController<SiteMonitorPoint
 
 	@Autowired
 	private ICompanyBaseService companyBaseService;
-	
-	/**
+
+	@Autowired
+	private ISiteDataCollectionService siteDataCollectionService;
+
+	 /**
 	 * 分页列表查询
 	 *
 	 * @param siteMonitorPoint
@@ -72,8 +77,21 @@ public class SiteMonitorPointController extends JeecgController<SiteMonitorPoint
 	@ApiOperation(value="监测站点表-添加", notes="监测站点表-添加")
 	@PostMapping(value = "/add")
 	public Result<?> add(@RequestBody SiteMonitorPoint siteMonitorPoint) {
-
 		siteMonitorPointService.save(siteMonitorPoint);
+		//判断是否存在数采仪
+		SiteDataCollection siteDataCollection = siteDataCollectionService.findByMnCode(siteMonitorPoint.getMnCode());
+		//没有则新增
+		if(siteDataCollection==null){
+			siteDataCollection = new SiteDataCollection();
+			siteDataCollection.setMnCode(siteMonitorPoint.getMnCode());
+			siteDataCollection.setMonitorId(siteMonitorPoint.getId());
+			siteDataCollectionService.save(siteDataCollection);
+		}else{
+			//有则更新
+			//更新数采仪中的站点id
+			siteDataCollection.setMonitorId(siteMonitorPoint.getId());
+			siteDataCollectionService.updateById(siteDataCollection);
+		}
 		return Result.ok("添加成功！");
 	}
 	

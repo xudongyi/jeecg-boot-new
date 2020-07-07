@@ -28,7 +28,7 @@
         this.isDetail=true;
         this.id=record.id;
         this.$nextTick(() => {
-           this.$refs.site.edit(record);
+           this.$refs.site.editMonitor(record);
         })
       }
     }
