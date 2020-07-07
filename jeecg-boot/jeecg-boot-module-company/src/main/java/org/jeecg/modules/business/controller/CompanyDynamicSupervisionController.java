@@ -1,20 +1,15 @@
 package org.jeecg.modules.business.controller;
 
-import java.security.Security;
 import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.api.vo.Result;
-import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.modules.business.entity.*;
 import org.jeecg.modules.business.service.ICompanyDynamicSupervisionService;
@@ -26,9 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.jeecg.common.system.base.controller.JeecgController;
 import org.jeecg.modules.business.service.ICompanyFileService;
-import org.jeecg.modules.business.service.ICompanySysuserService;
-import org.jeecg.modules.business.utils.Constant;
-import org.jeecg.modules.business.utils.ServiceUtils;
+import org.jeecg.modules.bussiness.utils.Constant;
 import org.jeecg.modules.business.vo.CompanyDynamicSupervisionVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

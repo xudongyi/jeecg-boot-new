@@ -14,6 +14,8 @@ import org.jeecg.modules.business.service.ICompanyBaseService;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.modules.business.entity.SiteMonitorPoint;
 import org.jeecg.modules.business.service.ISiteMonitorPointService;
+import org.jeecg.modules.business.vo.SiteMonitorPointVO;
+import org.jeecg.modules.business.vo.SysWarnPointListVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,9 +55,8 @@ public class SiteMonitorPointController extends JeecgController<SiteMonitorPoint
 								   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
 								   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
 								   HttpServletRequest req) {
-		QueryWrapper<SiteMonitorPoint> queryWrapper = QueryGenerator.initQueryWrapper(siteMonitorPoint, req.getParameterMap());
-		Page<SiteMonitorPoint> page = new Page<SiteMonitorPoint>(pageNo, pageSize);
-		IPage<SiteMonitorPoint> pageList = siteMonitorPointService.page(page, queryWrapper);
+		Page<SiteMonitorPointVO> page = new Page<>(pageNo, pageSize);
+		IPage<SiteMonitorPointVO> pageList = siteMonitorPointService.getSiteMonitorPointList(page);
 		return Result.ok(pageList);
 	}
 	
@@ -166,7 +167,6 @@ public class SiteMonitorPointController extends JeecgController<SiteMonitorPoint
 	 @GetMapping(value = "/queryCompanyName")
 	 public Result<?> queryCompanyName() {
 		 List<Map<String,String>> result = new ArrayList<>();
-		 //查询企业id和name
 		 companyBaseService.list(new QueryWrapper<CompanyBase>().lambda()).forEach(companyBase -> {
 			 Map<String,String> param = new HashMap<>();
 			 param.put("key",companyBase.getId());
@@ -175,6 +175,21 @@ public class SiteMonitorPointController extends JeecgController<SiteMonitorPoint
 			 result.add(param);
 		 });
 
+		 return Result.ok(result);
+	 }
+
+	 /**
+	  *   查询菜单及其状态信息
+	  *
+	  * @param
+	  * @return 菜单及其状态信息
+	  */
+	 @AutoLog(value = "company_basic-查询菜单及其状态信息")
+	 @ApiOperation(value="查询菜单及其状态信息", notes="根据企业ID查询")
+	 @GetMapping(value = "/menus")
+	 public Result<?> queryMenus() {
+		 Map<String,List<Map<String,String>>> result = new HashMap<>();
+		 result.put("menus" , siteMonitorPointService.getMenus());
 		 return Result.ok(result);
 	 }
 }

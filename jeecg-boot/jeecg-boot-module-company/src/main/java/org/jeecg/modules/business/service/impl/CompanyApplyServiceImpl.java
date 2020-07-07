@@ -7,7 +7,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.jeecg.modules.business.entity.*;
 import org.jeecg.modules.business.mapper.CompanyApplyMapper;
 import org.jeecg.modules.business.service.ICompanyApplyService;
-import org.jeecg.modules.business.utils.Constant;
 import org.jeecg.modules.business.vo.CompanyApplyVo;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +15,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import javax.annotation.Resource;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 /**
  * @Description: 企业申报基础表

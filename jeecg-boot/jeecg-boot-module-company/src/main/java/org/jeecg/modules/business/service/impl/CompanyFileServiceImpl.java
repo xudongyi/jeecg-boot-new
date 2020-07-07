@@ -2,13 +2,11 @@ package org.jeecg.modules.business.service.impl;
 
 
 import cn.hutool.core.util.StrUtil;
-import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.jeecg.modules.business.entity.CompanyFile;
 import org.jeecg.modules.business.mapper.CompanyFileMapper;
 import org.jeecg.modules.business.service.ICompanyFileService;
-import org.jeecg.modules.business.utils.Constant;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

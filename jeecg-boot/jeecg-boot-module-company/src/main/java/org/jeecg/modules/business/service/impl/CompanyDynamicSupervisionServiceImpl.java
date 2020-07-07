@@ -5,9 +5,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.jeecg.modules.business.entity.CompanyDynamicSupervision;
 import org.jeecg.modules.business.mapper.CompanyDynamicSupervisionMapper;
 import org.jeecg.modules.business.service.ICompanyDynamicSupervisionService;
-import org.jeecg.modules.business.utils.Constant;
+import org.jeecg.modules.bussiness.utils.Constant;
 import org.jeecg.modules.business.vo.CompanyDynamicSupervisionVO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;

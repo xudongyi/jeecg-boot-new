@@ -1,12 +1,10 @@
 package org.jeecg.modules.business.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.modules.business.entity.CompanyAcceptance;
 import org.jeecg.modules.business.mapper.CompanyAcceptanceMapper;
 import org.jeecg.modules.business.service.ICompanyAcceptanceService;
-import org.jeecg.modules.business.utils.Constant;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.jeecg.modules.bussiness.utils.Constant;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
