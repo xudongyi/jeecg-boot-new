@@ -44,6 +44,7 @@
         },
         viewClick(record){
           this.$nextTick(() => {
+            this.$data.siteType=record.siteType;
             this.$refs.siteModal.edit(record);
           });
         },

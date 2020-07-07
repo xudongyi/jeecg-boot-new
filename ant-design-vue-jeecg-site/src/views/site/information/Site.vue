@@ -8,7 +8,7 @@
 <script>
   import SiteMonitorPointList from "./SiteMonitorPointList";
   import SiteDetail from "./SiteDetail";
-  import BusinessMenu from "../../business/component/BusinessMenu";
+  import BusinessMenu from "../component/BusinessMenu";
 
   export default {
     name: "Site",

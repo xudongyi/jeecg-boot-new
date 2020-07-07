@@ -6,7 +6,7 @@
           <business-menu :item-list="leftMenus" :menu-style="leftStyle"  mode="inline"  @clickHandle = "leftHandle"></business-menu>
         </a-layout-sider>
         <a-layout-content :style="{ padding: '0 24px', minHeight: '280px' }">
-          <siteMonitorPoint-modal ref="modalForm" v-show="leftActive==1" :siteType="siteType" disable="false"></siteMonitorPoint-modal>
+          <siteMonitorPoint-modal ref="modalForm" v-show="leftActive==1" :siteType="siteType" :disable="disable"></siteMonitorPoint-modal>
     </a-layout-content>
       </a-layout>
     </a-layout-content>
@@ -16,7 +16,7 @@
 
 
 <script>
-    import BusinessMenu from "../../business/component/BusinessMenu";
+    import BusinessMenu from "../component/BusinessMenu";
     import {getDetailMenus} from '../../requestAction/request';
     import SiteMonitorPointModal from "./modules/SiteMonitorPointModal";
     export default {
@@ -37,7 +37,8 @@
             top: '0px',
             left:'0px'
           },
-          siteType:''
+          siteType:'',
+          disable:false
         }
       },
       methods:{
