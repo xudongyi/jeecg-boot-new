@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.jeecg.modules.business.entity.CompanyOnlineInfo;
 import org.jeecg.modules.business.mapper.CompanyOnlineInfoMapper;
 import org.jeecg.modules.business.service.ICompanyOnlineInfoService;
-import org.jeecg.modules.bussiness.utils.Constant;
+import org.jeecg.modules.business.utils.Constant;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;

@@ -18,7 +18,7 @@ import org.jeecg.modules.business.service.ICompanyApplyService;
 import org.jeecg.modules.business.service.ICompanyBaseinfoService;
 import org.jeecg.modules.business.service.ICompanySysuserService;
 import org.jeecg.modules.business.service.IViewCompanyBaseService;
-import org.jeecg.modules.bussiness.utils.Constant;
+import org.jeecg.modules.business.utils.Constant;
 import org.jeecg.modules.business.vo.ViewCompanyBase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

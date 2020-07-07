@@ -24,7 +24,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 
 import org.jeecg.modules.business.service.ICompanyFileService;
-import org.jeecg.modules.bussiness.utils.Constant;
+import org.jeecg.modules.business.utils.Constant;
 import org.jeecg.common.system.base.controller.JeecgController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

@@ -18,7 +18,7 @@ import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.modules.business.entity.CompanyApply;
 import org.jeecg.modules.business.entity.CompanyQualification;
 import org.jeecg.modules.business.service.*;
-import org.jeecg.modules.bussiness.utils.Constant;
+import org.jeecg.modules.business.utils.Constant;
 import org.jeecg.modules.business.utils.FieldBaseEquator;
 import org.jeecg.modules.business.utils.ServiceUtils;
 import org.jeecg.modules.business.vo.CompanyApplyVo;

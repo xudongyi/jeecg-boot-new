@@ -15,7 +15,7 @@ import org.jeecg.modules.business.entity.CompanyQualification;
 import org.jeecg.modules.business.service.ICompanyApplyService;
 import org.jeecg.modules.business.service.ICompanyFileService;
 import org.jeecg.modules.business.service.ICompanyQualificationService;
-import org.jeecg.modules.bussiness.utils.Constant;
+import org.jeecg.modules.business.utils.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;

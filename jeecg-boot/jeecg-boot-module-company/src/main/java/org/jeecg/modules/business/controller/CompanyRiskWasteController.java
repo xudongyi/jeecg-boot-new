@@ -19,7 +19,7 @@ import org.jeecg.modules.business.entity.CompanyRiskWaste;
 import org.jeecg.modules.business.service.ICompanyApplyService;
 import org.jeecg.modules.business.service.ICompanyFileService;
 import org.jeecg.modules.business.service.ICompanyRiskWasteService;
-import org.jeecg.modules.bussiness.utils.Constant;
+import org.jeecg.modules.business.utils.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;

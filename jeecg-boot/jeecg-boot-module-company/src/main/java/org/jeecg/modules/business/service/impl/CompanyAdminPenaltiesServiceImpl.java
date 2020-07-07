@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.jeecg.modules.business.entity.CompanyAdminPenalties;
 import org.jeecg.modules.business.mapper.CompanyAdminPenaltiesMapper;
 import org.jeecg.modules.business.service.ICompanyAdminPenaltiesService;
-import org.jeecg.modules.bussiness.utils.Constant;
+import org.jeecg.modules.business.utils.Constant;
 import org.jeecg.modules.business.vo.CompanyAdminPenaltiesVO;
 import org.springframework.stereotype.Service;
 

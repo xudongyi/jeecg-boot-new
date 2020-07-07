@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import org.jeecg.modules.business.entity.CompanyBaseinfo;
 import org.jeecg.modules.business.mapper.CompanyBaseinfoMapper;
 import org.jeecg.modules.business.service.ICompanyBaseinfoService;
-import org.jeecg.modules.bussiness.utils.Constant;
+import org.jeecg.modules.business.utils.Constant;
 import org.jeecg.modules.business.vo.CompanyBaseInfoVo;
 import org.springframework.stereotype.Service;
 

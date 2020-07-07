@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.jeecg.modules.business.entity.CompanyRiskWaste;
 import org.jeecg.modules.business.mapper.CompanyRiskWasteMapper;
 import org.jeecg.modules.business.service.ICompanyRiskWasteService;
-import org.jeecg.modules.bussiness.utils.Constant;
+import org.jeecg.modules.business.utils.Constant;
 import org.springframework.stereotype.Service;
 
 /**
