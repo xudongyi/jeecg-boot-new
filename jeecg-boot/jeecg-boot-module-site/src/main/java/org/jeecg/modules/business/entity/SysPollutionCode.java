@@ -73,8 +73,8 @@ public class SysPollutionCode implements Serializable {
     @ApiModelProperty(value = "格式值")
     private java.lang.String format;
 	/**污染因子类型*/
-	@Excel(name = "污染因子类型", width = 15, dicCode = "pollution_code_type")
-	@Dict(dicCode = "pollution_code_type")
+	@Excel(name = "污染因子类型", width = 15, dicCode = "siteType")
+	@Dict(dicCode = "siteType")
     @ApiModelProperty(value = "污染因子类型")
     private java.lang.String type;
 	/**数据是否重复*/

@@ -31,7 +31,7 @@
           </a-col>
           <a-col span="12">
             <a-form-item label="污染因子类型" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <j-dict-select-tag type="list" v-decorator="['type', validatorRules.type]" :trigger-change="true" dictCode="pollution_code_type" placeholder="请选择污染因子类型" :disabled="disableSubmit"/>
+              <j-dict-select-tag type="list" v-decorator="['type', validatorRules.type]" :trigger-change="true" dictCode="siteType" placeholder="请选择污染因子类型" :disabled="disableSubmit"/>
             </a-form-item>
           </a-col>
         </a-row>
