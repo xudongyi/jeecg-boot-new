@@ -2,11 +2,10 @@ package org.jeecg.modules.business.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.jeecg.modules.business.entity.CompanyQualification;
 import org.jeecg.modules.business.entity.CompanyUserinfo;
 import org.jeecg.modules.business.mapper.CompanyUserinfoMapper;
 import org.jeecg.modules.business.service.ICompanyUserinfoService;
-import org.jeecg.modules.business.utils.Constant;
+import org.jeecg.modules.bussiness.utils.Constant;
 import org.springframework.stereotype.Service;
 
 /**

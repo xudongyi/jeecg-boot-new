@@ -1,7 +1,6 @@
 package org.jeecg.modules.business.controller;
 
 import cn.hutool.core.util.StrUtil;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
@@ -15,19 +14,14 @@ import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
 import org.jeecg.common.system.base.controller.JeecgController;
-import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.system.vo.LoginUser;
-import org.jeecg.common.util.SpringContextUtils;
 import org.jeecg.modules.business.entity.CompanyApply;
-import org.jeecg.modules.business.entity.CompanyFile;
 import org.jeecg.modules.business.entity.CompanyQualification;
 import org.jeecg.modules.business.service.*;
-import org.jeecg.modules.business.utils.Constant;
-import org.jeecg.modules.business.utils.Equator;
+import org.jeecg.modules.bussiness.utils.Constant;
 import org.jeecg.modules.business.utils.FieldBaseEquator;
 import org.jeecg.modules.business.utils.ServiceUtils;
 import org.jeecg.modules.business.vo.CompanyApplyVo;
-import org.jeecg.modules.business.vo.CompanyBaseInfoVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;

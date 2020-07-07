@@ -108,6 +108,7 @@ public class SiteMonitorPoint implements Serializable {
     private java.lang.String direction;
 	/**排放规律*/
 	@Excel(name = "排放规律", width = 15)
+	@Dict(dicCode = "letLaw")
     @ApiModelProperty(value = "排放规律")
     private java.lang.String letLaw;
 	/**水域功能区类别*/
@@ -133,6 +134,7 @@ public class SiteMonitorPoint implements Serializable {
     private java.lang.String exportCross;
 	/**废气排风口类型*/
 	@Excel(name = "废气排风口类型", width = 15)
+	@Dict(dicCode = "exitType")
     @ApiModelProperty(value = "废气排风口类型")
     private java.lang.String exitType;
 	/**(地表水)地表水环境功能区类别*/
@@ -155,6 +157,7 @@ public class SiteMonitorPoint implements Serializable {
     private java.lang.String phone;
 	/**标志牌安装方式*/
 	@Excel(name = "标志牌安装方式", width = 15)
+	@Dict(dicCode = "signType")
     @ApiModelProperty(value = "标志牌安装方式")
     private java.lang.String signType;
 	/**数采仪MN号*/

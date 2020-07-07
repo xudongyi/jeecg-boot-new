@@ -5,8 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.jeecg.modules.business.entity.CompanySupervisoryMonitor;
 import org.jeecg.modules.business.mapper.CompanySupervisoryMonitorMapper;
 import org.jeecg.modules.business.service.ICompanySupervisoryMonitorService;
-import org.jeecg.modules.business.utils.Constant;
-import org.jeecg.modules.business.vo.CompanyAdminPenaltiesVO;
+import org.jeecg.modules.bussiness.utils.Constant;
 import org.jeecg.modules.business.vo.CompanySupervisoryMonitorVO;
 import org.springframework.stereotype.Service;
 

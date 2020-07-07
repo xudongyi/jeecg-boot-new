@@ -17,7 +17,12 @@
           <template v-if="toggleSearchStatus">
             <a-col :xl="6" :lg="7" :md="8" :sm="24">
               <a-form-item label="所属单位">
-                <a-input placeholder="请输入所属单位" v-model="queryParam.companyId"></a-input>
+                <a-select v-model="queryParam.companyId" show-search style="width: 100%" optionFilterProp="children">
+                  <a-select-option value="">请选择</a-select-option>
+                  <a-select-option v-for="item in items" :key="item.value" :value="item.key">
+                    {{item.value}}
+                  </a-select-option>
+                </a-select>
               </a-form-item>
             </a-col>
             <a-col :xl="6" :lg="7" :md="8" :sm="24">
@@ -55,26 +60,32 @@
       </a-form>
     </div>
     <!-- 查询区域-END -->
-    
+
     <!-- 操作按钮区域 -->
     <div class="table-operator">
-      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
-     <!-- <a-button type="primary" icon="download" @click="handleExportXls('监测站点表')">导出</a-button>
-      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
-        <a-button type="primary" icon="import">导入</a-button>
-      </a-upload>-->
+      <a-button @click="addClick" type="primary" icon="plus">新增</a-button>
+      <!-- <a-button type="primary" icon="download" @click="handleExportXls('监测站点表')">导出</a-button>
+       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
+         <a-button type="primary" icon="import">导入</a-button>
+       </a-upload>-->
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
-          <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
+          <a-menu-item key="1" @click="batchDel">
+            <a-icon type="delete"/>
+            删除
+          </a-menu-item>
         </a-menu>
-        <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>
+        <a-button style="margin-left: 8px"> 批量操作
+          <a-icon type="down"/>
+        </a-button>
       </a-dropdown>
     </div>
 
     <!-- table区域-begin -->
     <div>
       <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">
-        <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a style="font-weight: 600">{{ selectedRowKeys.length }}</a>项
+        <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a style="font-weight: 600">{{
+        selectedRowKeys.length }}</a>项
         <a style="margin-left: 24px" @click="onClearSelected">清空</a>
       </div>
 
@@ -96,7 +107,8 @@
         </template>
         <template slot="imgSlot" slot-scope="text">
           <span v-if="!text" style="font-size: 12px;font-style: italic;">无图片</span>
-          <img v-else :src="getImgView(text)" height="25px" alt="" style="max-width:80px;font-size: 12px;font-style: italic;"/>
+          <img v-else :src="getImgView(text)" height="25px" alt=""
+               style="max-width:80px;font-size: 12px;font-style: italic;"/>
         </template>
         <template slot="pcaSlot" slot-scope="text">
           <div>{{ getPcaText(text) }}</div>
@@ -115,12 +127,11 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="handleEdit(record)">编辑</a>
-
-          <a-divider type="vertical" />
           <a-dropdown>
-            <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
+            <a class="ant-dropdown-link">更多 <a-icon type="down"/></a>
             <a-menu slot="overlay">
+              <a-menu-item><a @click="handleDetail(record)">编辑</a></a-menu-item>
+              <a-menu-item><a @click="handleEdit(record)">详情</a></a-menu-item>
               <a-menu-item>
                 <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
                   <a>删除</a>
@@ -132,122 +143,152 @@
 
       </a-table>
     </div>
-
-    <siteMonitorPoint-modal ref="modalForm" @ok="modalFormOk" :siteType="this.queryParam.siteType"></siteMonitorPoint-modal>
+    <jmodal-site ref="modalForm"></jmodal-site>
   </a-card>
 </template>
 
 <script>
 
   import '@/assets/less/TableExpand.less'
-  import { mixinDevice } from '@/utils/mixin'
-  import { JeecgListMixin } from '@/mixins/JeecgListMixin'
+  import {mixinDevice} from '@/utils/mixin'
+  import {JeecgListMixin} from '@/mixins/JeecgListMixin'
   import SiteMonitorPointModal from './modules/SiteMonitorPointModal'
   import JDictSelectTag from '@/components/dict/JDictSelectTag.vue'
   import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
   import JAreaLinkage from '@comp/jeecg/JAreaLinkage'
   import Area from '@/components/_util/Area'
+  import {queryCompanyName} from '../../requestAction/request'
+  import SiteDetail from "./SiteDetail";
+  import JmodalSite from "./modules/JmodalSite";
 
   export default {
     name: "SiteMonitorPointList",
-    mixins:[JeecgListMixin, mixinDevice],
+    mixins: [JeecgListMixin, mixinDevice],
     components: {
       JDictSelectTag,
       JAreaLinkage,
-      SiteMonitorPointModal
+      SiteMonitorPointModal,
+      SiteDetail,
+      JmodalSite
     },
-    data () {
+    data() {
       return {
         description: '监测站点表管理页面',
+        isDetail:false,
         queryParam: {
           siteType: this.$route.params.siteType
         },
         // 表头
         columns: [
           {
-            title: '#',
+            title: '序号',
             dataIndex: '',
-            key:'rowIndex',
-            width:60,
-            align:"center",
-            customRender:function (t,r,index) {
-              return parseInt(index)+1;
+            key: 'rowIndex',
+            width: 60,
+            align: "center",
+            customRender: function (t, r, index) {
+              return parseInt(index) + 1;
             }
           },
           {
-            title:'站点名称',
-            align:"center",
+            title: '站点名称',
+            align: "center",
             dataIndex: 'siteName'
           },
           {
-            title:'站点类型',
-            align:"center",
+            title: '站点类型',
+            align: "center",
             dataIndex: 'siteType_dictText'
           },
           {
-            title:'所属单位',
-            align:"center",
+            title: '所属单位',
+            align: "center",
             dataIndex: 'companyId_dictText'
           },
           {
-            title:'站点级别',
-            align:"center",
+            title: '站点级别',
+            align: "center",
             dataIndex: 'siteLevel_dictText'
           },
           {
-            title:'所属区域',
-            align:"center",
+            title: '所属区域',
+            align: "center",
             dataIndex: 'area',
             scopedSlots: {customRender: 'pcaSlot'}
           },
           {
-            title:'站点状态',
-            align:"center",
+            title: '站点状态',
+            align: "center",
             dataIndex: 'siteState_dictText'
           },
           {
-            title:'进出口',
-            align:"center",
+            title: '进出口',
+            align: "center",
             dataIndex: 'imorex_dictText'
           },
           {
-            title:'数采仪MN号',
-            align:"center",
+            title: '数采仪MN号',
+            align: "center",
             dataIndex: 'mnCode'
           },
           {
             title: '操作',
             dataIndex: 'action',
-            align:"center",
+            align: "center",
             // fixed:"right",
-            width:147,
-            scopedSlots: { customRender: 'action' }
+            width: 147,
+            scopedSlots: {customRender: 'action'}
           }
         ],
         url: {
           list: "/site/siteMonitorPoint/list",
           delete: "/site/siteMonitorPoint/delete",
           deleteBatch: "/site/siteMonitorPoint/deleteBatch",
-          exportXlsUrl: "/site/siteMonitorPoint/exportXls",
-          importExcelUrl: "site/siteMonitorPoint/importExcel",
+          /* exportXlsUrl: "/site/siteMonitorPoint/exportXls",
+           importExcelUrl: "site/siteMonitorPoint/importExcel",*/
         },
-        dictOptions:{},
-        pcaData:''
+        dictOptions: {},
+        pcaData: ''
       }
     },
     created() {
       this.pcaData = new Area()
+      queryCompanyName().then((res) => {
+        if (res.success) {
+          this.items = res.result;
+        }
+      })
     },
-    computed: {
+    watch: {
+      "$route": {
+        handler(route) {
+          this.siteType = this.$route.params.siteType
+          if (this.$route.params.siteType) {
+            this.queryParam.siteType = this.$route.params.siteType;
+            this.loadData(1);
+          }
+        },
+      }
+    },
+    /*computed: {
       importExcelUrl: function(){
         return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
       },
-    },
+    },*/
     methods: {
-      getPcaText(code){
+      getPcaText(code) {
         return this.pcaData.getText(code);
       },
-      initDictConfig(){
+      initDictConfig() {
+      },
+      handleDetail(record){
+        this.$emit("detail",record.id)
+      },
+      addClick(){
+        this.$refs.modalForm.visible=true;
+        this.$refs.modalForm.confirmLoading=false;
+        let that = this
+        that.$refs.modalForm.addClick(this.queryParam.siteType)
       }
     }
   }

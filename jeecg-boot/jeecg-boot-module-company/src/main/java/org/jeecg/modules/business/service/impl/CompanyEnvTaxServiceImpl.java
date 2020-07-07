@@ -1,12 +1,10 @@
 package org.jeecg.modules.business.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import org.jeecg.modules.business.entity.CompanyDirtyAllow;
 import org.jeecg.modules.business.entity.CompanyEnvTax;
-import org.jeecg.modules.business.entity.CompanyPrevention;
 import org.jeecg.modules.business.mapper.CompanyEnvTaxMapper;
 import org.jeecg.modules.business.service.ICompanyEnvTaxService;
-import org.jeecg.modules.business.utils.Constant;
+import org.jeecg.modules.bussiness.utils.Constant;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;

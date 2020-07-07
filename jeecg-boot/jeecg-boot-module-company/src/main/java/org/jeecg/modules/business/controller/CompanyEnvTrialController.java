@@ -1,13 +1,11 @@
 package org.jeecg.modules.business.controller;
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import cn.hutool.core.util.StrUtil;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import org.jeecg.common.api.vo.Result;
@@ -23,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.jeecg.common.system.base.controller.JeecgController;
 import org.jeecg.modules.business.service.ICompanyFileService;
-import org.jeecg.modules.business.utils.Constant;
+import org.jeecg.modules.bussiness.utils.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;

@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.jeecg.modules.business.entity.CompanyComplaintLetter;
 import org.jeecg.modules.business.mapper.CompanyComplaintLetterMapper;
 import org.jeecg.modules.business.service.ICompanyComplaintLetterService;
-import org.jeecg.modules.business.utils.Constant;
+import org.jeecg.modules.bussiness.utils.Constant;
 import org.jeecg.modules.business.vo.CompanyComplaintLetterVO;
 import org.springframework.stereotype.Service;
 
