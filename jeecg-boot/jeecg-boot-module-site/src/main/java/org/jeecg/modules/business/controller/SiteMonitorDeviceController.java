@@ -88,7 +88,7 @@ public class SiteMonitorDeviceController extends JeecgController<SiteMonitorDevi
     private SiteMonitorDevice getSiteMonitorDevice(JSONObject jsonObject) {
         SiteMonitorDevice siteMonitorDevice = new SiteMonitorDevice();
         siteMonitorDevice.setId(jsonObject.getString("id"));
-        siteMonitorDevice.setMonitorId(jsonObject.getString("id"));
+        siteMonitorDevice.setMonitorId(jsonObject.getString("monitorId"));
         siteMonitorDevice.setDeviceName(jsonObject.getString("deviceName"));
         siteMonitorDevice.setDeviceNumber(jsonObject.getString("deviceNumber"));
         siteMonitorDevice.setDeviceType(jsonObject.getString("deviceType"));

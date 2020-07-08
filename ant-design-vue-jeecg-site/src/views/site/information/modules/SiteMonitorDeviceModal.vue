@@ -296,7 +296,6 @@
         this.model = Object.assign({}, record);
         this.visible = true;
         this.$nextTick(() => {
-          debugger
           _this.form.setFieldsValue(pick(this.model, 'deviceName', 'deviceNumber', 'deviceType', 'pollutionCode', 'sampleCycle', 'deviceState', 'deviceModel', 'deviceFactory', 'rangeMax', 'rangeMin', 'checkoutMax', 'checkoutUnit', 'productDate', 'installDate', 'shelfLifeDate', 'deviceConcatUser', 'deviceConcatMobile', 'useDate', 'operationCompany', 'operationUser', 'operationMobile', 'content'))
           _this.form.setFieldsValue(pick({deviceType: this.siteType}, 'deviceType'))
           this.code = this.model.pollutionCode;

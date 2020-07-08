@@ -8,26 +8,32 @@
       </a-form>
     </div>
     <!-- 查询区域-END -->
-    
+
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
-     <!-- <a-button type="primary" icon="download" @click="handleExportXls('监测点检测设备')">导出</a-button>
+      <!--<a-button type="primary" icon="download" @click="handleExportXls('监测站治理设施')">导出</a-button>
       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
         <a-button type="primary" icon="import">导入</a-button>
       </a-upload>-->
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
-          <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
+          <a-menu-item key="1" @click="batchDel">
+            <a-icon type="delete"/>
+            删除
+          </a-menu-item>
         </a-menu>
-        <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>
+        <a-button style="margin-left: 8px"> 批量操作
+          <a-icon type="down"/>
+        </a-button>
       </a-dropdown>
     </div>
 
     <!-- table区域-begin -->
     <div>
       <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">
-        <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a style="font-weight: 600">{{ selectedRowKeys.length }}</a>项
+        <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a style="font-weight: 600">{{
+        selectedRowKeys.length }}</a>项
         <a style="margin-left: 24px" @click="onClearSelected">清空</a>
       </div>
 
@@ -49,7 +55,8 @@
         </template>
         <template slot="imgSlot" slot-scope="text">
           <span v-if="!text" style="font-size: 12px;font-style: italic;">无图片</span>
-          <img v-else :src="getImgView(text)" height="25px" alt="" style="max-width:80px;font-size: 12px;font-style: italic;"/>
+          <img v-else :src="getImgView(text)" height="25px" alt=""
+               style="max-width:80px;font-size: 12px;font-style: italic;"/>
         </template>
         <template slot="fileSlot" slot-scope="text">
           <span v-if="!text" style="font-size: 12px;font-style: italic;">无文件</span>
@@ -66,13 +73,13 @@
 
         <span slot="action" slot-scope="text, record">
           <a-dropdown>
-            <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
+            <a class="ant-dropdown-link">更多 <a-icon type="down"/></a>
             <a-menu slot="overlay">
               <a-menu-item>
-                 <a @click="handleEdit(record)">编辑</a>
+               <a @click="handleEdit(record)">编辑</a>
               </a-menu-item>
               <a-menu-item>
-                 <a @click="viewDetail(record)">详情</a>
+               <a @click="viewDetail(record)">详情</a>
               </a-menu-item>
               <a-menu-item>
                 <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
@@ -85,28 +92,28 @@
 
       </a-table>
     </div>
-
-    <siteMonitorDevice-modal ref="modalForm" @ok="modalFormOk" :siteType="siteType" :monitorId="monitorId"></siteMonitorDevice-modal>
+    <siteGovFacility-modal ref="modalForm" @ok="modalFormOk" :siteType="siteType"
+                           :monitorId="monitorId"></siteGovFacility-modal>
   </a-card>
 </template>
 
 <script>
 
   import '@/assets/less/TableExpand.less'
-  import { mixinDevice } from '@/utils/mixin'
-  import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import SiteMonitorDeviceModal from './modules/SiteMonitorDeviceModal'
+  import {mixinDevice} from '@/utils/mixin'
+  import {JeecgListMixin} from '@/mixins/JeecgListMixin'
+  import SiteGovFacilityModal from "./modules/SiteGovFacilityModal";
   import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
 
   export default {
-    name: "SiteMonitorDeviceList",
-    mixins:[JeecgListMixin, mixinDevice],
+    name: "SiteGovFacilityList",
+    mixins: [JeecgListMixin, mixinDevice],
     components: {
-      SiteMonitorDeviceModal
+      SiteGovFacilityModal
     },
-    data () {
+    data() {
       return {
-        description: '监测点检测设备管理页面',
+        description: '监测站治理设施管理页面',
         queryParam: {
           monitorId: this.monitorId
         },
@@ -115,79 +122,81 @@
           {
             title: '序号',
             dataIndex: '',
-            key:'rowIndex',
-            width:60,
-            align:"center",
-            customRender:function (t,r,index) {
-              return parseInt(index)+1;
+            key: 'rowIndex',
+            width: 60,
+            align: "center",
+            customRender: function (t, r, index) {
+              return parseInt(index) + 1;
             }
           },
           {
-            title:'设备名称',
-            align:"center",
-            dataIndex: 'deviceName'
+            title: '治理设施名称',
+            align: "center",
+            dataIndex: 'govName'
           },
           {
-            title:'设备编号',
-            align:"center",
-            dataIndex: 'deviceNumber'
+            title: '投入使用日期',
+            align: "center",
+            dataIndex: 'useDate',
+            customRender: function (text) {
+              return !text ? "" : (text.length > 10 ? text.substr(0, 10) : text)
+            }
           },
           {
-            title:'设备类型',
-            align:"center",
-            dataIndex: 'deviceType_dictText'
+            title: '设计处理能力',
+            align: "center",
+            dataIndex: 'designAbility'
           },
           {
-            title:'污染因子',
-            align:"center",
-            dataIndex: 'pollutionCode'
+            title: '实际月处理效率',
+            align: "center",
+            dataIndex: 'actualMonth'
           },
           {
-            title:'做样周期',
-            align:"center",
-            dataIndex: 'sampleCycle'
+            title: '监测通道号',
+            align: "center",
+            dataIndex: 'channelNumber'
           },
           {
-            title:'监测仪器状态',
-            align:"center",
-            dataIndex: 'deviceState_dictText'
+            title: '治理方法',
+            align: "center",
+            dataIndex: 'govMethod'
           },
           {
             title: '操作',
             dataIndex: 'action',
-            align:"center",
+            align: "center",
             // fixed:"right",
-            width:147,
-            scopedSlots: { customRender: 'action' }
+            width: 147,
+            scopedSlots: {customRender: 'action'}
           }
         ],
         url: {
-          list: "/device/siteMonitorDevice/list",
-          delete: "/device/siteMonitorDevice/delete",
-          deleteBatch: "/device/siteMonitorDevice/deleteBatch",
-          /*exportXlsUrl: "/device/siteMonitorDevice/exportXls",
-          importExcelUrl: "device/siteMonitorDevice/importExcel",*/
+          list: "/facility/siteGovFacility/list",
+          delete: "/facility/siteGovFacility/delete",
+          deleteBatch: "/facility/siteGovFacility/deleteBatch",
+          /*exportXlsUrl: "/facility/siteGovFacility/exportXls",
+          importExcelUrl: "facility/siteGovFacility/importExcel",*/
         },
-        dictOptions:{},
+        dictOptions: {},
       }
     },
     computed: {
-      importExcelUrl: function(){
+      importExcelUrl: function () {
         return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
       },
     },
     methods: {
-      initDictConfig(){
+      initDictConfig() {
       },
       viewDetail(record) {
         this.$refs.modalForm.edit(record);
         this.$refs.modalForm.title = "查看";
         this.$refs.modalForm.disableSubmit = true;
       },
-    },
-    props:{
-      siteType:"",
-      monitorId:""
+    }, props: {
+      siteType: '',
+      monitorId: ''
     }
   }
 </script>
