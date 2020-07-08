@@ -59,6 +59,7 @@ export default {
   methods: {
     // select menu item
     onOpenChange (openKeys) {
+      console.log(openKeys)
 
       // 在水平模式下时执行，并且不再执行后续
       if (this.mode === 'horizontal') {

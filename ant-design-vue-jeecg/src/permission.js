@@ -13,6 +13,7 @@ const whiteList = ['/user/login', '/user/register', '/user/register-result','/us
 
 //
 router.beforeEach((to, from, next) => {
+  console.log(to)
   NProgress.start() // start progress bar
 
   if (Vue.ls.get(ACCESS_TOKEN)) {

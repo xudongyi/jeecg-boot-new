@@ -15,14 +15,30 @@
               <a-form-item label="站点类型" :labelCol="labelCol" :wrapperCol="wrapperCol">
                 <j-dict-select-tag type="list" v-decorator="['siteType']" :trigger-change="true" dictCode="siteType" placeholder="请选择站点类型"/>
               </a-form-item>
-              <a-form-item label="站点名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
-                <a-input type="list" v-decorator="['siteName']" :trigger-change="true" dictCode="" placeholder="请输入站点名称"/>
-              </a-form-item>
-
             </a-form>
+            <div>
+              <a-input-search style="width:260px" placeholder="查找站点" @change="onChange" />
+              <a-tree
+                :checkable="true"
+                :expanded-keys="expandedKeys"
+                :auto-expand-parent="autoExpandParent"
+                :treeData="treeData"
+                @check="onCheck"
+                @select="onSelect"
+                @expand="onExpand"
+              >
+                <template slot="title" slot-scope="{ title }">
+                  <span v-if="title.indexOf(searchValue) > -1">
+                    {{ title.substr(0, title.indexOf(searchValue)) }}
+                    <span style="color: #f50">{{ searchValue }}</span>
+                    {{ title.substr(title.indexOf(searchValue) + searchValue.length) }}
+                  </span>
+                  <span v-else>{{ title }}</span>
+                </template>
+              </a-tree>
+            </div>
           </a-layout-sider>
           <a-layout-content>
-
             <a-table
               ref="table"
               size="middle"
@@ -35,17 +51,12 @@
               :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
               class="j-table-force-nowrap"
               @change="handleTableChange">
-
               <span slot="isUsed" slot-scope="isUsed">
                 <div :style="{color: isUsed === '停用'? 'red':'black'}">{{isUsed}}</div>
               </span>
-
             </a-table>
-
           </a-layout-content>
       </a-layout>
-
-
 
     </a-spin>
   </j-modal>
@@ -55,7 +66,7 @@
 
 <script>
 
-  import { httpAction } from '@/api/manage'
+  import { httpAction ,getAction} from '@/api/manage'
   import pick from 'lodash.pick'
   import { validateDuplicateValue } from '@/utils/util'
   import JDictSelectTag from "@/components/dict/JDictSelectTag"
@@ -71,6 +82,12 @@
     },
     data () {
       return {
+        autoExpandParent:true,
+        expandedKeys:[],
+        data:[],
+        treeData:[],
+        dataList:[],
+        searchValue:'',
         form: this.$form.createForm(this),
         title:"操作",
         width:1200,
@@ -132,8 +149,74 @@
       }
     },
     created () {
+      let _this= this
+      getAction("/sys/sysArea/list",{active:'1'}).then((res) => {
+        if (res.success) {
+          _this.data = res.result
+          //预处理一下所有数据
+          _this.treeData = _this.dealAreaData(res)
+
+        }
+      })
+
     },
     methods: {
+
+
+      dealAreaData(res){
+        let areaSource = []
+        const province = res.result['86']
+        Object.keys(province).map(key => {
+          areaSource.push({key: key, title: province[key], children: []});
+          const city = res.result[key];
+          Object.keys(city).map(key2 => {
+
+            areaSource[areaSource.length - 1].children.push({key: key2, title: city[key2], children: []});
+            const qu = res.result[key2];
+            Object.keys(qu).map(key3 => {
+              let arrindex = areaSource[areaSource.length - 1].children.length - 1;
+              areaSource[areaSource.length - 1].children[arrindex].children.push({key: key3, title: qu[key3]});
+            })
+          })
+        })
+        return areaSource
+      },
+      onExpand(expandedKeys) {
+        this.expandedKeys = expandedKeys;
+        this.autoExpandParent = false;
+      },
+      onChange(e) {
+       let expandedKeys = []
+        let _this = this
+        const value = e.target.value;
+        Object.keys(_this.data).map(key => {
+          let a = 1
+          const city = _this.data[key];
+            Object.keys(city).map(key2 => {
+              if (city[key2].indexOf(value) > -1) {
+                if(a===1)
+                  expandedKeys.push(key)
+                expandedKeys.push(key2)
+                a=a+1
+              }
+            })
+        })
+        console.log(expandedKeys,value)
+        this.expandedKeys = expandedKeys
+        this.searchValue= value
+        this.autoExpandParent= true
+
+      },
+      onCheck(checkedKeys, info) {
+        //修改选择数据
+        this.checkedKeys = checkedKeys
+        this.halfCheckedKeys= info.halfCheckedKeys
+
+      },
+      //同选择-暂时不做
+      onSelect(selectedKeys) {
+
+      },
       add () {
         this.edit({});
       },

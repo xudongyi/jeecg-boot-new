@@ -11,6 +11,7 @@
       :menu="menus"
       :theme="theme"
       @select="onSelect"
+      @click="onClick"
       :mode="mode"
       :style="smenuStyle">
     </s-menu>
@@ -67,7 +68,11 @@
     },
     methods: {
       onSelect (obj) {
+        console.log(obj)
         this.$emit('menuSelect', obj)
+      },
+      onClick(obj){
+        console.log(obj)
       }
     }
   }
