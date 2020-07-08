@@ -12,7 +12,7 @@
         </a-col>
         <a-col span='12'>
           <a-form-item label="站点编号" :labelCol="labelCol" :wrapperCol="wrapperCol">
-            <a-input v-decorator="['siteCode']" placeholder="请输入站点编号" :disabled="disable"></a-input>
+            <a-input v-decorator="['siteCode',validatorRules.siteCode]" placeholder="请输入站点编号" :disabled="disable"></a-input>
           </a-form-item>
         </a-col>
       </a-row>
@@ -49,16 +49,10 @@
         </a-col>
       </a-row>
       <a-row>
-        <a-col span='12'>
-          <a-form-item label="站点位置" :labelCol="labelCol" :wrapperCol="wrapperCol">
+        <a-col span='24'>
+          <a-form-item label="站点位置" :labelCol="labelCols" :wrapperCol="wrapperCols">
             <a-input v-decorator="['location', validatorRules.location]" :disabled="disable"
                      placeholder="请输入站点位置"></a-input>
-          </a-form-item>
-        </a-col>
-        <a-col span='12'>
-          <a-form-item label="站点经度" :labelCol="labelCol" :wrapperCol="wrapperCol">
-            <a-input v-decorator="['siteLongitude', validatorRules.siteLongitude]" :disabled="disable"
-                     placeholder="请输入站点经度"></a-input>
           </a-form-item>
         </a-col>
       </a-row>
@@ -70,10 +64,9 @@
           </a-form-item>
         </a-col>
         <a-col span='12'>
-          <a-form-item label="是否联网" :labelCol="labelCol" :wrapperCol="wrapperCol">
-            <j-dict-select-tag type="list" v-decorator="['isNet']" :trigger-change="true" :disabled="disable"
-                               dictCode="isNet"
-                               placeholder="请选择是否联网"/>
+          <a-form-item label="站点经度" :labelCol="labelCol" :wrapperCol="wrapperCol">
+            <a-input v-decorator="['siteLongitude', validatorRules.siteLongitude]" :disabled="disable"
+                     placeholder="请输入站点经度"></a-input>
           </a-form-item>
         </a-col>
       </a-row>
@@ -85,9 +78,18 @@
           </a-form-item>
         </a-col>
         <a-col span='12'>
-          <a-form-item label="数采仪MN号" :labelCol="labelCol" :wrapperCol="wrapperCol">
-            <a-input v-decorator="['mnCode', validatorRules.mnCode]" placeholder="请输入数采仪MN号" :disabled="disable"></a-input>
+          <a-form-item label="是否联网" :labelCol="labelCol" :wrapperCol="wrapperCol">
+            <j-dict-select-tag type="list" v-decorator="['isNet']" :trigger-change="true" :disabled="disable"
+                               dictCode="isNet"
+                               placeholder="请选择是否联网"/>
           </a-form-item>
+        </a-col>
+      </a-row>
+      <a-row v-show="isjmodal">
+        <a-col span="24">
+            <a-form-item label="数采仪MN号" :labelCol="labelCols" :wrapperCol="wrapperCols">
+              <a-input v-decorator="['mnCode', validatorRules.mnCode]" placeholder="请输入数采仪MN号" :disabled="disable"></a-input>
+            </a-form-item>
         </a-col>
       </a-row>
       <a-row v-if="isWater">
@@ -200,6 +202,7 @@
   import JDictSelectTag from "@/components/dict/JDictSelectTag"
   import JAreaLinkage from '@comp/jeecg/JAreaLinkage'
   import {queryCompanyName} from '../../../requestAction/request'
+  import { duplicateCheck } from '@/api/api'
 
 
   export default {
@@ -247,6 +250,12 @@
             rules: [
               {required: true, message: '请输入站点名称!'},
               {validator: this.validateSiteName}
+            ]
+          },
+          siteCode: {
+            rules: [
+              {required: false, message: '请输入站点编号!'},
+              {validator: this.validateSiteCode}
             ]
           },
           siteType: {
@@ -312,6 +321,7 @@
           mnCode: {
             rules: [
               {required: true, message: '请输入数采仪MN号!'},
+              {validator: this.validateMnCode}
             ]
           },
         },
@@ -334,16 +344,46 @@
     methods: {
       validateSiteName(rule, value, callback){
         var params = {
-          tableName: 'sys_user',
-          fieldName: 'phone',
+          tableName: 'site_monitor_point',
+          fieldName: 'site_name',
           fieldVal: value,
-          dataId: this.userId
+          dataId: this.id
         };
         duplicateCheck(params).then((res) => {
           if (res.success) {
             callback()
           } else {
-            callback("手机号已存在!")
+            callback("站点名称已存在!")
+          }
+        })
+      },
+      validateSiteCode(rule, value, callback){
+        var params = {
+          tableName: 'site_monitor_point',
+          fieldName: 'site_code',
+          fieldVal: value,
+          dataId: this.id
+        };
+        duplicateCheck(params).then((res) => {
+          if (res.success) {
+            callback()
+          } else {
+            callback("站点编号已存在!")
+          }
+        })
+      },
+      validateMnCode(rule, value, callback){
+        var params = {
+          tableName: 'site_monitor_point',
+          fieldName: 'mn_code',
+          fieldVal: value,
+          dataId: this.id
+        };
+        duplicateCheck(params).then((res) => {
+          if (res.success) {
+            callback()
+          } else {
+            callback("mn号已存在!")
           }
         })
       },
@@ -448,7 +488,7 @@
     props: {
       siteType: '',
       isjmodal: false,
-      disable: false
+      disable: false,
     }
   }
 </script>
