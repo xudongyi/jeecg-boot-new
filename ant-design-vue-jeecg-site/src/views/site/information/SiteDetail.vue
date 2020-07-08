@@ -8,6 +8,7 @@
         <a-layout-content :style="{ padding: '0 24px', minHeight: '280px' }">
           <siteMonitorPoint-modal ref="modalForm" v-show="leftActive==1" :siteType="siteType" :disable="disable"></siteMonitorPoint-modal>
           <site-data-collection-modal ref="dataForm"  v-show="leftActive==2"></site-data-collection-modal>
+          <site-monitor-device-list v-show="leftActive==3" :siteType="siteType" :monitorId="id"></site-monitor-device-list>
     </a-layout-content>
       </a-layout>
     </a-layout-content>
@@ -21,12 +22,14 @@
     import {getDetailMenus,getDataCollection} from '../../requestAction/request';
     import SiteMonitorPointModal from "./modules/SiteMonitorPointModal";
     import SiteDataCollectionModal from "./modules/SiteDataCollectionModal";
+    import SiteMonitorDeviceList from "./SiteMonitorDeviceList";
     export default {
       name: "SiteDetail",
       components: {
         SiteDataCollectionModal,
         BusinessMenu,
-        SiteMonitorPointModal
+        SiteMonitorPointModal,
+        SiteMonitorDeviceList
       },
       props:{
         id:""
@@ -69,7 +72,6 @@
           });
           getDataCollection({id:this.id}).then((res)=>{
             if (res.success) {
-              debugger
               this.$refs.dataForm.edit(res.result);
             } else {
               console.log(res.message);
