@@ -32,7 +32,7 @@
             </a-col>
             <a-col :xl="6" :lg="7" :md="8" :sm="24">
               <a-form-item label="所属区域">
-                <j-area-linkage type="cascader" v-model="queryParam.area" placeholder="请选择省市区"/>
+                <area-link-select type="cascader" v-model="queryParam.area" placeholder="请选择省市区"/>
               </a-form-item>
             </a-col>
             <a-col :xl="6" :lg="7" :md="8" :sm="24">
@@ -63,7 +63,7 @@
 
     <!-- 操作按钮区域 -->
     <div class="table-operator">
-      <a-button @click="addClick" type="primary" icon="plus">新增</a-button>
+      <a-button @click="addClick" type="primary" icon="plus" v-if="isDetail">新增</a-button>
       <!-- <a-button type="primary" icon="download" @click="handleExportXls('监测站点表')">导出</a-button>
        <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
          <a-button type="primary" icon="import">导入</a-button>
@@ -83,7 +83,7 @@
 
     <!-- table区域-begin -->
     <div>
-      <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">
+      <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;" v-if="isDetail">
         <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a style="font-weight: 600">{{
         selectedRowKeys.length }}</a>项
         <a style="margin-left: 24px" @click="onClearSelected">清空</a>
@@ -98,9 +98,9 @@
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
-        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         class="j-table-force-nowrap"
-        @change="handleTableChange">
+        @change="handleTableChange"
+        v-if="!isDetail">
 
         <template slot="htmlSlot" slot-scope="text">
           <div v-html="text"></div>
@@ -130,9 +130,63 @@
           <a-dropdown>
             <a class="ant-dropdown-link">更多 <a-icon type="down"/></a>
             <a-menu slot="overlay">
-              <a-menu-item><a @click="handleDetail(record)">编辑</a></a-menu-item>
+              <a-menu-item><a @click="handleDetail(record)" v-if="isDetail">编辑</a></a-menu-item>
               <a-menu-item><a @click="viewDetail(record)">详情</a></a-menu-item>
-              <a-menu-item>
+              <a-menu-item v-if="isDetail">
+                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
+                  <a>删除</a>
+                </a-popconfirm>
+              </a-menu-item>
+            </a-menu>
+          </a-dropdown>
+        </span>
+
+      </a-table>
+
+      <a-table
+        ref="table"
+        size="middle"
+        bordered
+        rowKey="id"
+        :columns="columns"
+        :dataSource="dataSource"
+        :pagination="ipagination"
+        :loading="loading"
+        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+        class="j-table-force-nowrap"
+        @change="handleTableChange"
+        v-if="isDetail">
+        <template slot="htmlSlot" slot-scope="text">
+          <div v-html="text"></div>
+        </template>
+        <template slot="imgSlot" slot-scope="text">
+          <span v-if="!text" style="font-size: 12px;font-style: italic;">无图片</span>
+          <img v-else :src="getImgView(text)" height="25px" alt=""
+               style="max-width:80px;font-size: 12px;font-style: italic;"/>
+        </template>
+        <template slot="pcaSlot" slot-scope="text">
+          <div>{{ getPcaText(text) }}</div>
+        </template>
+        <template slot="fileSlot" slot-scope="text">
+          <span v-if="!text" style="font-size: 12px;font-style: italic;">无文件</span>
+          <a-button
+            v-else
+            :ghost="true"
+            type="primary"
+            icon="download"
+            size="small"
+            @click="uploadFile(text)">
+            下载
+          </a-button>
+        </template>
+
+        <span slot="action" slot-scope="text, record">
+          <a-dropdown>
+            <a class="ant-dropdown-link">更多 <a-icon type="down"/></a>
+            <a-menu slot="overlay">
+              <a-menu-item><a @click="handleDetail(record)" v-if="isDetail">编辑</a></a-menu-item>
+              <a-menu-item><a @click="viewDetail(record)">详情</a></a-menu-item>
+              <a-menu-item v-if="isDetail">
                 <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
                   <a>删除</a>
                 </a-popconfirm>
@@ -154,19 +208,18 @@
   import {JeecgListMixin} from '@/mixins/JeecgListMixin'
   import SiteMonitorPointModal from './modules/SiteMonitorPointModal'
   import JDictSelectTag from '@/components/dict/JDictSelectTag.vue'
-  import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
-  import JAreaLinkage from '@comp/jeecg/JAreaLinkage'
   import Area from '@/components/_util/Area'
   import {queryCompanyName} from '../../requestAction/request'
   import SiteDetail from "./SiteDetail";
   import JmodalSite from "./modules/JmodalSite";
+  import AreaLinkSelect from "../component/AreaLinkSelect";
 
   export default {
     name: "SiteMonitorPointList",
     mixins: [JeecgListMixin, mixinDevice],
     components: {
       JDictSelectTag,
-      JAreaLinkage,
+      AreaLinkSelect,
       SiteMonitorPointModal,
       SiteDetail,
       JmodalSite
@@ -174,7 +227,7 @@
     data() {
       return {
         description: '监测站点表管理页面',
-        isDetail: false,
+        isDetail: true,
         queryParam: {
           siteType: this.$route.params.siteType
         },
@@ -259,6 +312,10 @@
           this.items = res.result;
         }
       })
+      if(!this.$route.params.siteType){
+        debugger
+        this.isDetail=false;
+      }
     },
     watch: {
       "$route": {
