@@ -1,18 +1,24 @@
 package org.jeecg.modules.business.controller;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import net.sf.saxon.expr.instruct.ForEach;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.util.oConvertUtils;
+import org.jeecg.modules.business.entity.SiteMonitorPoint;
 import org.jeecg.modules.business.entity.SysWarnPointRule;
+import org.jeecg.modules.business.entity.SysWarnRule;
+import org.jeecg.modules.business.service.ISiteMonitorPointService;
 import org.jeecg.modules.business.service.ISysWarnPointRuleService;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -20,6 +26,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 
+import org.jeecg.modules.business.service.ISysWarnRuleService;
 import org.jeecg.modules.business.vo.SysWarnPointListVO;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
@@ -50,7 +57,13 @@ import org.jeecg.common.aspect.annotation.AutoLog;
 public class SysWarnPointRuleController extends JeecgController<SysWarnPointRule, ISysWarnPointRuleService> {
 	@Autowired
 	private ISysWarnPointRuleService sysWarnPointRuleService;
-	
+
+	@Autowired
+	private ISiteMonitorPointService siteMonitorPointService;
+
+	@Autowired
+	private ISysWarnRuleService sysWarnRuleService;
+
 	/**
 	 * 分页列表查询
 	 *
@@ -71,18 +84,36 @@ public class SysWarnPointRuleController extends JeecgController<SysWarnPointRule
 		IPage<SysWarnPointListVO> pageList = sysWarnPointRuleService.getSysWarnPointList(page);
 		return Result.ok(pageList);
 	}
-	
+
 	/**
 	 *   添加
 	 *
-	 * @param sysWarnPointRule
+	 * @param jsonObject
 	 * @return
 	 */
 	@AutoLog(value = "站点报警策略表-添加")
 	@ApiOperation(value="站点报警策略表-添加", notes="站点报警策略表-添加")
 	@PostMapping(value = "/add")
-	public Result<?> add(@RequestBody SysWarnPointRule sysWarnPointRule) {
-		sysWarnPointRuleService.save(sysWarnPointRule);
+	public Result<?> add(@RequestBody JSONObject jsonObject) {
+		List<String> monitorIds = jsonObject.getJSONArray("monitorIds").toJavaList(String.class);
+		List<String> ruleIds = jsonObject.getJSONArray("ruleIds").toJavaList(String.class);
+
+		//删除  根据monitorIds
+		sysWarnPointRuleService.remove(new QueryWrapper<SysWarnPointRule>().lambda().in(SysWarnPointRule::getMonitorId,monitorIds));
+
+		List<SysWarnPointRule> sysWarnPointRules = new ArrayList<>();
+		for(String monitor : monitorIds) {
+			for (String rule : ruleIds) {
+				SysWarnPointRule sysWarnPointRule = new SysWarnPointRule();
+				sysWarnPointRule.setMonitorId(monitor);
+				sysWarnPointRule.setRuleId(rule);
+				String isUsed = sysWarnRuleService.getById(rule).getIsUsed();
+				sysWarnPointRule.setIsUsed(isUsed);
+				sysWarnPointRules.add(sysWarnPointRule);
+			}
+		}
+		sysWarnPointRuleService.saveBatch(sysWarnPointRules);
+
 		return Result.ok("添加成功！");
 	}
 	
@@ -145,6 +176,45 @@ public class SysWarnPointRuleController extends JeecgController<SysWarnPointRule
 		return Result.ok(sysWarnPointRule);
 	}
 
+	 /**
+	  * 查询站点名称
+	  *
+	  * @param siteType
+	  * @param area
+	  * @return
+	  */
+	 @AutoLog(value = "站点报警策略表-通过id查询")
+	 @ApiOperation(value="站点报警策略表-通过id查询", notes="站点报警策略表-通过id查询")
+	 @GetMapping(value = "/querySiteName")
+	 public Result<?> querySiteName(@RequestParam(name="siteType",required=false) String siteType,
+									@RequestParam(name="area",required=false) String area){
+		 List<Map<String,String>> result = new ArrayList<>();
+		 List<SiteMonitorPoint> list;
+		 if(StrUtil.isEmpty(siteType) && StrUtil.isEmpty(area)) {
+			 list = siteMonitorPointService.list(new QueryWrapper<SiteMonitorPoint>().lambda());
+
+		 }else if(StrUtil.isEmpty(siteType) && !StrUtil.isEmpty(area)){
+			 list = siteMonitorPointService.list(new QueryWrapper<SiteMonitorPoint>().lambda()
+					 .eq(SiteMonitorPoint::getArea,area));
+
+		 }else if(!StrUtil.isEmpty(siteType) && StrUtil.isEmpty(area)) {
+			 list = siteMonitorPointService.list(new QueryWrapper<SiteMonitorPoint>().lambda()
+					 .eq(SiteMonitorPoint::getSignType, siteType));
+
+		 }else {
+			 list = siteMonitorPointService.list(new QueryWrapper<SiteMonitorPoint>().lambda().eq(SiteMonitorPoint::getSignType, siteType)
+					 .eq(SiteMonitorPoint::getArea,area));
+		 }
+		 list.forEach(siteMonitorPoint -> {
+			 Map<String,String> param = new HashMap<>();
+			 param.put("key",siteMonitorPoint.getId());
+			 param.put("siteName",siteMonitorPoint.getSiteName());
+			 param.put("area",siteMonitorPoint.getArea());
+			 result.add(param);
+		 });
+		 return Result.ok(result);
+	 }
+
     /**
     * 导出excel
     *
@@ -167,5 +237,9 @@ public class SysWarnPointRuleController extends JeecgController<SysWarnPointRule
     public Result<?> importExcel(HttpServletRequest request, HttpServletResponse response) {
         return super.importExcel(request, response, SysWarnPointRule.class);
     }
+
+
+
+
 
 }

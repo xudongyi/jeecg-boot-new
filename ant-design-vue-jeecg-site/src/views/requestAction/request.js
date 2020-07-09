@@ -5,8 +5,10 @@ import Vue from 'vue'
 const queryCompanyName = (params)=>getAction("/site/siteMonitorPoint/queryCompanyName",params);
 const getDetailMenus = (params)=>getAction("/site/siteMonitorPoint/menus",params);
 const getDataCollection = (params)=>getAction("/collection/siteDataCollection/queryByMonitorId",params);
+const querySiteName = (params)=>getAction("/swpr/sysWarnPointRule/querySiteName",params);
 export {
   queryCompanyName,
   getDetailMenus,
-  getDataCollection
+  getDataCollection,
+  querySiteName
 }
