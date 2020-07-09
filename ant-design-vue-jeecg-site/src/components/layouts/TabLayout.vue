@@ -1,7 +1,7 @@
 <template>
   <global-layout @dynamicRouterShow="dynamicRouterShow">
     <!-- update-begin- author:sunjianlei --- date:20191009 --- for: 提升右键菜单的层级 -->
-    <contextmenu :itemList="menuItemList" :visible.sync="menuVisible" style="z-index: 9999;" @select="onMenuSelect"/>
+    <contextmenu :itemList="menuItemList" :visible.sync="menuVisible" style="z-index: 9999;" @select="onMenuSelect" @eventCall = "routeReload"/>
     <!-- update-end- author:sunjianlei --- date:20191009 --- for: 提升右键菜单的层级 -->
     <a-tabs
       @contextmenu.native="e => onContextmenu(e)"

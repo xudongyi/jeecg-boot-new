@@ -1,5 +1,5 @@
 <template>
-  <global-layout @dynamicRouterShow="dynamicRouterShow">
+  <global-layout @dynamicRouterShow="dynamicRouterShow" @eventCall = "routeReload">
     <!-- update-begin- author:sunjianlei --- date:20191009 --- for: 提升右键菜单的层级 -->
     <contextmenu :itemList="menuItemList" :visible.sync="menuVisible" style="z-index: 9999;" @select="onMenuSelect"/>
     <!-- update-end- author:sunjianlei --- date:20191009 --- for: 提升右键菜单的层级 -->
@@ -21,10 +21,10 @@
     <div style="margin: 12px 12px 0;">
       <transition name="page-toggle">
         <keep-alive v-if="multipage">
-          <router-view v-if="reloadFlag"/>
+          <router-view v-if="reloadFlag" />
         </keep-alive>
         <template v-else>
-          <router-view v-if="reloadFlag"/>
+          <router-view v-if="reloadFlag" />
         </template>
       </transition>
     </div>
@@ -36,7 +36,7 @@
   import Contextmenu from '@/components/menu/Contextmenu'
   import { mixin, mixinDevice } from '@/utils/mixin.js'
   import { triggerWindowResizeEvent } from '@/utils/util'
-
+  import Vue from 'vue'
   const indexKey = '/dashboard/analysis'
 
   export default {
@@ -97,7 +97,6 @@
     },
     watch: {
       '$route': function(newRoute) {
-        //console.log("新的路由",newRoute)
         this.activePage = newRoute.fullPath
         if (!this.multipage) {
           this.linkList = [newRoute.fullPath]
@@ -128,6 +127,7 @@
         let waitRouter = this.pageList[index]
         this.$router.push(Object.assign({},waitRouter));
         this.changeTitle(waitRouter.meta.title)
+
       },
       'multipage': function(newVal) {
         if(this.reloadFlag){

@@ -12,6 +12,7 @@
       :theme="theme"
       @select="onSelect"
       :mode="mode"
+      @eventCall = "eventCall"
       :style="smenuStyle">
     </s-menu>
   </a-layout-sider>
@@ -68,6 +69,9 @@
     methods: {
       onSelect (obj) {
         this.$emit('menuSelect', obj)
+      },
+      eventCall(){
+        this.$emit('eventCall')
       }
     }
   }

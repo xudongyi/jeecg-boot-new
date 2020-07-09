@@ -12,7 +12,7 @@
   export default {
     data () {
       return {
-        locale: zhCN,
+        locale: zhCN
       }
     },
     created () {
@@ -34,6 +34,14 @@
         }
 
       })
+    },
+    methods: {
+      reload(){
+        this.isRouterAlive =false;
+        this.$nextTick(()=>{
+          this.isRouterAlive =true;
+        });
+      },
     }
   }
 </script>

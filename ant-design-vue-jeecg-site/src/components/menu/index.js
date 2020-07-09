@@ -122,7 +122,7 @@ export default {
       }
 
       return (
-        <Item {...{ key: menu.path }}>
+        <Item {...{ key: menu.path }} vOn:click={this.newTodoText}>
           <tag {...{ props, attrs }}>
             {this.renderIcon(menu.meta.icon)}
             <span>{menu.meta.title}</span>
@@ -154,6 +154,14 @@ export default {
       return (
         <Icon {... { props } }/>
       )
+    },
+    newTodoText(e){
+      console.log(e.key,Vue.ls.get('target_router'))
+      if(e.key===Vue.ls.get('target_router')){
+        this.$emit('eventCall');
+      }
+      Vue.ls.set('target_router',e.key)
+
     }
   },
 
