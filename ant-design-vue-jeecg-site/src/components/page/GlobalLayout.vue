@@ -17,6 +17,7 @@
           @menuSelect="menuSelect"
           :theme="navTheme"
           :collapsed="false"
+          @eventCall="eventCall"
           :collapsible="true"></side-menu>
       </a-drawer>
 
@@ -24,6 +25,7 @@
         v-else
         mode="inline"
         :menus="menus"
+        @eventCall="eventCall"
         @menuSelect="myMenuSelect"
         :theme="navTheme"
         :collapsed="collapsed"
@@ -43,6 +45,7 @@
         <side-menu
           mode="inline"
           :menus="menus"
+          @eventCall="eventCall"
           @menuSelect="menuSelect"
           :theme="navTheme"
           :collapsed="false"
@@ -143,6 +146,10 @@
         this.collapsed = !this.collapsed
         this.setSidebar(!this.collapsed)
         triggerWindowResizeEvent()
+      },
+      eventCall(){
+        console.log("eventCall")
+        this.$emit("eventCall")
       },
       menuSelect() {
         if (!this.isDesktop()) {

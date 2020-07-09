@@ -327,7 +327,6 @@
         const that = this;
         // 触发表单验证
         this.form.validateFields((err, values) => {
-          debugger
           if (!err) {
             this.model.alwaysShow = this.alwaysShow;
             this.model.hidden = this.menuHidden;

@@ -297,7 +297,6 @@
         this.disable = true;
       },
       ok() {
-        debugger
         this.loadData(1)
       }
     }

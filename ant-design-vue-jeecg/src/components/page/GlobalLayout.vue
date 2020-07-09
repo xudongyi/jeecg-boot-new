@@ -15,6 +15,7 @@
           mode="inline"
           :menus="menus"
           @menuSelect="menuSelect"
+          @eventCall="eventCall"
           :theme="navTheme"
           :collapsed="false"
           :collapsible="true"></side-menu>
@@ -25,6 +26,7 @@
         mode="inline"
         :menus="menus"
         @menuSelect="myMenuSelect"
+        @eventCall="eventCall"
         :theme="navTheme"
         :collapsed="collapsed"
         :collapsible="true"></side-menu>
@@ -44,6 +46,7 @@
           mode="inline"
           :menus="menus"
           @menuSelect="menuSelect"
+          @eventCall="eventCall"
           :theme="navTheme"
           :collapsed="false"
           :collapsible="true"></side-menu>
@@ -148,6 +151,10 @@
         if (!this.isDesktop()) {
           this.collapsed = false
         }
+      },
+      eventCall(){
+        console.log("eventCall")
+        this.$emit("eventCall")
       },
       //update-begin-author:taoyan date:20190430 for:动态路由title显示配置的菜单title而不是其对应路由的title
       myMenuSelect(value){

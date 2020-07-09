@@ -1,6 +1,6 @@
 import Menu from 'ant-design-vue/es/menu'
 import Icon from 'ant-design-vue/es/icon'
-
+import Vue from 'vue'
 const { Item, SubMenu } = Menu
 
 export default {
@@ -103,12 +103,20 @@ export default {
       }
       return null
     },
+    newTodoText(e){
+      console.log(e.key,Vue.ls.get('target_router'))
+      if(e.key===Vue.ls.get('target_router')){
+        this.$emit('eventCall');
+      }
+      Vue.ls.set('target_router',e.key)
+
+    },
     renderMenuItem (menu) {
       const target = menu.meta.target || null
       const tag = target && 'a' || 'router-link'
       let props = { to: { name: menu.name } }
       if(menu.route && menu.route === '0'){
-        props = { to: { path: menu.path } }
+        props = { to: { path: menu.path} }
       }
 
       const attrs = { href: menu.path, target: menu.meta.target }
@@ -123,7 +131,7 @@ export default {
       }
 
       return (
-        <Item {...{ key: menu.path }}>
+        <Item {...{ key: menu.path }} vOn:click={this.newTodoText}>
           <tag {...{ props, attrs }}>
             {this.renderIcon(menu.meta.icon)}
             <span>{menu.meta.title}</span>
@@ -155,7 +163,8 @@ export default {
       return (
         <Icon {... { props } }/>
       )
-    }
+    },
+
   },
 
   render () {
@@ -186,4 +195,5 @@ export default {
       </Menu>
     )
   }
+
 }

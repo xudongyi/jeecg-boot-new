@@ -13,7 +13,9 @@
       @select="onSelect"
       @click="onClick"
       :mode="mode"
-      :style="smenuStyle">
+      :style="smenuStyle"
+      @eventCall = "eventCall"
+    >
     </s-menu>
   </a-layout-sider>
 
@@ -68,11 +70,10 @@
     },
     methods: {
       onSelect (obj) {
-        console.log(obj)
         this.$emit('menuSelect', obj)
       },
-      onClick(obj){
-        console.log(obj)
+      eventCall(){
+        this.$emit('eventCall')
       }
     }
   }
