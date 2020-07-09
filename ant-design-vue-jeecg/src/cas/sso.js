@@ -1,22 +1,33 @@
 import Vue from 'vue'
 import { ACCESS_TOKEN } from "@/store/mutation-types"
 import store from '@/store'
+import Cookies from 'js-cookie'
 /**
  * 单点登录
  */
 const init = (callback) => {
+  debugger
   console.log("-------单点登录开始-------");
   let token = Vue.ls.get(ACCESS_TOKEN);
-  let st = getUrlParam("ticket");
   let sevice = "http://"+window.location.host+"/";
+  let cookie = Cookies.get('_ticket_uid');
   if(token){
     loginSuccess(callback);
   }else{
-    if(st){
-      validateSt(st,sevice,callback);
+    if(cookie){
+      store.dispatch('CookieLogin',{tc:cookie}).then(res => {
+        //this.departConfirm(res)
+        if(res.success){
+          loginSuccess(callback);
+        }else{
+          callback()
+        }
+      }).catch((err) => {
+        console.log(err);
+        //that.requestFailed(err);
+      });
     }else{
-      let serviceUrl = encodeURIComponent(sevice);
-      window.location.href = window._CONFIG['casPrefixUrl']+"/login?service="+serviceUrl;
+      callback()
     }
   }
   console.log("-------单点登录结束-------");

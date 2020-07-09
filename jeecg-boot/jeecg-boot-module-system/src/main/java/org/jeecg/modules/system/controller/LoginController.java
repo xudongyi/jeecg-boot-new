@@ -26,6 +26,7 @@ import org.jeecg.modules.system.service.ISysDepartService;
 import org.jeecg.modules.system.service.ISysDictService;
 import org.jeecg.modules.system.service.ISysLogService;
 import org.jeecg.modules.system.service.ISysUserService;
+import org.jeecg.modules.system.util.LoginUtil;
 import org.jeecg.modules.system.util.RandImageUtil;
 import org.jeecg.modules.system.vo.SysUserVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +64,7 @@ public class LoginController {
 
 	@ApiOperation("登录接口")
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public Result<JSONObject> login(@RequestBody SysLoginModel sysLoginModel){
+	public Result<JSONObject> login(@RequestBody SysLoginModel sysLoginModel,HttpServletRequest request){
 		Result<JSONObject> result = new Result<JSONObject>();
 		String username = sysLoginModel.getUsername();
 		String password = sysLoginModel.getPassword();
@@ -111,7 +112,7 @@ public class LoginController {
 
 
 		//用户登录信息
-		userInfo(sysUserVo, result);
+		LoginUtil.userInfo(sysUserVo, result,redisUtil,sysDepartService,sysUserService,sysDictService);
 		sysBaseAPI.addLog("用户名: " + username + ",登录成功！", CommonConstant.LOG_TYPE_1, null);
 
 		return result;
@@ -341,41 +342,6 @@ public class LoginController {
 */
 
 
-	/**
-	 * 用户信息
-	 *
-	 * @param sysUser
-	 * @param result
-	 * @return
-	 */
-	private Result<JSONObject> userInfo(SysUserVo sysUser, Result<JSONObject> result) {
-		String syspassword = sysUser.getPassword();
-		String username = sysUser.getUsername();
-		// 生成token
-		String token = JwtUtil.sign(username, syspassword);
-        // 设置token缓存有效时间
-		redisUtil.set(CommonConstant.PREFIX_USER_TOKEN + token, token);
-		redisUtil.expire(CommonConstant.PREFIX_USER_TOKEN + token, JwtUtil.EXPIRE_TIME*2 / 1000);
-
-		// 获取用户部门信息
-		JSONObject obj = new JSONObject();
-		List<SysDepart> departs = sysDepartService.queryUserDeparts(sysUser.getId());
-		obj.put("departs", departs);
-		if (departs == null || departs.size() == 0) {
-			obj.put("multi_depart", 0);
-		} else if (departs.size() == 1) {
-			sysUserService.updateUserDepart(username, departs.get(0).getOrgCode());
-			obj.put("multi_depart", 1);
-		} else {
-			obj.put("multi_depart", 2);
-		}
-		obj.put("token", token);
-		obj.put("userInfo", sysUser);
-		obj.put("sysAllDictItems", sysDictService.queryAllDictItems());
-		result.setResult(obj);
-		result.success("登录成功");
-		return result;
-	}
 
 	/**
 	 * 获取加密字符串

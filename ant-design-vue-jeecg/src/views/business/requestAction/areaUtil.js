@@ -15,7 +15,7 @@ const loadAreaDate= async  function (){
   await getAction("/sys/sysArea/list",{active:'1'}).then((res) => {
     if (res.success) {
 
-      Vue.ls.set(key, res.result, 7 * 24 * 60 * 60 * 1000)
+      Vue.ls.set(key, res.result, 24 * 60 * 60 * 1000)
       result = res.result;
     }
   })

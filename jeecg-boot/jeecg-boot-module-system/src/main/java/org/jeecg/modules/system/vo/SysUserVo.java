@@ -26,7 +26,9 @@ public class SysUserVo {
 
     private static final long serialVersionUID = 1L;
 
+    public SysUserVo(){
 
+    }
     public SysUserVo(SysUser sysUser) {
         this.setId( sysUser.getId());
         this.setUsername( sysUser.getUsername());

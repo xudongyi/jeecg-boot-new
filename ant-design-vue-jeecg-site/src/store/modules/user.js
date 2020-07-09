@@ -11,6 +11,7 @@ import {
 import {welcome} from "@/utils/util"
 import {queryPermissionsByUser} from '@/api/api'
 import {getAction} from '@/api/manage'
+import Cookies from 'js-cookie'
 
 const user = {
   state: {
@@ -44,7 +45,7 @@ const user = {
   },
 
   actions: {
-    // CAS验证登录
+    // CAS验证登录  -- 暂时不用
     ValidateLogin({commit}, userInfo) {
       console.log("cas单点登录验证", userInfo);
       return new Promise((resolve, reject) => {
@@ -69,8 +70,34 @@ const user = {
         })
       })
     },
+    CookieLogin({commit}, userInfo) {
+      console.log("cas单点登录验证", userInfo);
+      return new Promise((resolve, reject) => {
+        getAction("/redis/client/validateLogin", userInfo).then(response => {
+          console.log("----cas 登录--------", response);
+          if (response.success) {
+            const result = response.result
+            const userInfo = result.userInfo
+            Vue.ls.set(ACCESS_TOKEN, result.token, 7 * 24 * 60 * 60 * 1000)
+            Vue.ls.set(USER_NAME, userInfo.username, 7 * 24 * 60 * 60 * 1000)
+            Vue.ls.set(USER_INFO, userInfo, 7 * 24 * 60 * 60 * 1000)
+            commit('SET_TOKEN', result.token)
+            commit('SET_INFO', userInfo)
+            commit('SET_NAME', {username: userInfo.username, realname: userInfo.realname, welcome: welcome()})
+            commit('SET_AVATAR', userInfo.avatar)
+            Cookies.set('_ticket_uid' ,result.tickit, { expires: 7, path: '' });//更新一下  保存7天
+            resolve(response)
+          } else {
+            resolve(response)
+          }
+        }).catch(error => {
+          resolve(error)
+        })
+      })
+    },
     // 登录
     Login({commit}, userInfo) {
+
       console.log("登录", userInfo);
       return new Promise((resolve, reject) => {
         login(userInfo).then(response => {
@@ -85,6 +112,9 @@ const user = {
             commit('SET_INFO', userInfo)
             commit('SET_NAME', {username: userInfo.username, realname: userInfo.realname, welcome: welcome()})
             commit('SET_AVATAR', userInfo.avatar)
+            Cookies.set('_ticket_uid' ,result.tickit, { expires: 7, path: '' });//更新一下  保存7天
+            console.log( Cookies.get('_ticket_uid'))
+
             resolve(response)
           } else {
             reject(response)
@@ -163,12 +193,15 @@ const user = {
         commit('SET_TOKEN', '')
         commit('SET_PERMISSIONLIST', [])
         Vue.ls.remove(ACCESS_TOKEN)
+        Vue.ls.remove(UI_CACHE_DB_DICT_DATA)
         //console.log('logoutToken: '+ logoutToken)
         logout(logoutToken).then(() => {
-          var sevice = "http://"+window.location.host+"/";
-          var serviceUrl = encodeURIComponent(sevice);
-          window.location.href = window._CONFIG['casPrefixUrl']+"/logout?service="+serviceUrl;
-          // resolve()
+          // var sevice = "http://"+window.location.host+"/";
+          // var serviceUrl = encodeURIComponent(sevice);
+          // window.location.href = window._CONFIG['casPrefixUrl']+"/logout?service="+serviceUrl;
+          Cookies.remove('_ticket_uid');
+
+          resolve()
         }).catch(() => {
           resolve()
         })
