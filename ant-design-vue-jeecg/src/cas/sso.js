@@ -6,7 +6,6 @@ import Cookies from 'js-cookie'
  * 单点登录
  */
 const init = (callback) => {
-  debugger
   console.log("-------单点登录开始-------");
   let token = Vue.ls.get(ACCESS_TOKEN);
   let sevice = "http://"+window.location.host+"/";
