@@ -18,6 +18,10 @@
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
+              <a @click="handleToggleSearch" style="margin-left: 8px">
+                {{ toggleSearchStatus ? '收起' : '展开' }}
+                <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>
+              </a>
             </span>
           </a-col>
         </a-row>
@@ -28,6 +32,10 @@
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
+      <a-button type="primary" icon="download" @click="handleExportXls('报警短信接收人')">导出</a-button>
+      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
+        <a-button type="primary" icon="import">导入</a-button>
+      </a-upload>
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
           <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
@@ -56,13 +64,34 @@
         class="j-table-force-nowrap"
         @change="handleTableChange">
 
-        <span slot="action" slot-scope="text, record">
+        <template slot="htmlSlot" slot-scope="text">
+          <div v-html="text"></div>
+        </template>
+        <template slot="imgSlot" slot-scope="text">
+          <span v-if="!text" style="font-size: 12px;font-style: italic;">无图片</span>
+          <img v-else :src="getImgView(text)" height="25px" alt="" style="max-width:80px;font-size: 12px;font-style: italic;"/>
+        </template>
+        <template slot="fileSlot" slot-scope="text">
+          <span v-if="!text" style="font-size: 12px;font-style: italic;">无文件</span>
+          <a-button
+            v-else
+            :ghost="true"
+            type="primary"
+            icon="download"
+            size="small"
+            @click="uploadFile(text)">
+            下载
+          </a-button>
+        </template>
 
+        <span slot="action" slot-scope="text, record">
+          <a @click="handleEdit(record)">编辑</a>
+
+          <a-divider type="vertical" />
           <a-dropdown>
             <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
             <a-menu slot="overlay">
               <a-menu-item>
-                <a @click="handleEdit(record)">编辑</a>
                 <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
                   <a>删除</a>
                 </a-popconfirm>
@@ -74,7 +103,7 @@
       </a-table>
     </div>
 
-    <sysWarnUserPoint-modal ref="modalForm" @ok="modalFormOk"></sysWarnUserPoint-modal>
+    <sysWarnUser-modal ref="modalForm" @ok="modalFormOk"></sysWarnUser-modal>
   </a-card>
 </template>
 
@@ -83,21 +112,21 @@
   import '@/assets/less/TableExpand.less'
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import SysWarnUserPointModal from './modules/SysWarnUserPointModal'
+  import SysWarnUserModal from './modules/SysWarnUserModal'
 
   export default {
-    name: "SysWarnUserPointList",
+    name: "SysWarnUserList",
     mixins:[JeecgListMixin, mixinDevice],
     components: {
-      SysWarnUserPointModal
+      SysWarnUserModal
     },
     data () {
       return {
-        description: '站点报警短信接收人配置管理页面',
+        description: '报警短信接收人管理页面',
         // 表头
         columns: [
           {
-            title: '序号',
+            title: '#',
             dataIndex: '',
             key:'rowIndex',
             width:60,
@@ -107,24 +136,19 @@
             }
           },
           {
-            title:'联系人姓名',
+            title:'姓名',
             align:"center",
             dataIndex: 'name'
           },
           {
-            title:'手机号码',
+            title:'手机',
             align:"center",
             dataIndex: 'mobile'
           },
           {
             title:'所属单位',
             align:"center",
-            dataIndex: 'companyName'
-          },
-          {
-            title:'责任站点',
-            align:"center",
-            dataIndex: 'siteName'
+            dataIndex: 'companyId'
           },
           {
             title: '操作',
@@ -136,11 +160,11 @@
           }
         ],
         url: {
-          list: "/swup/sysWarnUserPoint/list",
-          delete: "/swup/sysWarnUserPoint/delete",
-          deleteBatch: "/swup/sysWarnUserPoint/deleteBatch",
-          exportXlsUrl: "/swup/sysWarnUserPoint/exportXls",
-          importExcelUrl: "swup/sysWarnUserPoint/importExcel",
+          list: "/swu/sysWarnUser/list",
+          delete: "/swu/sysWarnUser/delete",
+          deleteBatch: "/swu/sysWarnUser/deleteBatch",
+          exportXlsUrl: "/swu/sysWarnUser/exportXls",
+          importExcelUrl: "swu/sysWarnUser/importExcel",
         },
         dictOptions:{},
       }

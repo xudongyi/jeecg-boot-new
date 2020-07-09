@@ -11,31 +11,15 @@
     <a-spin :spinning="confirmLoading">
       <a-form :form="form">
 
-        <div>
-          <a-row>
-            <a-col span="12">
-              <a-form-item label="联系人姓名" :labelCol="labelCol" :wrapperCol="wrapperCol">
-                <a-input v-decorator="['name']" placeholder="请输入联系人姓名"></a-input>
-              </a-form-item>
-            </a-col>
-            <a-col span="12">
-              <a-form-item label="手机号码" :labelCol="labelCol" :wrapperCol="wrapperCol">
-                <a-input v-decorator="['mobile']" placeholder="请输入手机号码"></a-input>
-              </a-form-item>
-            </a-col>
-          </a-row>
-          <a-row>
-            <a-col span="12">
-              <a-form-item label="所属单位" :labelCol="labelCol" :wrapperCol="wrapperCol">
-                <a-input v-decorator="['companyName']" placeholder="请输入所属单位"></a-input>
-              </a-form-item>
-            </a-col>
-          </a-row>
-        </div>
-        <div>
-
-        </div>
-
+        <a-form-item label="姓名" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input v-decorator="['name']" placeholder="请输入姓名"></a-input>
+        </a-form-item>
+        <a-form-item label="手机" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input v-decorator="['mobile']" placeholder="请输入手机"></a-input>
+        </a-form-item>
+        <a-form-item label="所属单位" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input v-decorator="['companyId']" placeholder="请输入所属单位"></a-input>
+        </a-form-item>
 
       </a-form>
     </a-spin>
@@ -50,14 +34,14 @@
 
 
   export default {
-    name: "SysWarnUserPointModal",
+    name: "SysWarnUserModal",
     components: { 
     },
     data () {
       return {
         form: this.$form.createForm(this),
         title:"操作",
-        width:1000,
+        width:800,
         visible: false,
         model: {},
         labelCol: {
@@ -72,8 +56,8 @@
         validatorRules: {
         },
         url: {
-          add: "/swup/sysWarnUserPoint/add",
-          edit: "/swup/sysWarnUserPoint/edit",
+          add: "/swu/sysWarnUser/add",
+          edit: "/swu/sysWarnUser/edit",
         }
       }
     },
@@ -88,7 +72,7 @@
         this.model = Object.assign({}, record);
         this.visible = true;
         this.$nextTick(() => {
-          this.form.setFieldsValue(pick(this.model,'name','mobile','companyName'))
+          this.form.setFieldsValue(pick(this.model,'name','mobile','companyId'))
         })
       },
       close () {
@@ -131,7 +115,7 @@
         this.close()
       },
       popupCallback(row){
-        this.form.setFieldsValue(pick(row,'warnUserid','monitorId'))
+        this.form.setFieldsValue(pick(row,'name','mobile','companyId'))
       },
 
       
