@@ -8,6 +8,9 @@ public class SysWarnUserPointVO extends SysWarnUserPoint {
     /**站点名称*/
     private String siteName;
 
+    /**站点名称*/
+    private String siteType;
+
     /**联系人姓名*/
     private String name;
 

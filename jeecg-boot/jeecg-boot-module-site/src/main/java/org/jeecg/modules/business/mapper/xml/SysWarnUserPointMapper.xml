@@ -11,6 +11,7 @@
         <result column="monitor_id" property="monitorId" jdbcType="VARCHAR"/>
         <result column="warn_userid" property="warnUserid" jdbcType="VARCHAR"/>
         <result column="site_name" property="siteName" jdbcType="VARCHAR"/>
+        <result column="site_type" property="siteType" jdbcType="VARCHAR"/>
         <result column="mobile" property="mobile" jdbcType="VARCHAR"/>
         <result column="name" property="name" jdbcType="VARCHAR"/>
         <result column="company_name" property="companyName" jdbcType="VARCHAR"/>
@@ -25,6 +26,7 @@
             t1.monitor_id,
             t1.warn_userid,
             t2.site_name,
+            t2.site_type,
             t3.name,t3.mobile,t3.company_id
 
         FROM
@@ -40,7 +42,7 @@
         <if test="mobile != null">
             and A.mobile = (#{mobile})
         </if>
-
+        order by name
     </select>
 
 </mapper>
