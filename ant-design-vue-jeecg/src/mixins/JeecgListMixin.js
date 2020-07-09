@@ -62,12 +62,12 @@ export const JeecgListMixin = {
   },
   watch: {
     //解决不刷新问题
-    $route: function () {
-      console.log(' -- $route change -- ')
-      this.loadData();
-      if(this.latestArchived)
-        this.init()
-    }
+    // $route: function () {
+    //   console.log(' -- $route change -- ')
+    //   this.loadData();
+    //   if(this.latestArchived)
+    //     this.init()
+    // }
   },
   methods:{
     loadData(arg) {

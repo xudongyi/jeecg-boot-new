@@ -103,6 +103,14 @@ export default {
       }
       return null
     },
+    newTodoText(e){
+      console.log(e.key,Vue.ls.get('target_router'))
+      if(e.key===Vue.ls.get('target_router')){
+        this.$emit('eventCall');
+      }
+      Vue.ls.set('target_router',e.key)
+
+    },
     renderMenuItem (menu) {
       const target = menu.meta.target || null
       const tag = target && 'a' || 'router-link'
@@ -156,14 +164,7 @@ export default {
         <Icon {... { props } }/>
       )
     },
-    newTodoText(e){
-      console.log(e.key,Vue.ls.get('target_router'))
-      if(e.key===Vue.ls.get('target_router')){
-        this.$emit('eventCall');
-      }
-      Vue.ls.set('target_router',e.key)
 
-    }
   },
 
   render () {
