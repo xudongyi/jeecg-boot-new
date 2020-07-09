@@ -21,10 +21,12 @@
       return {
         siteType: this.$route.params.siteType,
         isDetail:false,
+        id:""
       }
     },
     methods:{
       handleDetail(record){
+
         this.isDetail=true;
         this.id=record.id;
         this.$nextTick(() => {
