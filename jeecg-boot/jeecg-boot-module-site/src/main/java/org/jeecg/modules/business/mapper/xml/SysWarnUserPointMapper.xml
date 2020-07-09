@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.business.mapper.SysWarnUserPointMapper">
+    <resultMap id="SysWarnUserPointVO" type="org.jeecg.modules.business.vo.SysWarnUserPointVO" >
+        <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="create_by" property="createBy" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_by" property="updateBy" jdbcType="VARCHAR"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="sys_org_code" property="sysOrgCode" jdbcType="VARCHAR"/>
+        <result column="monitor_id" property="monitorId" jdbcType="VARCHAR"/>
+        <result column="warn_userid" property="warnUserid" jdbcType="VARCHAR"/>
+        <result column="site_name" property="siteName" jdbcType="VARCHAR"/>
+        <result column="site_type" property="siteType" jdbcType="VARCHAR"/>
+        <result column="mobile" property="mobile" jdbcType="VARCHAR"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="company_name" property="companyName" jdbcType="VARCHAR"/>
+        <result column="company_id" property="companyId" jdbcType="VARCHAR"/>
+
+    </resultMap>
+
+    <select id="getSysWarnUserPoint" parameterType="String"  resultMap="SysWarnUserPointVO">
+        select A.* , B.company_name from
+	    (SELECT
+            t1.id,
+            t1.monitor_id,
+            t1.warn_userid,
+            t2.site_name,
+            t2.site_type,
+            t3.name,t3.mobile,t3.company_id
+
+        FROM
+            sys_warn_user_point t1
+            LEFT JOIN site_monitor_point t2 ON t1.monitor_id = t2.id
+            LEFT JOIN sys_warn_user t3 ON t1.warn_userid = t3.id) A
+			left join company_base B on A.company_id = B.id
+
+		where 1=1
+        <if test="name != null">
+            and A.name = (#{name})
+        </if>
+        <if test="mobile != null">
+            and A.mobile = (#{mobile})
+        </if>
+        order by name
+    </select>
+
+</mapper>

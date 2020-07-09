@@ -13,11 +13,18 @@
           <a-layout-sider theme="light" width="260">
             <a-form :form="form">
               <a-form-item label="站点类型" :labelCol="labelCol" :wrapperCol="wrapperCol">
-                <j-dict-select-tag type="list" v-decorator="['siteType']" :trigger-change="true" dictCode="siteType" placeholder="请选择站点类型"/>
+                <j-dict-select-tag type="list" v-decorator="['siteType']" @change="selectChangeSiteType" :trigger-change="true" dictCode="siteType" placeholder="请选择站点类型"/>
               </a-form-item>
+              <a-form-item label="所属区域" :labelCol="labelCol" :wrapperCol="wrapperCol">
+                <area-link-select type="cascader" v-decorator="['area']"  @change="selectChangeArea" placeholder="请选择省市区"/>
+              </a-form-item>
+              <a-form-item label="站点名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
+                <a-input-search type="list" v-decorator="['siteName']" placeholder="查找站点" @change="onChange">
+                </a-input-search>
+              </a-form-item>
+
             </a-form>
             <div>
-              <a-input-search style="width:260px" placeholder="查找站点" @change="onChange" />
               <a-tree
                 :checkable="true"
                 :expanded-keys="expandedKeys"
@@ -65,20 +72,23 @@
 </template>
 
 <script>
-
+  import AreaLinkSelect from '../../component/AreaLinkSelect'
   import { httpAction ,getAction} from '@/api/manage'
   import pick from 'lodash.pick'
   import { validateDuplicateValue } from '@/utils/util'
   import JDictSelectTag from "@/components/dict/JDictSelectTag"
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-
+  import JAreaLinkage from '@comp/jeecg/JAreaLinkage'
+  import {querySiteName} from "../../../requestAction/request";
 
   export default {
     name: "SysWarnPointRuleModal",
     mixins:[JeecgListMixin, mixinDevice],
     components: { 
       JDictSelectTag,
+      JAreaLinkage,
+      AreaLinkSelect
     },
     data () {
       return {
@@ -93,13 +103,20 @@
         width:1200,
         visible: false,
         model: {},
+        items:[],
+        siteData:[],
+        monitorIds:'',
+        ruleIds:'',
+        selectedRowKeys:[],
+        queryParam:{siteType:this.siteType,
+                    area:this.area},
         labelCol: {
           xs: { span: 24 },
           sm: { span: 6 },
         },
         wrapperCol: {
           xs: { span: 24 },
-          sm: { span: 14 },
+          sm: { span: 16 },
         },
         confirmLoading: false,
         validatorRules: {
@@ -149,13 +166,14 @@
       }
     },
     created () {
-      let _this= this
+      this.queryParam.siteType = '';
+      this.queryParam.area = '';
+
+      let _this= this;
       getAction("/sys/sysArea/list",{active:'1'}).then((res) => {
         if (res.success) {
-          _this.data = res.result
-          //预处理一下所有数据
-          _this.treeData = _this.dealAreaData(res)
-
+          _this.data = _this.dealAreaData(res);
+          _this.selectChange();
         }
       })
 
@@ -164,8 +182,8 @@
 
 
       dealAreaData(res){
-        let areaSource = []
-        const province = res.result['86']
+        let areaSource = [];
+        const province = res.result['86'];
         Object.keys(province).map(key => {
           areaSource.push({key: key, title: province[key], children: []});
           const city = res.result[key];
@@ -178,7 +196,7 @@
               areaSource[areaSource.length - 1].children[arrindex].children.push({key: key3, title: qu[key3]});
             })
           })
-        })
+        });
         return areaSource
       },
       onExpand(expandedKeys) {
@@ -186,42 +204,97 @@
         this.autoExpandParent = false;
       },
       onChange(e) {
-       let expandedKeys = []
-        let _this = this
+        this.expandedKeys = [];
         const value = e.target.value;
-        Object.keys(_this.data).map(key => {
-          let a = 1
-          const city = _this.data[key];
-            Object.keys(city).map(key2 => {
-              if (city[key2].indexOf(value) > -1) {
-                if(a===1)
-                  expandedKeys.push(key)
-                expandedKeys.push(key2)
-                a=a+1
-              }
-            })
-        })
-        console.log(expandedKeys,value)
-        this.expandedKeys = expandedKeys
-        this.searchValue= value
+        this.find(this.treeData,value);
+        console.log(this.expandedKeys,value);
+
+        this.searchValue= value;
         this.autoExpandParent= true
 
       },
+      find(treeDate,val){
+
+        let _this = this;
+        treeDate.forEach(e=>{
+          console.log(e);
+          if(e.children){
+            if(this.find(e.children,val)){
+              console.log(e.key);
+              _this.expandedKeys.push(e.key);
+              return true
+            }
+
+          }
+          if (e.title.indexOf(val) > -1) {
+            console.log(e.key);
+            _this.expandedKeys.push(e.key);
+            return true
+          }
+        })
+      },
       onCheck(checkedKeys, info) {
         //修改选择数据
-        this.checkedKeys = checkedKeys
-        this.halfCheckedKeys= info.halfCheckedKeys
-
+        this.checkedKeys = checkedKeys;  //只要站点的
+        this.halfCheckedKeys= info.halfCheckedKeys;
       },
       //同选择-暂时不做
       onSelect(selectedKeys) {
+
+      },
+      selectChangeSiteType(val){
+        this.queryParam.siteType = val;
+        this.selectChange()
+      },
+      selectChangeArea(val){
+        this.queryParam.area = val;
+        this.selectChange()
+      },
+      selectChange(){
+        let that = this;
+          querySiteName({siteType: this.queryParam.siteType,area: this.queryParam.area}).then((res)=>{
+            this.siteData =  res.result;
+            let data = [];
+              //省
+              that.data.forEach((a)=>{
+                //市
+                let city = [];
+                a.children.forEach((b)=>{
+                  let qu = [];
+                  //区
+                  b.children.forEach((c)=>{
+                    let site = [];
+                    res.result.forEach((e)=>{
+                    if(c.key === e.area)
+                    site.push({key:e.key,title:e.siteName})
+                  });
+                    if(site.length>0){
+                      c.children = site;
+                      qu.push(c)
+                    }
+                });
+                  if(qu.length>0){
+                    b.children = qu;
+                    city.push(b)
+                  }
+              });
+                if(city.length>0){
+                  a.children = city;
+                  data.push(a)
+                }
+            });
+            that.treeData=data;
+            console.log("!!!!!!",res);
+            if(res.success)
+              that.items = res.result;
+          });
+
 
       },
       add () {
         this.edit({});
       },
       edit (record) {
-        console.log("!!!",record)
         //根据策略的 id--- 查询这个一个策略
         if(record.ruleId){
           this.queryParam = {id:record.ruleId};
@@ -232,11 +305,12 @@
         }
 
         this.loadData();
+        console.log(this.dataSource)
         this.form.resetFields();
         this.model = Object.assign({}, record);
         this.visible = true;
         this.$nextTick(() => {
-          this.form.setFieldsValue(pick(this.model,'siteName','siteType'))
+          this.form.setFieldsValue(pick(this.model,'siteName','siteType','area'))
         })
       },
       close () {
@@ -246,6 +320,15 @@
       handleOk () {
         const that = this;
         // 触发表单验证
+        const sites = [];
+        const rules = [];
+        this.checkedKeys.forEach((e)=>{
+          this.siteData.forEach((s)=>{
+            if(e === s.key){
+              sites.push(e);
+            }
+          })
+        });
         this.form.validateFields((err, values) => {
           if (!err) {
             that.confirmLoading = true;
@@ -259,7 +342,8 @@
                method = 'put';
             }
             let formData = Object.assign(this.model, values);
-
+            formData.monitorIds = sites;
+            formData.ruleIds = this.selectedRowKeys;
             console.log("表单提交数据",formData)
             httpAction(httpurl,formData,method).then((res)=>{
               if(res.success){
