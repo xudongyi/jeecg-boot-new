@@ -78,7 +78,7 @@ const user = {
             commit('SET_INFO', userInfo)
             commit('SET_NAME', {username: userInfo.username, realname: userInfo.realname, welcome: welcome()})
             commit('SET_AVATAR', userInfo.avatar)
-            Cookies.set('_ticket_uid' ,result.tickit, { expires: 7, path: '' });//更新一下  保存7天
+            Cookies.set('_ticket_uid' ,result.tickit, { expires: 7, path: '/' });//更新一下  保存7天
             resolve(response)
           } else {
             resolve(response)
@@ -106,7 +106,7 @@ const user = {
             commit('SET_INFO', userInfo)
             commit('SET_NAME', { username: userInfo.username,realname: userInfo.realname, welcome: welcome() })
             commit('SET_AVATAR', userInfo.avatar)
-            Cookies.set('_ticket_uid' ,result.tickit, { expires: 7, path: '' });//更新一下  保存7天
+            Cookies.set('_ticket_uid' ,result.tickit, { expires: 7, path: '/' });//更新一下  保存7天
             console.log( Cookies.get('_ticket_uid'))
             resolve(response)
           }else{
