@@ -110,14 +110,34 @@ public class SysWarnUserPointController extends JeecgController<SysWarnUserPoint
 	/**
 	 *  编辑
 	 *
-	 * @param sysWarnUserPoint
+	 * @param jsonObject
 	 * @return
 	 */
 	@AutoLog(value = "站点报警短信接收人配置-编辑")
 	@ApiOperation(value="站点报警短信接收人配置-编辑", notes="站点报警短信接收人配置-编辑")
 	@PutMapping(value = "/edit")
-	public Result<?> edit(@RequestBody SysWarnUserPoint sysWarnUserPoint) {
-		sysWarnUserPointService.updateById(sysWarnUserPoint);
+	public Result<?> edit(@RequestBody JSONObject jsonObject) {
+		String warnUserid = jsonObject.getString("warnUserid");
+		String name = jsonObject.getString("name");
+		String mobile = jsonObject.getString("mobile");
+		String companyId = jsonObject.getString("companyId");
+		List<String> monitorIds = jsonObject.getJSONArray("monitorIds").toJavaList(String.class);
+
+		SysWarnUser sysWarnUser = sysWarnUserService.getById(warnUserid);
+		sysWarnUser.setName(name);
+		sysWarnUser.setMobile(mobile);
+		sysWarnUser.setCompanyId(companyId);
+		sysWarnUserService.updateById(sysWarnUser);
+
+		sysWarnUserPointService.remove(new QueryWrapper<SysWarnUserPoint>().lambda().eq(SysWarnUserPoint::getWarnUserid,warnUserid));
+		List<SysWarnUserPoint> sysWarnUserPoints = new ArrayList<>();
+		for(String monitor : monitorIds) {
+			SysWarnUserPoint sysWarnUserPoint = new SysWarnUserPoint();
+			sysWarnUserPoint.setWarnUserid(warnUserid);
+			sysWarnUserPoint.setMonitorId(monitor);
+			sysWarnUserPoints.add(sysWarnUserPoint);
+		}
+		sysWarnUserPointService.saveBatch(sysWarnUserPoints);
 		return Result.ok("编辑成功!");
 	}
 	
