@@ -123,7 +123,7 @@
         },
         url: {
           add: "/swpr/sysWarnPointRule/add",
-          edit: "/swpr/sysWarnPointRule/edit",
+          edit: "/swpr/sysWarnPointRule/add",
           list: "/swr/sysWarnRule/list",
         },
         columns: [

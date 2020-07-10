@@ -40,7 +40,7 @@
         <a-row>
           <a-col span="24" v-show="msgShow">
             <a-form-item label="短信发送频率(次/天)" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input-number v-decorator="['msgRate',validatorRules.msgRate]" placeholder="请输入发送频率" style="width: 100%" :disabled="disableSubmit" :max="10" :min="1"/>
+              <a-input-number v-decorator="['msgRate',validatorRules.msgRate]" placeholder="请输入发送频率" style="width: 100%" :disabled="disableSubmit" :max="24" :min="1"/>
             </a-form-item>
           </a-col>
         </a-row>
@@ -48,12 +48,12 @@
         <a-row>
           <a-col span="12" v-show="msgShow">
             <a-form-item label="短信发送时段" :labelCol="labelCols" :wrapperCol="wrapperCols">
-              <a-time-picker format="HH:mm" :minute-step="15" :second-step="60" v-decorator="['warnStarttime',validatorRules.warnStarttime]" style="width: 100%" :disabled="disableSubmit"/>
+              <a-time-picker format="HH:mm" :minute-step="10" :second-step="60" v-decorator="['warnStarttime',validatorRules.warnStarttime]" style="width: 100%" :disabled="disableSubmit"/>
             </a-form-item>
           </a-col>
           <a-col span="12" v-show="msgShow">
             <a-form-item label="至:" :labelCol="{ xs: { span: 24 },sm: { span: 3 },}" :wrapperCol=" {xs: { span: 24 },sm: { span: 12 }}">
-              <a-time-picker format="HH:mm" :minute-step="15" :second-step="60" v-decorator="['warnEndtime',validatorRules.warnEndtime]" style="width: 100%" :disabled="disableSubmit"/>
+              <a-time-picker format="HH:mm" :minute-step="10" :second-step="60" v-decorator="['warnEndtime',validatorRules.warnEndtime]" style="width: 100%" :disabled="disableSubmit"/>
             </a-form-item>
           </a-col>
         </a-row>

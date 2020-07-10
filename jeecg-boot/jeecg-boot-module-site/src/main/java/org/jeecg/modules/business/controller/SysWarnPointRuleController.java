@@ -98,8 +98,9 @@ public class SysWarnPointRuleController extends JeecgController<SysWarnPointRule
 		List<String> monitorIds = jsonObject.getJSONArray("monitorIds").toJavaList(String.class);
 		List<String> ruleIds = jsonObject.getJSONArray("ruleIds").toJavaList(String.class);
 
-		//删除  根据monitorIds
-		sysWarnPointRuleService.remove(new QueryWrapper<SysWarnPointRule>().lambda().in(SysWarnPointRule::getMonitorId,monitorIds));
+//		//删除  根据monitorIds
+		sysWarnPointRuleService
+				.remove(new QueryWrapper<SysWarnPointRule>().lambda().in(SysWarnPointRule::getMonitorId,monitorIds).in(SysWarnPointRule::getRuleId,ruleIds));
 
 		List<SysWarnPointRule> sysWarnPointRules = new ArrayList<>();
 		for(String monitor : monitorIds) {
