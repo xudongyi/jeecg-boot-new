@@ -234,4 +234,18 @@ public class SiteMonitorDeviceController extends JeecgController<SiteMonitorDevi
         return Result.ok(result);
     }
 
+    /**
+     * 查询污染因子浓度单位
+     *
+     * @return
+     */
+    @AutoLog(value = "查询污染因子浓度单位")
+    @ApiOperation(value = "查询污染因子浓度单位", notes = "查询污染因子浓度单位")
+    @GetMapping(value = "/queryUnit")
+    public Result<?> queryUnit(@RequestParam(name = "code", required = true) String code) {
+        SysPollutionCode sysPollutionCode = sysPollutionCodeService.getOne(new QueryWrapper<SysPollutionCode>().lambda().eq(SysPollutionCode::getCode, code));
+        Map<String, String> param = new HashMap<>();
+        param.put("unit", sysPollutionCode.getChromaUnit());
+        return Result.ok(param);
+    }
 }

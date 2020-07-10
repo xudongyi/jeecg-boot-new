@@ -44,7 +44,7 @@
         </a-col>
         <a-col span='12'>
           <a-form-item label="所属区域" :labelCol="labelCol" :wrapperCol="wrapperCol">
-            <j-area-linkage type="cascader" v-decorator="['area']" placeholder="请输入省市区" :disabled="disable"/>
+            <area-link-select type="cascader" v-decorator="['area']" placeholder="请输入省市区" :disabled="disable"/>
           </a-form-item>
         </a-col>
       </a-row>
@@ -198,18 +198,16 @@
 
   import {httpAction} from '@/api/manage'
   import pick from 'lodash.pick'
-  import {validateDuplicateValue} from '@/utils/util'
   import JDictSelectTag from "@/components/dict/JDictSelectTag"
-  import JAreaLinkage from '@comp/jeecg/JAreaLinkage'
   import {queryCompanyName} from '../../../requestAction/request'
-  import { duplicateCheck } from '@/api/api'
-
+  import {duplicateCheck} from '@/api/api'
+  import AreaLinkSelect from "../../component/AreaLinkSelect";
 
   export default {
     name: "SiteMonitorPointModal",
     components: {
       JDictSelectTag,
-      JAreaLinkage,
+      AreaLinkSelect
     },
     data() {
       return {

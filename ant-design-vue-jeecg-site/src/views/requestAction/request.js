@@ -8,11 +8,13 @@ const getDataCollection = (params)=>getAction("/collection/siteDataCollection/qu
 const querySiteName = (params)=>getAction("/swpr/sysWarnPointRule/querySiteName",params);
 const queryFiles = (params,url)=>getAction(url,params);
 const queryPollution = (params)=>getAction("/device/siteMonitorDevice/queryPollution",params);
+const queryUnit = (params)=>getAction("/device/siteMonitorDevice/queryUnit",params);
 export {
   queryCompanyName,
   getDetailMenus,
   getDataCollection,
   querySiteName,
   queryFiles,
-  queryPollution
+  queryPollution,
+  queryUnit
 }

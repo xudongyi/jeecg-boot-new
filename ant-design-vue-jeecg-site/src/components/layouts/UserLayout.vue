@@ -5,7 +5,7 @@
         <div class="header">
           <a href="/">
            <!-- <img src="~@/assets/logo.svg" class="logo" alt="logo">-->
-            <span class="title"> “一站一档”信息管理系统</span>
+            <span class="title">环境监测站档案信息管理系统</span>
           </a>
         </div>
         <div class="desc">

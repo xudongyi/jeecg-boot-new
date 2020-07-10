@@ -21,7 +21,7 @@
     props: {
       title: {
         type: String,
-        default: '一站一档',
+        default: '环境监测站档案',
         required: false
       },
       showTitle: {

@@ -38,19 +38,19 @@
         <a-row>
           <a-col span='12'>
             <a-form-item label="设计处理能力" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input v-decorator="['designAbility']" placeholder="请输入设计处理能力" :disabled="disableSubmit"></a-input>
+              <a-input v-decorator="['designAbility']" placeholder="请输入设计处理能力" :disabled="disableSubmit" addon-after="吨/月"></a-input>
             </a-form-item>
           </a-col>
           <a-col span='12'>
             <a-form-item label="设计月处理效率" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input v-decorator="['designMonth']" placeholder="请输入设计月处理效率" :disabled="disableSubmit"></a-input>
+              <a-input v-decorator="['designMonth']" placeholder="请输入设计月处理效率" :disabled="disableSubmit" addon-after="%"></a-input>
             </a-form-item>
           </a-col>
         </a-row>
         <a-row>
           <a-col span='12'>
             <a-form-item label="实际月处理效率" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input v-decorator="['actualMonth']" placeholder="请输入实际月处理效率" :disabled="disableSubmit"></a-input>
+              <a-input v-decorator="['actualMonth']" placeholder="请输入实际月处理效率" :disabled="disableSubmit" addon-after="%"></a-input>
             </a-form-item>
           </a-col>
           <a-col span='12'>

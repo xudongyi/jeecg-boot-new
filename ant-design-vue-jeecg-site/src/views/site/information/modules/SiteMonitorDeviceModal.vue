@@ -72,7 +72,9 @@
           </a-col>
           <a-col span='12'>
             <a-form-item label="做样周期" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input v-decorator="['sampleCycle']" placeholder="请输入做样周期" :disabled="disableSubmit"></a-input>
+              <a-input v-decorator="['sampleCycle']" placeholder="请输入做样周期" :disabled="disableSubmit"
+                       addon-after="分钟"></a-input>
+
             </a-form-item>
           </a-col>
         </a-row>
@@ -80,19 +82,20 @@
           <a-col span='12'>
             <a-form-item label="量程上限" :labelCol="labelCol" :wrapperCol="wrapperCol">
               <a-input v-decorator="['rangeMax', validatorRules.rangeMax]" placeholder="请输入量程上限"
-                       :disabled="disableSubmit"></a-input>
+                       :disabled="disableSubmit" :addon-after="unit">
+              </a-input>
             </a-form-item>
           </a-col>
           <a-col span='12'>
             <a-form-item label="量程下限" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input v-decorator="['rangeMin']" placeholder="请输入量程下限" :disabled="disableSubmit"></a-input>
+              <a-input v-decorator="['rangeMin']" placeholder="请输入量程下限" :disabled="disableSubmit" :addon-after="unit"></a-input>
             </a-form-item>
           </a-col>
         </a-row>
         <a-row>
           <a-col span='12'>
             <a-form-item label="检出限" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input v-decorator="['checkoutMax']" placeholder="请输入检出限" :disabled="disableSubmit"></a-input>
+              <a-input v-decorator="['checkoutMax']" placeholder="请输入检出限" :disabled="disableSubmit" :addon-after="unit"></a-input>
             </a-form-item>
           </a-col>
           <a-col span='12'>
@@ -180,7 +183,7 @@
     </a-spin>
     <template slot="footer">
       <a-button type="primary" @click="handleCancel">关闭</a-button>
-      <a-button type="primary" @click="handleOk"  v-if="!disableSubmit">保存</a-button>
+      <a-button type="primary" @click="handleOk" v-if="!disableSubmit">保存</a-button>
     </template>
   </j-modal>
 </template>
@@ -193,7 +196,7 @@
   import JDate from '@/components/jeecg/JDate'
   import JDictSelectTag from "@/components/dict/JDictSelectTag"
   import JUpload from '@/components/jeecg/JUpload'
-  import {queryPollution, queryFiles} from '../../../requestAction/request'
+  import {queryPollution, queryFiles,queryUnit} from '../../../requestAction/request'
 
 
   export default {
@@ -206,6 +209,7 @@
     data() {
       return {
         form: this.$form.createForm(this),
+        unit:"",
         disable: true,
         disableSubmit: false,
         code: "",
@@ -279,7 +283,7 @@
     },
     created() {
       let that = this;
-      //查询企业名称
+      //查询污染因子
       queryPollution().then((res) => {
         if (res.success) {
           that.items = res.result;
@@ -298,7 +302,11 @@
         this.$nextTick(() => {
           _this.form.setFieldsValue(pick(this.model, 'deviceName', 'deviceNumber', 'deviceType', 'pollutionCode', 'sampleCycle', 'deviceState', 'deviceModel', 'deviceFactory', 'rangeMax', 'rangeMin', 'checkoutMax', 'checkoutUnit', 'productDate', 'installDate', 'shelfLifeDate', 'deviceConcatUser', 'deviceConcatMobile', 'useDate', 'operationCompany', 'operationUser', 'operationMobile', 'content'))
           _this.form.setFieldsValue(pick({deviceType: this.siteType}, 'deviceType'))
-          this.code = this.model.pollutionCode;
+          _this.code = this.model.pollutionCode;
+          queryUnit({code:this.model.pollutionCode}).then((res) => {
+              debugger
+            _this.unit = res.result.unit;
+          });
         })
         if (record.id) {
           queryFiles({id: record.id}, this.url.queryFile).then((res) => {
@@ -383,6 +391,9 @@
       },
       pollutionChange(key) {
         this.code = key;
+        queryUnit({code:this.code}).then((res) => {
+          this.unit = res.result.unit;
+        });
       }
     }, props: {
       siteType: '',

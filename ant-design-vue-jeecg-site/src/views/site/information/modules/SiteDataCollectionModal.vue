@@ -11,7 +11,7 @@
         <a-col span='12'>
           <a-form-item label="实时上传间隔（s）" :labelCol="labelCol" :wrapperCol="wrapperCol">
             <a-input v-decorator="['currentInterval', validatorRules.currentInterval]"
-                     placeholder="请输入实时上传间隔（s）"></a-input>
+                     placeholder="请输入实时上传间隔（s）"  addon-after="秒"></a-input>
           </a-form-item>
         </a-col>
       </a-row>
@@ -19,7 +19,7 @@
         <a-col span='12'>
           <a-form-item label="分钟上传间隔（minute）" :labelCol="labelCol" :wrapperCol="wrapperCol">
             <a-input v-decorator="['minuteInterval', validatorRules.minuteInterval]"
-                     placeholder="请输入分钟上传间隔（minute）"></a-input>
+                     placeholder="请输入分钟上传间隔（minute）"  addon-after="分钟"></a-input>
           </a-form-item>
         </a-col>
         <a-col span='12'>
