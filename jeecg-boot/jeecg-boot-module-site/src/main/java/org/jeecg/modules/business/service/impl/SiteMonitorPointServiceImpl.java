@@ -39,9 +39,8 @@ public class SiteMonitorPointServiceImpl extends ServiceImpl<SiteMonitorPointMap
     }
 
     @Override
-    public Page<SiteMonitorPointVO> getSiteMonitorPointList(Page<SiteMonitorPointVO> page,String siteType) {
-        siteMonitorPointMapper.getSiteMonitorPointList(page, siteType);
-        return page.setRecords(siteMonitorPointMapper.getSiteMonitorPointList(page,siteType));
+    public Page<SiteMonitorPointVO> getSiteMonitorPointList(Page<SiteMonitorPointVO> page,String siteType,String siteState,String siteName,String companyId,String siteLevel,String area,String mnCode) {
+        return page.setRecords(siteMonitorPointMapper.getSiteMonitorPointList(page,siteType,siteState,siteName,companyId,siteLevel,area,mnCode));
     }
 
     private void addElements(String key,String value,Integer counts,List<Map<String,String>> basicInfoMenus){
