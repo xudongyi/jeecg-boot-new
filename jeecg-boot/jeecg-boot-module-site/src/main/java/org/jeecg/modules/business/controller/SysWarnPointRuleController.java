@@ -210,6 +210,7 @@ public class SysWarnPointRuleController extends JeecgController<SysWarnPointRule
 			 param.put("key",siteMonitorPoint.getId());
 			 param.put("siteName",siteMonitorPoint.getSiteName());
 			 param.put("area",siteMonitorPoint.getArea());
+			 param.put("siteType", siteMonitorPoint.getSiteType());
 			 result.add(param);
 		 });
 		 return Result.ok(result);

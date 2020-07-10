@@ -43,4 +43,11 @@
             and t1.site_type = (#{siteType})
         </if>
     </select>
+
+    <select id="getSiteMonitorPoint" parameterType="String"  resultType="org.jeecg.modules.business.entity.SiteMonitorPoint">
+        select * from site_monitor_point  where  id in (
+        SELECT monitor_id FROM `sys_warn_user_point`
+        where warn_userid = (#{warnUserid}) )
+    </select>
+
 </mapper>

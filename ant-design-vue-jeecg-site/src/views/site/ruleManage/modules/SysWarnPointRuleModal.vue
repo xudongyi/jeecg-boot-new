@@ -321,7 +321,7 @@
         const that = this;
         // 触发表单验证
         const sites = [];
-        const rules = [];
+        // const rules = [];
         this.checkedKeys.forEach((e)=>{
           this.siteData.forEach((s)=>{
             if(e === s.key){

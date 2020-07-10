@@ -1,11 +1,19 @@
 package org.jeecg.modules.business.controller;
 
-import java.util.Arrays;
+import java.util.*;
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.alibaba.fastjson.JSONObject;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
+import org.jeecg.modules.business.entity.SiteMonitorPoint;
+import org.jeecg.modules.business.entity.SysWarnPointRule;
+import org.jeecg.modules.business.entity.SysWarnUser;
 import org.jeecg.modules.business.entity.SysWarnUserPoint;
+import org.jeecg.modules.business.mapper.SiteMonitorPointMapper;
+import org.jeecg.modules.business.service.ISiteMonitorPointService;
 import org.jeecg.modules.business.service.ISysWarnUserPointService;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -14,6 +22,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 
 import org.jeecg.common.system.base.controller.JeecgController;
+import org.jeecg.modules.business.service.ISysWarnUserService;
 import org.jeecg.modules.business.vo.SysWarnUserPointVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -35,6 +44,12 @@ import org.jeecg.common.aspect.annotation.AutoLog;
 public class SysWarnUserPointController extends JeecgController<SysWarnUserPoint, ISysWarnUserPointService> {
 	@Autowired
 	private ISysWarnUserPointService sysWarnUserPointService;
+
+	@Resource
+	private SiteMonitorPointMapper siteMonitorPointMapper;
+
+	 @Autowired
+	 private ISysWarnUserService sysWarnUserService;
 	
 	/**
 	 * 分页列表查询
@@ -62,14 +77,33 @@ public class SysWarnUserPointController extends JeecgController<SysWarnUserPoint
 	/**
 	 *   添加
 	 *
-	 * @param sysWarnUserPoint
+	 * @param jsonObject
 	 * @return
 	 */
 	@AutoLog(value = "站点报警短信接收人配置-添加")
 	@ApiOperation(value="站点报警短信接收人配置-添加", notes="站点报警短信接收人配置-添加")
 	@PostMapping(value = "/add")
-	public Result<?> add(@RequestBody SysWarnUserPoint sysWarnUserPoint) {
-		sysWarnUserPointService.save(sysWarnUserPoint);
+	public Result<?> add(@RequestBody JSONObject jsonObject) {
+		String name = jsonObject.getString("name");
+		String mobile = jsonObject.getString("mobile");
+		String companyId = jsonObject.getString("companyId");
+		List<String> monitorIds = jsonObject.getJSONArray("monitorIds").toJavaList(String.class);
+
+		SysWarnUser sysWarnUser = new SysWarnUser();
+		sysWarnUser.setName(name);
+		sysWarnUser.setMobile(mobile);
+		sysWarnUser.setCompanyId(companyId);
+		sysWarnUserService.save(sysWarnUser);
+		String id = sysWarnUser.getId();
+		List<SysWarnUserPoint> sysWarnUserPoints = new ArrayList<>();
+		for(String monitor : monitorIds) {
+			SysWarnUserPoint sysWarnUserPoint = new SysWarnUserPoint();
+			sysWarnUserPoint.setWarnUserid(id);
+			sysWarnUserPoint.setMonitorId(monitor);
+			sysWarnUserPoints.add(sysWarnUserPoint);
+
+		}
+		sysWarnUserPointService.saveBatch(sysWarnUserPoints);
 		return Result.ok("添加成功！");
 	}
 	
@@ -131,6 +165,28 @@ public class SysWarnUserPointController extends JeecgController<SysWarnUserPoint
 		}
 		return Result.ok(sysWarnUserPoint);
 	}
+
+	 /**
+	  * 通过id查询
+	  *
+	  * @param warnUserid
+	  * @return
+	  */
+	 @AutoLog(value = "站点报警短信接收人配置-通过id查询")
+	 @ApiOperation(value="站点报警短信接收人配置-通过id查询", notes="站点报警短信接收人配置-通过id查询")
+	 @GetMapping(value = "/querySelectedSite")
+	 public Result<?> querySelectedSite(@RequestParam(name="warnUserid",required=true) String warnUserid) {
+	 	 List<SiteMonitorPoint> list = siteMonitorPointMapper.getSiteMonitorPoint(warnUserid);
+		 List<Map<String,String>> result = new ArrayList<>();
+		 list.forEach(siteMonitorPoint -> {
+			 Map<String,String> param = new HashMap<>();
+			 param.put("key",siteMonitorPoint.getId());
+			 param.put("siteName",siteMonitorPoint.getSiteName());
+			 param.put("siteType", siteMonitorPoint.getSiteType());
+			 result.add(param);
+		 });
+		 return Result.ok(result);
+	 }
 
     /**
     * 导出excel

@@ -137,7 +137,7 @@
           ruleType: {
             rules: [
               { required: true, message: '请选择策略类型!'},
-              ,{
+              {
                 validator: this.validateRuleType,
               }
 
