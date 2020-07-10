@@ -13,13 +13,13 @@
           <a-layout-sider theme="light" width="260">
             <a-form :form="form">
               <a-form-item label="站点类型" :labelCol="labelCol" :wrapperCol="wrapperCol">
-                <j-dict-select-tag type="list" v-decorator="['siteType']" @change="selectChangeSiteType" :trigger-change="true" dictCode="siteType" placeholder="请选择站点类型"/>
+                <j-dict-select-tag type="list" v-decorator="['siteType']" @change="selectChangeSiteType" :trigger-change="true" :disabled="disableSubmit" dictCode="siteType" placeholder="请选择站点类型"/>
               </a-form-item>
               <a-form-item label="所属区域" :labelCol="labelCol" :wrapperCol="wrapperCol">
-                <area-link-select type="cascader" v-decorator="['area']"  @change="selectChangeArea" placeholder="请选择省市区"/>
+                <area-link-select type="cascader" v-decorator="['area']"  @change="selectChangeArea" :disabled="disableSubmit" placeholder="请选择省市区"/>
               </a-form-item>
               <a-form-item label="站点名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
-                <a-input-search type="list" v-decorator="['siteName']" placeholder="查找站点" @change="onChange">
+                <a-input-search type="list" v-decorator="['siteName']" placeholder="查找站点" :disabled="disableSubmit" @change="onChange">
                 </a-input-search>
               </a-form-item>
 
@@ -47,6 +47,7 @@
           </a-layout-sider>
           <a-layout-content>
             <a-table
+              style="background-color: white"
               ref="table"
               size="middle"
               bordered
@@ -66,6 +67,10 @@
       </a-layout>
 
     </a-spin>
+    <template slot="footer">
+      <a-button type="primary" @click="handleCancel">关闭</a-button>
+      <a-button type="primary" @click="handleOk" v-if="!disableSubmit">确定</a-button>
+    </template>
   </j-modal>
 
 
@@ -79,7 +84,6 @@
   import JDictSelectTag from "@/components/dict/JDictSelectTag"
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import JAreaLinkage from '@comp/jeecg/JAreaLinkage'
   import {querySiteName} from "../../../requestAction/request";
 
   export default {
@@ -87,11 +91,11 @@
     mixins:[JeecgListMixin, mixinDevice],
     components: { 
       JDictSelectTag,
-      JAreaLinkage,
       AreaLinkSelect
     },
     data () {
       return {
+        disableSubmit:'',
         autoExpandParent:true,
         expandedKeys:[],
         data:[],
@@ -105,6 +109,7 @@
         model: {},
         items:[],
         siteData:[],
+        checkedKeys:[],
         monitorIds:'',
         ruleIds:'',
         selectedRowKeys:[],
@@ -123,7 +128,7 @@
         },
         url: {
           add: "/swpr/sysWarnPointRule/add",
-          edit: "/swpr/sysWarnPointRule/add",
+          edit: "/swpr/sysWarnPointRule/edit",
           list: "/swr/sysWarnRule/list",
         },
         columns: [
@@ -306,7 +311,7 @@
 
         this.loadData();
         console.log(this.dataSource)
-        this.form.resetFields();
+        // this.form.resetFields();
         this.model = Object.assign({}, record);
         this.visible = true;
         this.$nextTick(() => {

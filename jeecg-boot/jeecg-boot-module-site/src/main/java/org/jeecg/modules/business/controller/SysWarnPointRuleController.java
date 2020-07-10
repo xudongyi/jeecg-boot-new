@@ -121,15 +121,34 @@ public class SysWarnPointRuleController extends JeecgController<SysWarnPointRule
 	/**
 	 *  编辑
 	 *
-	 * @param sysWarnPointRule
+	 * @param jsonObject
 	 * @return
 	 */
 	@AutoLog(value = "站点报警策略表-编辑")
 	@ApiOperation(value="站点报警策略表-编辑", notes="站点报警策略表-编辑")
 	@PutMapping(value = "/edit")
-	public Result<?> edit(@RequestBody SysWarnPointRule sysWarnPointRule) {
-		sysWarnPointRuleService.updateById(sysWarnPointRule);
-		return Result.ok("编辑成功!");
+	public Result<?> edit(@RequestBody JSONObject jsonObject) {
+		List<String> monitorIds = jsonObject.getJSONArray("monitorIds").toJavaList(String.class);
+		List<String> ruleIds = jsonObject.getJSONArray("ruleIds").toJavaList(String.class);
+
+//		//删除  根据monitorIds
+		sysWarnPointRuleService
+				.remove(new QueryWrapper<SysWarnPointRule>().lambda().in(SysWarnPointRule::getMonitorId,monitorIds).in(SysWarnPointRule::getRuleId,ruleIds));
+
+		List<SysWarnPointRule> sysWarnPointRules = new ArrayList<>();
+		for(String monitor : monitorIds) {
+			for (String rule : ruleIds) {
+				SysWarnPointRule sysWarnPointRule = new SysWarnPointRule();
+				sysWarnPointRule.setMonitorId(monitor);
+				sysWarnPointRule.setRuleId(rule);
+				String isUsed = sysWarnRuleService.getById(rule).getIsUsed();
+				sysWarnPointRule.setIsUsed(isUsed);
+				sysWarnPointRules.add(sysWarnPointRule);
+			}
+		}
+		sysWarnPointRuleService.saveBatch(sysWarnPointRules);
+
+		return Result.ok("添加成功！");
 	}
 	
 	/**

@@ -83,6 +83,10 @@
 
       </a-form>
     </a-spin>
+    <template slot="footer">
+      <a-button type="primary" @click="handleCancel">关闭</a-button>
+      <a-button type="primary" @click="handleOk" v-if="!disableSubmit">确定</a-button>
+    </template>
   </j-modal>
 </template>
 
