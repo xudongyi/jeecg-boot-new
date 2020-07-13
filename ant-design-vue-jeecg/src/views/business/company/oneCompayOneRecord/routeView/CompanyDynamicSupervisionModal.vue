@@ -22,7 +22,7 @@
           </a-col>
           <a-col span="12">
             <a-form-item label="申报年份" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-select v-decorator="['reportYear', validatorRules.reportYear]" show-search @visible-change="yearChange($event)">
+              <a-select v-decorator="['reportYear', validatorRules.reportYear]" show-search @visible-change="yearChange($event)" :disabled="disableSubmit">
                 <a-select-option v-for="item in years" :key="item.value"  :value="item.value">
                   {{item.value}}
                 </a-select-option>
