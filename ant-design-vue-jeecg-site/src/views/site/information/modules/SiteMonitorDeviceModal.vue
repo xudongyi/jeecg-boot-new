@@ -197,6 +197,7 @@
   import JDictSelectTag from "@/components/dict/JDictSelectTag"
   import JUpload from '@/components/jeecg/JUpload'
   import {queryPollution, queryFiles,queryUnit} from '../../../requestAction/request'
+  import {ajaxGetDictItems,getDictItemsFromCache} from '@/api/api'
 
 
   export default {
@@ -212,6 +213,7 @@
         unit:"",
         disable: true,
         disableSubmit: false,
+        dictOptions:{},
         code: "",
         fileList: '',
         items: [],
@@ -392,11 +394,13 @@
       pollutionChange(key) {
         this.code = key;
         queryUnit({code:this.code}).then((res) => {
+          debugger
           this.unit = res.result.unit;
-          this.unit = this.dictVal(unit,"chromaUnit");
+          this.unit = this.dictVal(this.unit,"chromaUnit");
         });
       },
       dictVal(text,record){
+        debugger
         if(text===null)
           return ''
         if(record) {
@@ -412,6 +416,20 @@
           return result.text;
         }
         return text;
+      },
+      initDictData(dictCode) {
+
+        //优先从缓存中读取字典配置
+        if(getDictItemsFromCache(dictCode)){
+          this.dictOptions[dictCode] = getDictItemsFromCache(dictCode);
+          return
+        }
+        //根据字典Code, 初始化字典数组
+        ajaxGetDictItems(dictCode, null).then((res) => {
+          if (res.success) {
+            this.dictOptions[dictCode] = res.result;
+          }
+        })
       },
     }, props: {
       siteType: '',

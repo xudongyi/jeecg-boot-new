@@ -44,7 +44,7 @@
         </a-col>
         <a-col span='12'>
           <a-form-item label="所属区域" :labelCol="labelCol" :wrapperCol="wrapperCol">
-            <area-link-select type="cascader" v-decorator="['area']" placeholder="请输入省市区" :disabled="disable"/>
+            <area-link-select type="cascader" v-decorator="['area', validatorRules.area]" placeholder="请输入省市区" :disabled="disable"/>
           </a-form-item>
         </a-col>
       </a-row>
@@ -273,6 +273,11 @@
           companyId: {
             rules: [
               {required: true, message: '请输入所属单位!'},
+            ]
+          },
+          area: {
+            rules: [
+              {required: true, message: '请输入所属区域!'},
             ]
           },
           siteLevel: {
