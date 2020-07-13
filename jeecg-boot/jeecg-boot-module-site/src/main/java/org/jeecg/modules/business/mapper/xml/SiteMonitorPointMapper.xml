@@ -58,7 +58,7 @@
             and t1.site_state = #{area}
         </if>
         <if test="mnCode != null">
-            and t1.mn_code = CONCAT(CONCAT('%', #{mnCode}), '%')
+            and t1.mn_code LIKE CONCAT(CONCAT('%', #{mnCode}), '%')
         </if>
     </select>
 
