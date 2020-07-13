@@ -1,50 +1,60 @@
 <template>
   <div class="main">
-    <a-form :form="form" class="user-layout-login" ref="formLogin" id="formLogin">
-      <a-tabs
-        :activeKey="customActiveKey"
-        :tabBarStyle="{ textAlign: 'center', borderBottom: 'unset' }"
-        @change="handleTabClick">
-        <a-tab-pane key="tab1" tab="账号密码登陆">
-          <a-form-item>
-            <a-input
-              size="large"
-              v-decorator="['username',{initialValue:'admin', rules: validatorRules.username.rules}]"
-              type="text"
-              placeholder="请输入帐户名 / admin">
-              <a-icon slot="prefix" type="user" :style="{ color: 'rgba(0,0,0,.25)' }"/>
-            </a-input>
-          </a-form-item>
+    <div style="  width: 100%;
+      height: 100%;
+      position: relative;
+      padding: 8px;
+      border: 1px solid #d9d9d9;
+      border-radius: 4px;
+      margin-top:80px;
+      text-align: center;
+      background:rgba(123,123,123,0.39)">
+      <a-form :form="form" class="user-layout-login" ref="formLogin" id="formLogin">
+        <!--  <a-tabs
+            :activeKey="customActiveKey"
+            :tabBarStyle="{ textAlign: 'center', borderBottom: 'unset' }"
+            @change="handleTabClick">
+            <a-tab-pane key="tab1" tab="账号密码登陆">-->
 
-          <a-form-item>
-            <a-input
-              v-decorator="['password',{initialValue:'123456', rules: validatorRules.password.rules}]"
-              size="large"
-              type="password"
-              autocomplete="false"
-              placeholder="密码 / 123456">
-              <a-icon slot="prefix" type="lock" :style="{ color: 'rgba(0,0,0,.25)' }"/>
-            </a-input>
-          </a-form-item>
+        <a-form-item style="margin-top:40px;width: 80%;margin-left:10%">
+          <a-input
+            size="large"
+            v-decorator="['username',{rules: validatorRules.username.rules}]"
+            type="text"
+            placeholder="请输入帐户名">
+            <a-icon slot="addonBefore" type="user" :style="{ color: 'rgb(73,188,255)' ,fontSize:'24px'}"/>
+          </a-input>
+        </a-form-item>
 
-          <a-row :gutter="0">
-            <a-col :span="16">
-              <a-form-item>
-                <a-input
-                  v-decorator="['inputCode',validatorRules.inputCode]"
-                  size="large"
-                  type="text"
-                  @change="inputCodeChange"
-                  placeholder="请输入验证码">
-                  <a-icon slot="prefix" type="smile" :style="{ color: 'rgba(0,0,0,.25)' }"/>
-                </a-input>
-              </a-form-item>
-            </a-col>
-            <a-col :span="8" style="text-align: right">
+        <a-form-item  style="width: 80%;margin-left:10%">
+          <a-input
+            v-decorator="['password',{ rules: validatorRules.password.rules}]"
+            size="large"
+            type="password"
+            autocomplete="false"
+            placeholder="请输入密码">
+            <a-icon slot="addonBefore" type="lock" :style="{ color: 'rgb(255,195,125)',fontSize:'24px' }"/>
+          </a-input>
+        </a-form-item>
+
+
+        <a-form-item style="width: 80%;margin-left:10%">
+          <a-input
+            v-decorator="['inputCode',validatorRules.inputCode]"
+            size="large"
+            type="text"
+            @change="inputCodeChange"
+            placeholder="请输入验证码">
+            <a-icon slot="addonBefore" type="smile" :style="{ color: 'rgba(0,0,0,.25)',fontSize:'24px' }"/>
+
+            <div slot="addonAfter" >
               <img v-if="requestCodeSuccess" style="margin-top: 2px;" :src="randCodeImage" @click="handleChangeCheckCode"/>
               <img v-else style="margin-top: 2px;" src="../../assets/checkcode.png" @click="handleChangeCheckCode"/>
-            </a-col>
-          </a-row>
+            </div>
+          </a-input>
+        </a-form-item>
+
+
 
 
 
@@ -79,7 +89,7 @@
                 @click.stop.prevent="getCaptcha"
                 v-text="!state.smsSendBtn && '获取验证码' || (state.time+' s')"></a-button>
             </a-col>
-          </a-row>-->
+          </a-row>
         </a-tab-pane>
       </a-tabs>
 
@@ -92,32 +102,32 @@
           注册账户
         </router-link>
       </a-form-item>
+-->
+        <a-form-item >
+          <a-button
+            size="large"
+            type="primary"
+            htmlType="submit"
+            class="login-button"
+            :loading="loginBtn"
+            @click.stop.prevent="handleSubmit"
+            :disabled="loginBtn">登录
+          </a-button>
+        </a-form-item>
 
-      <a-form-item style="margin-top:24px">
-        <a-button
-          size="large"
-          type="primary"
-          htmlType="submit"
-          class="login-button"
-          :loading="loginBtn"
-          @click.stop.prevent="handleSubmit"
-          :disabled="loginBtn">确定
-        </a-button>
-      </a-form-item>
-
-    <!--  <div class="user-login-other">
-        <span>其他登陆方式</span>
-        <a @click="onThirdLogin('github')" title="github"><a-icon class="item-icon" type="github"></a-icon></a>
-        <a @click="onThirdLogin('wechat_enterprise')" title="企业微信"><a-icon class="item-icon" type="wechat"></a-icon></a>
-        <a @click="onThirdLogin('dingtalk')" title="钉钉"><a-icon class="item-icon" type="dingding"></a-icon></a>
-      </div>-->
-    </a-form>
-
-<!--    <two-step-captcha
-      v-if="requiredTwoStepCaptcha"
-      :visible="stepCaptchaVisible"
-      @success="stepCaptchaSuccess"
-      @cancel="stepCaptchaCancel"></two-step-captcha>-->
+        <!--  <div class="user-login-other">
+            <span>其他登陆方式</span>
+            <a @click="onThirdLogin('github')" title="github"><a-icon class="item-icon" type="github"></a-icon></a>
+            <a @click="onThirdLogin('wechat_enterprise')" title="企业微信"><a-icon class="item-icon" type="wechat"></a-icon></a>
+            <a @click="onThirdLogin('dingtalk')" title="钉钉"><a-icon class="item-icon" type="dingding"></a-icon></a>
+          </div>-->
+      </a-form>
+    </div>
+    <!--    <two-step-captcha
+          v-if="requiredTwoStepCaptcha"
+          :visible="stepCaptchaVisible"
+          @success="stepCaptchaSuccess"
+          @cancel="stepCaptchaCancel"></two-step-captcha>-->
 
     <a-modal
       title="登录部门选择"
@@ -325,8 +335,8 @@
 
               const hide = this.$message.loading('验证码发送中..', 0);
               let smsParams = {};
-                  smsParams.mobile=values.mobile;
-                  smsParams.smsmode="0";
+              smsParams.mobile=values.mobile;
+              smsParams.smsmode="0";
               postAction("/sys/sms",smsParams)
                 .then(res => {
                   if(!res.success){
@@ -444,7 +454,7 @@
           this.validate_status='error'
           return false
         }
-       let obj = {
+        let obj = {
           orgCode:this.departSelected,
           username:this.form.getFieldValue("username")
         }
@@ -475,32 +485,31 @@
         this.validate_status='success'
         this.departSelected = value
       },
-    getRouterData(){
-      this.$nextTick(() => {
-        if (this.$route.params.username) {
-          this.form.setFieldsValue({
-            'username': this.$route.params.username
+      getRouterData(){
+        this.$nextTick(() => {
+          if (this.$route.params.username) {
+            this.form.setFieldsValue({
+              'username': this.$route.params.username
+            });
+          }
+        })
+      },
+      //获取密码加密规则
+      getEncrypte(){
+        var encryptedString = Vue.ls.get(ENCRYPTED_STRING);
+        if(encryptedString == null){
+          getEncryptedString().then((data) => {
+            this.encryptedString = data
           });
+        }else{
+          this.encryptedString = encryptedString;
         }
-      })
-    },
-    //获取密码加密规则
-    getEncrypte(){
-      var encryptedString = Vue.ls.get(ENCRYPTED_STRING);
-      if(encryptedString == null){
-        getEncryptedString().then((data) => {
-          this.encryptedString = data
-        });
-      }else{
-        this.encryptedString = encryptedString;
-      }
-    },
+      },
     }
   }
 </script>
 
 <style lang="less" scoped>
-
   .user-layout-login {
     label {
       font-size: 14px;
@@ -508,7 +517,7 @@
 
     .getCaptcha {
       display: block;
-      width: 100%;
+      width: 80%;
       height: 40px;
     }
 
@@ -520,7 +529,10 @@
       padding: 0 15px;
       font-size: 16px;
       height: 40px;
-      width: 100%;
+      width: 80%;
+
+      background: #009999;
+      borderColor: yellow
     }
 
     .user-login-other {

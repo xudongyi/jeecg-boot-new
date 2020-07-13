@@ -5,7 +5,7 @@
         <div class="header">
           <a href="/">
            <!-- <img src="~@/assets/logo.svg" class="logo" alt="logo">-->
-            <span class="title"> “一企一档”综合信息管理系统</span>
+            <span class="title" style="color: white"> 生态环境大数据及智慧环保监管平台</span>
           </a>
         </div>
         <div class="desc">
@@ -70,8 +70,9 @@
     .container {
       width: 100%;
       min-height: 100%;
-      background: #f0f2f5 url(~@/assets/background.svg) no-repeat 50%;
-      background-size: 100%;
+
+      background: url(~@/assets/login-background.svg)   no-repeat 50%;
+      background-size: cover ;
       padding: 110px 0 144px;
       position: relative;
 
@@ -109,7 +110,7 @@
             font-family: "Chinese Quote", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
             font-weight: 600;
             position: relative;
-            top: 2px;
+            top: 4px;
           }
         }
         .desc {
@@ -122,7 +123,7 @@
 
       .main {
         min-width: 260px;
-        width: 368px;
+        width: 468px;
         margin: 0 auto;
       }
 
