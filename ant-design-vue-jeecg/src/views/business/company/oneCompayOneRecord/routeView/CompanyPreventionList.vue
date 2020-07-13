@@ -177,9 +177,7 @@
             key: 'rowIndex',
             width: 60,
             align: "center",
-            customRender: function (t, r, index) {
-              return parseInt(index) + 1;
-            }
+            customRender: this.calcIndex
           },
           {
             title: this.headerText+'名称',
@@ -218,6 +216,10 @@
       }
     },
     methods: {
+      calcIndex: function (t,r,index) {
+
+        return parseInt(index)+1+(this.ipagination.current-1)*this.ipagination.pageSize;
+      },
       initDictConfig() {
       },
       handleview: function (record) {
