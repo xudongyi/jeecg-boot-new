@@ -203,6 +203,12 @@
         if(!record.isSendMsg)
           record.isSendMsg = '0'
         this.resultMsg = record.isSendMsg;
+        if(record.ruleType === '4' || record.ruleType === '5') {
+          this.levelShow = true;
+        }else {
+          this.levelShow = false;
+        }
+
         // if(record.warnStarttime)
         //   {record.warnStarttime = moment(record.warnStarttime, 'HH:mm:ss')}
         //
