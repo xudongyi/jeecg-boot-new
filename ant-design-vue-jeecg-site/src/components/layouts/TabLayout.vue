@@ -165,7 +165,7 @@
 
       // update-begin-author:sunjianlei date:20200120 for: 动态更改页面标题
       changeTitle(title) {
-        let projectTitle = "环境监测站档案"
+        let projectTitle = "一站一档"
         // 首页特殊处理
         if (this.$route.path === indexKey) {
           document.title = projectTitle
