@@ -62,7 +62,10 @@
             <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
             <a-menu slot="overlay">
               <a-menu-item>
-                <a @click="handleEdit(record)">编辑</a>
+                <a @click="toHandleEdit(record)">编辑</a>
+              </a-menu-item>
+              <a-menu-item>
+                <a @click="handleView(record)">详情</a>
               </a-menu-item>
               <a-menu-item>
                 <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
@@ -154,7 +157,17 @@
     },
     methods: {
       initDictConfig(){
-      }
+      },
+      handleView: function (record) {
+        this.$refs.modalForm.edit(record);
+        this.$refs.modalForm.title = "详情";
+        this.$refs.modalForm.disableSubmit = true;
+      },
+      toHandleEdit:function(record){
+        this.handleEdit(record);
+        this.$refs.modalForm.title="编辑";
+        this.$refs.modalForm.disableSubmit = false;
+      },
     }
   }
 </script>

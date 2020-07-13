@@ -15,19 +15,19 @@
           <a-row>
             <a-col span="12">
               <a-form-item label="联系人姓名" :labelCol="labelCol" :wrapperCol="wrapperCol">
-                <a-input v-decorator="['name',validatorRules.name]" placeholder="请输入联系人姓名"></a-input>
+                <a-input v-decorator="['name',validatorRules.name]" placeholder="请输入联系人姓名" :disabled="disableSubmit"></a-input>
               </a-form-item>
             </a-col>
             <a-col span="12">
               <a-form-item label="手机号码" :labelCol="labelCol" :wrapperCol="wrapperCol">
-                <a-input v-decorator="['mobile',validatorRules.mobile]" placeholder="请输入手机号码"></a-input>
+                <a-input v-decorator="['mobile',validatorRules.mobile]" placeholder="请输入手机号码" :disabled="disableSubmit"></a-input>
               </a-form-item>
             </a-col>
           </a-row>
           <a-row>
             <a-col span="12">
               <a-form-item label="所属单位" :labelCol="labelCol" :wrapperCol="wrapperCol">
-                <a-select v-decorator="['companyId', validatorRules.companyId]" show-search style="width: 100%" placeholder="请输入所属单位" optionFilterProp="children">
+                <a-select v-decorator="['companyId', validatorRules.companyId]" show-search style="width: 100%" placeholder="请输入所属单位" optionFilterProp="children" :disabled="disableSubmit">
                   <a-select-option v-for="item in items" :key="item.key" :value="item.key">
                     {{item.value}}
                   </a-select-option>
@@ -55,8 +55,8 @@
             <a-col :span="4">
               <div style="height: 800px">
                 <a-button-group style="top: 50%;">
-                  <a-button type="primary" @click="deleteArea" :disabled="disable"> <a-icon type="left" />删除 </a-button>
-                  <a-button type="primary" @click="addArea" :disabled="disable"> 新增<a-icon type="right" /> </a-button>
+                  <a-button type="primary" @click="deleteArea" :disabled="disable"> <a-icon type="left" :disabled="disableSubmit" />删除 </a-button>
+                  <a-button type="primary" @click="addArea" :disabled="disable"> 新增<a-icon type="right" :disabled="disableSubmit" /> </a-button>
                 </a-button-group>
               </div>
             </a-col>
@@ -81,6 +81,10 @@
 
       </a-form>
     </a-spin>
+    <template slot="footer">
+      <a-button type="primary" @click="handleCancel">关闭</a-button>
+      <a-button type="primary" @click="handleOk" v-if="!disableSubmit">确定</a-button>
+    </template>
   </j-modal>
 </template>
 
@@ -121,6 +125,7 @@
         halfCheckedKeys:[],
         halfCheckedKeys2:[],
         siteData:[],
+        disableSubmit:'',
         labelCol: {
           xs: { span: 24 },
           sm: { span: 5 },
