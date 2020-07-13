@@ -184,7 +184,6 @@
             title: '操作',
             dataIndex: 'action',
             align:"center",
-            // fixed:"right",
             width:147,
             scopedSlots: { customRender: 'action' }
           }
@@ -193,8 +192,8 @@
           list: "/spc/sysPollutionCode/list",
           delete: "/spc/sysPollutionCode/delete",
           deleteBatch: "/spc/sysPollutionCode/deleteBatch",
-          exportXlsUrl: "/spc/sysPollutionCode/exportXls",
-          importExcelUrl: "spc/sysPollutionCode/importExcel",
+          // exportXlsUrl: "/spc/sysPollutionCode/exportXls",
+          // importExcelUrl: "spc/sysPollutionCode/importExcel",
         },
         dictOptions:{},
       }
