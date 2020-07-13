@@ -8,8 +8,8 @@
         <a-layout-content :style="{ padding: '0 24px', minHeight: '280px' }">
           <siteMonitorPoint-modal ref="modalForm" v-show="leftActive==1" :siteType="siteType" :disable="disable"></siteMonitorPoint-modal>
           <site-data-collection-modal ref="dataForm"  v-show="leftActive==2"></site-data-collection-modal>
-          <site-monitor-device-list v-show="leftActive==3" :siteType="siteType" :monitorId="id"></site-monitor-device-list>
-          <site-gov-facility-list v-show="leftActive==4" :siteType="siteType" :monitorId="id"></site-gov-facility-list>
+          <site-monitor-device-list ref="monitorList" v-show="leftActive==3" :siteType="siteType" :monitorId="id"></site-monitor-device-list>
+          <site-gov-facility-list ref="facilityList" v-show="leftActive==4" :siteType="siteType" :monitorId="id"></site-gov-facility-list>
     </a-layout-content>
       </a-layout>
     </a-layout-content>
@@ -54,12 +54,14 @@
         leftHandle(key){
           this.leftActive = key;
         },
-        editMonitor(record){
+        editMonitor(record,disable){
           this.siteType=record.siteType;
           this.$refs.modalForm.edit(record);
-        },editData(){
-
-        }
+          this.$refs.modalForm.disable=disable;
+          this.$refs.dataForm.disable=disable;
+          this.$refs.monitorList.disable=disable;
+          this.$refs.facilityList.disable=disable;
+        },
       },
       created() {
         let _this = this;

@@ -393,8 +393,26 @@
         this.code = key;
         queryUnit({code:this.code}).then((res) => {
           this.unit = res.result.unit;
+          this.unit = this.dictVal(unit,"chromaUnit");
         });
-      }
+      },
+      dictVal(text,record){
+        if(text===null)
+          return ''
+        if(record) {
+          //普通字典数据
+          if(!this.dictOptions[record])
+            this.initDictData(record)
+          let result =
+            this.dictOptions[record].find(e=>{
+              return  e.value===text;
+            });
+          if(result==null)
+            return text;
+          return result.text;
+        }
+        return text;
+      },
     }, props: {
       siteType: '',
       monitorId: ''
