@@ -11,7 +11,7 @@
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="站点类型">
-              <j-dict-select-tag placeholder="请选择站点类型" v-model="queryParam.siteType" dictCode="siteType"/>
+              <j-dict-select-tag placeholder="请选择站点类型" v-model="queryParam.siteType" dictCode="siteType" :disabled="isDetail"/>
             </a-form-item>
           </a-col>
           <template v-if="toggleSearchStatus">
@@ -276,11 +276,6 @@
             dataIndex: 'siteState_dictText'
           },
           {
-            title: '进出口',
-            align: "center",
-            dataIndex: 'imorex_dictText'
-          },
-          {
             title: '数采仪MN号',
             align: "center",
             dataIndex: 'mnCode'
@@ -306,6 +301,7 @@
       }
     },
     created() {
+      // this.columns = this.orginalcolumns
       this.pcaData = new Area()
       queryCompanyName().then((res) => {
         if (res.success) {
@@ -316,6 +312,10 @@
         debugger
         this.isDetail=false;
       }
+      // this.orginalcolumns.forEach(e=>{
+      //   if(e.dataIndex!=='imorex_dictText')
+      //     this.columns.push(e)
+      // })
     },
     watch: {
       "$route": {

@@ -40,7 +40,25 @@
          WHERE
          t1.company_id=t2.id
         <if test="siteType != null">
-            and t1.site_type = (#{siteType})
+            and t1.site_type = #{siteType}
+        </if>
+        <if test="siteState != null">
+            and t1.site_state = #{siteState}
+        </if>
+        <if test="siteName != null">
+            and t1.site_name LIKE CONCAT(CONCAT('%', #{siteName}), '%')
+        </if>
+        <if test="companyId != null">
+            and t1.company_id = #{companyId}
+        </if>
+        <if test="siteLevel != null">
+            and t1.site_level = #{siteLevel}
+        </if>
+        <if test="area != null">
+            and t1.site_state = #{area}
+        </if>
+        <if test="mnCode != null">
+            and t1.mn_code = CONCAT(CONCAT('%', #{mnCode}), '%')
         </if>
     </select>
 

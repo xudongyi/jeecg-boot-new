@@ -50,9 +50,18 @@
       </a-row>
       <a-row>
         <a-col span='24'>
-          <a-form-item label="站点位置" :labelCol="labelCols" :wrapperCol="wrapperCols">
-            <a-input v-decorator="['location', validatorRules.location]" :disabled="disable"
-                     placeholder="请输入站点位置"></a-input>
+          <a-form-item label="排污口位置" :labelCol="labelCols" :wrapperCol="wrapperCols">
+            <a-row>
+              <a-col span='21'>
+                <a-input v-decorator="['location', validatorRules.location]" :disabled="disable"
+                         placeholder="请输入站点位置"></a-input>
+              </a-col>
+              <a-col span='3'>
+                <a-button type="primary" :block="true" @click="searchMap" :disabled="disable">
+                  查询坐标
+                </a-button>
+              </a-col>
+            </a-row>
           </a-form-item>
         </a-col>
       </a-row>
@@ -74,7 +83,7 @@
         <a-col span='12'>
           <a-form-item label="站点状态" :labelCol="labelCol" :wrapperCol="wrapperCol">
             <j-dict-select-tag type="list" v-decorator="['siteState', validatorRules.siteState]" :disabled="disable"
-                               :trigger-change="true" dictCode="siteState" placeholder="请选择站点状态"/>
+                               :trigger-change="true" dictCode="siteState" placeholder="请选择站点状态" />
           </a-form-item>
         </a-col>
         <a-col span='12'>
@@ -199,7 +208,7 @@
   import {httpAction} from '@/api/manage'
   import pick from 'lodash.pick'
   import JDictSelectTag from "@/components/dict/JDictSelectTag"
-  import {queryCompanyName} from '../../../requestAction/request'
+  import {queryCompanyName,loadBaiduMap} from '../../../requestAction/request'
   import {duplicateCheck} from '@/api/api'
   import AreaLinkSelect from "../../component/AreaLinkSelect";
 
@@ -247,13 +256,11 @@
           siteName: {
             rules: [
               {required: true, message: '请输入站点名称!'},
-              {validator: this.validateSiteName}
             ]
           },
           siteCode: {
             rules: [
               {required: false, message: '请输入站点编号!'},
-              {validator: this.validateSiteCode}
             ]
           },
           siteType: {
@@ -339,37 +346,11 @@
         }
       })
     },
+    mounted() {
+
+
+    },
     methods: {
-      validateSiteName(rule, value, callback){
-        var params = {
-          tableName: 'site_monitor_point',
-          fieldName: 'site_name',
-          fieldVal: value,
-          dataId: this.id
-        };
-        duplicateCheck(params).then((res) => {
-          if (res.success) {
-            callback()
-          } else {
-            callback("站点名称已存在!")
-          }
-        })
-      },
-      validateSiteCode(rule, value, callback){
-        var params = {
-          tableName: 'site_monitor_point',
-          fieldName: 'site_code',
-          fieldVal: value,
-          dataId: this.id
-        };
-        duplicateCheck(params).then((res) => {
-          if (res.success) {
-            callback()
-          } else {
-            callback("站点编号已存在!")
-          }
-        })
-      },
       validateMnCode(rule, value, callback){
         var params = {
           tableName: 'site_monitor_point',
@@ -386,7 +367,7 @@
         })
       },
       add() {
-        this.edit({});
+        this.edit({siteState: '1',isNet:"1"});
       },
       edit(record) {
         this.$nextTick(() => {
@@ -481,7 +462,20 @@
       ,
       popupCallback(row) {
         this.form.setFieldsValue(pick(row, 'siteName', 'siteCode', 'siteType', 'companyId', 'siteLevel', 'area', 'location', 'siteLongitude', 'siteLatitude', 'isNet', 'siteState', 'imorex', 'direction', 'letLaw', 'waterType', 'exportHeight', 'exportBore', 'maxFlow', 'exportCross', 'exitType', 'surfaceType', 'noiseType', 'linkman', 'phone', 'signType', 'mnCode'))
-      }
+      },
+      searchMap() {
+        let that = this;
+        that.form.validateFields((err, values) => {
+          let param = {address:values.location}
+          loadBaiduMap(param).then((res) => {
+            if (res.success) {
+              that.form.setFieldsValue({siteLongitude: res.result.lng, siteLatitude: res.result.lat});
+            } else {
+              that.$error({title: '查询坐标错误', content: '错误信息：' + res.message, maskClosable: true})
+            }
+          });
+        });
+      },
     },
     props: {
       siteType: '',

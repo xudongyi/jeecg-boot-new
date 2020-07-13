@@ -1,6 +1,8 @@
 package org.jeecg.modules.business.controller;
 
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.HttpUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -62,8 +64,18 @@ public class SiteMonitorPointController extends JeecgController<SiteMonitorPoint
 								   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
 								   HttpServletRequest req) {
 		String siteType = req.getParameter("siteType");
+		String siteName = req.getParameter("siteName");
+		String companyId = req.getParameter("companyId");
+		String siteLevel = req.getParameter("siteLevel");
+		String area = req.getParameter("area");
+		String siteState = req.getParameter("siteState");
+		String mnCode = req.getParameter("mnCode");
+		if(StrUtil.isEmpty(siteType)&&StrUtil.isEmpty(siteState)){
+			//只查看启用状态的
+			siteState = "1";
+		}
 		Page<SiteMonitorPointVO> page = new Page<>(pageNo, pageSize);
-		IPage<SiteMonitorPointVO> pageList = siteMonitorPointService.getSiteMonitorPointList(page,siteType);
+		IPage<SiteMonitorPointVO> pageList = siteMonitorPointService.getSiteMonitorPointList(page,siteType,siteState,siteName,companyId,siteLevel,area,mnCode);
 		return Result.ok(pageList);
 	}
 	
@@ -205,12 +217,33 @@ public class SiteMonitorPointController extends JeecgController<SiteMonitorPoint
 	  * @param
 	  * @return 菜单及其状态信息
 	  */
-	 @AutoLog(value = "company_basic-查询菜单及其状态信息")
+	 @AutoLog(value = "监测站点表-查询菜单及其状态信息")
 	 @ApiOperation(value="查询菜单及其状态信息", notes="根据企业ID查询")
 	 @GetMapping(value = "/menus")
 	 public Result<?> queryMenus() {
 		 Map<String,List<Map<String,String>>> result = new HashMap<>();
 		 result.put("menus" , siteMonitorPointService.getMenus());
 		 return Result.ok(result);
+	 }
+
+	 @AutoLog(value = "监测站点表-查询坐标")
+	 @ApiOperation(value = "监测站点表-查询坐标", notes = "监测站点表-查询坐标")
+	 @GetMapping(value = "/loadBaiduMap")
+	 public Result<?> loadBaiduMap(@RequestParam(name = "address", required = true) String address) {
+		 String output = "json";
+		 String ak = "IFtTlZIkHXmWAeA4Dupd2AtYdbOmIhxL";
+		 String pathUrl = "http://api.map.baidu.com/geocoding/v3/";
+		 HashMap<String, Object> paramMap = new HashMap<>();
+		 paramMap.put("ak", ak);
+		 paramMap.put("address", address);
+		 paramMap.put("output", "json");
+		 String result= HttpUtil.get(pathUrl, paramMap);
+		 JSONObject jsonObject = JSONObject.parseObject(result);
+		 String status = jsonObject.getString("status");
+		 jsonObject.getJSONObject("");
+		 if(!"0".equals(status)){
+			 return Result.error(jsonObject.getString("message"));
+		 }
+		 return Result.ok(jsonObject.getJSONObject("result").getJSONObject("location"));
 	 }
 }

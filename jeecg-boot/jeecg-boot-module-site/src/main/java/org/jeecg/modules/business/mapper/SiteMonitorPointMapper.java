@@ -15,6 +15,6 @@ import java.util.List;
  */
 public interface SiteMonitorPointMapper extends BaseMapper<SiteMonitorPoint> {
 
-    List<SiteMonitorPointVO> getSiteMonitorPointList(Page<SiteMonitorPointVO> page,String siteType);
+    List<SiteMonitorPointVO> getSiteMonitorPointList(Page<SiteMonitorPointVO> page,String siteType,String siteState,String siteName,String companyId,String siteLevel,String area,String mnCode);
     List<SiteMonitorPoint> getSiteMonitorPoint(String warnUserid);
 }
