@@ -309,7 +309,6 @@
         }
       })
       if(!this.$route.params.siteType){
-        debugger
         this.isDetail=false;
       }
       // this.orginalcolumns.forEach(e=>{
@@ -340,7 +339,8 @@
       initDictConfig() {
       },
       handleDetail(record) {
-        this.$emit("detail", record)
+        this.disable = false;
+        this.$emit("detail", record,this.disable)
       },
       addClick() {
         this.$refs.modalForm.visible = true;
@@ -349,9 +349,9 @@
         this.disable = false;
       },
       viewDetail(record) {
-        this.$refs.modalForm.visible = true;
-        this.$refs.modalForm.viewClick(record)
+        debugger
         this.disable = true;
+        this.$emit("detail", record,this.disable);
       },
       ok() {
         this.loadData(1)

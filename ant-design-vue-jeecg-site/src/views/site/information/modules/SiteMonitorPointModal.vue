@@ -1,6 +1,6 @@
 <template>
   <a-spin :spinning="confirmLoading">
-    <a-button type="primary" @click="handleOk" v-if="!isjmodal">修改</a-button>
+    <a-button type="primary" @click="handleOk" v-if="!disable">修改</a-button>
     <a-form :form="form">
 
       <a-row>
@@ -50,7 +50,7 @@
       </a-row>
       <a-row>
         <a-col span='24'>
-          <a-form-item label="排污口位置" :labelCol="labelCols" :wrapperCol="wrapperCols">
+          <a-form-item :label="locationLabel" :labelCol="labelCols" :wrapperCol="wrapperCols">
             <a-row>
               <a-col span='21'>
                 <a-input v-decorator="['location', validatorRules.location]" :disabled="disable"
@@ -221,9 +221,11 @@
     data() {
       return {
         form: this.$form.createForm(this),
+        locationLabel:"排污口位置",
         isWater: false,
         isNoise: false,
         isSurface: false,
+        disable: false,
         isSiteType: true,
         isAir: false,
         title: "操作",
@@ -407,6 +409,7 @@
               this.form.setFieldsValue(pick(this.model, 'siteName', 'siteCode', 'siteType', 'companyId', 'siteLevel', 'area', 'location', 'siteLongitude', 'siteLatitude', 'isNet', 'siteState', 'noiseType', 'linkman', 'phone', 'mnCode'))
             })
           } else {
+           this.locationLabel = "站点位置";
             this.isWater = false
             this.isNoise = false
             this.isSurface = false
@@ -480,7 +483,6 @@
     props: {
       siteType: '',
       isjmodal: false,
-      disable: false,
     }
   }
 </script>
