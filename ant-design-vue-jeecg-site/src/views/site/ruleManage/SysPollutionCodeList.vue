@@ -141,9 +141,7 @@
             key:'rowIndex',
             width:60,
             align:"center",
-            customRender:function (t,r,index) {
-              return parseInt(index)+1;
-            }
+            customRender:this. calcIndex
           },
           {
             title:'污染因子名称',
@@ -215,6 +213,9 @@
         this.handleEdit(record);
         this.$refs.modalForm.title="编辑";
         this.$refs.modalForm.disableSubmit = false;
+      },
+      calcIndex: function (t,r,index) {
+        return parseInt(index)+1+(this.ipagination.current-1)*this.ipagination.pageSize;
       },
     }
   }

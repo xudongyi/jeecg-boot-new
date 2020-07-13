@@ -166,9 +166,7 @@
             key:'rowIndex',
             width:60,
             align:"center",
-            customRender:function (t,r,index) {
-              return parseInt(index)+1;
-            }
+            customRender:this.calcIndex
           },
           {
             title:'设备名称',
@@ -231,6 +229,9 @@
         this.$refs.modalForm.edit(record);
         this.$refs.modalForm.title = "查看";
         this.$refs.modalForm.disableSubmit = true;
+      },
+      calcIndex: function (t,r,index) {
+        return parseInt(index)+1+(this.ipagination.current-1)*this.ipagination.pageSize;
       },
     },
     props:{
