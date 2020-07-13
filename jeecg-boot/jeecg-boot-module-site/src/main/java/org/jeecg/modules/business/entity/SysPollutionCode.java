@@ -48,7 +48,8 @@ public class SysPollutionCode implements Serializable {
     @ApiModelProperty(value = "老国标污染因子")
     private java.lang.String oldCode;
 	/**浓度单位*/
-	@Excel(name = "浓度单位", width = 15)
+	@Excel(name = "浓度单位", width = 15,dicCode = "chromaUnit")
+	@Dict(dicCode = "chromaUnit")
     @ApiModelProperty(value = "浓度单位")
     private java.lang.String chromaUnit;
 	/**计量单位-浓度-数学表达式*/
@@ -56,7 +57,8 @@ public class SysPollutionCode implements Serializable {
     @ApiModelProperty(value = "计量单位-浓度-数学表达式")
     private java.lang.String chromaUnitMath;
 	/**排放量单位*/
-	@Excel(name = "排放量单位", width = 15)
+	@Excel(name = "排放量单位", width = 15,dicCode = "amountUnit")
+	@Dict(dicCode = "amountUnit")
     @ApiModelProperty(value = "排放量单位")
     private java.lang.String amountUnit;
 	/**计量单位-总量-数学表达式*/

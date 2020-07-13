@@ -40,12 +40,12 @@
         <a-row>
           <a-col span="12">
             <a-form-item label="排放量单位" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input v-decorator="['amountUnit']" placeholder="请输入排放量单位" :disabled="disableSubmit"></a-input>
+              <j-dict-select-tag type="list" v-decorator="['amountUnit']" :trigger-change="true" dictCode="amountUnit" placeholder="请选择排放量单位" :disabled="disableSubmit"/>
             </a-form-item>
           </a-col>
           <a-col span="12">
             <a-form-item label="浓度单位" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input v-decorator="['chromaUnit']" placeholder="请输入浓度单位" :disabled="disableSubmit"></a-input>
+              <j-dict-select-tag type="list" v-decorator="['chromaUnit']" :trigger-change="true" dictCode="chromaUnit" placeholder="请选择浓度单位" :disabled="disableSubmit"/>
             </a-form-item>
           </a-col>
         </a-row>
