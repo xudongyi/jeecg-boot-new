@@ -5,14 +5,12 @@
         <div class="header">
           <a href="/">
             <!-- <img src="~@/assets/logo.svg" class="logo" alt="logo">-->
-            <span class="title" style="color: white"> 生态环境大数据及智慧环保监管平台</span>
+            <span class="title" > 生态环境大数据及智慧环保监管平台</span>
           </a>
         </div>
-        <div class="desc">
-          <!--
-                    “一企一档”信息管理系统
-          -->
-        </div>
+        <!--<div class="desc">
+          “一企一档”信息管理系统
+        </div>-->
       </div>
 
       <route-view></route-view>
@@ -71,9 +69,9 @@
       width: 100%;
       min-height: 100%;
 
-      background: url(~@/assets/login-background.svg)   no-repeat 50%;
+      background: url(~@/assets/loginbg.png)   no-repeat 50%;
       background-size: cover ;
-      padding: 110px 0 144px;
+      padding: 210px 0 144px;
       position: relative;
 
       a {
@@ -105,12 +103,13 @@
           }
 
           .title {
-            font-size: 33px;
+            font-size: 36px;
             color: rgba(0, 0, 0, .85);
-            font-family: "Chinese Quote", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            font-family: "SourceHanSansCN-Medium", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
             font-weight: 600;
             position: relative;
-            top: 4px;
+            color: #FFFFFF;
+
           }
         }
         .desc {
@@ -123,7 +122,7 @@
 
       .main {
         min-width: 260px;
-        width: 468px;
+        width: 540px;
         margin: 0 auto;
       }
 
