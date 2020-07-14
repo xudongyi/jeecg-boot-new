@@ -83,24 +83,36 @@
         // 表头
         columns: [
           {
+            title: '序号',
+            dataIndex: '',
+            key:'rowIndex',
+            width:60,
+            align:"center",
+            customRender:this.calcIndex
+          },
+          {
             title:'站点名称',
             align:"center",
-            dataIndex: 'siteName'
+            dataIndex: 'siteName',
+            customRender: this.renderContent
           },
           {
             title:'站点类型',
             align:"center",
-            dataIndex: 'siteType_dictText'
+            dataIndex: 'siteType_dictText',
+            customRender: this.renderContent
           },
           {
             title:'所属单位',
             align:"center",
-            dataIndex: 'companyName'
+            dataIndex: 'companyName',
+            customRender: this.renderContent
           },
           {
             title:'站点级别',
             align:"center",
-            dataIndex: 'siteLevel_dictText'
+            dataIndex: 'siteLevel_dictText',
+            customRender: this.renderContent
           },
           {
             title:'策略类型',
@@ -152,7 +164,52 @@
         return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
       },
     },
+    watch: {
+      dataSource(val){
+        console.log(val)
+        this.rowspan(val)
+        console.log(this.spanArr,this.position)
+      }
+
+    },
     methods: {
+      renderContent (value, row, index)  {
+        const obj = {
+          children: value,
+          attrs: {}
+        };
+        const _row = this.spanArr[index];
+        const _col = _row> 0 ? 1 : 0;
+        obj.attrs = {
+          rowSpan: _row,
+          colSpan: _col
+        };
+        return obj;
+      },
+      rowspan(userData){
+        let _this = this
+        _this. spanArr=[];
+        _this. position=0;
+        userData.forEach((item,index) => {
+          if(index === 0){
+            _this.spanArr.push(1);
+            _this.position = 0;
+          }else{
+            //需要合并的地方判断
+            if(userData[index].siteName === userData[index-1].siteName ){
+              _this.spanArr[ _this.position] += 1;
+              _this.spanArr.push(0);
+            }else{
+              _this.spanArr.push(1);
+              _this.position = index;
+            }
+          }
+        });
+      },
+      calcIndex: function (t,r,index) {
+        console.log(t,r,index)
+        return parseInt(index)+1+(this.ipagination.current-1)*this.ipagination.pageSize;
+      },
       initDictConfig(){
       },
       modalFormOk(){

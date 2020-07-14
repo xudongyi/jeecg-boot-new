@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import net.sf.saxon.expr.instruct.ForEach;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
@@ -130,10 +131,14 @@ public class SysWarnPointRuleController extends JeecgController<SysWarnPointRule
 	public Result<?> edit(@RequestBody JSONObject jsonObject) {
 		List<String> monitorIds = jsonObject.getJSONArray("monitorIds").toJavaList(String.class);
 		List<String> ruleIds = jsonObject.getJSONArray("ruleIds").toJavaList(String.class);
-
+		QueryWrapper<SysWarnPointRule> lambdaQueryWrapper = new QueryWrapper<SysWarnPointRule>();
+		if(!monitorIds.isEmpty()){
+			lambdaQueryWrapper.in("monitor_id",monitorIds);
+		}
+		if(!ruleIds.isEmpty())
+			lambdaQueryWrapper.in("rule_id",ruleIds);
 //		//删除  根据monitorIds
-		sysWarnPointRuleService
-				.remove(new QueryWrapper<SysWarnPointRule>().lambda().in(SysWarnPointRule::getMonitorId,monitorIds).in(SysWarnPointRule::getRuleId,ruleIds));
+		sysWarnPointRuleService.remove(lambdaQueryWrapper);
 
 		List<SysWarnPointRule> sysWarnPointRules = new ArrayList<>();
 		for(String monitor : monitorIds) {
