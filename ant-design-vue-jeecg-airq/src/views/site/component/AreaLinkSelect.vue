@@ -7,7 +7,7 @@
   import AreaHandler from "./AreaHandler";
   import Vue from "vue";
   import { getAction } from '@/api/manage'
-  import {loadAreaDate} from '../requestAction/areaUtil'
+  import {loadAreaDate} from './areaUtil'
 
   export default {
     name: "AreaLinkSelect",
