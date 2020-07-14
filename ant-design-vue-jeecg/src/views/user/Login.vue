@@ -1,13 +1,12 @@
 <template>
   <div class="main">
     <div style="  width: 100%;
-      height: 100%;
+      height: 392px;
       position: relative;
       padding: 8px;
       border: 1px solid #d9d9d9;
       border-radius: 4px;
-      margin-top:80px;
-      text-align: center;
+      margin-top:40px;
       background:rgba(123,123,123,0.39)">
     <a-form :form="form" class="user-layout-login" ref="formLogin" id="formLogin">
     <!--  <a-tabs
@@ -16,9 +15,10 @@
         @change="handleTabClick">
         <a-tab-pane key="tab1" tab="账号密码登陆">-->
 
-          <a-form-item style="margin-top:40px;width: 80%;margin-left:10%">
+          <a-form-item style="margin-top:40px;width: 76%;margin-left:12%">
             <a-input
               size="large"
+              Style="height: 50px"
               v-decorator="['username',{rules: validatorRules.username.rules}]"
               type="text"
               placeholder="请输入帐户名">
@@ -26,9 +26,10 @@
             </a-input>
           </a-form-item>
 
-          <a-form-item  style="width: 80%;margin-left:10%">
+          <a-form-item  style="width: 76%;margin-left:12%">
             <a-input
               v-decorator="['password',{ rules: validatorRules.password.rules}]"
+              Style="height: 50px"
               size="large"
               type="password"
               autocomplete="false"
@@ -38,11 +39,12 @@
           </a-form-item>
 
 
-          <a-form-item style="width: 80%;margin-left:10%">
+          <a-form-item style="width: 76%;margin-left:12%">
             <a-input
               v-decorator="['inputCode',validatorRules.inputCode]"
-              size="large"
+              Style="height: 50px;fontSize:24px;"
               type="text"
+              size="large"
               @change="inputCodeChange"
               placeholder="请输入验证码">
               <a-icon slot="addonBefore" type="smile" :style="{ color: 'rgba(0,0,0,.25)',fontSize:'24px' }"/>
@@ -111,7 +113,7 @@
           class="login-button"
           :loading="loginBtn"
           @click.stop.prevent="handleSubmit"
-          :disabled="loginBtn">登录
+          :disabled="loginBtn"><span style="font-family: SourceHanSansCN-Regular;font-size: 20px">登录</span>
         </a-button>
       </a-form-item>
 
@@ -528,11 +530,10 @@
     button.login-button {
       padding: 0 15px;
       font-size: 16px;
-      height: 40px;
-      width: 80%;
-
+      height: 50px;
+      width: 76%;
+      margin-left:12%;
       background: #009999;
-      borderColor: yellow
     }
 
     .user-login-other {
@@ -563,5 +564,24 @@
 <style>
   .valid-error .ant-select-selection__placeholder{
     color: #f5222d;
+  }
+
+  .ant-input-lg {
+    font-size: 18px;
+    font-family: SourceHanSansCN-Regular;
+  }
+
+
+
+  .ant-form-item {
+    margin-bottom: 35px !important;
+  }
+  .ant-form-item-with-help {
+    margin-bottom: 0 !important;
+  }
+  .has-error .ant-form-explain, .has-error .ant-form-split {
+    min-height: 37px !important;
+    line-height: 1.5 !important;
+    font-size: 18px !important;
   }
 </style>

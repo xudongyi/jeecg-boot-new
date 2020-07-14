@@ -69,7 +69,7 @@
       width: 100%;
       min-height: 100%;
 
-      background: url(~@/assets/login-background.svg)   no-repeat 50%;
+      background: url(~@/assets/loginbg.png)   no-repeat 50%;
       background-size: cover ;
       padding: 210px 0 144px;
       position: relative;
