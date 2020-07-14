@@ -373,12 +373,12 @@
       },
       handleAdd2: function() {
         if (this.currentRoleId == '') {
-          this.$message.error('请选择一个角色!')
+          this.$message.error('请选择一个企业!')
         } else {
           this.$refs.modalForm2.roleDisabled = true
-          this.$refs.modalForm2.selectedRole = [this.currentRoleId]
+          // this.$refs.modalForm2.selectedRole = [this.currentRoleId]
 
-          this.$refs.modalForm2.add()
+          this.$refs.modalForm2.edit({company:[this.currentRoleId]})
 
           this.$refs.modalForm2.title = '新增'
         }

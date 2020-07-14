@@ -80,7 +80,8 @@ function main() {
       store.commit('TOGGLE_COLOR', Vue.ls.get(DEFAULT_COLOR, config.primaryColor))
       store.commit('SET_TOKEN', Vue.ls.get(ACCESS_TOKEN))
       store.commit('SET_MULTI_PAGE',Vue.ls.get(DEFAULT_MULTI_PAGE,true))
+      Vue.ls.remove('sys_areas')
     },
-    render: h => h(App)
+    render: h => h(App)CompanyUserList
   }).$mount('#app')
 }

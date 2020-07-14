@@ -79,8 +79,8 @@
       }
     },
     created() {
-      console.log('tablayout')
-      debugger
+      // console.log('tablayout')
+      // debugger
       if (this.$route.path != indexKey) {
         this.addIndexToFirst()
       }

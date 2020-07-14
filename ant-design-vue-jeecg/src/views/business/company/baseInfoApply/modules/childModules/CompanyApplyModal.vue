@@ -34,6 +34,9 @@
 
       </a-descriptions>
     </a-spin>
+    <template slot="footer">
+      <a-button type="primary" @click="handleCancel">关闭</a-button>
+    </template>
   </business-modal>
 </template>
 

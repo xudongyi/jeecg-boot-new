@@ -76,9 +76,7 @@
             key: 'rowIndex',
             width: 50,
             align: "center",
-            customRender: function (t, r, index) {
-              return parseInt(index) + 1;
-            }
+            customRender: this.calcIndex
           },
           {
             title: '用户账号',
@@ -162,6 +160,10 @@
       this.loadData();
     },
     methods: {
+      calcIndex: function (t,r,index) {
+
+        return parseInt(index)+1+(this.ipagination.current-1)*this.ipagination.pageSize;
+      },
       searchQuery() {
         this.loadData(1);
       },

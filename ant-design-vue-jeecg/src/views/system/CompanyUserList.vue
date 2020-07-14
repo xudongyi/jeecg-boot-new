@@ -378,9 +378,8 @@
           this.$message.error('请选择一个角色!')
         } else {
           this.$refs.modalForm2.roleDisabled = true
-          this.$refs.modalForm2.selectedRole = [this.currentRoleId]
-
-          this.$refs.modalForm2.add()
+          // this.$refs.modalForm2.selectedRole = [this.currentRoleId]
+          this.$refs.modalForm2.edit({companys:this.currentRoleId})
 
           this.$refs.modalForm2.title = '新增'
         }

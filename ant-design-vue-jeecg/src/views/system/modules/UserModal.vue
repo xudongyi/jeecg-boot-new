@@ -123,7 +123,8 @@
         </a-form-item>
 
         <a-form-item label="手机号码" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input placeholder="请输入手机号码" :disabled="isDisabledAuth('user:form:phone')" v-decorator="[ 'phone', validatorRules.phone]" />
+          <a-input placeholder="请输入手机号码" :disabled="isDisabledAuth('user:form:phone')"
+                   v-decorator="[ 'phone', validatorRules.phone]" />
         </a-form-item>
 
         <a-form-item label="座机" :labelCol="labelCol" :wrapperCol="wrapperCol">
@@ -211,7 +212,7 @@
             }],
           },
           realname:{rules: [{ required: true, message: '请输入用户名称!' }]},
-          phone:{rules: [{validator: this.validatePhone}]},
+          phone:{rules: [{ required: true, message: '请输入手机号码!' },{validator: this.validatePhone}]},
           email:{
             rules: [{
               validator: this.validateEmail
@@ -335,15 +336,23 @@
         that.userId = record.id;
         that.visible = true;
         that.model = Object.assign({}, record);
-        //查询所属公司
-        getAction(that.url.queryCompanyIds,{userId:record.id}).then((res)=>{
-          that.companys = res.result.join(",")
-          that.model.company =  that.companys;
+        if(record.id){
+          //查询所属公司
+          getAction(that.url.queryCompanyIds,{userId:record.id}).then((res)=>{
+            that.companys = res.result.join(",")
+            that.model.company =  that.companys;
+            that.$nextTick(() => {
+              that.form.setFieldsValue(pick({company: that.companys },'company' ))
+
+            });
+          });
+        }
+        if(record.companys){
           that.$nextTick(() => {
-            that.form.setFieldsValue(pick({company: that.companys },'company' ))
+            that.form.setFieldsValue(pick({company: record.companys },'company' ))
 
           });
-         });
+        }
         that.$nextTick(() => {
           that.form.setFieldsValue(pick(this.model, 'username', 'sex', 'realname', 'email', 'phone', 'activitiSync', 'workNo', 'telephone', 'post'))
 

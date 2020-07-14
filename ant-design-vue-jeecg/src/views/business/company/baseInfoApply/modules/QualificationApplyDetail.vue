@@ -25,7 +25,7 @@
   <j-upload ref="produceCrafts" fileType="image" bizPath="qualication" @add="produceCraftsAdd"  @previewImage="preview"
             @delete ="produceCraftsDelete"></j-upload>
   <h3 :style="{ marginBottom: '16px' }">
-    生产工艺图
+    治理工艺图
   </h3>
   <j-upload ref="controlCrafts"  fileType="image" bizPath="qualication" @add="controlCraftsAdd"  @previewImage="preview"
             @delete ="controlCraftsDelete"></j-upload>

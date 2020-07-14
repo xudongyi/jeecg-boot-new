@@ -43,7 +43,7 @@ import JeecgComponents from '@/components/jeecg/index'
 import '@/assets/less/JAreaLinkage.less'
 import VueAreaLinkage from 'vue-area-linkage'
 import BaiduMap from 'vue-baidu-map'
-
+import {getAction} from '@/api/manage'
 Vue.use(BaiduMap, {
   // ak 是在百度地图开发者平台申请的密钥 详见 http://lbsyun.baidu.com/apiconsole/key */
   ak: 'YOUR_APP_KEY'
@@ -79,6 +79,14 @@ function main() {
       store.commit('TOGGLE_COLOR', Vue.ls.get(DEFAULT_COLOR, config.primaryColor))
       store.commit('SET_TOKEN', Vue.ls.get(ACCESS_TOKEN))
       store.commit('SET_MULTI_PAGE',Vue.ls.get(DEFAULT_MULTI_PAGE,true))
+      //缓存问题
+      Vue.ls.remove('sys_areas')
+      getAction("/sys/sysArea/list",{active:'1'}).then((res) => {
+          if (res.success) {
+
+            Vue.ls.set(key, res.result, 24 * 60 * 60 * 1000)
+
+          }})
     },
     render: h => h(App)
   }).$mount('#app')

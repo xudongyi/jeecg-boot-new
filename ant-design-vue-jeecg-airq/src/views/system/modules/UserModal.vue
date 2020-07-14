@@ -335,15 +335,23 @@
         that.userId = record.id;
         that.visible = true;
         that.model = Object.assign({}, record);
-        //查询所属公司
-        getAction(that.url.queryCompanyIds,{userId:record.id}).then((res)=>{
-          that.companys = res.result.join(",")
-          that.model.company =  that.companys;
+        if(record.id){
+          //查询所属公司
+          getAction(that.url.queryCompanyIds,{userId:record.id}).then((res)=>{
+            that.companys = res.result.join(",")
+            that.model.company =  that.companys;
+            that.$nextTick(() => {
+              that.form.setFieldsValue(pick({company: that.companys },'company' ))
+
+            });
+           });
+        }
+        if(record.company){
           that.$nextTick(() => {
-            that.form.setFieldsValue(pick({company: that.companys },'company' ))
+            that.form.setFieldsValue(pick({company: record.companys },'company' ))
 
           });
-         });
+        }
         that.$nextTick(() => {
           that.form.setFieldsValue(pick(this.model, 'username', 'sex', 'realname', 'email', 'phone', 'activitiSync', 'workNo', 'telephone', 'post'))
 
