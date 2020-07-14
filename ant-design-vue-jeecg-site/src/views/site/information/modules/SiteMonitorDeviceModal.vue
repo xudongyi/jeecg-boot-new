@@ -283,14 +283,18 @@
         }
       }
     },
-    created() {
-      let that = this;
-      //查询污染因子
-      queryPollution().then((res) => {
-        if (res.success) {
-          that.items = res.result;
-        }
-      })
+    watch:{
+      siteType(val){
+        let that = this;
+        debugger
+        //查询污染因子
+        queryPollution({siteType: val}).then((res) => {
+          if (res.success) {
+            that.items = res.result;
+          }
+        })
+      }
+
     },
     methods: {
       add() {
@@ -305,10 +309,11 @@
           _this.form.setFieldsValue(pick(this.model, 'deviceName', 'deviceNumber', 'deviceType', 'pollutionCode', 'sampleCycle', 'deviceState', 'deviceModel', 'deviceFactory', 'rangeMax', 'rangeMin', 'checkoutMax', 'checkoutUnit', 'productDate', 'installDate', 'shelfLifeDate', 'deviceConcatUser', 'deviceConcatMobile', 'useDate', 'operationCompany', 'operationUser', 'operationMobile', 'content'))
           _this.form.setFieldsValue(pick({deviceType: this.siteType}, 'deviceType'))
           _this.code = this.model.pollutionCode;
-          queryUnit({code:this.model.pollutionCode}).then((res) => {
-              debugger
-            _this.unit = res.result.unit;
-          });
+          if(this.model.pollutionCode){
+            queryUnit({code:this.model.pollutionCode}).then((res) => {
+              _this.unit = res.result.unit;
+            });
+          }
         })
         if (record.id) {
           queryFiles({id: record.id}, this.url.queryFile).then((res) => {
@@ -392,11 +397,11 @@
         this.deleteFiles.push(file.response.message);
       },
       pollutionChange(key) {
+        debugger
         this.code = key;
-        queryUnit({code:this.code}).then((res) => {
-          debugger
+        queryUnit({code:this.code,siteType:this.siteType}).then((res) => {
           this.unit = res.result.unit;
-          this.unit = this.dictVal(this.unit,"chromaUnit");
+          this.unit = this.dictVal(this.unit,"allUnit");
         });
       },
       dictVal(text,record){
