@@ -84,7 +84,7 @@ function main() {
       getAction("/sys/sysArea/list",{active:'1'}).then((res) => {
           if (res.success) {
 
-            Vue.ls.set(key, res.result, 24 * 60 * 60 * 1000)
+            Vue.ls.set('sys_areas', res.result, 24 * 60 * 60 * 1000)
 
           }})
     },
