@@ -29,10 +29,10 @@
         <result column="phone" property="phone" jdbcType="VARCHAR"/>
         <result column="sign_type" property="signType" jdbcType="VARCHAR"/>
         <result column="imorex" property="imorex" jdbcType="VARCHAR"/>
-        <result column="mn_code" property="mnCode" jdbcType="VARCHAR"/>
+        <result column="mn" property="mn" jdbcType="VARCHAR"/>
     </resultMap>
     <select id="getSiteMonitorPointList" parameterType="String"  resultMap="SiteMonitorPointVO">
-         SELECT t1.id,t1.site_name,t1.company_id,t1.site_code,t1.imorex,t1.site_level,site_longitude,t1.location,t1.area,t1.mn_code,t1.site_type,
+         SELECT t1.id,t1.site_name,t1.company_id,t1.site_code,t1.imorex,t1.site_level,site_longitude,t1.location,t1.area,t1.mn,t1.site_type,
                 t1.site_state,t1.is_net, t1.direction,t1.let_law,t1.site_latitude,t1.water_type,t1.export_height,t1.export_bore,t1.max_flow,
                 t1.export_cross,t1.exit_type,t1.surface_type,t1.surface_type,t1.linkman,t1.phone,t1.sign_type,t2.company_name
          FROM
@@ -57,8 +57,8 @@
         <if test="area != null">
             and t1.site_state = #{area}
         </if>
-        <if test="mnCode != null">
-            and t1.mn_code LIKE CONCAT(CONCAT('%', #{mnCode}), '%')
+        <if test="mn != null">
+            and t1.mn LIKE CONCAT(CONCAT('%', #{mn}), '%')
         </if>
     </select>
 

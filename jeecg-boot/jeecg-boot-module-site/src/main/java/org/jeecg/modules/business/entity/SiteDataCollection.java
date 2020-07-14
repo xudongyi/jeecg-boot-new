@@ -55,7 +55,7 @@ public class SiteDataCollection implements Serializable {
 	/**数采仪mn号*/
 	@Excel(name = "数采仪mn号", width = 15)
     @ApiModelProperty(value = "数采仪mn号")
-    private java.lang.String mnCode;
+    private java.lang.String mn;
 	/**实时上传间隔（s）*/
 	@Excel(name = "实时上传间隔（s）", width = 15)
     @ApiModelProperty(value = "实时上传间隔（s）")
