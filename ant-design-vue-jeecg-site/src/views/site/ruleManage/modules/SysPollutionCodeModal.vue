@@ -40,15 +40,29 @@
         <a-row>
           <a-col span="12">
             <a-form-item label="排放量单位" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <j-dict-select-tag type="list" v-decorator="['amountUnit']" :trigger-change="true" dictCode="amountUnit" placeholder="请选择排放量单位" :disabled="disableSubmit"/>
+              <j-dict-select-tag type="list" v-decorator="['amountUnit']" :trigger-change="true" dictCode="allUnit" placeholder="请选择排放量单位" :disabled="disableSubmit"/>
             </a-form-item>
           </a-col>
           <a-col span="12">
-            <a-form-item label="浓度单位" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <j-dict-select-tag type="list" v-decorator="['chromaUnit']" :trigger-change="true" dictCode="chromaUnit" placeholder="请选择浓度单位" :disabled="disableSubmit"/>
+            <a-form-item label="排放量数学表达式" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <j-dict-select-tag type="list" v-decorator="['amountUnitMath']" :trigger-change="true" dictCode="allUnit" placeholder="请输入计量单位-总量-数学表达式" :disabled="disableSubmit"/>
             </a-form-item>
           </a-col>
         </a-row>
+
+        <a-row>
+          <a-col span="12">
+            <a-form-item label="浓度单位" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <j-dict-select-tag type="list" v-decorator="['chromaUnit']" :trigger-change="true" dictCode="allUnit" placeholder="请选择浓度单位" :disabled="disableSubmit"/>
+            </a-form-item>
+          </a-col>
+          <a-col span="12">
+            <a-form-item label="浓度数学表达式" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <j-dict-select-tag type="list" v-decorator="['chromaUnitMath']" :trigger-change="true" dictCode="allUnit" placeholder="请输入计量单位-浓度-数学表达式" :disabled="disableSubmit"/>
+            </a-form-item>
+          </a-col>
+        </a-row>
+
         <a-row>
           <a-col span="12">
             <a-form-item label="格式值" :labelCol="labelCol" :wrapperCol="wrapperCol">
@@ -118,13 +132,6 @@
             </a-form-item>
           </a-col>
         </a-row>
-
-<!--        <a-form-item label="计量单位-浓度-数学表达式" :labelCol="labelCol" :wrapperCol="wrapperCol">-->
-<!--          <a-input v-decorator="['chromaUnitMath']" placeholder="请输入计量单位-浓度-数学表达式"></a-input>-->
-<!--        </a-form-item>-->
-<!--        <a-form-item label="计量单位-总量-数学表达式" :labelCol="labelCol" :wrapperCol="wrapperCol">-->
-<!--          <a-input v-decorator="['amountUnitMath']" placeholder="请输入计量单位-总量-数学表达式"></a-input>-->
-<!--        </a-form-item>-->
 
       </a-form>
     </a-spin>

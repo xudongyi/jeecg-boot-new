@@ -1,6 +1,7 @@
 package org.jeecg.modules.business.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.jeecg.common.api.vo.Result;
@@ -67,8 +68,16 @@ public class SysPollutionCodeController extends JeecgController<SysPollutionCode
 	@ApiOperation(value="污染因子表-添加", notes="污染因子表-添加")
 	@PostMapping(value = "/add")
 	public Result<?> add(@RequestBody SysPollutionCode sysPollutionCode) {
-		sysPollutionCodeService.save(sysPollutionCode);
-		return Result.ok("添加成功！");
+		String code = sysPollutionCode.getCode();
+		String type = sysPollutionCode.getType();
+		List<SysPollutionCode> list = sysPollutionCodeService.list(new QueryWrapper<SysPollutionCode>().lambda().eq(SysPollutionCode::getCode,code).eq(SysPollutionCode::getType,type));
+		//int count =sysPollutionCodeService.count(new QueryWrapper<SysPollutionCode>().lambda().eq(SysPollutionCode::getCode,code).eq(SysPollutionCode::getType,type));
+		if(!list.isEmpty()) {
+			return Result.error("该污染因子已存在,请勿重复添加");
+		}else {
+			sysPollutionCodeService.save(sysPollutionCode);
+			return Result.ok("添加成功！");
+		}
 	}
 	
 	/**
@@ -81,8 +90,15 @@ public class SysPollutionCodeController extends JeecgController<SysPollutionCode
 	@ApiOperation(value="污染因子表-编辑", notes="污染因子表-编辑")
 	@PutMapping(value = "/edit")
 	public Result<?> edit(@RequestBody SysPollutionCode sysPollutionCode) {
-		sysPollutionCodeService.updateById(sysPollutionCode);
-		return Result.ok("编辑成功!");
+		String code = sysPollutionCode.getCode();
+		String type = sysPollutionCode.getType();
+		List<SysPollutionCode> list = sysPollutionCodeService.list(new QueryWrapper<SysPollutionCode>().lambda().eq(SysPollutionCode::getCode,code).eq(SysPollutionCode::getType,type));
+		if(!list.isEmpty()) {
+			return Result.error("该污染因子已存在");
+		}else {
+			sysPollutionCodeService.updateById(sysPollutionCode);
+			return Result.ok("编辑成功!");
+		}
 	}
 	
 	/**

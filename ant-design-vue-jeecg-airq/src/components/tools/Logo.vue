@@ -19,7 +19,7 @@
     props: {
       title: {
         type: String,
-        default: '一站一档',
+        default: '空气质量',
         required: false
       },
       showTitle: {

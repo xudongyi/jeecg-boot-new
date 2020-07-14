@@ -361,7 +361,7 @@
       validateMn(rule, value, callback){
         var params = {
           tableName: 'site_monitor_point',
-          fieldName: 'mn_code',
+          fieldName: 'mn',
           fieldVal: value,
           dataId: this.id
         };
