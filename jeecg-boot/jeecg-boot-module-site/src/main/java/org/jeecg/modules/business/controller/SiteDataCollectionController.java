@@ -88,10 +88,10 @@ public class SiteDataCollectionController extends JeecgController<SiteDataCollec
 	public Result<?> edit(@RequestBody SiteDataCollection siteDataCollection) {
 		SiteDataCollection old = siteDataCollectionService.getById(siteDataCollection.getId());
 		siteDataCollectionService.updateById(siteDataCollection);
-		if(!siteDataCollection.getMnCode().equals(old.getMnCode())){
-			//修改站点表的mncode
+		if(!siteDataCollection.getMn().equals(old.getMn())){
+			//修改站点表的mn
 			SiteMonitorPoint siteMonitorPoint = siteMonitorPointService.getById(siteDataCollection.getMonitorId());
-			siteMonitorPoint.setMnCode(siteDataCollection.getMnCode());
+			siteMonitorPoint.setMn(siteDataCollection.getMn());
 			siteMonitorPointService.updateById(siteMonitorPoint);
 		}
 		return Result.ok("编辑成功!");

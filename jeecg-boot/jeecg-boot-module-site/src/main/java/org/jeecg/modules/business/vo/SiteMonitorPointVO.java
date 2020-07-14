@@ -90,5 +90,5 @@ public class SiteMonitorPointVO{
 	@Dict(dicCode = "signType")
     private String signType;
 	/**数采仪MN号*/
-    private String mnCode;
+    private String mn;
 }

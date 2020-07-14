@@ -11,7 +11,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface ISiteDataCollectionService extends IService<SiteDataCollection> {
 
-    SiteDataCollection findByMnCode(String mnCode);
+    SiteDataCollection findByMnCode(String mn);
 
     SiteDataCollection getByMonitorId(String monitorId);
 }

@@ -15,12 +15,10 @@ import org.jeecg.common.system.base.controller.JeecgController;
 import org.jeecg.modules.business.entity.CompanyBase;
 import org.jeecg.modules.business.entity.SiteDataCollection;
 import org.jeecg.modules.business.service.ICompanyBaseService;
-import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.modules.business.entity.SiteMonitorPoint;
 import org.jeecg.modules.business.service.ISiteDataCollectionService;
 import org.jeecg.modules.business.service.ISiteMonitorPointService;
 import org.jeecg.modules.business.vo.SiteMonitorPointVO;
-import org.jeecg.modules.business.vo.SysWarnPointListVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -69,13 +67,13 @@ public class SiteMonitorPointController extends JeecgController<SiteMonitorPoint
 		String siteLevel = req.getParameter("siteLevel");
 		String area = req.getParameter("area");
 		String siteState = req.getParameter("siteState");
-		String mnCode = req.getParameter("mnCode");
+		String mn = req.getParameter("mn");
 		if(StrUtil.isEmpty(siteType)&&StrUtil.isEmpty(siteState)){
 			//只查看启用状态的
 			siteState = "1";
 		}
 		Page<SiteMonitorPointVO> page = new Page<>(pageNo, pageSize);
-		IPage<SiteMonitorPointVO> pageList = siteMonitorPointService.getSiteMonitorPointList(page,siteType,siteState,siteName,companyId,siteLevel,area,mnCode);
+		IPage<SiteMonitorPointVO> pageList = siteMonitorPointService.getSiteMonitorPointList(page,siteType,siteState,siteName,companyId,siteLevel,area,mn);
 		return Result.ok(pageList);
 	}
 	
@@ -91,11 +89,11 @@ public class SiteMonitorPointController extends JeecgController<SiteMonitorPoint
 	public Result<?> add(@RequestBody SiteMonitorPoint siteMonitorPoint) {
 		siteMonitorPointService.save(siteMonitorPoint);
 		//判断是否存在数采仪
-		SiteDataCollection siteDataCollection = siteDataCollectionService.findByMnCode(siteMonitorPoint.getMnCode());
+		SiteDataCollection siteDataCollection = siteDataCollectionService.findByMnCode(siteMonitorPoint.getMn());
 		//没有则新增
 		if(siteDataCollection==null){
 			siteDataCollection = new SiteDataCollection();
-			siteDataCollection.setMnCode(siteMonitorPoint.getMnCode());
+			siteDataCollection.setMn(siteMonitorPoint.getMn());
 			siteDataCollection.setMonitorId(siteMonitorPoint.getId());
 			siteDataCollectionService.save(siteDataCollection);
 		}else{
