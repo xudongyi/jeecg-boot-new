@@ -118,9 +118,7 @@
             key:'rowIndex',
             width:60,
             align:"center",
-            customRender:function (t,r,index) {
-              return parseInt(index)+1;
-            }
+            customRender:this.calcIndex
           },
           {
             title:'投诉标题',
@@ -208,6 +206,9 @@
       },
     },
     methods: {
+      calcIndex: function (t,r,index) {
+        return parseInt(index)+1+(this.ipagination.current-1)*this.ipagination.pageSize;
+      },
       initDictConfig(){
       },
       handleView: function (record) {

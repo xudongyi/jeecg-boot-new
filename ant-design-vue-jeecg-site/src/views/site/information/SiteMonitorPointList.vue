@@ -42,7 +42,7 @@
             </a-col>
             <a-col :xl="6" :lg="7" :md="8" :sm="24">
               <a-form-item label="数采仪MN号">
-                <a-input placeholder="请输入数采仪MN号" v-model="queryParam.mnCode"></a-input>
+                <a-input placeholder="请输入数采仪MN号" v-model="queryParam.mn"></a-input>
               </a-form-item>
             </a-col>
           </template>
@@ -276,7 +276,7 @@
           {
             title: '数采仪MN号',
             align: "center",
-            dataIndex: 'mnCode'
+            dataIndex: 'mn'
           },
           {
             title: '操作',

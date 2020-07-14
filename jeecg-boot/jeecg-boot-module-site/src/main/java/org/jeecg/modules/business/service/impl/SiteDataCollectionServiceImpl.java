@@ -19,8 +19,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 public class SiteDataCollectionServiceImpl extends ServiceImpl<SiteDataCollectionMapper, SiteDataCollection> implements ISiteDataCollectionService {
 
     @Override
-    public SiteDataCollection findByMnCode(String mnCode) {
-        LambdaQueryWrapper<SiteDataCollection> wrapper = new QueryWrapper<SiteDataCollection>().lambda().eq(SiteDataCollection::getMnCode, mnCode);
+    public SiteDataCollection findByMnCode(String mn) {
+        LambdaQueryWrapper<SiteDataCollection> wrapper = new QueryWrapper<SiteDataCollection>().lambda().eq(SiteDataCollection::getMn, mn);
         SiteDataCollection siteDataCollection = this.getOne(wrapper);
         return siteDataCollection;
     }

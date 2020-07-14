@@ -5,7 +5,7 @@
       <a-row>
         <a-col span='12'>
           <a-form-item label="数采仪mn号" :labelCol="labelCol" :wrapperCol="wrapperCol">
-            <a-input v-decorator="['mnCode', validatorRules.mnCode]" placeholder="请输入数采仪mn号" :disabled="disable"></a-input>
+            <a-input v-decorator="['mn', validatorRules.mn]" placeholder="请输入数采仪mn号" :disabled="disable"></a-input>
           </a-form-item>
         </a-col>
         <a-col span='12'>
@@ -169,10 +169,10 @@
         },
         confirmLoading: false,
         validatorRules: {
-          mnCode: {
+          mn: {
             rules: [
               {required: true, message: '请输入数采仪mn号!'},
-              {validator: (rule, value, callback) => validateDuplicateValue('site_data_collection', 'mn_code', value, this.model.id, callback)},
+              {validator: (rule, value, callback) => validateDuplicateValue('site_data_collection', 'mn', value, this.model.id, callback)},
             ]
           },
           currentInterval: {
@@ -213,7 +213,7 @@
         this.model = Object.assign({}, record);
         this.visible = true;
         this.$nextTick(() => {
-          this.form.setFieldsValue(pick(this.model, 'mnCode', 'currentInterval', 'minuteInterval', 'colletionNumber', 'factory', 'prodcutDate', 'productModel', 'ip', 'installDate', 'concatUser', 'concatMobile', 'shelfLifeDate', 'operationCompany', 'operationUser', 'operationMobile', 'sim', 'protocol', 'useDate', 'content'))
+          this.form.setFieldsValue(pick(this.model, 'mn', 'currentInterval', 'minuteInterval', 'colletionNumber', 'factory', 'prodcutDate', 'productModel', 'ip', 'installDate', 'concatUser', 'concatMobile', 'shelfLifeDate', 'operationCompany', 'operationUser', 'operationMobile', 'sim', 'protocol', 'useDate', 'content'))
         })
       },
       close() {
@@ -256,7 +256,7 @@
         this.close()
       },
       popupCallback(row) {
-        this.form.setFieldsValue(pick(row, 'mnCode', 'currentInterval', 'minuteInterval', 'colletionNumber', 'factory', 'prodcutDate', 'productModel', 'ip', 'installDate', 'concatUser', 'concatMobile', 'shelfLifeDate', 'operationCompany', 'operationUser', 'operationMobile', 'sim', 'protocol', 'useDate', 'content'))
+        this.form.setFieldsValue(pick(row, 'mn', 'currentInterval', 'minuteInterval', 'colletionNumber', 'factory', 'prodcutDate', 'productModel', 'ip', 'installDate', 'concatUser', 'concatMobile', 'shelfLifeDate', 'operationCompany', 'operationUser', 'operationMobile', 'sim', 'protocol', 'useDate', 'content'))
       },
 
 

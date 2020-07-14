@@ -18,6 +18,7 @@
 		<module>jeecg-boot-module-company</module>
 		<module>jeecg-boot-module-system</module>
 		<module>jeecg-boot-module-site</module>
+		<module>jeecg-boot-module-airq</module>
 	</modules>
 
 	<distributionManagement>

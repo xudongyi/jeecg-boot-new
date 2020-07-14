@@ -97,7 +97,7 @@
       <a-row v-show="isjmodal">
         <a-col span="24">
             <a-form-item label="数采仪MN号" :labelCol="labelCols" :wrapperCol="wrapperCols">
-              <a-input v-decorator="['mnCode', validatorRules.mnCode]" placeholder="请输入数采仪MN号" :disabled="disable"></a-input>
+              <a-input v-decorator="['mn', validatorRules.mn]" placeholder="请输入数采仪MN号" :disabled="disable"></a-input>
             </a-form-item>
         </a-col>
       </a-row>
@@ -330,10 +330,10 @@
               {required: true, message: '请输入(噪音)声音环境功能区类别!'},
             ]
           },
-          mnCode: {
+          mn: {
             rules: [
               {required: true, message: '请输入数采仪MN号!'},
-              {validator: this.validateMnCode}
+              {validator: this.validateMn}
             ]
           },
         },
@@ -358,7 +358,7 @@
 
     },
     methods: {
-      validateMnCode(rule, value, callback){
+      validateMn(rule, value, callback){
         var params = {
           tableName: 'site_monitor_point',
           fieldName: 'mn_code',
@@ -387,7 +387,7 @@
             this.isSurface = false
             this.isAir = false
             this.$nextTick(() => {
-              this.form.setFieldsValue(pick(this.model, 'siteName', 'siteCode', 'siteType', 'companyId', 'siteLevel', 'area', 'location', 'siteLongitude', 'siteLatitude', 'isNet', 'siteState', 'imorex', 'direction', 'letLaw', 'waterType', 'linkman', 'phone', 'signType', 'mnCode'))
+              this.form.setFieldsValue(pick(this.model, 'siteName', 'siteCode', 'siteType', 'companyId', 'siteLevel', 'area', 'location', 'siteLongitude', 'siteLatitude', 'isNet', 'siteState', 'imorex', 'direction', 'letLaw', 'waterType', 'linkman', 'phone', 'signType', 'mn'))
             })
           } else if (this.siteType === '1') {
             this.isWater = false
@@ -395,7 +395,7 @@
             this.isSurface = false
             this.isAir = true
             this.$nextTick(() => {
-              this.form.setFieldsValue(pick(this.model, 'siteName', 'siteCode', 'siteType', 'companyId', 'siteLevel', 'area', 'location', 'siteLongitude', 'siteLatitude', 'isNet', 'siteState', 'exportHeight', 'exportBore', 'maxFlow', 'exportCross', 'exitType', 'linkman', 'phone', 'mnCode'))
+              this.form.setFieldsValue(pick(this.model, 'siteName', 'siteCode', 'siteType', 'companyId', 'siteLevel', 'area', 'location', 'siteLongitude', 'siteLatitude', 'isNet', 'siteState', 'exportHeight', 'exportBore', 'maxFlow', 'exportCross', 'exitType', 'linkman', 'phone', 'mn'))
             })
           } else if (this.siteType === '4') {
             this.isWater = false
@@ -403,7 +403,7 @@
             this.isSurface = true
             this.isAir = false
             this.$nextTick(() => {
-              this.form.setFieldsValue(pick(this.model, 'siteName', 'siteCode', 'siteType', 'companyId', 'siteLevel', 'area', 'location', 'siteLongitude', 'siteLatitude', 'isNet', 'siteState', 'surfaceType', 'linkman', 'phone', 'mnCode'))
+              this.form.setFieldsValue(pick(this.model, 'siteName', 'siteCode', 'siteType', 'companyId', 'siteLevel', 'area', 'location', 'siteLongitude', 'siteLatitude', 'isNet', 'siteState', 'surfaceType', 'linkman', 'phone', 'mn'))
             })
           } else if (this.siteType === '8') {
             this.isWater = false
@@ -411,7 +411,7 @@
             this.isSurface = false
             this.isAir = false
             this.$nextTick(() => {
-              this.form.setFieldsValue(pick(this.model, 'siteName', 'siteCode', 'siteType', 'companyId', 'siteLevel', 'area', 'location', 'siteLongitude', 'siteLatitude', 'isNet', 'siteState', 'noiseType', 'linkman', 'phone', 'mnCode'))
+              this.form.setFieldsValue(pick(this.model, 'siteName', 'siteCode', 'siteType', 'companyId', 'siteLevel', 'area', 'location', 'siteLongitude', 'siteLatitude', 'isNet', 'siteState', 'noiseType', 'linkman', 'phone', 'mn'))
             })
           } else {
            this.locationLabel = "站点位置";
@@ -420,7 +420,7 @@
             this.isSurface = false
             this.isAir = false
             this.$nextTick(() => {
-              this.form.setFieldsValue(pick(this.model, 'siteName', 'siteCode', 'siteType', 'companyId', 'siteLevel', 'area', 'location', 'siteLongitude', 'siteLatitude', 'isNet', 'siteState', 'linkman', 'phone', 'mnCode'))
+              this.form.setFieldsValue(pick(this.model, 'siteName', 'siteCode', 'siteType', 'companyId', 'siteLevel', 'area', 'location', 'siteLongitude', 'siteLatitude', 'isNet', 'siteState', 'linkman', 'phone', 'mn'))
             })
           }
 
@@ -469,7 +469,7 @@
       }
       ,
       popupCallback(row) {
-        this.form.setFieldsValue(pick(row, 'siteName', 'siteCode', 'siteType', 'companyId', 'siteLevel', 'area', 'location', 'siteLongitude', 'siteLatitude', 'isNet', 'siteState', 'imorex', 'direction', 'letLaw', 'waterType', 'exportHeight', 'exportBore', 'maxFlow', 'exportCross', 'exitType', 'surfaceType', 'noiseType', 'linkman', 'phone', 'signType', 'mnCode'))
+        this.form.setFieldsValue(pick(row, 'siteName', 'siteCode', 'siteType', 'companyId', 'siteLevel', 'area', 'location', 'siteLongitude', 'siteLatitude', 'isNet', 'siteState', 'imorex', 'direction', 'letLaw', 'waterType', 'exportHeight', 'exportBore', 'maxFlow', 'exportCross', 'exitType', 'surfaceType', 'noiseType', 'linkman', 'phone', 'signType', 'mn'))
       },
       searchMap() {
         let that = this;
