@@ -6,6 +6,7 @@ import org.jeecg.modules.business.entity.SiteMonitorPoint;
 import org.jeecg.modules.business.mapper.SiteMonitorPointMapper;
 import org.jeecg.modules.business.service.ISiteMonitorPointService;
 import org.jeecg.modules.business.vo.SiteMonitorPointVO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -28,13 +29,20 @@ public class SiteMonitorPointServiceImpl extends ServiceImpl<SiteMonitorPointMap
     @Resource
     private SiteMonitorPointMapper siteMonitorPointMapper;
 
+    @Resource
+    private SiteMonitorDeviceServiceImpl siteMonitorDeviceService;
 
-    public List<Map<String,String>> getMenus(){
+    @Resource
+    private SiteGovFacilityServiceImpl siteGovFacilityService;
+
+
+
+    public List<Map<String,String>> getMenus(String monitorId){
         List<Map<String,String>> menus = new ArrayList<>();
         addElements("1"," 基本信息",0,menus);
         addElements("2"," 数采仪信息",0,menus);
-        addElements("3"," 监测设施",0,menus);
-        addElements("4"," 治理设施",0,menus);
+        addElements("3"," 监测设施",siteMonitorDeviceService.findCount(monitorId),menus);
+        addElements("4"," 治理设施",siteGovFacilityService.findCount(monitorId),menus);
         return menus;
     }
 

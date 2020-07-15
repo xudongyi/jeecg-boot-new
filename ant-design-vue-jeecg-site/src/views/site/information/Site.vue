@@ -25,11 +25,12 @@
       }
     },
     methods:{
-      handleDetail(record,disable){
+      handleDetail(record,disable,addButton){
+        debugger
         this.isDetail=true;
         this.id=record.id;
         this.$nextTick(() => {
-           this.$refs.site.editMonitor(record,disable);
+           this.$refs.site.editMonitor(record,disable,addButton);
         })
       }
     }
