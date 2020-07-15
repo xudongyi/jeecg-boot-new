@@ -44,7 +44,9 @@ import JeecgComponents from '@/components/jeecg/index'
 import '@/assets/less/JAreaLinkage.less'
 import VueAreaLinkage from 'vue-area-linkage'
 import BaiduMap from 'vue-baidu-map'
+import echarts from 'echarts'
 
+Vue.prototype.$echarts = echarts;
 Vue.use(BaiduMap, {
   // ak 是在百度地图开发者平台申请的密钥 详见 http://lbsyun.baidu.com/apiconsole/key */
   ak: 'YOUR_APP_KEY'
