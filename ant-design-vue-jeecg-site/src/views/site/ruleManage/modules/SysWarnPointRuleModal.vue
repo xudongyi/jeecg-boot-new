@@ -10,7 +10,7 @@
     cancelText="关闭">
     <a-spin :spinning="confirmLoading">
       <a-layout>
-          <a-layout-sider theme="light" width="260">
+          <a-layout-sider theme="light" width="300">
             <a-form :form="form">
               <a-form-item label="站点类型" :labelCol="labelCol" :wrapperCol="wrapperCol">
                 <j-dict-select-tag type="list" v-decorator="['siteType']" @change="selectChangeSiteType" :trigger-change="true" :disabled="disableSubmit" dictCode="siteType" placeholder="请选择站点类型"/>
@@ -24,7 +24,7 @@
               </a-form-item>
 
             </a-form>
-            <div>
+            <div v-show="!disableSubmit">
               <a-tree
                 :checkable="true"
                 :expanded-keys="expandedKeys"
@@ -177,7 +177,8 @@
       let _this= this;
       getAction("/sys/sysArea/list",{active:'1'}).then((res) => {
         if (res.success) {
-          _this.data = _this.dealAreaData(res);
+          _this.data = res
+          console.log(_this.data)
           _this.selectChange();
         }
       })
@@ -202,6 +203,8 @@
             })
           })
         });
+        
+        console.log(areaSource)
         return areaSource
       },
       onExpand(expandedKeys) {
@@ -252,6 +255,7 @@
         this.selectChange()
       },
       selectChangeArea(val){
+        console.log(val)
         this.queryParam.area = val;
         this.selectChange()
       },
@@ -259,9 +263,11 @@
         let that = this;
           querySiteName({siteType: this.queryParam.siteType,area: this.queryParam.area}).then((res)=>{
             this.siteData =  res.result;
-            let data = [];
-              //省
-              that.data.forEach((a)=>{
+            that.treeData = [];
+            let newObj =  that.dealAreaData(that.data);
+           
+            //省
+            newObj.forEach((a)=>{
                 //市
                 let city = [];
                 a.children.forEach((b)=>{
@@ -285,10 +291,10 @@
               });
                 if(city.length>0){
                   a.children = city;
-                  data.push(a)
+                  that.treeData .push(a)
                 }
             });
-            that.treeData=data;
+              console.log('that.data',that.data)
             console.log("!!!!!!",res);
             if(res.success)
               that.items = res.result;
