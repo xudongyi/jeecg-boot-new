@@ -49,7 +49,7 @@ import echarts from 'echarts'
 Vue.prototype.$echarts = echarts;
 Vue.use(BaiduMap, {
   // ak 是在百度地图开发者平台申请的密钥 详见 http://lbsyun.baidu.com/apiconsole/key */
-  ak: 'YOUR_APP_KEY'
+  ak: '0zRDaGirVYM1exXbHLZzGDAGuFG5rK5D'
 })
 Vue.config.productionTip = false
 Vue.use(Storage, config.storageOptions)
