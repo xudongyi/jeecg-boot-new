@@ -11,4 +11,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface ISiteGovFacilityService extends IService<SiteGovFacility> {
 
+    Integer findCount(String monitorId);
 }

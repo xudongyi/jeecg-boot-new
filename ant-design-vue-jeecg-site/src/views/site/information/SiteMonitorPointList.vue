@@ -140,6 +140,9 @@
             </a-menu>
           </a-dropdown>
         </span>
+        <span slot="siteState" slot-scope="siteState">
+          <div :style="{color: siteState === '停用'? 'red':'black'}">{{siteState}}</div>
+        </span>
 
       </a-table>
 
@@ -194,10 +197,12 @@
             </a-menu>
           </a-dropdown>
         </span>
-
+        <span slot="siteState" slot-scope="siteState">
+          <div :style="{color: siteState === '停用'? 'red':'black'}">{{siteState}}</div>
+        </span>
       </a-table>
     </div>
-    <jmodal-site ref="modalForm" @ok="ok" :disable="disable"></jmodal-site>
+    <jmodal-site ref="modalForm" @ok="ok"></jmodal-site>
   </a-card>
 </template>
 
@@ -232,6 +237,7 @@
           siteType: this.$route.params.siteType
         },
         disable: true,
+        addButton:true,
         // 表头
         columns: [
           {
@@ -271,7 +277,8 @@
           {
             title: '站点状态',
             align: "center",
-            dataIndex: 'siteState_dictText'
+            dataIndex: 'siteState_dictText',
+            scopedSlots: { customRender: 'siteState' },
           },
           {
             title: '数采仪MN号',
@@ -337,19 +344,23 @@
       initDictConfig() {
       },
       handleDetail(record) {
+        debugger
         this.disable = false;
-        this.$emit("detail", record,this.disable)
+        this.addButton = true;
+        this.$emit("detail", record,this.disable,this.addButton)
       },
       addClick() {
         this.$refs.modalForm.visible = true;
         this.$refs.modalForm.confirmLoading = false;
-        this.$refs.modalForm.addClick(this.queryParam.siteType)
         this.disable = false;
+        this.addButton = false;
+        this.$refs.modalForm.addClick(this.queryParam.siteType,this.disable,this.addButton);
       },
       viewDetail(record) {
         debugger
         this.disable = true;
-        this.$emit("detail", record,this.disable);
+        this.addButton = false;
+        this.$emit("detail", record,this.disable,this.addButton);
       },
       ok() {
         this.loadData(1)

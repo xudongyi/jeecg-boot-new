@@ -218,9 +218,9 @@ public class SiteMonitorPointController extends JeecgController<SiteMonitorPoint
 	 @AutoLog(value = "监测站点表-查询菜单及其状态信息")
 	 @ApiOperation(value="查询菜单及其状态信息", notes="根据企业ID查询")
 	 @GetMapping(value = "/menus")
-	 public Result<?> queryMenus() {
+	 public Result<?> queryMenus(@RequestParam(name = "monitorId", required = true) String monitorId) {
 		 Map<String,List<Map<String,String>>> result = new HashMap<>();
-		 result.put("menus" , siteMonitorPointService.getMenus());
+		 result.put("menus" , siteMonitorPointService.getMenus(monitorId));
 		 return Result.ok(result);
 	 }
 

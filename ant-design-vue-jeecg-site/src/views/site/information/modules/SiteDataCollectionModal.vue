@@ -1,6 +1,6 @@
 <template>
   <a-spin :spinning="confirmLoading">
-    <a-button type="primary" @click="handleOk" v-if="!disable">修改</a-button>
+    <a-button type="primary" @click="handleOk" v-if="!disable">保存</a-button>
     <a-form :form="form">
       <a-row>
         <a-col span='12'>
@@ -9,7 +9,7 @@
           </a-form-item>
         </a-col>
         <a-col span='12'>
-          <a-form-item label="实时上传间隔（s）" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-form-item label="实时上传间隔" :labelCol="labelCol" :wrapperCol="wrapperCol">
             <a-input v-decorator="['currentInterval', validatorRules.currentInterval]"
                      placeholder="请输入实时上传间隔（s）"  addon-after="秒" :disabled="disable"></a-input>
           </a-form-item>
@@ -17,7 +17,7 @@
       </a-row>
       <a-row>
         <a-col span='12'>
-          <a-form-item label="分钟上传间隔（minute）" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-form-item label="分钟上传间隔" :labelCol="labelCol" :wrapperCol="wrapperCol">
             <a-input v-decorator="['minuteInterval', validatorRules.minuteInterval]"
                      placeholder="请输入分钟上传间隔（minute）"  addon-after="分钟" :disabled="disable"></a-input>
           </a-form-item>

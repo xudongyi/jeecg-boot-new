@@ -19,10 +19,31 @@
               <a-input placeholder="请输入污染因子名称" v-model="queryParam.meaning"></a-input>
             </a-form-item>
           </a-col>
+          <template v-if="toggleSearchStatus">
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="是否含有排放量">
+              <j-dict-select-tag placeholder="请选择是否含有排放量" v-model="queryParam.isTotal" dictCode="yes_or_no"/>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="是否为主要污染物">
+              <j-dict-select-tag placeholder="请选择是否为主要污染物" v-model="queryParam.isImportant" dictCode="yes_or_no"/>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="是否启用">
+              <j-dict-select-tag placeholder="请选择是否启用" v-model="queryParam.isUse" dictCode="yes_or_no"/>
+            </a-form-item>
+          </a-col>
+          </template>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
+              <a @click="handleToggleSearch" style="margin-left: 8px">
+                {{ toggleSearchStatus ? '收起' : '展开' }}
+                <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>
+              </a>
             </span>
           </a-col>
         </a-row>

@@ -17,7 +17,7 @@ import java.util.Map;
  */
 public interface ISiteMonitorPointService extends IService<SiteMonitorPoint> {
 
-    List<Map<String, String>> getMenus();
+    List<Map<String, String>> getMenus(String monitorId);
 
     IPage<SiteMonitorPointVO> getSiteMonitorPointList(Page<SiteMonitorPointVO> page,String siteType,String siteState,String siteName,String companyId,String siteLevel,String area,String mn);
 }

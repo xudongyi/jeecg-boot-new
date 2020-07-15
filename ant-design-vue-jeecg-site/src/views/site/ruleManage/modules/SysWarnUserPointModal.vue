@@ -40,16 +40,21 @@
         <div style="height: 450px">
           <a-row type="flex" justify="space-around" align="top">
             <a-col :span="8">
-              <a-card title="所有站点">
-                <a-tree
-                  autoExpandParent
-                  :checkable="true"
-                  :checkStrictly = "false"
-                  :checkedKeys="checkedKeys"
-                  :treeData="treeData"
-                  @check="onCheck"
-                  @select="onSelect"
-                />
+              <a-card title="所有站点" style="height: 380px">
+                <happy-scroll>
+
+                    <a-tree
+                      style="height: 250px"
+                      autoExpandParent
+                      :checkable="true"
+                      :checkStrictly = "false"
+                      :checkedKeys="checkedKeys"
+                      :treeData="treeData"
+                      @check="onCheck"
+                      @select="onSelect"
+                    />
+
+                </happy-scroll>
               </a-card>
             </a-col>
             <a-col :span="4">
@@ -61,18 +66,22 @@
               </div>
             </a-col>
             <a-col :span="8">
-              <a-card title="已选站点" >
-                <a-tree
-                  :defaultExpandAll="true"
-                  autoExpandParent
+              <a-card title="已选站点" style="height: 380px">
+                <happy-scroll>
 
-                  :checkable="true"
-                  :checkStrictly = "false"
-                  :checkedKeys="checkedKeys2"
-                  :treeData="treeData2"
-                  @check="onCheck2"
-                  @select="onSelect2"
-                />
+                    <a-tree
+                      style="height: 250px"
+                      :defaultExpandAll="true"
+                      autoExpandParent
+                      :checkable="true"
+                      :checkStrictly = "false"
+                      :checkedKeys="checkedKeys2"
+                      :treeData="treeData2"
+                      @check="onCheck2"
+                      @select="onSelect2"
+                    />
+
+                </happy-scroll>
               </a-card>
             </a-col>
           </a-row>
@@ -98,10 +107,13 @@
   import Vue from "vue";
   import {querySiteName} from "../../../requestAction/request";
   import {duplicateCheck } from '@/api/api'
+  import {HappyScroll} from 'vue-happy-scroll'
+  import 'vue-happy-scroll/docs/happy-scroll.css'
 
   export default {
     name: "SysWarnUserPointModal",
-    components: { 
+    components: {
+      HappyScroll
     },
     data () {
       return {

@@ -298,7 +298,7 @@
     },
     methods: {
       add() {
-        this.edit({});
+        this.edit({deviceState:1});
       },
       edit(record) {
         let _this = this;

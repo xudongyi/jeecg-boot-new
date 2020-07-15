@@ -6,10 +6,10 @@
           <business-menu :item-list="leftMenus" :menu-style="leftStyle"  mode="inline"  @clickHandle = "leftHandle"></business-menu>
         </a-layout-sider>
         <a-layout-content :style="{ padding: '0 24px', minHeight: '280px' }">
-          <siteMonitorPoint-modal ref="modalForm" v-show="leftActive==1" :siteType="siteType" :disable="disable"></siteMonitorPoint-modal>
-          <site-data-collection-modal ref="dataForm"  v-show="leftActive==2"></site-data-collection-modal>
-          <site-monitor-device-list ref="monitorList" v-show="leftActive==3" :siteType="siteType" :monitorId="id"></site-monitor-device-list>
-          <site-gov-facility-list ref="facilityList" v-show="leftActive==4" :siteType="siteType" :monitorId="id"></site-gov-facility-list>
+          <siteMonitorPoint-modal ref="modalForm" v-show="leftActive==1" :siteType="siteType" :disable="disable" :addButton="addButton"></siteMonitorPoint-modal>
+          <site-data-collection-modal ref="dataForm"  v-show="leftActive==2" :addButton="addButton"></site-data-collection-modal>
+          <site-monitor-device-list ref="monitorList" v-show="leftActive==3" :siteType="siteType" :monitorId="id" :addButton="addButton" ></site-monitor-device-list>
+          <site-gov-facility-list ref="facilityList" v-show="leftActive==4" :siteType="siteType" :monitorId="id" :addButton="addButton"></site-gov-facility-list>
     </a-layout-content>
       </a-layout>
     </a-layout-content>
@@ -40,6 +40,7 @@
       data(){
         return {
           leftActive:1,
+          addButton:false,
           leftMenus:[],
           menus : [],
           leftStyle :{
@@ -54,20 +55,21 @@
         leftHandle(key){
           this.leftActive = key;
         },
-        editMonitor(record,disable){
+        editMonitor(record,disable,addButton){
           this.siteType=record.siteType;
           this.$refs.modalForm.edit(record);
           this.$refs.modalForm.disable=disable;
           this.$refs.dataForm.disable=disable;
           this.$refs.monitorList.disable=disable;
           this.$refs.facilityList.disable=disable;
+          this.$data.addButton = addButton;
         },
       },
       created() {
         let _this = this;
         if(_this.id) {
           //发送请求，查找
-          getDetailMenus().then((res) => {
+          getDetailMenus({monitorId:this.id}).then((res) => {
             if (res.success) {
               _this.menus = res.result.menus;
               _this.leftMenus = this.menus;

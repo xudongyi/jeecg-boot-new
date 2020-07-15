@@ -100,23 +100,28 @@ public class SysWarnPointRuleController extends JeecgController<SysWarnPointRule
 		List<String> ruleIds = jsonObject.getJSONArray("ruleIds").toJavaList(String.class);
 
 //		//删除  根据monitorIds
-		sysWarnPointRuleService
-				.remove(new QueryWrapper<SysWarnPointRule>().lambda().in(SysWarnPointRule::getMonitorId,monitorIds).in(SysWarnPointRule::getRuleId,ruleIds));
+		if(!monitorIds.isEmpty() && !ruleIds.isEmpty()){
+			sysWarnPointRuleService
+					.remove(new QueryWrapper<SysWarnPointRule>().lambda().in(SysWarnPointRule::getMonitorId,monitorIds).in(SysWarnPointRule::getRuleId,ruleIds));
 
-		List<SysWarnPointRule> sysWarnPointRules = new ArrayList<>();
-		for(String monitor : monitorIds) {
-			for (String rule : ruleIds) {
-				SysWarnPointRule sysWarnPointRule = new SysWarnPointRule();
-				sysWarnPointRule.setMonitorId(monitor);
-				sysWarnPointRule.setRuleId(rule);
-				String isUsed = sysWarnRuleService.getById(rule).getIsUsed();
-				sysWarnPointRule.setIsUsed(isUsed);
-				sysWarnPointRules.add(sysWarnPointRule);
+			List<SysWarnPointRule> sysWarnPointRules = new ArrayList<>();
+			for(String monitor : monitorIds) {
+				for (String rule : ruleIds) {
+					SysWarnPointRule sysWarnPointRule = new SysWarnPointRule();
+					sysWarnPointRule.setMonitorId(monitor);
+					sysWarnPointRule.setRuleId(rule);
+					String isUsed = sysWarnRuleService.getById(rule).getIsUsed();
+					sysWarnPointRule.setIsUsed(isUsed);
+					sysWarnPointRules.add(sysWarnPointRule);
+				}
 			}
-		}
-		sysWarnPointRuleService.saveBatch(sysWarnPointRules);
+			sysWarnPointRuleService.saveBatch(sysWarnPointRules);
 
-		return Result.ok("添加成功！");
+			return Result.ok("添加成功！");
+		}else {
+			return Result.error("站点和策略不能为空！");
+		}
+
 	}
 	
 	/**
@@ -224,10 +229,10 @@ public class SysWarnPointRuleController extends JeecgController<SysWarnPointRule
 
 		 }else if(!StrUtil.isEmpty(siteType) && StrUtil.isEmpty(area)) {
 			 list = siteMonitorPointService.list(new QueryWrapper<SiteMonitorPoint>().lambda()
-					 .eq(SiteMonitorPoint::getSignType, siteType));
+					 .eq(SiteMonitorPoint::getSiteType, siteType));
 
 		 }else {
-			 list = siteMonitorPointService.list(new QueryWrapper<SiteMonitorPoint>().lambda().eq(SiteMonitorPoint::getSignType, siteType)
+			 list = siteMonitorPointService.list(new QueryWrapper<SiteMonitorPoint>().lambda().eq(SiteMonitorPoint::getSiteType, siteType)
 					 .eq(SiteMonitorPoint::getArea,area));
 		 }
 		 list.forEach(siteMonitorPoint -> {

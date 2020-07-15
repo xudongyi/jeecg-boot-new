@@ -74,7 +74,9 @@
             </a-menu>
           </a-dropdown>
         </span>
-
+        <span slot="deviceState" slot-scope="deviceState">
+          <div :style="{color: deviceState === '停用'? 'red':'black'}">{{deviceState}}</div>
+        </span>
       </a-table>
 
       <a-table
@@ -129,7 +131,9 @@
             </a-menu>
           </a-dropdown>
         </span>
-
+        <span slot="deviceState" slot-scope="deviceState">
+          <div :style="{color: deviceState === '停用'? 'red':'black'}">{{deviceState}}</div>
+        </span>
       </a-table>
     </div>
 
@@ -179,12 +183,7 @@
             dataIndex: 'deviceNumber'
           },
           {
-            title:'设备类型',
-            align:"center",
-            dataIndex: 'deviceType_dictText'
-          },
-          {
-            title:'污染因子',
+            title:'新国标因子编码',
             align:"center",
             dataIndex: 'pollutionCode'
           },
@@ -196,7 +195,8 @@
           {
             title:'监测仪器状态',
             align:"center",
-            dataIndex: 'deviceState_dictText'
+            dataIndex: 'deviceState_dictText',
+            scopedSlots: { customRender: 'deviceState' },
           },
           {
             title: '操作',

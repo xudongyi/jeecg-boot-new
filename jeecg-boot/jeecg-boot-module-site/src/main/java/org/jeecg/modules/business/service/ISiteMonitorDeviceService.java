@@ -11,4 +11,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface ISiteMonitorDeviceService extends IService<SiteMonitorDevice> {
 
+    Integer findCount(String monitorId);
 }
