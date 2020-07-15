@@ -1,6 +1,8 @@
 package org.jeecg.modules.business.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.jeecg.modules.business.entity.SiteGovFacility;
+import org.jeecg.modules.business.entity.SiteMonitorDevice;
 import org.jeecg.modules.business.mapper.SiteGovFacilityMapper;
 import org.jeecg.modules.business.service.ISiteGovFacilityService;
 import org.springframework.stereotype.Service;
@@ -16,4 +18,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 @Service
 public class SiteGovFacilityServiceImpl extends ServiceImpl<SiteGovFacilityMapper, SiteGovFacility> implements ISiteGovFacilityService {
 
+    @Override
+    public Integer findCount(String monitorId) {
+        return this.count(new QueryWrapper<SiteGovFacility>().lambda().eq(SiteGovFacility::getMonitorId,monitorId));
+    }
 }

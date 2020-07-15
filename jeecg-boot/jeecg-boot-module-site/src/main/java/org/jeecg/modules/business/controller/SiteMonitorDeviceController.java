@@ -225,7 +225,7 @@ public class SiteMonitorDeviceController extends JeecgController<SiteMonitorDevi
     @GetMapping(value = "/queryPollution")
     public Result<?> queryPollution(@RequestParam(name = "siteType", required = true) String type) {
         List<Map<String, String>> result = new ArrayList<>();
-        sysPollutionCodeService.list(new QueryWrapper<SysPollutionCode>().lambda().eq(SysPollutionCode::getType,type)).forEach(SysPollutionCode -> {
+        sysPollutionCodeService.list(new QueryWrapper<SysPollutionCode>().lambda().eq(SysPollutionCode::getType,type).eq(SysPollutionCode::getIsUse,"Y")).forEach(SysPollutionCode -> {
             Map<String, String> param = new HashMap<>();
             param.put("key", SysPollutionCode.getCode());
             param.put("value", SysPollutionCode.getMeaning());

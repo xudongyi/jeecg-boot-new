@@ -1,6 +1,6 @@
 <template>
   <a-spin :spinning="confirmLoading">
-    <a-button type="primary" @click="handleOk" v-if="!disable">修改</a-button>
+    <a-button type="primary" @click="handleOk" v-if="addButton">保存</a-button>
     <a-form :form="form">
 
       <a-row>
@@ -12,7 +12,8 @@
         </a-col>
         <a-col span='12'>
           <a-form-item label="站点编号" :labelCol="labelCol" :wrapperCol="wrapperCol">
-            <a-input v-decorator="['siteCode',validatorRules.siteCode]" placeholder="请输入站点编号" :disabled="disable"></a-input>
+            <a-input v-decorator="['siteCode',validatorRules.siteCode]" placeholder="请输入站点编号"
+                     :disabled="disable"></a-input>
           </a-form-item>
         </a-col>
       </a-row>
@@ -21,7 +22,7 @@
           <a-form-item label="站点类型" :labelCol="labelCol" :wrapperCol="wrapperCol">
             <j-dict-select-tag type="list" v-decorator="['siteType', validatorRules.siteType]"
                                :trigger-change="true" dictCode="siteType" placeholder="请选择站点类型"
-                               :disabled='isSiteType' />
+                               :disabled='isSiteType'/>
           </a-form-item>
         </a-col>
         <a-col span='12'>
@@ -44,7 +45,8 @@
         </a-col>
         <a-col span='12'>
           <a-form-item label="所属区域" :labelCol="labelCol" :wrapperCol="wrapperCol">
-            <area-link-select type="cascader" v-decorator="['area', validatorRules.area]" placeholder="请输入省市区" :disabled="disable"/>
+            <area-link-select type="cascader" v-decorator="['area', validatorRules.area]" placeholder="请输入省市区"
+                              :disabled="disable"/>
           </a-form-item>
         </a-col>
       </a-row>
@@ -83,7 +85,7 @@
         <a-col span='12'>
           <a-form-item label="站点状态" :labelCol="labelCol" :wrapperCol="wrapperCol">
             <j-dict-select-tag type="list" v-decorator="['siteState', validatorRules.siteState]" :disabled="disable"
-                               :trigger-change="true" dictCode="siteState" placeholder="请选择站点状态" />
+                               :trigger-change="true" dictCode="siteState" placeholder="请选择站点状态"/>
           </a-form-item>
         </a-col>
         <a-col span='12'>
@@ -96,9 +98,9 @@
       </a-row>
       <a-row v-show="isjmodal">
         <a-col span="24">
-            <a-form-item label="数采仪MN号" :labelCol="labelCols" :wrapperCol="wrapperCols">
-              <a-input v-decorator="['mn', validatorRules.mn]" placeholder="请输入数采仪MN号" :disabled="disable"></a-input>
-            </a-form-item>
+          <a-form-item label="数采仪MN号" :labelCol="labelCols" :wrapperCol="wrapperCols">
+            <a-input v-decorator="['mn', validatorRules.mn]" placeholder="请输入数采仪MN号" :disabled="disable"></a-input>
+          </a-form-item>
         </a-col>
       </a-row>
       <a-row v-if="isWater">
@@ -152,7 +154,7 @@
       <a-row v-if="isAir">
         <a-col span='24'>
           <a-form-item label="废气排风口类型" :labelCol="labelCols" :wrapperCol="wrapperCols">
-            <j-dict-select-tag type="list" v-decorator="['exitType', validatorRules.exitType]"
+            <j-dict-select-tag type="list" v-decorator="['exitType']"
                                :trigger-change="true" dictCode="exitType" placeholder="请输入废气排风口类型" :disabled="disable"/>
           </a-form-item>
         </a-col>
@@ -160,33 +162,33 @@
       <a-row v-if="isAir">
         <a-col span='12'>
           <a-form-item label="出口内径" :labelCol="labelCol" :wrapperCol="wrapperCol">
-            <a-input v-decorator="['exportBore']" placeholder="请输入出口内径" :disabled="disable"></a-input>
+            <a-input v-decorator="['exportBore']" placeholder="请输入出口内径" :disabled="disable"  addon-after="米"></a-input>
           </a-form-item>
         </a-col>
         <a-col span='12'>
           <a-form-item label="最大流量" :labelCol="labelCol" :wrapperCol="wrapperCol">
-            <a-input v-decorator="['maxFlow']" placeholder="请输入最大流量" :disabled="disable"></a-input>
+            <a-input v-decorator="['maxFlow']" placeholder="请输入最大流量" :disabled="disable"  addon-after="标立方米"></a-input>
           </a-form-item>
         </a-col>
       </a-row>
       <a-row v-if="isAir">
         <a-col span='12'>
           <a-form-item label="出口截面积" :labelCol="labelCol" :wrapperCol="wrapperCol">
-            <a-input v-decorator="['exportCross']" placeholder="请输入出口截面积" :disabled="disable"></a-input>
+            <a-input v-decorator="['exportCross']" placeholder="请输入出口截面积" :disabled="disable"  addon-after="平方米"></a-input>
           </a-form-item>
         </a-col>
         <a-col span='12' v-if="isAir">
           <a-form-item label="出口高度" :labelCol="labelCol" :wrapperCol="wrapperCol">
-            <a-input v-decorator="['exportHeight']" placeholder="请输入出口高度" :disabled="disable"></a-input>
+            <a-input v-decorator="['exportHeight']" placeholder="请输入出口高度" :disabled="disable" addon-after="米"></a-input>
           </a-form-item>
         </a-col>
       </a-row>
       <a-row v-if="isSurface">
         <a-col span='24'>
-          <a-form-item label="地表水环境功能区类别" :labelCol="labelCols" :wrapperCol="wrapperCols">
+          <a-form-item label="水环境功能区类别" :labelCol="labelCols" :wrapperCol="wrapperCols">
             <j-dict-select-tag type="list" v-decorator="['surfaceType', validatorRules.surfaceType]"
                                :trigger-change="true" dictCode="waterType"
-                               placeholder="请选择地表水环境功能区类别" :disabled="disable"/>
+                               placeholder="请选择水环境功能区类别" :disabled="disable"/>
           </a-form-item>
         </a-col>
       </a-row>
@@ -208,7 +210,7 @@
   import {httpAction} from '@/api/manage'
   import pick from 'lodash.pick'
   import JDictSelectTag from "@/components/dict/JDictSelectTag"
-  import {queryCompanyName,loadBaiduMap} from '../../../requestAction/request'
+  import {queryCompanyName, loadBaiduMap} from '../../../requestAction/request'
   import {duplicateCheck} from '@/api/api'
   import AreaLinkSelect from "../../component/AreaLinkSelect";
 
@@ -221,11 +223,11 @@
     data() {
       return {
         form: this.$form.createForm(this),
-        locationLabel:"排污口位置",
+        locationLabel: "排污口位置",
+        disable:this.isDisable,
         isWater: false,
         isNoise: false,
         isSurface: false,
-        disable: false,
         isSiteType: true,
         isAir: false,
         title: "操作",
@@ -315,14 +317,9 @@
               {required: true, message: '请输入排放去向!'},
             ]
           },
-          exitType: {
-            rules: [
-              {required: true, message: '请输入废气排风口类型!'},
-            ]
-          },
           surfaceType: {
             rules: [
-              {required: true, message: '请输入(地表水)地表水环境功能区类别!'},
+              {required: true, message: '请输入水环境功能区类别!'},
             ]
           },
           noiseType: {
@@ -358,7 +355,7 @@
 
     },
     methods: {
-      validateMn(rule, value, callback){
+      validateMn(rule, value, callback) {
         var params = {
           tableName: 'site_monitor_point',
           fieldName: 'mn',
@@ -374,7 +371,7 @@
         })
       },
       add() {
-        this.edit({siteState: '1',isNet:"1"});
+        this.edit({siteState: '1', isNet: "1"});
       },
       edit(record) {
         this.$nextTick(() => {
@@ -414,7 +411,7 @@
               this.form.setFieldsValue(pick(this.model, 'siteName', 'siteCode', 'siteType', 'companyId', 'siteLevel', 'area', 'location', 'siteLongitude', 'siteLatitude', 'isNet', 'siteState', 'noiseType', 'linkman', 'phone', 'mn'))
             })
           } else {
-           this.locationLabel = "站点位置";
+            this.locationLabel = "站点位置";
             this.isWater = false
             this.isNoise = false
             this.isSurface = false
@@ -474,7 +471,7 @@
       searchMap() {
         let that = this;
         that.form.validateFields((err, values) => {
-          let param = {address:values.location}
+          let param = {address: values.location}
           loadBaiduMap(param).then((res) => {
             if (res.success) {
               that.form.setFieldsValue({siteLongitude: res.result.lng, siteLatitude: res.result.lat});
@@ -488,6 +485,9 @@
     props: {
       siteType: '',
       isjmodal: false,
+      isDisable: false,
+      addButton:false
+
     }
   }
 </script>
