@@ -26,28 +26,26 @@
 
             </a-form>
             <div v-show="!disableSubmit">
-              <happy-scroll>
-                <div style="height: 210px">
-                  <a-tree
-                    :checkable="true"
-                    :expanded-keys="expandedKeys"
-                    :auto-expand-parent="autoExpandParent"
-                    :treeData="treeData"
-                    @check="onCheck"
-                    @select="onSelect"
-                    @expand="onExpand"
-                  >
-                    <template slot="title" slot-scope="{ title }">
+                  <div class="a-tree-scroll">
+                    <a-tree
+                      :checkable="true"
+                      :expanded-keys="expandedKeys"
+                      :auto-expand-parent="autoExpandParent"
+                      :treeData="treeData"
+                      @check="onCheck"
+                      @select="onSelect"
+                      @expand="onExpand"
+                    >
+                      <template slot="title" slot-scope="{ title }">
                       <span v-if="title.indexOf(searchValue) > -1">
                         {{ title.substr(0, title.indexOf(searchValue)) }}
                         <span style="color: #f50">{{ searchValue }}</span>
                         {{ title.substr(title.indexOf(searchValue) + searchValue.length) }}
                       </span>
-                      <span v-else>{{ title }}</span>
-                    </template>
-                  </a-tree>
-                </div>
-              </happy-scroll>
+                        <span v-else>{{ title }}</span>
+                      </template>
+                    </a-tree>
+                  </div>
             </div>
           </a-layout-sider>
           <a-layout-content>
@@ -393,7 +391,14 @@
   }
 </script>
 <style scoped>
+  .ant-layout{
+    background: transparent;
+  }
   .ant-form-item {
     margin-bottom: 8px;
+  }
+  .a-tree-scroll{
+    height: 310px;
+    overflow: auto;
   }
 </style>

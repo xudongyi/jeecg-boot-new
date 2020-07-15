@@ -41,7 +41,7 @@
           <a-row type="flex" justify="space-around" align="top">
             <a-col :span="8">
               <a-card title="所有站点" style="height: 380px">
-                <happy-scroll>
+                <div class="a-tree-scroll">
 
                     <a-tree
                       style="height: 250px"
@@ -54,7 +54,7 @@
                       @select="onSelect"
                     />
 
-                </happy-scroll>
+                </div>
               </a-card>
             </a-col>
             <a-col :span="4">
@@ -67,7 +67,7 @@
             </a-col>
             <a-col :span="8">
               <a-card title="已选站点" style="height: 380px">
-                <happy-scroll>
+                <div class="a-tree-scroll">
 
                     <a-tree
                       style="height: 250px"
@@ -81,7 +81,7 @@
                       @select="onSelect2"
                     />
 
-                </happy-scroll>
+                </div>
               </a-card>
             </a-col>
           </a-row>
@@ -461,5 +461,9 @@
   .tree-transfer .ant-transfer-list:first-child {
     width: 50%;
     flex: none;
+  }
+  .a-tree-scroll{
+    height: 280px;
+    overflow: auto;
   }
 </style>
