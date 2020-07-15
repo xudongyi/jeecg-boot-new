@@ -223,9 +223,9 @@ public class SiteMonitorDeviceController extends JeecgController<SiteMonitorDevi
     @AutoLog(value = "查询污染因子")
     @ApiOperation(value = "查询污染因子", notes = "查询污染因子")
     @GetMapping(value = "/queryPollution")
-    public Result<?> queryPollution() {
+    public Result<?> queryPollution(@RequestParam(name = "siteType", required = true) String type) {
         List<Map<String, String>> result = new ArrayList<>();
-        sysPollutionCodeService.list(new QueryWrapper<SysPollutionCode>().lambda()).forEach(SysPollutionCode -> {
+        sysPollutionCodeService.list(new QueryWrapper<SysPollutionCode>().lambda().eq(SysPollutionCode::getType,type)).forEach(SysPollutionCode -> {
             Map<String, String> param = new HashMap<>();
             param.put("key", SysPollutionCode.getCode());
             param.put("value", SysPollutionCode.getMeaning());
@@ -242,8 +242,8 @@ public class SiteMonitorDeviceController extends JeecgController<SiteMonitorDevi
     @AutoLog(value = "查询污染因子浓度单位")
     @ApiOperation(value = "查询污染因子浓度单位", notes = "查询污染因子浓度单位")
     @GetMapping(value = "/queryUnit")
-    public Result<?> queryUnit(@RequestParam(name = "code", required = true) String code) {
-        SysPollutionCode sysPollutionCode = sysPollutionCodeService.getOne(new QueryWrapper<SysPollutionCode>().lambda().eq(SysPollutionCode::getCode, code));
+    public Result<?> queryUnit(@RequestParam(name = "code") String code,@RequestParam(name = "siteType", required = true) String type) {
+        SysPollutionCode sysPollutionCode = sysPollutionCodeService.getOne(new QueryWrapper<SysPollutionCode>().lambda().eq(SysPollutionCode::getCode, code).eq(SysPollutionCode::getType,type));
         Map<String, String> param = new HashMap<>();
         param.put("unit", sysPollutionCode.getChromaUnit());
         return Result.ok(param);

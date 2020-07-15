@@ -154,7 +154,7 @@
   // 引入搜索部门弹出框的组件
   import departWindow from './DepartWindow'
   import JSelectPosition from '@/components/jeecgbiz/JSelectPosition'
-  import JSelectCompany from '../../site/component/JSelectCompany'
+  import JSelectCompany from '../../airq/component/JSelectCompany'
   import { ACCESS_TOKEN,USER_INFO } from "@/store/mutation-types"
   import { getAction } from '@/api/manage'
   import {addUser,editUser,queryUserRole,queryall } from '@/api/api'

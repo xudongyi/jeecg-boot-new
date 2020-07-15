@@ -11,7 +11,7 @@
     <a-spin :spinning="confirmLoading">
       <a-form :form="form">
 
-        <div>
+        <div style="height: 10%">
           <a-row>
             <a-col span="12">
               <a-form-item label="联系人姓名" :labelCol="labelCol" :wrapperCol="wrapperCol">
@@ -37,7 +37,7 @@
           </a-row>
         </div>
 
-        <div>
+        <div style="height: 450px">
           <a-row type="flex" justify="space-around" align="top">
             <a-col :span="8">
               <a-card title="所有站点">
@@ -53,7 +53,7 @@
               </a-card>
             </a-col>
             <a-col :span="4">
-              <div style="height: 800px">
+              <div style="height: 380px">
                 <a-button-group style="top: 50%;">
                   <a-button type="primary" @click="deleteArea" :disabled="disable"> <a-icon type="left" :disabled="disableSubmit" />删除 </a-button>
                   <a-button type="primary" @click="addArea" :disabled="disable"> 新增<a-icon type="right" :disabled="disableSubmit" /> </a-button>
@@ -107,7 +107,7 @@
       return {
         form: this.$form.createForm(this),
         title:"操作",
-        width:1000,
+        width:1100,
         visible: false,
         items:[],
         model: {},

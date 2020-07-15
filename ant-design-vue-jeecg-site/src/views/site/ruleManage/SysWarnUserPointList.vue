@@ -112,17 +112,21 @@
           {
             title:'联系人姓名',
             align:"center",
-            dataIndex: 'name'
+            dataIndex: 'name',
+            customRender: this.renderContent
           },
           {
             title:'手机号码',
             align:"center",
-            dataIndex: 'mobile'
+            dataIndex: 'mobile',
+            customRender: this.renderContent
           },
           {
             title:'所属单位',
             align:"center",
-            dataIndex: 'companyName'
+            dataIndex: 'companyName',
+            customRender: this.renderContent
+
           },
           {
             title:'责任站点',
@@ -146,6 +150,8 @@
           importExcelUrl: "swup/sysWarnUserPoint/importExcel",
         },
         dictOptions:{},
+        spanArr:[],
+        position:0,
       }
     },
     computed: {
@@ -153,7 +159,48 @@
         return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
       },
     },
+    watch: {
+      dataSource(val){
+        console.log(val)
+        this.rowspan(val)
+        console.log(this.spanArr,this.position)
+      }
+
+    },
     methods: {
+      renderContent (value, row, index)  {
+        const obj = {
+          children: value,
+          attrs: {}
+        };
+        const _row = this.spanArr[index];
+        const _col = _row> 0 ? 1 : 0;
+        obj.attrs = {
+          rowSpan: _row,
+          colSpan: _col
+        };
+        return obj;
+      },
+      rowspan(userData){
+        let _this = this
+        _this. spanArr=[];
+        _this. position=0;
+        userData.forEach((item,index) => {
+          if(index === 0){
+            _this.spanArr.push(1);
+            _this.position = 0;
+          }else{
+            //需要合并的地方判断
+            if(userData[index].mobile === userData[index-1].mobile ){
+              _this.spanArr[ _this.position] += 1;
+              _this.spanArr.push(0);
+            }else{
+              _this.spanArr.push(1);
+              _this.position = index;
+            }
+          }
+        });
+      },
       initDictConfig(){
       },
       handleView: function (record) {
@@ -167,6 +214,7 @@
         this.$refs.modalForm.disableSubmit = false;
       },
       calcIndex: function (t,r,index) {
+        console.log(t,r,index)
         return parseInt(index)+1+(this.ipagination.current-1)*this.ipagination.pageSize;
       },
     }
