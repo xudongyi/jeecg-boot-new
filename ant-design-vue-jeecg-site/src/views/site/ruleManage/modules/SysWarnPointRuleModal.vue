@@ -392,7 +392,7 @@
     }
   }
 </script>
-<style>
+<style scoped>
   .ant-form-item {
     margin-bottom: 8px;
   }
