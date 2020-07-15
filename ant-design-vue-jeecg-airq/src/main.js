@@ -46,7 +46,7 @@ import VueAreaLinkage from 'vue-area-linkage'
 import BaiduMap from 'vue-baidu-map'
 import echarts from 'echarts'
 
-Vue.prototype.$echarts = echarts;
+Vue.prototype.$echarts = echarts;//全局
 Vue.use(BaiduMap, {
   // ak 是在百度地图开发者平台申请的密钥 详见 http://lbsyun.baidu.com/apiconsole/key */
   ak: '0zRDaGirVYM1exXbHLZzGDAGuFG5rK5D'
