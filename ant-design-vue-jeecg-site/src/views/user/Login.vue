@@ -512,6 +512,24 @@
 </script>
 
 <style lang="less" scoped>
+  .ant-input-lg {
+    font-size: 18px;
+    font-family: SourceHanSansCN-Regular;
+  }
+
+
+
+  .ant-form-item {
+    margin-bottom: 35px !important;
+  }
+  .ant-form-item-with-help {
+    margin-bottom: 0 !important;
+  }
+  .has-error .ant-form-explain, .has-error .ant-form-split {
+    min-height: 37px !important;
+    line-height: 1.5 !important;
+    font-size: 18px !important;
+  }
   .user-layout-login {
     label {
       font-size: 14px;
@@ -566,22 +584,5 @@
     color: #f5222d;
   }
 
-  .ant-input-lg {
-    font-size: 18px;
-    font-family: SourceHanSansCN-Regular;
-  }
 
-
-
-  .ant-form-item {
-    margin-bottom: 35px !important;
-  }
-  .ant-form-item-with-help {
-    margin-bottom: 0 !important;
-  }
-  .has-error .ant-form-explain, .has-error .ant-form-split {
-    min-height: 37px !important;
-    line-height: 1.5 !important;
-    font-size: 18px !important;
-  }
 </style>
