@@ -9,6 +9,7 @@
     @cancel="handleCancel"
     cancelText="关闭">
     <a-spin :spinning="confirmLoading">
+      <div style="height: 500px">
       <a-layout>
           <a-layout-sider theme="light" width="300">
             <a-form :form="form">
@@ -25,24 +26,28 @@
 
             </a-form>
             <div v-show="!disableSubmit">
-              <a-tree
-                :checkable="true"
-                :expanded-keys="expandedKeys"
-                :auto-expand-parent="autoExpandParent"
-                :treeData="treeData"
-                @check="onCheck"
-                @select="onSelect"
-                @expand="onExpand"
-              >
-                <template slot="title" slot-scope="{ title }">
-                  <span v-if="title.indexOf(searchValue) > -1">
-                    {{ title.substr(0, title.indexOf(searchValue)) }}
-                    <span style="color: #f50">{{ searchValue }}</span>
-                    {{ title.substr(title.indexOf(searchValue) + searchValue.length) }}
-                  </span>
-                  <span v-else>{{ title }}</span>
-                </template>
-              </a-tree>
+              <happy-scroll>
+                <div style="height: 210px">
+                  <a-tree
+                    :checkable="true"
+                    :expanded-keys="expandedKeys"
+                    :auto-expand-parent="autoExpandParent"
+                    :treeData="treeData"
+                    @check="onCheck"
+                    @select="onSelect"
+                    @expand="onExpand"
+                  >
+                    <template slot="title" slot-scope="{ title }">
+                      <span v-if="title.indexOf(searchValue) > -1">
+                        {{ title.substr(0, title.indexOf(searchValue)) }}
+                        <span style="color: #f50">{{ searchValue }}</span>
+                        {{ title.substr(title.indexOf(searchValue) + searchValue.length) }}
+                      </span>
+                      <span v-else>{{ title }}</span>
+                    </template>
+                  </a-tree>
+                </div>
+              </happy-scroll>
             </div>
           </a-layout-sider>
           <a-layout-content>
@@ -65,7 +70,7 @@
             </a-table>
           </a-layout-content>
       </a-layout>
-
+      </div>
     </a-spin>
     <template slot="footer">
       <a-button type="primary" @click="handleCancel">关闭</a-button>
@@ -85,13 +90,18 @@
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import {querySiteName} from "../../../requestAction/request";
+  import Vue from 'vue'
+  import {HappyScroll} from 'vue-happy-scroll'
+  import 'vue-happy-scroll/docs/happy-scroll.css'
+
 
   export default {
     name: "SysWarnPointRuleModal",
     mixins:[JeecgListMixin, mixinDevice],
     components: { 
       JDictSelectTag,
-      AreaLinkSelect
+      AreaLinkSelect,
+      HappyScroll
     },
     data () {
       return {
@@ -382,3 +392,8 @@
     }
   }
 </script>
+<style>
+  .ant-form-item {
+    margin-bottom: 8px;
+  }
+</style>
