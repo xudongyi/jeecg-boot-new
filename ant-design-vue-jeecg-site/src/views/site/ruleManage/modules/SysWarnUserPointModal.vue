@@ -310,19 +310,16 @@
             _this.targetKeys.push(e)
           }
         )
-
-        this.checkedKeys2   = this.checkedKeys
-
+        this.checkedKeys2   = []
+        this.checkedKeys   = this.targetKeys
       },
       deleteArea(){
         //右边的处理完了
         let result = []
         let _this = this
         this.originalData2.forEach(e=>{
-          _this.checkedKeys2.forEach(element=>{
-            if(element===e.key)
+            if(_this.checkedKeys2.indexOf(e.key)<0)
               result.push(e)
-          })
         })
         this.treeData2 =   this.dealSiteData({result:result});
         this.targetKeys   = this.checkedKeys2
