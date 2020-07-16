@@ -1,7 +1,7 @@
 package org.jeecg.modules.business.mapper;
 
-import org.jeecg.modules.business.entity.AirqHour;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.jeecg.modules.business.entity.AirqHour;
 
 /**
  * @Description: airq_hour

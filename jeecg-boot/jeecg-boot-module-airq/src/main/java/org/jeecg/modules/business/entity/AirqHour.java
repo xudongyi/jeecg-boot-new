@@ -35,155 +35,155 @@ public class AirqHour implements Serializable {
 	@TableId(type = IdType.ID_WORKER_STR)
     @ApiModelProperty(value = "id")
     private java.lang.String id;
-	/**dataTime*/
-	@Excel(name = "dataTime", width = 15, format = "yyyy-MM-dd")
-	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
-    @DateTimeFormat(pattern="yyyy-MM-dd")
-    @ApiModelProperty(value = "dataTime")
+	/**数据时间*/
+	@Excel(name = "数据时间", width = 20, format = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty(value = "数据时间")
     private java.util.Date dataTime;
 	/**createTime*/
-	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
-    @DateTimeFormat(pattern="yyyy-MM-dd")
+	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "createTime")
     private java.util.Date createTime;
-	/**mn*/
-	@Excel(name = "mn", width = 15)
-    @ApiModelProperty(value = "mn")
+	/**mn号*/
+	@Excel(name = "mn号", width = 15)
+    @ApiModelProperty(value = "mn号")
     private java.lang.String mn;
-	/**state*/
-	@Excel(name = "state", width = 15)
-    @ApiModelProperty(value = "state")
+	/**小时数据平台状态*/
+	@Excel(name = "小时数据平台状态", width = 15)
+    @ApiModelProperty(value = "小时数据平台状态")
     private java.lang.Integer state;
-	/**level*/
-	@Excel(name = "level", width = 15)
-    @ApiModelProperty(value = "level")
+	/**空气质量级别*/
+	@Excel(name = "空气质量级别", width = 15)
+    @ApiModelProperty(value = "空气质量级别")
     private java.lang.String level;
-	/**firstCode*/
-	@Excel(name = "firstCode", width = 15)
-    @ApiModelProperty(value = "firstCode")
+	/**首要污染物*/
+	@Excel(name = "首要污染物", width = 15)
+    @ApiModelProperty(value = "首要污染物")
     private java.lang.String firstCode;
-	/**aqi*/
-	@Excel(name = "aqi", width = 15)
-    @ApiModelProperty(value = "aqi")
+	/**空气质量指数*/
+	@Excel(name = "空气质量指数", width = 15)
+    @ApiModelProperty(value = "空气质量指数")
     private java.lang.Double aqi;
-	/**a01006Avg*/
-	@Excel(name = "a01006Avg", width = 15)
-    @ApiModelProperty(value = "a01006Avg")
+	/**气压*/
+	@Excel(name = "气压", width = 15)
+    @ApiModelProperty(value = "气压")
     private java.lang.Double a01006Avg;
-	/**a01006Iaqi*/
-	@Excel(name = "a01006Iaqi", width = 15)
-    @ApiModelProperty(value = "a01006Iaqi")
+	/**气压Iaqi*/
+	@Excel(name = "气压Iaqi", width = 15)
+    @ApiModelProperty(value = "气压Iaqi")
     private java.lang.Double a01006Iaqi;
-	/**a21005Avg*/
-	@Excel(name = "a21005Avg", width = 15)
-    @ApiModelProperty(value = "a21005Avg")
+	/**CO*/
+	@Excel(name = "CO", width = 15)
+    @ApiModelProperty(value = "CO")
     private java.lang.Double a21005Avg;
-	/**a21005Iaqi*/
-	@Excel(name = "a21005Iaqi", width = 15)
-    @ApiModelProperty(value = "a21005Iaqi")
+	/**COIaqi*/
+	@Excel(name = "COIaqi", width = 15)
+    @ApiModelProperty(value = "COIaqi")
     private java.lang.Double a21005Iaqi;
-	/**a3400201Avg*/
-	@Excel(name = "a3400201Avg", width = 15)
-    @ApiModelProperty(value = "a3400201Avg")
+	/**PM10(1h)*/
+	@Excel(name = "PM10(1h)", width = 15)
+    @ApiModelProperty(value = "PM10(1h)")
     private java.lang.Double a3400201Avg;
-	/**a3400201Iaqi*/
-	@Excel(name = "a3400201Iaqi", width = 15)
-    @ApiModelProperty(value = "a3400201Iaqi")
+	/**PM10(1h)Iaqi*/
+	@Excel(name = "PM10(1h)Iaqi", width = 15)
+    @ApiModelProperty(value = "PM10(1h)Iaqi")
     private java.lang.Double a3400201Iaqi;
-	/**a01007Avg*/
-	@Excel(name = "a01007Avg", width = 15)
-    @ApiModelProperty(value = "a01007Avg")
+	/**风速*/
+	@Excel(name = "风速", width = 15)
+    @ApiModelProperty(value = "风速")
     private java.lang.Double a01007Avg;
-	/**a01007Iaqi*/
-	@Excel(name = "a01007Iaqi", width = 15)
-    @ApiModelProperty(value = "a01007Iaqi")
+	/**风速Iaqi*/
+	@Excel(name = "风速Iaqi", width = 15)
+    @ApiModelProperty(value = "风速Iaqi")
     private java.lang.Double a01007Iaqi;
-	/**a21004Avg*/
-	@Excel(name = "a21004Avg", width = 15)
-    @ApiModelProperty(value = "a21004Avg")
+	/**NO2*/
+	@Excel(name = "NO2", width = 15)
+    @ApiModelProperty(value = "NO2")
     private java.lang.Double a21004Avg;
-	/**a21004Iaqi*/
-	@Excel(name = "a21004Iaqi", width = 15)
-    @ApiModelProperty(value = "a21004Iaqi")
+	/**NO2Iaqi*/
+	@Excel(name = "NO2Iaqi", width = 15)
+    @ApiModelProperty(value = "NO2Iaqi")
     private java.lang.Double a21004Iaqi;
-	/**a3400424Avg*/
-	@Excel(name = "a3400424Avg", width = 15)
-    @ApiModelProperty(value = "a3400424Avg")
+	/**PM2.5(24h)*/
+	@Excel(name = "PM2.5(24h)", width = 15)
+    @ApiModelProperty(value = "PM2.5(24h)")
     private java.lang.Double a3400424Avg;
-	/**a3400424Iaqi*/
-	@Excel(name = "a3400424Iaqi", width = 15)
-    @ApiModelProperty(value = "a3400424Iaqi")
+	/**PM2.5(24h)Iaqi*/
+	@Excel(name = "PM2.5(24h)Iaqi", width = 15)
+    @ApiModelProperty(value = "PM2.5(24h)Iaqi")
     private java.lang.Double a3400424Iaqi;
-	/**a01001Avg*/
-	@Excel(name = "a01001Avg", width = 15)
-    @ApiModelProperty(value = "a01001Avg")
+	/**pH值*/
+	@Excel(name = "pH值", width = 15)
+    @ApiModelProperty(value = "pH值")
     private java.lang.Double a01001Avg;
-	/**a01001Iaqi*/
-	@Excel(name = "a01001Iaqi", width = 15)
-    @ApiModelProperty(value = "a01001Iaqi")
+	/**pH值Iaqi*/
+	@Excel(name = "pH值Iaqi", width = 15)
+    @ApiModelProperty(value = "pH值Iaqi")
     private java.lang.Double a01001Iaqi;
-	/**a21002Avg*/
-	@Excel(name = "a21002Avg", width = 15)
-    @ApiModelProperty(value = "a21002Avg")
+	/**NOx*/
+	@Excel(name = "NOx", width = 15)
+    @ApiModelProperty(value = "NOx")
     private java.lang.Double a21002Avg;
-	/**a21002Iaqi*/
-	@Excel(name = "a21002Iaqi", width = 15)
-    @ApiModelProperty(value = "a21002Iaqi")
+	/**NOxIaqi*/
+	@Excel(name = "NOxIaqi", width = 15)
+    @ApiModelProperty(value = "NOxIaqi")
     private java.lang.Double a21002Iaqi;
-	/**a0502408Avg*/
-	@Excel(name = "a0502408Avg", width = 15)
-    @ApiModelProperty(value = "a0502408Avg")
+	/**O3(8h)*/
+	@Excel(name = "O3(8h)", width = 15)
+    @ApiModelProperty(value = "O3(8h)")
     private java.lang.Double a0502408Avg;
-	/**a0502408Iaqi*/
-	@Excel(name = "a0502408Iaqi", width = 15)
-    @ApiModelProperty(value = "a0502408Iaqi")
+	/**O3(8h)Iaqi*/
+	@Excel(name = "O3(8h)Iaqi", width = 15)
+    @ApiModelProperty(value = "O3(8h)Iaqi")
     private java.lang.Double a0502408Iaqi;
-	/**a3400401Avg*/
-	@Excel(name = "a3400401Avg", width = 15)
-    @ApiModelProperty(value = "a3400401Avg")
+	/**PM2.5(1h)*/
+	@Excel(name = "PM2.5(1h)", width = 15)
+    @ApiModelProperty(value = "PM2.5(1h)")
     private java.lang.Double a3400401Avg;
-	/**a3400401Iaqi*/
-	@Excel(name = "a3400401Iaqi", width = 15)
-    @ApiModelProperty(value = "a3400401Iaqi")
+	/**PM2.5(1h)Iaqi*/
+	@Excel(name = "PM2.5(1h)Iaqi", width = 15)
+    @ApiModelProperty(value = "PM2.5(1h)Iaqi")
     private java.lang.Double a3400401Iaqi;
-	/**a0502401Avg*/
-	@Excel(name = "a0502401Avg", width = 15)
-    @ApiModelProperty(value = "a0502401Avg")
+	/**O3(1h)*/
+	@Excel(name = "O3(1h)", width = 15)
+    @ApiModelProperty(value = "O3(1h)")
     private java.lang.Double a0502401Avg;
-	/**a0502401Iaqi*/
-	@Excel(name = "a0502401Iaqi", width = 15)
-    @ApiModelProperty(value = "a0502401Iaqi")
+	/**O3(1h)Iaqi*/
+	@Excel(name = "O3(1h)Iaqi", width = 15)
+    @ApiModelProperty(value = "O3(1h)Iaqi")
     private java.lang.Double a0502401Iaqi;
-	/**a01002Avg*/
-	@Excel(name = "a01002Avg", width = 15)
-    @ApiModelProperty(value = "a01002Avg")
+	/**湿度*/
+	@Excel(name = "湿度", width = 15)
+    @ApiModelProperty(value = "湿度")
     private java.lang.Double a01002Avg;
-	/**a01002Iaqi*/
-	@Excel(name = "a01002Iaqi", width = 15)
-    @ApiModelProperty(value = "a01002Iaqi")
+	/**湿度Iaqi*/
+	@Excel(name = "湿度Iaqi", width = 15)
+    @ApiModelProperty(value = "湿度Iaqi")
     private java.lang.Double a01002Iaqi;
-	/**a21026Avg*/
-	@Excel(name = "a21026Avg", width = 15)
-    @ApiModelProperty(value = "a21026Avg")
+	/**SO2*/
+	@Excel(name = "SO2", width = 15)
+    @ApiModelProperty(value = "SO2")
     private java.lang.Double a21026Avg;
-	/**a21026Iaqi*/
-	@Excel(name = "a21026Iaqi", width = 15)
-    @ApiModelProperty(value = "a21026Iaqi")
+	/**SO2Iaqi*/
+	@Excel(name = "SO2Iaqi", width = 15)
+    @ApiModelProperty(value = "SO2Iaqi")
     private java.lang.Double a21026Iaqi;
-	/**a3400224Avg*/
-	@Excel(name = "a3400224Avg", width = 15)
-    @ApiModelProperty(value = "a3400224Avg")
+	/**PM10(24h)*/
+	@Excel(name = "PM10(24h)", width = 15)
+    @ApiModelProperty(value = "PM10(24h)")
     private java.lang.Double a3400224Avg;
-	/**a3400224Iaqi*/
-	@Excel(name = "a3400224Iaqi", width = 15)
-    @ApiModelProperty(value = "a3400224Iaqi")
+	/**PM10(24h)Iaqi*/
+	@Excel(name = "PM10(24h)Iaqi", width = 15)
+    @ApiModelProperty(value = "PM10(24h)Iaqi")
     private java.lang.Double a3400224Iaqi;
-	/**a21003Avg*/
-	@Excel(name = "a21003Avg", width = 15)
-    @ApiModelProperty(value = "a21003Avg")
+	/**NO*/
+	@Excel(name = "NO", width = 15)
+    @ApiModelProperty(value = "NO")
     private java.lang.Double a21003Avg;
-	/**a21003Iaqi*/
-	@Excel(name = "a21003Iaqi", width = 15)
-    @ApiModelProperty(value = "a21003Iaqi")
+	/**NOIaqi*/
+	@Excel(name = "NOIaqi", width = 15)
+    @ApiModelProperty(value = "NOIaqi")
     private java.lang.Double a21003Iaqi;
 }
