@@ -56,7 +56,19 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 		IPage<AirqHour> pageList = airqHourService.page(page, queryWrapper);
 		return Result.ok(pageList);
 	}
-	
+	 /**
+	  * 分页列表查询
+	  *
+	  * @param companyIds
+	  * @return
+	  */
+	 @AutoLog(value = "查询站点最新的")
+	 @ApiOperation(value="airq_hour-分页列表查询", notes="airq_hour-分页列表查询")
+	 @GetMapping(value = "/queryLastAirInfo")
+	 public Result<?> queryLastAirInfo(@RequestParam(name="companyIds",required=true) String companyIds) {
+
+		 return Result.ok(airqHourService.queryInfoByCompanyId(Arrays.asList(companyIds.split(","))));
+	 }
 	/**
 	 *   添加
 	 *

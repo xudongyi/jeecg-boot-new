@@ -109,6 +109,9 @@
       this.areaHandler = new AreaHandler()
     },
     methods: {
+      initArea(){
+        this.areaHandler = new AreaHandler()
+      },
       initDictData(dictCode) {
 
         //优先从缓存中读取字典配置

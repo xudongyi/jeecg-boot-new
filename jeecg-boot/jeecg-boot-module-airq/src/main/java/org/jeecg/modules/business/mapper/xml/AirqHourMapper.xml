@@ -2,4 +2,54 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.jeecg.modules.business.mapper.AirqHourMapper">
 
+    <resultMap id="AirSireInfo" type="org.jeecg.modules.business.vo.AirSiteInfo" >
+        <result column="mn" property="mn" jdbcType="VARCHAR"/>
+        <result column="online_status" property="onlineStatus" jdbcType="VARCHAR"/>
+        <result column="device_status" property="deviceStatus" jdbcType="VARCHAR"/>
+        <result column="level" property="level" jdbcType="VARCHAR"/>
+        <result column="site_longitude" property="siteLongitude" jdbcType="VARCHAR"/>
+        <result column="site_latitude" property="siteLatitude" jdbcType="TIMESTAMP"/>
+        <result column="company_id" property="companyId" jdbcType="VARCHAR"/>
+        <result column="site_name" property="siteName" jdbcType="VARCHAR"/>
+        <result column="aqi" property="aqi" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="VARCHAR"/>
+        <result column="first_code" property="firstCode" jdbcType="TIMESTAMP"/>
+        <result column="A3400401_avg" property="a3400401Avg" jdbcType="VARCHAR"/>
+        <result column="A3400201_avg" property="a3400201Avg" jdbcType="TIMESTAMP"/>
+        <result column="A21026_avg" property="a21026Avg" jdbcType="VARCHAR"/>
+        <result column="A21004_avg" property="a21004Avg" jdbcType="VARCHAR"/>
+        <result column="A0502401_avg" property="a0502401Avg" jdbcType="VARCHAR"/>
+        <result column="A0502408_avg" property="a0502408Avg" jdbcType="VARCHAR"/>
+        <result column="A21005_avg" property="a21005Avg" jdbcType="VARCHAR"/>
+        <result column="A01001_avg" property="a01001Avg" jdbcType="VARCHAR"/>
+        <result column="A01002_avg" property="a01002Avg" jdbcType="VARCHAR"/>
+        <result column="A01007_avg" property="a01007Avg" jdbcType="VARCHAR"/>
+        <result column="A01006_avg" property="a01006Avg" jdbcType="VARCHAR"/>
+        <result column="area" property="area" jdbcType="VARCHAR"/>
+        <result column="meaning" property="meaning" jdbcType="VARCHAR"/>
+        <result column="a3400424Avg" property="a3400424Avg" jdbcType="VARCHAR"/>
+        <result column="a3400224Avg" property="a3400224Avg" jdbcType="VARCHAR"/>
+
+    </resultMap>
+
+
+
+    <select id="queryInfoByCompanyId"   resultMap="AirSireInfo">
+
+        select a.mn,online_status,device_status,b.level,site_longitude,site_latitude,company_id,site_name,b.aqi,
+               max(b.CREATE_TIME) create_time,b.first_code,b.A3400401_avg,b.A3400201_avg,b.A21026_avg,b.A21004_avg,
+                b.A0502401_avg,b.A0502408_avg,b.A21005_avg,b.A01001_AVG,b.A01002_AVG,b.A01007_AVG
+               ,b.A01006_AVG,a.area,c.meaning,b.a3400424Avg,b.a3400224Avg
+        from site_monitor_point a left join airq_hour b on a.mn = b.MN
+        left join sys_pollution_code c on b.FIRST_CODE = c.code
+        where site_type = '3'
+         and company_id in
+          <foreach collection="companyIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    group by site_name
+    </select>
+
+
+
 </mapper>

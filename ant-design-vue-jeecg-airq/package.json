@@ -54,7 +54,6 @@
     "html-webpack-plugin": "^4.2.0",
     "less": "^3.9.0",
     "less-loader": "^4.1.0",
-    "vue-baidu-map": "^0.21.22",
     "vue-template-compiler": "^2.6.10"
   },
   "eslintConfig": {

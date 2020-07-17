@@ -49,7 +49,7 @@ public class CompanyBaseinfoController extends JeecgController<CompanyBaseinfo, 
 	/**
 	 * 分页列表查询
 	 *
-	 * @param companyBaseinfo
+	 * @param viewCompanyBase
 	 * @param pageNo
 	 * @param pageSize
 	 * @param req

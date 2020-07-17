@@ -1,7 +1,10 @@
 package org.jeecg.modules.business.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import org.jeecg.modules.business.entity.AirqHour;
+import com.baomidou.mybatisplus.extension.service.IService;
+import org.jeecg.modules.business.vo.AirSiteInfo;
+
+import java.util.List;
 
 /**
  * @Description: airq_hour
@@ -10,5 +13,7 @@ import org.jeecg.modules.business.entity.AirqHour;
  * @Version: V1.0
  */
 public interface IAirqHourService extends IService<AirqHour> {
+
+    List<AirSiteInfo> queryInfoByCompanyId(List<String> companyIds);
 
 }

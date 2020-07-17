@@ -10,6 +10,7 @@ const queryFiles = (params,url)=>getAction(url,params);
 const queryPollution = (params)=>getAction("/device/siteMonitorDevice/queryPollution",params);
 const queryUnit = (params)=>getAction("/device/siteMonitorDevice/queryUnit",params);
 const loadBaiduMap = (params)=>getAction("/site/siteMonitorPoint/loadBaiduMap",params);
+const queryLastAirInfo = (params)=>getAction("/hour/airqHour/queryLastAirInfo",params);
 export {
   queryCompanyName,
   getDetailMenus,
@@ -18,5 +19,6 @@ export {
   queryFiles,
   queryPollution,
   queryUnit,
-  loadBaiduMap
+  loadBaiduMap,
+  queryLastAirInfo
 }
