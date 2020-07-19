@@ -35,10 +35,12 @@
             <p>空气质量AQI:</p>
             <p>首要污染物:</p>
           </div>
-          <div style="margin: 5px 0 0 16px; ">
+          <div style="margin: 5px 0 0 100px; ">
             <p>{{getAreaBycode(detail.area)}}</p>
             <p>{{detail.createTime}}</p>
-            <p>{{detail.aqi}}</p>
+            <p ><a-tag color="#f50">
+              {{detail.aqi}}
+            </a-tag></p>
             <p>{{detail.meaning}}</p>
           </div>
         </div>
@@ -76,7 +78,7 @@
             <p>{{detail.a21004Avg}}ug/m<sup>3</sup></p>
             <p>{{detail.a0502408Avg}}ug/m<sup>3</sup></p>
             <p>{{detail.a01001Avg}}<sup>o</sup>C</p>
-            <p>{{detail.a01007Avg}}m/s></p>
+            <p>{{detail.a01007Avg}}m/s</p>
             <p>{{detail.a01006Avg}}kPa</p>
           </div>
         </div>
@@ -185,10 +187,10 @@
           let marker = new BMap.Point(vue.point.longitude, vue.point.latitude);
           // 设置中心点以及缩放级别
           vue.map.centerAndZoom(marker, this.zoom ? this.zoom : 15);
-          if (this.controlShow) {
-            vue.map.addControl(new BMap.NavigationControl());
-            //添加缩放控件
-          }
+          // if (this.controlShow) {
+          //   vue.map.addControl(new BMap.NavigationControl());
+          //   //添加缩放控件
+          // }
           //滚轮控制缩放
           vue.map.enableScrollWheelZoom(true);
           //双击缩放控制
@@ -269,10 +271,14 @@
               }else {
                 iconUrl = this.iconurl.serious
               }
-                let myIcon= new BMap.Icon(iconUrl, new BMap.Size(30,30));
-              var label = new BMap.Label(e.siteName,{offset:new BMap.Size(-40,30)});
-              var marker2 = new BMap.Marker(pt,{icon:myIcon});  // 创建标注
+              let myIcon= new BMap.Icon(iconUrl, new BMap.Size(30,30));
+              let label = new BMap.Label(e.siteName,{offset:new BMap.Size(-40,30)});
+              let marker2 = new BMap.Marker(pt,{icon:myIcon});  // 创建标注
               marker2.addEventListener("click",()=>{
+                vue.detail =  e
+                vue.detailAble=true
+              });
+              label.addEventListener("click",()=>{
                 vue.detail =  e
                 vue.detailAble=true
               });

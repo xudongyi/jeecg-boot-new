@@ -39,7 +39,7 @@
         select a.mn,online_status,device_status,b.level,site_longitude,site_latitude,company_id,site_name,b.aqi,
                max(b.CREATE_TIME) create_time,b.first_code,b.A3400401_avg,b.A3400201_avg,b.A21026_avg,b.A21004_avg,
                 b.A0502401_avg,b.A0502408_avg,b.A21005_avg,b.A01001_AVG,b.A01002_AVG,b.A01007_AVG
-               ,b.A01006_AVG,a.area,c.meaning,b.a3400424Avg,b.a3400224Avg
+               ,b.A01006_AVG,a.area,c.meaning,b.a3400424_Avg,b.A3400424_AVG
         from site_monitor_point a left join airq_hour b on a.mn = b.MN
         left join sys_pollution_code c on b.FIRST_CODE = c.code
         where site_type = '3'
