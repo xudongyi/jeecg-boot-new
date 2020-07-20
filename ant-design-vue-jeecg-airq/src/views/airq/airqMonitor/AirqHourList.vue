@@ -11,11 +11,6 @@
               <j-date :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择结束时间" class="query-group-cust" v-model="queryParam.createTime_end"></j-date>
             </a-form-item>
           </a-col>
-<!--          <a-col :xl="4" :lg="7" :md="8" :sm="24">-->
-<!--            <a-form-item label="申报状态">-->
-<!--              <j-dict-select-tag placeholder="请选择申报状态" v-model="queryParam.status" dictCode="statue" :excludeFields="['4']"/>-->
-<!--            </a-form-item>-->
-<!--          </a-col>-->
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="监测点位名称">
               <a-select v-model="queryParam.mn" show-search style="width: 100%" optionFilterProp="children">
@@ -39,6 +34,33 @@
 
     <!-- table区域-begin -->
     <div>
+
+
+      <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">
+        <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a style="font-weight: 600">{{
+        selectedRowKeys.length }}</a>项
+        <a style="margin-left: 24px" @click="onClearSelected">清空</a>
+        <span style="float:right;">
+          <a @click="loadData()"><a-icon type="sync" />刷新</a>
+          <a-divider type="vertical" />
+          <a-popover title="自定义列" trigger="click" placement="leftBottom">
+            <template slot="content">
+              <a-checkbox-group @change="onColSettingsChange" v-model="settingColumns" :defaultValue="settingColumns">
+                <a-row>
+                  <template v-for="(item,index) in defColumns">
+                    <template v-if="item.key!='rowIndex'&& item.dataIndex!='action'">
+                        <a-col :span="12"><a-checkbox :value="item.dataIndex">{{ item.title }}</a-checkbox></a-col>
+                    </template>
+                  </template>
+                </a-row>
+              </a-checkbox-group>
+            </template>
+            <a><a-icon type="setting" />设置</a>
+          </a-popover>
+        </span>
+      </div>
+
+
       <a-table
         ref="table"
         size="middle"
@@ -50,11 +72,26 @@
         :loading="loading"
         class="j-table-force-nowrap"
         @change="handleTableChange">
+
+        <div slot="filterDropdown">
+          <a-card>
+            <a-checkbox-group @change="onColSettingsChange" v-model="settingColumns" :defaultValue="settingColumns">
+              <a-row>
+                <template v-for="(item,index) in defColumns">
+                  <template v-if="item.key!='rowIndex'&& item.dataIndex!='action'">
+                    <a-col :span="12"><a-checkbox :value="item.dataIndex">{{ item.title }}</a-checkbox></a-col>
+                  </template>
+                </template>
+              </a-row>
+            </a-checkbox-group>
+          </a-card>
+        </div>
+
          <span slot="airLevel" slot-scope="text,record">
-      <a-tag :color="tagColors[record.level]" style="width: 90%">
-        {{ text}}
-      </a-tag>
-    </span>
+          <a-tag :color="tagColors[record.level]" style="width: 90%">
+            {{ text}}
+          </a-tag>
+         </span>
       </a-table>
     </div>
 
@@ -257,12 +294,6 @@
             align:"center",
             dataIndex: 'a01006Avg'
           },
-          // {
-          //   //title:'a01001Avg',
-          //   title:'pH值',
-          //   align:"center",
-          //   dataIndex: 'a01001Avg'
-          // },
           // {
           //   //title:'a21002Avg',
           //   title:'NOx',

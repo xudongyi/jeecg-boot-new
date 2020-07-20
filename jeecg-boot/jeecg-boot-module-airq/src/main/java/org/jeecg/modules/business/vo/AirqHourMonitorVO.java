@@ -83,6 +83,10 @@ public class AirqHourMonitorVO {
     @Excel(name = "PM2.5(24h)", width = 15)
     @ApiModelProperty(value = "PM2.5(24h)")
     private java.lang.Double a3400424Avg;
+    /**温度*/
+    @Excel(name = "温度", width = 15)
+    @ApiModelProperty(value = "温度")
+    private java.lang.Double a01001Avg;
     /**湿度*/
     @Excel(name = "湿度", width = 15)
     @ApiModelProperty(value = "湿度")
