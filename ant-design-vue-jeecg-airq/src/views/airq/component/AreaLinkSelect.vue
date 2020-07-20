@@ -125,6 +125,7 @@
         })
       },
       handleChange(values) {
+        this.innerValue = values
         let value = values[values.length - 1]
         this.$emit('change', value)
       },
