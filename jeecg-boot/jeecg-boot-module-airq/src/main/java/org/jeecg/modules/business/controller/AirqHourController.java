@@ -1,8 +1,13 @@
 package org.jeecg.modules.business.controller;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import cn.hutool.core.util.StrUtil;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.modules.business.entity.AirqHour;
@@ -14,6 +19,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 
 import org.jeecg.common.system.base.controller.JeecgController;
+import org.jeecg.modules.business.vo.AirqHourMonitorVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -69,6 +75,39 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 
 		 return Result.ok(airqHourService.queryInfoByCompanyId(Arrays.asList(companyIds.split(","))));
 	 }
+
+	 /**
+	  * 分页列表查询
+	  *
+	  * @param pageNo
+	  * @param pageSize
+	  * @param req
+	  * @return
+	  */
+	 @AutoLog(value = "查询站点最新的")
+	 @ApiOperation(value="airq_hour-分页列表查询", notes="airq_hour-分页列表查询")
+	 @GetMapping(value = "/queryLastAirqHour")
+	 public Result<?> queryAirqHourMonitor(@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+										   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
+										   HttpServletRequest req) throws ParseException {
+	 	 String area = req.getParameter("area");
+		 String siteName = req.getParameter("siteName");
+		 String createTimeBegin = req.getParameter("createTime_begin");
+		 String createTimeEnd = req.getParameter("createTime_end");
+		 Date dateBegin;
+		 Date dateEnd;
+		 if(StrUtil.isEmpty(createTimeBegin) && StrUtil.isEmpty(createTimeEnd)) {
+			 dateBegin = null;
+			 dateEnd = null;
+		 }else{
+			 dateBegin = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(createTimeBegin);
+			 dateEnd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(createTimeEnd);
+		 }
+		 Page<AirqHourMonitorVO> page = new Page<AirqHourMonitorVO>(pageNo, pageSize);
+		 IPage<AirqHourMonitorVO> pageList = airqHourService.queryAirqHourMonitor(page, area,siteName,dateBegin,dateEnd);
+		 return Result.ok(pageList);
+	 }
+
 	/**
 	 *   添加
 	 *

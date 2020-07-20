@@ -1,0 +1,301 @@
+<template>
+  <a-card :bordered="false">
+    <!-- 查询区域 -->
+    <div class="table-page-search-wrapper">
+      <a-form layout="inline" @keyup.enter.native="searchQuery">
+        <a-row :gutter="24">
+          <a-col :xl="10" :lg="11" :md="12" :sm="24">
+            <a-form-item label="发布时间">
+              <j-date :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择开始时间" class="query-group-cust" v-model="queryParam.createTime_begin"></j-date>
+              <span class="query-group-split-cust"></span>
+              <j-date :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择结束时间" class="query-group-cust" v-model="queryParam.createTime_end"></j-date>
+            </a-form-item>
+          </a-col>
+<!--          <a-col :xl="4" :lg="7" :md="8" :sm="24">-->
+<!--            <a-form-item label="申报状态">-->
+<!--              <j-dict-select-tag placeholder="请选择申报状态" v-model="queryParam.status" dictCode="statue" :excludeFields="['4']"/>-->
+<!--            </a-form-item>-->
+<!--          </a-col>-->
+<!--          <a-col :xl="6" :lg="7" :md="8" :sm="24">-->
+<!--            <a-form-item label="企业名称">-->
+<!--              <a-select v-model="queryParam.companyId" show-search style="width: 100%" optionFilterProp="children">-->
+<!--                <a-select-option :value="companyIds">请选择</a-select-option>-->
+<!--                <a-select-option v-for="item in items" :key="item.value" :value="item.key">-->
+<!--                  {{item.value}}-->
+<!--                </a-select-option>-->
+<!--              </a-select>-->
+<!--            </a-form-item>-->
+<!--          </a-col>-->
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
+              <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
+              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
+            </span>
+          </a-col>
+        </a-row>
+      </a-form>
+    </div>
+    <!-- 查询区域-END -->
+
+    <!-- table区域-begin -->
+    <div>
+      <a-table
+        ref="table"
+        size="middle"
+        bordered
+        rowKey="id"
+        :columns="columns"
+        :dataSource="dataSource"
+        :pagination="ipagination"
+        :loading="loading"
+        class="j-table-force-nowrap"
+        @change="handleTableChange">
+         <span slot="airLevel" slot-scope="text,record">
+      <a-tag
+        :color="tagColors[record.level]"
+      >
+        {{ text}}
+      </a-tag>
+    </span>
+      </a-table>
+    </div>
+
+  </a-card>
+</template>
+
+<script>
+
+  import '@/assets/less/TableExpand.less'
+  import { mixinDevice } from '@/utils/mixin'
+  import { JeecgListMixin } from '@/mixins/JeecgListMixin'
+  import JDate from '@/components/jeecg/JDate.vue'
+  import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
+
+  export default {
+    name: "AirqHourList",
+    mixins:[JeecgListMixin, mixinDevice],
+    components: {
+      JDate
+    },
+    data () {
+      return {
+        description: 'airq_hour管理页面',
+        tagColors:{
+          1:'#00E400',
+          2:'#EFD600',
+          3:'#FF7E00',
+          4:'#FF0000',
+          5:'#99004C',
+          6:'#7E0023',
+        },
+        // 表头
+        columns: [
+          {
+            title: '#',
+            dataIndex: '',
+            key:'rowIndex',
+            width:60,
+            align:"center",
+            customRender:function (t,r,index) {
+              return parseInt(index)+1;
+            }
+          },
+          // {
+          //   // title:'dataTime',
+          //   title:'数据时间',
+          //   align:"center",
+          //   dataIndex: 'dataTime',
+          //   customRender:function (text) {
+          //     return !text?"":(text.length>10?text.substr(0,10):text)
+          //   }
+          // },
+          {
+            title:'行政区域',
+            align:"center",
+            dataIndex: 'area',
+          },
+          {
+            title:'监测点位名称',
+            align:"center",
+            dataIndex: 'siteName',
+          },
+          {
+            //title:'createTime',
+            title:'发布时间',
+            align:"center",
+            dataIndex: 'createTime',
+          },
+          {
+            title:'空气质量指数(AQI)',
+            align:"center",
+            dataIndex: 'aqi'
+          },
+          {
+            title:'首要污染物',
+            align:"center",
+            dataIndex: 'meaning'
+          },
+          // {
+          //   title:'mn',
+          //   align:"center",
+          //   dataIndex: 'mn'
+          // },
+          // {
+          //   title:'state',
+          //   align:"center",
+          //   dataIndex: 'state'
+          // },
+          {
+            title:'空气质量指数级别',
+            align:"center",
+            dataIndex: 'level',
+            customRender:function (text){
+              if(text === '1'){
+                return "一级";
+              }else if(text==='2'){
+                return "二级";
+              }else if(text==='3'){
+                return "三级";
+              }else if(text==='4'){
+                return "四级";
+              }else if(text==='5'){
+                return "五级";
+              }else
+                return "六级";
+            }
+          },
+          {
+            title:'空气质量指数类别',
+            align:"center",
+            dataIndex: 'level_dictText',
+            key: 'airLevel',
+            scopedSlots: { customRender:'airLevel'}
+          },
+          {
+            //title:'a21026Avg',
+            title:'SO2 μg/m3',
+            align:"center",
+            dataIndex: 'a21026Avg'
+          },
+          {
+            //title:'a21004Avg',
+            title:'NO2 μg/m3',
+            align:"center",
+            dataIndex: 'a21004Avg'
+          },
+          {
+            //title:'a3400201Avg',
+            title:'PM10(1h)μg/m3',
+            align:"center",
+            dataIndex: 'a3400201Avg'
+          },
+          {
+            //title:'a3400224Avg',
+            title:'PM10(24h)μg/m3',
+            align:"center",
+            dataIndex: 'a3400224Avg'
+          },
+          {
+            //title:'a21005Avg',
+            title:'COμg/m3',
+            align:"center",
+            dataIndex: 'a21005Avg'
+          },
+          {
+            //title:'a0502401Avg',
+            title:'O3(1h)μg/m3',
+            align:"center",
+            dataIndex: 'a0502401Avg'
+          },
+          {
+            //title:'a0502408Avg',
+            title:'O3(8h)μg/m3',
+            align:"center",
+            dataIndex: 'a0502408Avg'
+          },
+          {
+            //title:'a3400401Avg',
+            title:'PM2.5(1h)μg/m3',
+            align:"center",
+            dataIndex: 'a3400401Avg'
+          },
+          {
+            //title:'a3400424Avg',
+            title:'PM2.5(24h)μg/m3',
+            align:"center",
+            dataIndex: 'a3400424Avg'
+          },
+          {
+            //title:'a01002Avg',
+            title:'温度(°C)',
+            align:"center",
+            dataIndex: 'a01001Avg'
+          },
+          {
+            //title:'a01002Avg',
+            title:'湿度(%)',
+            align:"center",
+            dataIndex: 'a01002Avg'
+          },
+          {
+            //title:'a01007Avg',
+            title:'风速(m/s)',
+            align:"center",
+            dataIndex: 'a01007Avg'
+          },
+          {
+            //title:'a21003Avg',
+            title:'风向',
+            align:"center",
+            dataIndex: 'a01008Avg'
+          },
+          {
+            // title:'a01006Avg',
+            title:'气压(kPa)',
+            align:"center",
+            dataIndex: 'a01006Avg'
+          },
+          // {
+          //   //title:'a01001Avg',
+          //   title:'pH值',
+          //   align:"center",
+          //   dataIndex: 'a01001Avg'
+          // },
+          // {
+          //   //title:'a21002Avg',
+          //   title:'NOx',
+          //   align:"center",
+          //   dataIndex: 'a21002Avg'
+          // },
+          // {
+          //   //title:'a21003Avg',
+          //   title:'NO',
+          //   align:"center",
+          //   dataIndex: 'a21003Avg'
+          // },
+        ],
+        url: {
+          list: "/hour/airqHour/queryLastAirqHour",
+          delete: "/hour/airqHour/delete",
+          deleteBatch: "/hour/airqHour/deleteBatch",
+          exportXlsUrl: "/hour/airqHour/exportXls",
+          importExcelUrl: "hour/airqHour/importExcel",
+        },
+        dictOptions:{},
+      }
+    },
+    computed: {
+      importExcelUrl: function(){
+        return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
+      },
+    },
+    methods: {
+      initDictConfig(){
+      }
+    },
+
+  }
+</script>
+<style scoped>
+  @import '~@assets/less/common.less';
+</style>
