@@ -19,5 +19,5 @@ public interface IAirqHourService extends IService<AirqHour> {
 
     List<AirSiteInfo> queryInfoByCompanyId(List<String> companyIds);
 
-    Page<AirqHourMonitorVO> queryAirqHourMonitor(Page page, String area, String siteName, Date dateBegin, Date dateEnd);
+    Page<AirqHourMonitorVO> queryAirqHourMonitor(Page page, String area, String mn, Date dateBegin, Date dateEnd);
 }

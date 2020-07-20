@@ -16,16 +16,16 @@
 <!--              <j-dict-select-tag placeholder="请选择申报状态" v-model="queryParam.status" dictCode="statue" :excludeFields="['4']"/>-->
 <!--            </a-form-item>-->
 <!--          </a-col>-->
-<!--          <a-col :xl="6" :lg="7" :md="8" :sm="24">-->
-<!--            <a-form-item label="企业名称">-->
-<!--              <a-select v-model="queryParam.companyId" show-search style="width: 100%" optionFilterProp="children">-->
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="监测点位名称">
+              <a-select v-model="queryParam.mn" show-search style="width: 100%" optionFilterProp="children">
 <!--                <a-select-option :value="companyIds">请选择</a-select-option>-->
-<!--                <a-select-option v-for="item in items" :key="item.value" :value="item.key">-->
-<!--                  {{item.value}}-->
-<!--                </a-select-option>-->
-<!--              </a-select>-->
-<!--            </a-form-item>-->
-<!--          </a-col>-->
+                <a-select-option v-for="item in items" :key="item.value" :value="item.key">
+                  {{item.value}}
+                </a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
@@ -51,9 +51,7 @@
         class="j-table-force-nowrap"
         @change="handleTableChange">
          <span slot="airLevel" slot-scope="text,record">
-      <a-tag
-        :color="tagColors[record.level]"
-      >
+      <a-tag :color="tagColors[record.level]" style="width: 90%">
         {{ text}}
       </a-tag>
     </span>
@@ -70,6 +68,9 @@
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import JDate from '@/components/jeecg/JDate.vue'
   import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
+  import {loadAreaDate} from '../component/areaUtil'
+  import AreaHandler from "../component/AreaHandler"
+  import {querySiteNameAndMn} from "../../requestAction/request";
 
   export default {
     name: "AirqHourList",
@@ -88,6 +89,7 @@
           5:'#99004C',
           6:'#7E0023',
         },
+        items:[],
         // 表头
         columns: [
           {
@@ -291,8 +293,32 @@
     },
     methods: {
       initDictConfig(){
-      }
+      },
+      initArea(){
+        this.areaHandler = new AreaHandler()
+      },
+      getAreaByCode(text){
+        if(!text)
+          return ''
+        //初始化
+        if(this.areaHandler==='')
+        {
+          this.initArea()
+        }
+        let arr = [];
+        this.areaHandler.getAreaByCode(text,arr);
+        return arr[0]+arr[1]
+      },
     },
+    mounted(){
+      let that = this;
+      querySiteNameAndMn().then((res)=>{
+        if(res.success){
+          console.log("!!",res.result);
+          that.items = res.result;
+        }
+      })
+    }
 
   }
 </script>

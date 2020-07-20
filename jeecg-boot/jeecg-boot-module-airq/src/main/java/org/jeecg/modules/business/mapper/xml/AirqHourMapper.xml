@@ -89,14 +89,14 @@
         <if test="area != null">
             and a.area = (#{area})
         </if>
-        <if test="siteName != null">
-            and a.site_name = (#{siteName})
+        <if test="mn != null">
+            and a.mn = (#{mn})
         </if>
         <if test="dateBegin != null">
-            and create_time >= (#{dateBegin})
+            and b.create_time >= (#{dateBegin})
         </if>
         <if test="dateEnd != null">
-            and create_time &lt;= (#{dateEnd})
+            and b.create_time &lt;= (#{dateEnd})
         </if>
       	group by a.site_name
         order by b.aqi asc

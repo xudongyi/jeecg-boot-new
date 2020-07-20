@@ -2,8 +2,8 @@ package org.jeecg.modules.business.controller;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
+import java.util.*;
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -11,6 +11,7 @@ import cn.hutool.core.util.StrUtil;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.modules.business.entity.AirqHour;
+import org.jeecg.modules.business.entity.SiteMonitorPoint;
 import org.jeecg.modules.business.service.IAirqHourService;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -19,6 +20,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 
 import org.jeecg.common.system.base.controller.JeecgController;
+import org.jeecg.modules.business.service.ISiteMonitorPointService;
 import org.jeecg.modules.business.vo.AirqHourMonitorVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -40,6 +42,9 @@ import org.jeecg.common.aspect.annotation.AutoLog;
 public class AirqHourController extends JeecgController<AirqHour, IAirqHourService> {
 	@Autowired
 	private IAirqHourService airqHourService;
+
+	@Autowired
+	private ISiteMonitorPointService siteMonitorPointService;
 	
 	/**
 	 * 分页列表查询
@@ -91,7 +96,8 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 										   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
 										   HttpServletRequest req) throws ParseException {
 	 	 String area = req.getParameter("area");
-		 String siteName = req.getParameter("siteName");
+	 	 //通过选择站点名称获取站点mn号
+		 String mn = req.getParameter("mn");
 		 String createTimeBegin = req.getParameter("createTime_begin");
 		 String createTimeEnd = req.getParameter("createTime_end");
 		 Date dateBegin;
@@ -104,8 +110,27 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 			 dateEnd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(createTimeEnd);
 		 }
 		 Page<AirqHourMonitorVO> page = new Page<AirqHourMonitorVO>(pageNo, pageSize);
-		 IPage<AirqHourMonitorVO> pageList = airqHourService.queryAirqHourMonitor(page, area,siteName,dateBegin,dateEnd);
+		 IPage<AirqHourMonitorVO> pageList = airqHourService.queryAirqHourMonitor(page, area,mn,dateBegin,dateEnd);
 		 return Result.ok(pageList);
+	 }
+
+	 /**
+	  * 分页列表查询
+	  *
+	  * @return
+	  */
+	 @AutoLog(value = "查询站点最新的")
+	 @ApiOperation(value="airq_hour-分页列表查询", notes="airq_hour-分页列表查询")
+	 @GetMapping(value = "/querySiteNameAndMn")
+	 public Result<?> querySiteNameAndMn() {
+		 List<Map<String,String>> result = new ArrayList<>();
+		 siteMonitorPointService.list(new QueryWrapper<SiteMonitorPoint>().lambda()).forEach(siteMonitorPoint -> {
+			 Map<String,String> param = new HashMap<>();
+			 param.put("key",siteMonitorPoint.getMn());
+			 param.put("value",siteMonitorPoint.getSiteName());
+			 result.add(param);
+		 });
+	 	 return Result.ok(result);
 	 }
 
 	/**
