@@ -55,7 +55,8 @@ public class AirqHour implements Serializable {
     @ApiModelProperty(value = "小时数据平台状态")
     private java.lang.Integer state;
 	/**空气质量级别*/
-	@Excel(name = "空气质量级别", width = 15)
+	@Excel(name = "空气质量级别", width = 15,dicCode = "level")
+    @Dict(dicCode = "level")
     @ApiModelProperty(value = "空气质量级别")
     private java.lang.String level;
 	/**首要污染物*/
