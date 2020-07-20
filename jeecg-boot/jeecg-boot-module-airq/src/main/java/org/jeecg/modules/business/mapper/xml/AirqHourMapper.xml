@@ -77,29 +77,54 @@
     </resultMap>
 
     <select id="queryAirqHourMonitor" resultMap="AirqHourMonitorVO">
-        select a.mn,a.site_name,b.`level` as airLevel,b.level,a.area,b.aqi,
-               max(b.CREATE_TIME) create_time,b.first_code,c.meaning,
-				b.a21026_avg,b.a21004_avg,b.a3400201_avg,b.a3400224_avg,
-				b.a21005_avg,b.a0502401_avg,b.a0502408_avg,b.a3400401_avg,
-				b.a3400424_avg,b.a01002_avg,b.a01007_avg,b.a01006_avg,b.A01008_AVG
+<!--        select a.mn,a.site_name,b.`level` as airLevel,b.level,a.area,b.aqi,-->
+<!--               max(b.CREATE_TIME) create_time,b.first_code,c.meaning,-->
+<!--				b.a21026_avg,b.a21004_avg,b.a3400201_avg,b.a3400224_avg,-->
+<!--				b.a21005_avg,b.a0502401_avg,b.a0502408_avg,b.a3400401_avg,-->
+<!--				b.a3400424_avg,b.a01002_avg,b.a01007_avg,b.a01006_avg,b.A01008_AVG-->
 
-		from airq_hour b  left join site_monitor_point a on  b.mn = a.mn
+<!--		from airq_hour b  left join site_monitor_point a on  b.mn = a.mn-->
+<!--        left join sys_pollution_code c on b.FIRST_CODE = c.code-->
+<!--        where 1=1-->
+<!--        <if test="area != null">-->
+<!--            and a.area = (#{area})-->
+<!--        </if>-->
+<!--        <if test="mn != null">-->
+<!--            and a.mn = (#{mn})-->
+<!--        </if>-->
+<!--        <if test="dateBegin != null">-->
+<!--            and b.create_time >= (#{dateBegin})-->
+<!--        </if>-->
+<!--        <if test="dateEnd != null">-->
+<!--            and b.create_time &lt;= (#{dateEnd})-->
+<!--        </if>-->
+<!--      	group by a.site_name-->
+<!--        order by b.aqi asc-->
+
+        select t1.* from (select a.mn,a.site_name,b.`level` as airLevel,b.level,a.area,b.aqi,
+        max(b.CREATE_TIME) create_time,b.first_code,c.meaning,
+        b.a21026_avg,b.a21004_avg,b.a3400201_avg,b.a3400224_avg,
+        b.a21005_avg,b.a0502401_avg,b.a0502408_avg,b.a3400401_avg,
+        b.a3400424_avg,b.a01002_avg,b.a01007_avg,b.a01006_avg,b.A01008_AVG
+
+        from airq_hour b  left join site_monitor_point a on  b.mn = a.mn
         left join sys_pollution_code c on b.FIRST_CODE = c.code
+        group by a.site_name
+        order by b.aqi asc) t1
         where 1=1
         <if test="area != null">
-            and a.area = (#{area})
+            and t1.area = (#{area})
         </if>
         <if test="mn != null">
-            and a.mn = (#{mn})
+            and t1.mn = (#{mn})
         </if>
         <if test="dateBegin != null">
-            and b.create_time >= (#{dateBegin})
+            and t1.create_time >= (#{dateBegin})
         </if>
         <if test="dateEnd != null">
-            and b.create_time &lt;= (#{dateEnd})
+            and t1.create_time &lt;= (#{dateEnd})
         </if>
-      	group by a.site_name
-        order by b.aqi asc
+
     </select>
 
 
