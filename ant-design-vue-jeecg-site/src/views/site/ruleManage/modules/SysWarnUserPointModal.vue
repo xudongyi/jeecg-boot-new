@@ -192,7 +192,7 @@
         let _this = this;
 
         //先把所有的数据都查询出来
-        querySiteName().then((res) => {
+        querySiteName({companyIds:this.$store.getters.userInfo.companyIds.join(',')}).then((res) => {
           if (res.success) {
             _this.originalData = res.result
             _this.treeDataSource = this.dealSiteData(res);

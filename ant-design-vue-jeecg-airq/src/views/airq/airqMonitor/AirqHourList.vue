@@ -135,6 +135,7 @@
             title:'行政区域',
             align:"center",
             dataIndex: 'area',
+            customRender:this.getAreaByCode,
           },
           {
             title:'监测点位名称',
@@ -298,6 +299,8 @@
           importExcelUrl: "hour/airqHour/importExcel",
         },
         dictOptions:{},
+        areaHandler:''
+
       }
     },
     computed: {
@@ -307,11 +310,13 @@
     },
     methods: {
       initDictConfig(){
+        loadAreaDate()
       },
       initArea(){
         this.areaHandler = new AreaHandler()
       },
       getAreaByCode(text){
+        debugger
         if(!text)
           return ''
         //初始化
@@ -320,7 +325,7 @@
           this.initArea()
         }
         let arr = [];
-        this.areaHandler.getAreaByCode(text,arr);
+        this.areaHandler.getAreaBycode(text,arr);
         return arr[0]+arr[1]
       },
       //列设置更改事件

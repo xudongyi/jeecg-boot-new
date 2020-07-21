@@ -111,7 +111,7 @@
         from airq_hour b  left join site_monitor_point a on  b.mn = a.mn
         left join sys_pollution_code c on b.FIRST_CODE = c.code
         group by a.site_name
-        order by b.aqi asc) t1
+        order by b.aqi asc,b.create_time desc) t1
         where 1=1
         <if test="area != null">
             and t1.area = (#{area})
