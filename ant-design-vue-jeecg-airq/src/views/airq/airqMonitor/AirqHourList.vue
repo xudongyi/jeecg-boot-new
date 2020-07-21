@@ -4,14 +4,12 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
-          <a-col :xl="10" :lg="11" :md="12" :sm="24">
-            <a-form-item label="发布时间">
-              <j-date :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择开始时间" class="query-group-cust" v-model="queryParam.createTime_begin"></j-date>
-              <span class="query-group-split-cust"></span>
-              <j-date :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择结束时间" class="query-group-cust" v-model="queryParam.createTime_end"></j-date>
+          <a-col :xl="5" :lg="7" :md="8" :sm="24">
+            <a-form-item label="所属区域">
+              <area-link-select type="cascader" v-model="queryParam.area" show-search style="width: 100%" optionFilterProp="children"/>
             </a-form-item>
           </a-col>
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+          <a-col :xl="5" :lg="7" :md="8" :sm="24">
             <a-form-item label="监测点位名称">
               <a-select v-model="queryParam.mn" show-search style="width: 100%" optionFilterProp="children">
 <!--                <a-select-option :value="companyIds">请选择</a-select-option>-->
@@ -21,7 +19,14 @@
               </a-select>
             </a-form-item>
           </a-col>
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+          <a-col :xl="9" :lg="11" :md="12" :sm="24">
+            <a-form-item label="发布时间">
+              <j-date :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择开始时间" class="query-group-cust" v-model="queryParam.createTime_begin"></j-date>
+              <span class="query-group-split-cust"></span>
+              <j-date :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择结束时间" class="query-group-cust" v-model="queryParam.createTime_end" ></j-date>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="5" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
@@ -84,12 +89,14 @@
   import AreaHandler from "../component/AreaHandler"
   import {querySiteNameAndMn} from "../../requestAction/request";
   import Vue from 'vue'
+  import AreaLinkSelect from '../component/AreaLinkSelect'
 
   export default {
     name: "AirqHourList",
     mixins:[JeecgListMixin, mixinDevice],
     components: {
-      JDate
+      JDate,
+      AreaLinkSelect
     },
     data () {
       return {
@@ -151,7 +158,8 @@
           {
             title:'空气质量指数(AQI)',
             align:"center",
-            dataIndex: 'aqi'
+            dataIndex: 'aqi',
+            sorter: (a, b) => a.aqi - b.aqi
           },
           {
             title:'首要污染物',
@@ -192,91 +200,106 @@
             align:"center",
             dataIndex: 'level_dictText',
             key: 'airLevel',
-            scopedSlots: { customRender:'airLevel'}
+            scopedSlots: { customRender:'airLevel'},
+            sorter: (a, b) => a.level_dictText - b.level_dictText
           },
           {
             //title:'a21026Avg',
             title:'SO2 μg/m3',
             align:"center",
-            dataIndex: 'a21026Avg'
+            dataIndex: 'a21026Avg',
+            sorter: (a, b) => a.a21026Avg - b.a21026Avg
           },
           {
             //title:'a21004Avg',
             title:'NO2 μg/m3',
             align:"center",
-            dataIndex: 'a21004Avg'
+            dataIndex: 'a21004Avg',
+            sorter: (a, b) => a.a21004Avg - b.a21004Avg
           },
           {
             //title:'a3400201Avg',
             title:'PM10(1h)μg/m3',
             align:"center",
-            dataIndex: 'a3400201Avg'
+            dataIndex: 'a3400201Avg',
+            sorter: (a, b) => a.a3400201Avg - b.a3400201Avg
           },
           {
             //title:'a3400224Avg',
             title:'PM10(24h)μg/m3',
             align:"center",
-            dataIndex: 'a3400224Avg'
+            dataIndex: 'a3400224Avg',
+            sorter: (a, b) => a.a3400224Avg - b.a3400224Avg
           },
           {
             //title:'a21005Avg',
             title:'COμg/m3',
             align:"center",
-            dataIndex: 'a21005Avg'
+            dataIndex: 'a21005Avg',
+            sorter: (a, b) => a.a21005Avg - b.a21005Avg
           },
           {
             //title:'a0502401Avg',
             title:'O3(1h)μg/m3',
             align:"center",
-            dataIndex: 'a0502401Avg'
+            dataIndex: 'a0502401Avg',
+            sorter: (a, b) => a.a0502401Avg - b.a0502401Avg
           },
           {
             //title:'a0502408Avg',
             title:'O3(8h)μg/m3',
             align:"center",
-            dataIndex: 'a0502408Avg'
+            dataIndex: 'a0502408Avg',
+            sorter: (a, b) => a.a0502408Avg - b.a0502408Avg
           },
           {
             //title:'a3400401Avg',
             title:'PM2.5(1h)μg/m3',
             align:"center",
-            dataIndex: 'a3400401Avg'
+            dataIndex: 'a3400401Avg',
+            sorter: (a, b) => a.a3400401Avg - b.a3400401Avg
           },
           {
             //title:'a3400424Avg',
             title:'PM2.5(24h)μg/m3',
             align:"center",
-            dataIndex: 'a3400424Avg'
+            dataIndex: 'a3400424Avg',
+            sorter: (a, b) => a.a3400424Avg - b.a3400424Avg
           },
           {
             //title:'a01002Avg',
             title:'温度(°C)',
             align:"center",
-            dataIndex: 'a01001Avg'
+            dataIndex: 'a01001Avg',
+            sorter: (a, b) => a.a01001Avg - b.a01001Avg
           },
           {
             //title:'a01002Avg',
             title:'湿度(%)',
             align:"center",
-            dataIndex: 'a01002Avg'
+            dataIndex: 'a01002Avg',
+            sorter: (a, b) => a.a01002Avg - b.a01002Avg
           },
           {
             //title:'a01007Avg',
             title:'风速(m/s)',
             align:"center",
-            dataIndex: 'a01007Avg'
+            dataIndex: 'a01007Avg',
+            sorter: (a, b) => a.a01007Avg - b.a01007Avg
           },
           {
             //title:'a21003Avg',
             title:'风向',
             align:"center",
-            dataIndex: 'a01008Avg'
+            dataIndex: 'a01008Avg',
+            sorter: (a, b) => a.a01008Avg - b.a01008Avg
           },
           {
             // title:'a01006Avg',
             title:'气压(kPa)',
             align:"center",
-            dataIndex: 'a01006Avg'
+            dataIndex: 'a01006Avg',
+            sorter: (a, b) => a.a01006Avg - b.a01006Avg
           },
           // {
           //   //title:'a21002Avg',
@@ -316,7 +339,6 @@
         this.areaHandler = new AreaHandler()
       },
       getAreaByCode(text){
-        debugger
         if(!text)
           return ''
         //初始化
@@ -326,7 +348,7 @@
         }
         let arr = [];
         this.areaHandler.getAreaBycode(text,arr);
-        return arr[0]+arr[1]
+        return arr[0]+arr[1]+arr[2]
       },
       //列设置更改事件
       onColSettingsChange (checkedValues) {
