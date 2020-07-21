@@ -22,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jeecg.common.system.base.controller.JeecgController;
 import org.jeecg.modules.business.service.ISiteMonitorPointService;
 import org.jeecg.modules.business.vo.AirqHourInputVO;
+import org.jeecg.modules.business.vo.AirqHourManInsertVO;
 import org.jeecg.modules.business.vo.AirqHourMonitorVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -145,6 +146,44 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 		 }
 		 Page<AirqHourInputVO> page = new Page<AirqHourInputVO>(pageNo, pageSize);
 		 IPage<AirqHourInputVO> pageList = airqHourService.queryAirqHourInput(page, area,mn,dateBegin,dateEnd);
+		 return Result.ok(pageList);
+	 }
+
+	 /**
+	  * 分页列表查询
+	  *
+	  * @param pageNo
+	  * @param pageSize
+	  * @param req
+	  * @return
+	  */
+	 @AutoLog(value = "查询站点录入")
+	 @ApiOperation(value="airq_hour-分页列表查询", notes="airq_hour-分页列表查询")
+	 @GetMapping(value = "/queryManInsertAirqHour")
+	 public Result<?> queryAirqHourManInsert(@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+										 @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
+										 HttpServletRequest req) throws ParseException {
+		 String area = req.getParameter("area");
+		 //通过选择站点名称获取站点mn号
+		 String mn = req.getParameter("mn");
+		 String dataState = req.getParameter("state");
+		 Integer state = null;
+		 if(!StrUtil.isEmpty(dataState)) {
+		 	state = Integer.valueOf(dataState);
+		 }
+		 String dataTimeBegin = req.getParameter("dataTime_begin");
+		 String dataTimeEnd = req.getParameter("dataTime_end");
+		 Date dateBegin;
+		 Date dateEnd;
+		 if(StrUtil.isEmpty(dataTimeBegin) && StrUtil.isEmpty(dataTimeEnd)) {
+			 dateBegin = null;
+			 dateEnd = null;
+		 }else{
+			 dateBegin = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dataTimeBegin);
+			 dateEnd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dataTimeEnd);
+		 }
+		 Page<AirqHourManInsertVO> page = new Page<AirqHourManInsertVO>(pageNo, pageSize);
+		 IPage<AirqHourManInsertVO> pageList = airqHourService.queryAirqHourManInsert(page, area,mn,state,dateBegin,dateEnd);
 		 return Result.ok(pageList);
 	 }
 

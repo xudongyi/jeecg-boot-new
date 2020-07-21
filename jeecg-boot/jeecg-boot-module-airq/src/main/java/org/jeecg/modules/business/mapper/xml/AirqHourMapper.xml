@@ -184,4 +184,63 @@
 
     </select>
 
+    <resultMap id="AirqHourManInsertVO" type="org.jeecg.modules.business.vo.AirqHourManInsertVO" >
+        <result column="mn" property="mn" jdbcType="VARCHAR"/>
+        <result column="area" property="area" jdbcType="VARCHAR"/>
+        <result column="state" property="state" jdbcType="INTEGER"/>
+        <result column="site_name" property="siteName" jdbcType="VARCHAR"/>
+        <result column="aqi" property="aqi" jdbcType="VARCHAR"/>
+        <result column="data_time" property="dataTime" jdbcType="TIMESTAMP"/>
+        <result column="first_code" property="firstCode" jdbcType="VARCHAR"/>
+        <result column="airLevel" property="airLevel" jdbcType="VARCHAR"/>
+        <result column="level" property="level" jdbcType="VARCHAR"/>
+        <result column="A21026_avg" property="a21026Avg" jdbcType="DOUBLE"/>
+        <result column="A21004_avg" property="a21004Avg" jdbcType="DOUBLE"/>
+        <result column="A3400201_avg" property="a3400201Avg" jdbcType="DOUBLE"/>
+        <result column="a3400224_avg" property="a3400224Avg" jdbcType="DOUBLE"/>
+        <result column="A21005_avg" property="a21005Avg" jdbcType="DOUBLE"/>
+        <result column="A0502401_avg" property="a0502401Avg" jdbcType="DOUBLE"/>
+        <result column="A0502408_avg" property="a0502408Avg" jdbcType="DOUBLE"/>
+        <result column="A3400401_avg" property="a3400401Avg" jdbcType="DOUBLE"/>
+        <result column="a3400424_avg" property="a3400424Avg" jdbcType="DOUBLE"/>
+        <result column="A01001_avg" property="a01001Avg" jdbcType="DOUBLE"/>
+        <result column="A01002_avg" property="a01002Avg" jdbcType="DOUBLE"/>
+        <result column="A01007_avg" property="a01007Avg" jdbcType="DOUBLE"/>
+        <result column="A01006_avg" property="a01006Avg" jdbcType="DOUBLE"/>
+        <result column="A01008_AVG" property="a01008Avg" jdbcType="VARCHAR"/>
+        <result column="meaning" property="meaning" jdbcType="VARCHAR"/>
+
+    </resultMap>
+
+    <select id="queryAirqHourManInsert" resultMap="AirqHourManInsertVO">
+
+        select t1.* from (select a.mn,a.site_name,b.`level` as airLevel,b.level,a.area,b.aqi,
+        max(b.data_time) data_time,b.first_code,c.meaning,b.state,
+        b.a21026_avg,b.a21004_avg,b.a3400201_avg,b.a3400224_avg,
+        b.a21005_avg,b.a0502401_avg,b.a0502408_avg,b.a3400401_avg,
+        b.a3400424_avg,b.a01001_avg,b.a01002_avg,b.a01007_avg,b.a01006_avg,b.A01008_AVG
+
+        from airq_hour b  left join site_monitor_point a on  b.mn = a.mn
+        left join sys_pollution_code c on b.FIRST_CODE = c.code WHERE b.state in (1)
+        group by a.site_name
+        order by b.aqi asc,b.data_time desc) t1
+        where 1=1
+        <if test="area != null">
+            and t1.area = (#{area})
+        </if>
+        <if test="mn != null">
+            and t1.mn = (#{mn})
+        </if>
+        <if test="state != null">
+            and t1.state = (#{state})
+        </if>
+        <if test="dateBegin != null">
+            and t1.data_time >= (#{dateBegin})
+        </if>
+        <if test="dateEnd != null">
+            and t1.data_time &lt;= (#{dateEnd})
+        </if>
+
+    </select>
+
 </mapper>

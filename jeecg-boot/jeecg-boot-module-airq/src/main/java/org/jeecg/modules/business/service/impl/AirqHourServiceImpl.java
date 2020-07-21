@@ -7,6 +7,7 @@ import org.jeecg.modules.business.mapper.AirqHourMapper;
 import org.jeecg.modules.business.service.IAirqHourService;
 import org.jeecg.modules.business.vo.AirSiteInfo;
 import org.jeecg.modules.business.vo.AirqHourInputVO;
+import org.jeecg.modules.business.vo.AirqHourManInsertVO;
 import org.jeecg.modules.business.vo.AirqHourMonitorVO;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +42,11 @@ public class AirqHourServiceImpl extends ServiceImpl<AirqHourMapper, AirqHour> i
     @Override
     public Page<AirqHourInputVO> queryAirqHourInput(Page page, String area, String mn, Date dateBegin, Date dateEnd) {
         return page.setRecords(airqHourMapper.queryAirqHourInput(page, area, mn, dateBegin, dateEnd));
+    }
+
+    @Override
+    public Page<AirqHourManInsertVO> queryAirqHourManInsert(Page page, String area, String mn, Integer state, Date dateBegin, Date dateEnd) {
+        return page.setRecords(airqHourMapper.queryAirqHourManInsert(page, area, mn, state,dateBegin, dateEnd));
     }
 
 
