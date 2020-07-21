@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Param;
 import org.jeecg.modules.business.entity.AirqHour;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.jeecg.modules.business.vo.AirSiteInfo;
+import org.jeecg.modules.business.vo.AirqHourInputVO;
 import org.jeecg.modules.business.vo.AirqHourMonitorVO;
 
 import java.util.Date;
@@ -21,5 +22,7 @@ public interface AirqHourMapper extends BaseMapper<AirqHour> {
     List<AirSiteInfo> queryInfoByCompanyId(@Param("companyIds")List<String> companyIds);
 
     List<AirqHourMonitorVO> queryAirqHourMonitor(Page page,String area,String mn, Date dateBegin, Date dateEnd);
+
+    List<AirqHourInputVO> queryAirqHourInput(Page page, String area, String mn, Date dateBegin, Date dateEnd);
 
 }
