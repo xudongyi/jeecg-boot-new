@@ -129,15 +129,6 @@
               filterDropdown: 'filterDropdown',
               filterIcon: 'filterIcon'},
           },
-          // {
-          //   // title:'dataTime',
-          //   title:'数据时间',
-          //   align:"center",
-          //   dataIndex: 'dataTime',
-          //   customRender:function (text) {
-          //     return !text?"":(text.length>10?text.substr(0,10):text)
-          //   }
-          // },
           {
             title:'行政区域',
             align:"center",
@@ -153,7 +144,7 @@
             //title:'createTime',
             title:'发布时间',
             align:"center",
-            dataIndex: 'createTime',
+            dataIndex: 'dataTime',
           },
           {
             title:'空气质量指数(AQI)',
@@ -166,16 +157,6 @@
             align:"center",
             dataIndex: 'meaning'
           },
-          // {
-          //   title:'mn',
-          //   align:"center",
-          //   dataIndex: 'mn'
-          // },
-          // {
-          //   title:'state',
-          //   align:"center",
-          //   dataIndex: 'state'
-          // },
           {
             title:'空气质量指数级别',
             align:"center",
@@ -300,19 +281,7 @@
             align:"center",
             dataIndex: 'a01006Avg',
             sorter: (a, b) => a.a01006Avg - b.a01006Avg
-          },
-          // {
-          //   //title:'a21002Avg',
-          //   title:'NOx',
-          //   align:"center",
-          //   dataIndex: 'a21002Avg'
-          // },
-          // {
-          //   //title:'a21003Avg',
-          //   title:'NO',
-          //   align:"center",
-          //   dataIndex: 'a21003Avg'
-          // },
+          }
         ],
         url: {
           list: "/hour/airqHour/queryInputAirqHour",

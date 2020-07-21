@@ -21,11 +21,12 @@ public class AirqHourMonitorVO {
     监测点位名称
      */
     private String siteName;
-    /**createTime*/
+    /**数据时间*/
+    @Excel(name = "数据时间", width = 20, format = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    @ApiModelProperty(value = "createTime")
-    private java.util.Date createTime;
+    @ApiModelProperty(value = "数据时间")
+    private java.util.Date dataTime;
     /**空气质量指数*/
     @Excel(name = "空气质量指数", width = 15)
     @ApiModelProperty(value = "空气质量指数")

@@ -150,10 +150,9 @@
             dataIndex: 'siteName',
           },
           {
-            //title:'createTime',
             title:'发布时间',
             align:"center",
-            dataIndex: 'createTime',
+            dataIndex: 'dataTime',
           },
           {
             title:'空气质量指数(AQI)',
