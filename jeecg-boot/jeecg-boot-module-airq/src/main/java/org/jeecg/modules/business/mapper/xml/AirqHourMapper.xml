@@ -131,6 +131,7 @@
     <resultMap id="AirqHourInputVO" type="org.jeecg.modules.business.vo.AirqHourInputVO" >
         <result column="mn" property="mn" jdbcType="VARCHAR"/>
         <result column="area" property="area" jdbcType="VARCHAR"/>
+        <result column="state" property="state" jdbcType="INTEGER"/>
         <result column="site_name" property="siteName" jdbcType="VARCHAR"/>
         <result column="aqi" property="aqi" jdbcType="VARCHAR"/>
         <result column="data_time" property="dataTime" jdbcType="TIMESTAMP"/>
@@ -158,7 +159,7 @@
     <select id="queryAirqHourInput" resultMap="AirqHourInputVO">
 
         select t1.* from (select a.mn,a.site_name,b.`level` as airLevel,b.level,a.area,b.aqi,
-        max(b.data_time) data_time,b.first_code,c.meaning,
+        max(b.data_time) data_time,b.first_code,c.meaning,b.state,
         b.a21026_avg,b.a21004_avg,b.a3400201_avg,b.a3400224_avg,
         b.a21005_avg,b.a0502401_avg,b.a0502408_avg,b.a3400401_avg,
         b.a3400424_avg,b.a01001_avg,b.a01002_avg,b.a01007_avg,b.a01006_avg,b.A01008_AVG

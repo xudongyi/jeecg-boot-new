@@ -13,6 +13,11 @@ public class AirqHourInputVO {
     行政区域
      */
     private String area;
+    /**小时数据平台状态*/
+    @Excel(name = "小时数据平台状态", width = 15, dicCode = "airDataStatus")
+    @Dict(dicCode = "airDataStatus")
+    @ApiModelProperty(value = "小时数据平台状态")
+    private java.lang.Integer state;
     /**mn号*/
     @Excel(name = "mn号", width = 15)
     @ApiModelProperty(value = "mn号")

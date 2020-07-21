@@ -99,16 +99,16 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 	 	 String area = req.getParameter("area");
 	 	 //通过选择站点名称获取站点mn号
 		 String mn = req.getParameter("mn");
-		 String createTimeBegin = req.getParameter("createTime_begin");
-		 String createTimeEnd = req.getParameter("createTime_end");
+		 String dataTimeBegin = req.getParameter("dataTime_begin");
+		 String dataTimeEnd = req.getParameter("dataTime_end");
 		 Date dateBegin;
 		 Date dateEnd;
-		 if(StrUtil.isEmpty(createTimeBegin) && StrUtil.isEmpty(createTimeEnd)) {
+		 if(StrUtil.isEmpty(dataTimeBegin) && StrUtil.isEmpty(dataTimeEnd)) {
 			 dateBegin = null;
 			 dateEnd = null;
 		 }else{
-			 dateBegin = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(createTimeBegin);
-			 dateEnd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(createTimeEnd);
+			 dateBegin = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dataTimeBegin);
+			 dateEnd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dataTimeEnd);
 		 }
 		 Page<AirqHourMonitorVO> page = new Page<AirqHourMonitorVO>(pageNo, pageSize);
 		 IPage<AirqHourMonitorVO> pageList = airqHourService.queryAirqHourMonitor(page, area,mn,dateBegin,dateEnd);
@@ -123,7 +123,7 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 	  * @param req
 	  * @return
 	  */
-	 @AutoLog(value = "查询站点最新的")
+	 @AutoLog(value = "查询站点录入")
 	 @ApiOperation(value="airq_hour-分页列表查询", notes="airq_hour-分页列表查询")
 	 @GetMapping(value = "/queryInputAirqHour")
 	 public Result<?> queryAirqHourInput(@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
@@ -132,16 +132,16 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 		 String area = req.getParameter("area");
 		 //通过选择站点名称获取站点mn号
 		 String mn = req.getParameter("mn");
-		 String createTimeBegin = req.getParameter("createTime_begin");
-		 String createTimeEnd = req.getParameter("createTime_end");
+		 String dataTimeBegin = req.getParameter("dataTime_begin");
+		 String dataTimeEnd = req.getParameter("dataTime_end");
 		 Date dateBegin;
 		 Date dateEnd;
-		 if(StrUtil.isEmpty(createTimeBegin) && StrUtil.isEmpty(createTimeEnd)) {
+		 if(StrUtil.isEmpty(dataTimeBegin) && StrUtil.isEmpty(dataTimeEnd)) {
 			 dateBegin = null;
 			 dateEnd = null;
 		 }else{
-			 dateBegin = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(createTimeBegin);
-			 dateEnd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(createTimeEnd);
+			 dateBegin = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dataTimeBegin);
+			 dateEnd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dataTimeEnd);
 		 }
 		 Page<AirqHourInputVO> page = new Page<AirqHourInputVO>(pageNo, pageSize);
 		 IPage<AirqHourInputVO> pageList = airqHourService.queryAirqHourInput(page, area,mn,dateBegin,dateEnd);
