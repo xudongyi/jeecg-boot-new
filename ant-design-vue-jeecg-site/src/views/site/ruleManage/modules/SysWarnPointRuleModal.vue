@@ -269,7 +269,7 @@
       },
       selectChange(){
         let that = this;
-          querySiteName({companyIds:this.$store.getters.userInfo.companyIds.join(','),siteType: this.queryParam.siteType,area: this.queryParam.area}).then((res)=>{
+          querySiteName({siteType: this.queryParam.siteType,area: this.queryParam.area}).then((res)=>{
             this.siteData =  res.result;
             that.treeData = [];
             let newObj =  that.dealAreaData(that.data);

@@ -216,26 +216,24 @@ public class SysWarnPointRuleController extends JeecgController<SysWarnPointRule
 	 @AutoLog(value = "站点报警策略表-通过id查询")
 	 @ApiOperation(value="站点报警策略表-通过id查询", notes="站点报警策略表-通过id查询")
 	 @GetMapping(value = "/querySiteName")
-	 public Result<?> querySiteName(@RequestParam(name="companyIds",required=true) String companyIds,
-	 								@RequestParam(name="siteType",required=false) String siteType,
+	 public Result<?> querySiteName(@RequestParam(name="siteType",required=false) String siteType,
 									@RequestParam(name="area",required=false) String area){
-		 List<String> idList =  Arrays.asList(companyIds.split(","));
 		 List<Map<String,String>> result = new ArrayList<>();
 		 List<SiteMonitorPoint> list;
 		 if(StrUtil.isEmpty(siteType) && StrUtil.isEmpty(area)) {
-			 list = siteMonitorPointService.list(new QueryWrapper<SiteMonitorPoint>().lambda().in(SiteMonitorPoint::getCompanyId,idList));
+			 list = siteMonitorPointService.list(new QueryWrapper<SiteMonitorPoint>().lambda());
 
 		 }else if(StrUtil.isEmpty(siteType) && !StrUtil.isEmpty(area)){
 			 list = siteMonitorPointService.list(new QueryWrapper<SiteMonitorPoint>().lambda()
-					 .eq(SiteMonitorPoint::getArea,area).in(SiteMonitorPoint::getCompanyId,idList));
+					 .eq(SiteMonitorPoint::getArea,area));
 
 		 }else if(!StrUtil.isEmpty(siteType) && StrUtil.isEmpty(area)) {
 			 list = siteMonitorPointService.list(new QueryWrapper<SiteMonitorPoint>().lambda()
-					 .eq(SiteMonitorPoint::getSiteType, siteType).in(SiteMonitorPoint::getCompanyId,idList));
+					 .eq(SiteMonitorPoint::getSiteType, siteType));
 
 		 }else {
 			 list = siteMonitorPointService.list(new QueryWrapper<SiteMonitorPoint>().lambda().eq(SiteMonitorPoint::getSiteType, siteType)
-					 .eq(SiteMonitorPoint::getArea,area).in(SiteMonitorPoint::getCompanyId,idList));
+					 .eq(SiteMonitorPoint::getArea,area));
 		 }
 		 list.forEach(siteMonitorPoint -> {
 			 Map<String,String> param = new HashMap<>();
