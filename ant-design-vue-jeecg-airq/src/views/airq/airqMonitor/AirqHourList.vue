@@ -397,7 +397,7 @@
     mounted(){
       this.initColumns();
       let that = this;
-      querySiteNameAndMn().then((res)=>{
+      querySiteNameAndMn({companyIds:this.$store.getters.userInfo.companyIds.join(',')}).then((res)=>{
         if(res.success){
           console.log("!!",res.result);
           that.items = res.result;

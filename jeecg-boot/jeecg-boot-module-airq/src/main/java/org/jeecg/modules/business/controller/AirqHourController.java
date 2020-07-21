@@ -122,9 +122,10 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 	 @AutoLog(value = "查询站点最新的")
 	 @ApiOperation(value="airq_hour-分页列表查询", notes="airq_hour-分页列表查询")
 	 @GetMapping(value = "/querySiteNameAndMn")
-	 public Result<?> querySiteNameAndMn() {
+	 public Result<?> querySiteNameAndMn(@RequestParam(name="companyIds",required=true) String companyIds) {
+		 List<String> idList =  Arrays.asList(companyIds.split(","));
 		 List<Map<String,String>> result = new ArrayList<>();
-		 siteMonitorPointService.list(new QueryWrapper<SiteMonitorPoint>().lambda()).forEach(siteMonitorPoint -> {
+		 siteMonitorPointService.list(new QueryWrapper<SiteMonitorPoint>().lambda().in(SiteMonitorPoint::getCompanyId,idList)).forEach(siteMonitorPoint -> {
 			 Map<String,String> param = new HashMap<>();
 			 param.put("key",siteMonitorPoint.getMn());
 			 param.put("value",siteMonitorPoint.getSiteName());
