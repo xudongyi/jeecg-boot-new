@@ -253,7 +253,7 @@
       onSelect(selectedKeys) {
 
       },
-      drawLine() {
+      drawLine(data) {
         var echarts = require('echarts');
         var myChart = echarts.init(document.getElementById('evaluate'));
         myChart.setOption({
@@ -277,30 +277,25 @@
               radius: '65%',
               center: ['50%', '50%'],
               selectedMode: 'single',
-              data: [
-                {value: 4, name: '优',itemStyle:{color: '#00E400'}},
-                {value: 5, name: '良',itemStyle:{color: '#EFD600'}},
-                {value: 7, name: '轻度污染',itemStyle:{color: '#FF7E00'}},
-                {value: 8, name: '中度污染',itemStyle:{color: '#FF0000'}},
-                {value: 9, name: '重度污染',itemStyle:{color: '#99004C'}},
-                {value: 12, name: '严重污染',itemStyle:{color: '#7E0023'}}
-              ],
+              data: data,
               emphasis: {
                 itemStyle: {
                   shadowBlur: 10,
                   shadowOffsetX: 0,
                   shadowColor: 'rgba(0, 0, 0, 0.5)',
-                  normal:{
-                    color:function(params) {
-                      debugger
-                      //自定义颜色
-                      var colorList = [
-                        '#00E400','#EFD600','#FF7E00','#FF0000','#99004C', '#7E0023'
-                      ];
-                      return colorList[params.dataIndex]
-                    },
 
-                  }
+                }
+              },
+              itemStyle: {
+                normal:{
+                  color:function(params) {
+                    debugger
+                    //自定义颜色
+                    var colorList = [
+                      '#00E400','#EFD600','#FF7E00','#FF0000','#99004C', '#7E0023'
+                    ];
+                    return colorList[params.dataIndex]
+                  },
 
                 }
               }
@@ -310,6 +305,7 @@
       },
       searchQuery(){
         queryStatistic({dataType: this.dataType,searchTime:this.searchTime.join(","),checkedKeys:this.checkedKeys.join(",")}).then((res) => {
+          this.drawLine(res.result);
             console.log(res.result)
         })
       },

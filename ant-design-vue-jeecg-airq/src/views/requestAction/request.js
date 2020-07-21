@@ -10,8 +10,8 @@ const queryPollution = (params)=>getAction("/device/siteMonitorDevice/queryPollu
 const queryUnit = (params)=>getAction("/device/siteMonitorDevice/queryUnit",params);
 const loadBaiduMap = (params)=>getAction("/site/siteMonitorPoint/loadBaiduMap",params);
 const queryLastAirInfo = (params)=>getAction("/hour/airqHour/queryLastAirInfo",params);
-const queryStatistic = (params)=>getAction("/statistic/queryStatistic",params);
 const querySiteNameAndMn = (params)=>getAction("/hour/airqHour/querySiteNameAndMn",params);
+const queryStatistic = (params)=>getAction("/statistic/queryEvaluate",params);
 export {
   querySiteName,
   queryFiles,
