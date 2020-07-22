@@ -105,6 +105,14 @@ public class AirqHour implements Serializable {
 	@Excel(name = "风速Iaqi", width = 15)
     @ApiModelProperty(value = "风速Iaqi")
     private java.lang.Double a01007Iaqi;
+    /**风向*/
+    @Excel(name = "风向", width = 15)
+    @ApiModelProperty(value = "风向")
+    private java.lang.Double a01008Avg;
+    /**风速Iaqi*/
+    @Excel(name = "风向Iaqi", width = 15)
+    @ApiModelProperty(value = "风向Iaqi")
+    private java.lang.Double a01008Iaqi;
 	/**NO2*/
 	@Excel(name = "NO2", width = 15)
     @ApiModelProperty(value = "NO2")
@@ -122,12 +130,12 @@ public class AirqHour implements Serializable {
     @ApiModelProperty(value = "PM2.5(24h)Iaqi")
     private java.lang.Double a3400424Iaqi;
 	/**pH值*/
-	@Excel(name = "pH值", width = 15)
-    @ApiModelProperty(value = "pH值")
+	@Excel(name = "温度", width = 15)
+    @ApiModelProperty(value = "温度")
     private java.lang.Double a01001Avg;
 	/**pH值Iaqi*/
-	@Excel(name = "pH值Iaqi", width = 15)
-    @ApiModelProperty(value = "pH值Iaqi")
+	@Excel(name = "温度Iaqi", width = 15)
+    @ApiModelProperty(value = "温度Iaqi")
     private java.lang.Double a01001Iaqi;
 	/**NOx*/
 	@Excel(name = "NOx", width = 15)
