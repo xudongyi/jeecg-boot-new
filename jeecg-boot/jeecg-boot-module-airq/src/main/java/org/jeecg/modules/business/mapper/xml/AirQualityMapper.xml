@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.business.mapper.AirQualityMapper">
+
+
+    <select id="getAIRQ_AQI" resultType="java.util.HashMap">
+        SELECT * FROM AIRQ_AQI ORDER BY FACTOR_CODE,TYPE,L_VALUE
+    </select>
+    <select id="getAIRQ_LEVEL" resultType="java.util.HashMap">
+        SELECT * FROM AIRQ_LEVEL ORDER BY AQI_L
+    </select>
+
+</mapper>

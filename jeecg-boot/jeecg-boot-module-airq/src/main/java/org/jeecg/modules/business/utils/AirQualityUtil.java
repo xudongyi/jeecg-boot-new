@@ -4,9 +4,11 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.jeecg.common.util.RedisUtil;
+import org.jeecg.modules.business.mapper.AirQualityMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.*;
 
 @Component
@@ -14,6 +16,87 @@ import java.util.*;
 public class AirQualityUtil {
     @Autowired
     private RedisUtil redisUtil;
+    @Autowired
+    private AirQualityMapper airQualityMapper;
+
+    @PostConstruct
+    public void initial() {
+        this.initialAQI();
+        this.initialLevel();
+    }
+
+    public void initialAQI() {
+        Map<String, List<AirqAQIBean>> result = new HashMap();
+        List<Map<String, Object>> data = airQualityMapper.getAIRQ_AQI();
+        if (data != null) {
+            for(int i = 0; i < data.size(); ++i) {
+                try {
+                    AirqAQIBean v = new AirqAQIBean();
+                    Map<String, Object> map = data.get(i);
+                    v.setCode((String)map.get("factor_code"));
+                    if (map.get("li_aqi") != null) {
+                        v.setLiAqi((Double)map.get("li_aqi"));
+                    }
+
+                    if (map.get("hi_aqi") != null) {
+                        v.setHiAqi((Double)map.get("hi_aqi"));
+                    }
+
+                    if (map.get("l_value") != null) {
+                        v.setLowValue((Double)map.get("l_value"));
+                    }
+
+                    if (map.get("h_value") != null) {
+                        v.setHighValue((Double)map.get("h_value"));
+                    }
+
+                    if (map.get("type") != null) {
+                        v.setType((Integer)map.get("type"));
+                    }
+
+                    String key = v.getCode().toUpperCase() + "-" + v.getType();
+                    if (result.containsKey(key)) {
+                        ((List)result.get(key)).add(v);
+                    } else {
+                        List<AirqAQIBean> list = new ArrayList();
+                        list.add(v);
+                        result.put(key, list);
+                    }
+                } catch (Exception var8) {
+                    this.log.info("初始化空气质量分指数计算标准出错:" + var8.getMessage());
+                }
+            }
+        }
+
+        if (!result.isEmpty()) {
+            Iterator e = result.keySet().iterator();
+
+            while(e.hasNext()) {
+                String key = (String)e.next();
+                this.redisUtil.hset("airq_aqi_map", key, result.get(key));
+            }
+        } else {
+            this.log.info("初始化空气质量分指数计算标准失败:未取到值");
+        }
+
+    }
+
+
+    public void initialLevel() {
+        List<Map<String, Object>> data = airQualityMapper.getAIRQ_LEVEL();
+        if (data != null && data.size() > 0) {
+            for(int i = 0; i < data.size(); ++i) {
+                try {
+                    this.redisUtil.hset("airq_level_map",data.get(i).get("level")+"", data.get(i));
+                } catch (Exception e) {
+                    this.log.debug("Redis提示[初始化空气质量等级]出错:" + e.getMessage());
+                }
+            }
+        } else {
+            this.log.debug("Redis提示[初始化空气质量等级]:未取到值");
+        }
+
+    }
 
     /**
      * 获取AQI
