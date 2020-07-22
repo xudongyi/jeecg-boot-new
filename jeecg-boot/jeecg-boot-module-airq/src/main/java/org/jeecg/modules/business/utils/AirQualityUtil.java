@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.jeecg.common.util.RedisUtil;
-import org.jeecg.modules.business.mapper.AirqQuarterMapper;
+import org.jeecg.modules.business.mapper.AirQualityMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +17,7 @@ public class AirQualityUtil {
     @Autowired
     private RedisUtil redisUtil;
     @Autowired
-    private AirqQuarterMapper airqQuarterMapper;
+    private AirQualityMapper airQualityMapper;
 
     @PostConstruct
     public void initial() {
@@ -27,7 +27,7 @@ public class AirQualityUtil {
 
     public void initialAQI() {
         Map<String, List<AirqAQIBean>> result = new HashMap();
-        List<Map<String, Object>> data = airqQuarterMapper.getAIRQ_AQI();
+        List<Map<String, Object>> data = airQualityMapper.getAIRQ_AQI();
         if (data != null) {
             for(int i = 0; i < data.size(); ++i) {
                 try {
@@ -69,10 +69,10 @@ public class AirQualityUtil {
         }
 
         if (!result.isEmpty()) {
-            Iterator var9 = result.keySet().iterator();
+            Iterator e = result.keySet().iterator();
 
-            while(var9.hasNext()) {
-                String key = (String)var9.next();
+            while(e.hasNext()) {
+                String key = (String)e.next();
                 this.redisUtil.hset("airq_aqi_map", key, result.get(key));
             }
         } else {
@@ -83,13 +83,13 @@ public class AirQualityUtil {
 
 
     public void initialLevel() {
-        List<Map<String, Object>> data = airqQuarterMapper.getAIRQ_LEVEL();
+        List<Map<String, Object>> data = airQualityMapper.getAIRQ_LEVEL();
         if (data != null && data.size() > 0) {
             for(int i = 0; i < data.size(); ++i) {
                 try {
                     this.redisUtil.hset("airq_level_map",data.get(i).get("level")+"", data.get(i));
-                } catch (Exception var4) {
-                    this.log.debug("Redis提示[初始化空气质量等级]出错:" + var4.getMessage());
+                } catch (Exception e) {
+                    this.log.debug("Redis提示[初始化空气质量等级]出错:" + e.getMessage());
                 }
             }
         } else {
