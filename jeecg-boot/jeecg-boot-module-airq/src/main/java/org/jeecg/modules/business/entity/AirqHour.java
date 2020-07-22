@@ -46,6 +46,11 @@ public class AirqHour implements Serializable {
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "createTime")
     private java.util.Date createTime;
+    /**审核时间*/
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty(value = "updateTime")
+    private java.util.Date updateTime;
 	/**mn号*/
 	@Excel(name = "mn号", width = 15)
     @ApiModelProperty(value = "mn号")
