@@ -233,6 +233,7 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 			 Map<String,String> param = new HashMap<>();
 			 param.put("key",siteMonitorPoint.getMn());
 			 param.put("value",siteMonitorPoint.getSiteName());
+			 param.put("area",siteMonitorPoint.getArea());
 			 result.add(param);
 		 });
 	 	 return Result.ok(result);
