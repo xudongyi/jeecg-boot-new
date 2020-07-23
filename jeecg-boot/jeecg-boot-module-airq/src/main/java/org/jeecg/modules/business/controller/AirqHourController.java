@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.modules.business.entity.AirqHour;
@@ -211,6 +212,40 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 	 	 return Result.ok(result);
 	 }
 
+	 /**
+	  *   提交
+	  *
+	  * @param airqHour
+	  * @return
+	  */
+	 @AutoLog(value = "airq_hour-提交")
+	 @ApiOperation(value="airq_hour-提交", notes="airq_hour-提交")
+	 @PostMapping(value = "/submit")
+	 public Result<?> submit(@RequestBody AirqHour airqHour) {
+		 //3-审核中
+		 airqHour.setState(3);
+		 airqHourService.updateById(airqHour);
+		 return Result.ok("提交成功！");
+	 }
+
+	 /**
+	  *  批量提交
+	  *
+	  * @param ids
+	  * @return
+	  */
+	 @AutoLog(value = "人工录入数据批量提交")
+	 @ApiOperation(value="人工录入数据批量提交", notes="人工录入数据批量提交")
+	 @GetMapping(value = "/batchSubmit")
+	 public Result<?> batchSubmit(@RequestParam(name="ids",required=true) String ids) {
+		 //修改
+		 airqHourService.update(new UpdateWrapper<AirqHour>().lambda()
+				 .eq(AirqHour::getState,2)
+				 .in(AirqHour::getId,Arrays.asList(ids.split(",")))
+				 .set(AirqHour::getState,3));
+		 return Result.ok("批量提交成功!");
+	 }
+
 	/**
 	 *   添加
 	 *
@@ -221,7 +256,8 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 	@ApiOperation(value="airq_hour-添加", notes="airq_hour-添加")
 	@PostMapping(value = "/add")
 	public Result<?> add(@RequestBody AirqHour airqHour) {
-		airqHour.setState(1);
+		//2-暂存
+		airqHour.setState(2);
 		airqHourService.save(airqHour);
 		return Result.ok("添加成功！");
 	}
@@ -236,7 +272,8 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 	@ApiOperation(value="airq_hour-编辑", notes="airq_hour-编辑")
 	@PutMapping(value = "/edit")
 	public Result<?> edit(@RequestBody AirqHour airqHour) {
-		airqHour.setState(1);
+		//2-暂存
+		airqHour.setState(2);
 		airqHourService.updateById(airqHour);
 		return Result.ok("编辑成功!");
 	}

@@ -9,6 +9,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 @Data
 public class AirqHourManInsertVO {
+    /**id*/
+    @ApiModelProperty(value = "id")
+    private java.lang.String id;
     /*
     行政区域
      */

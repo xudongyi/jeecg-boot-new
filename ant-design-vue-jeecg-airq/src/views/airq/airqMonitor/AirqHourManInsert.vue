@@ -28,8 +28,8 @@
           </a-col>
           <template v-if="toggleSearchStatus">
             <a-col :xl="4" :lg="7" :md="8" :sm="24">
-              <a-form-item label="小时数据平台状态">
-                <j-dict-select-tag placeholder="请选择小时数据平台状态"  dictCode="airDataStatus" :excludeFields="['0']"/>
+              <a-form-item label="状态">
+                <j-dict-select-tag v-model="queryParam.state" placeholder="请选择状态"  dictCode="airDataStatus" :excludeFields="['0']"/>
               </a-form-item>
             </a-col>
           </template>
@@ -51,6 +51,7 @@
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="toHandleAdd" type="primary" icon="plus">新增</a-button>
+      <a-button @click="batchSubmit" type="primary" icon="snippets">批量提交</a-button>
       <a-button type="primary" icon="download" @click="handleExportXls('airq_hour')">导出</a-button>
       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
         <a-button type="primary" icon="import">导入</a-button>
@@ -79,17 +80,17 @@
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
-        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+        :rowSelection="rowSelection"
         class="j-table-force-nowrap"
         @change="handleTableChange">
 
         <span slot="action" slot-scope="text, record">
-          <a @click="toHandleEdit(record)" v-if="record.state =='2' || record.status=='4' || record.state =='1'">编辑</a>
-          <a-divider type="vertical" v-if="record.state =='2' || record.status=='4'|| record.state =='1'"/>
-          <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)" v-if="record.state =='2' || record.status=='4'|| record.state =='1'">
+          <a @click="toHandleEdit(record)" v-if="record.state ===2 || record.status===4">编辑</a>
+          <a-divider type="vertical" v-if="record.state ===2 || record.state===4"/>
+          <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)" v-if="record.state ===2 || record.state===4">
             <a>删除</a>
           </a-popconfirm>
-          <a @click="handleView(record)" v-if="  record.status=='3'">查看</a>
+          <a @click="handleView(record)" v-if="record.state ===1 ||  record.state===3">查看</a>
 
 
 
@@ -116,6 +117,7 @@
   import {querySiteNameAndMn} from "../../requestAction/request";
   import Vue from 'vue'
   import AreaLinkSelect from '../component/AreaLinkSelect'
+  import {getAction} from "../../../api/manage";
 
   export default {
     name: "AirqHourManInsert",
@@ -262,6 +264,7 @@
           list: "/hour/airqHour/queryManInsertAirqHour",
           delete: "/hour/airqHour/delete",
           deleteBatch: "/hour/airqHour/deleteBatch",
+          batchSubmit:"/hour/airqHour/batchSubmit",
           exportXlsUrl: "/hour/airqHour/exportXls",
           importExcelUrl: "hour/airqHour/importExcel",
         },
@@ -272,6 +275,18 @@
     computed: {
       importExcelUrl: function(){
         return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
+      },
+      rowSelection() {
+        return {
+          getCheckboxProps: record => ({
+            props: {
+              disabled: record.state !== 2,
+              name: record.projectName,
+            },
+          }),
+          selectedRowKeys: this.selectedRowKeys,
+          onChange: this.onSelectChange
+        };
       },
     },
     methods: {
@@ -310,7 +325,37 @@
         this.$refs.modalForm.edit(record);
         this.$refs.modalForm.monitorTag = 'view';
         this.$refs.modalForm.title = "查看";
-        //this.$refs.modalForm.disableSubmit = true;
+        this.$refs.modalForm.disableSubmit = true;
+      },
+      batchSubmit: function () {
+        if (this.selectedRowKeys.length <= 0) {
+          this.$message.warning('请选择一条记录！');
+          return;
+        } else {
+          let ids = "";
+          for (var a = 0; a < this.selectedRowKeys.length; a++) {
+            ids += this.selectedRowKeys[a] + ",";
+          }
+          let that = this;
+          this.$confirm({
+            title: "确认提交",
+            content: "是否提交选中数据?",
+            onOk: function () {
+              that.loading = true;
+              getAction(that.url.batchSubmit, {ids: ids}).then((res) => {
+                if (res.success) {
+                  that.$message.success(res.message);
+                  that.loadData();
+                  that.onClearSelected();
+                } else {
+                  that.$message.warning(res.message);
+                }
+              }).finally(() => {
+                that.loading = false;
+              });
+            }
+          });
+        }
       },
     },
     mounted(){

@@ -175,6 +175,7 @@
     </select>
 
     <resultMap id="AirqHourManInsertVO" type="org.jeecg.modules.business.vo.AirqHourManInsertVO" >
+        <result column="id" property="id" jdbcType="VARCHAR"/>
         <result column="mn" property="mn" jdbcType="VARCHAR"/>
         <result column="area" property="area" jdbcType="VARCHAR"/>
         <result column="state" property="state" jdbcType="INTEGER"/>
@@ -207,8 +208,8 @@
     </resultMap>
 
     <select id="queryAirqHourManInsert" resultMap="AirqHourManInsertVO">
-
-        select  b.id,a.mn,a.site_name,b.`level` as airLevel,b.level,a.area,b.aqi,
+        select t.* from
+        (select b.id,a.mn,a.site_name,b.`level` as airLevel,b.level,a.area,b.aqi,
         b.data_time,b.create_time,t1.realname as createName,t2.realname as updateName,b.first_code,b.state,
         b.a21026_avg,b.a21004_avg,b.a3400201_avg,b.a3400224_avg,
         b.a21005_avg,b.a0502401_avg,b.a0502408_avg,b.a3400401_avg,
@@ -216,29 +217,32 @@
 
         from airq_hour b INNER JOIN(select a.mn,
         max(b.data_time) data_time
-        from airq_hour b  left join site_monitor_point a on b.mn = a.mn
-        WHERE b.state in (1) group by a.mn) c on b.mn = c.mn and b.data_time = c.data_time
-        left join site_monitor_point a on  b.mn = a.mn
+        from airq_hour b left join site_monitor_point a on b.mn = a.mn
+        WHERE b.state in (1,2,3,4) group by a.mn) c on b.mn = c.mn and b.data_time = c.data_time
+        left join site_monitor_point a on b.mn = a.mn
         left join sys_user t1 on t1.id=b.create_by
         left join sys_user t2 on t2.id=b.update_by
-        WHERE b.state in (1)
+        WHERE b.state in (1,2,3,4)
         and a.company_id in
         <foreach collection="companyIds" item="id" index="index" open="(" close=")" separator=",">
             #{id}
-        </foreach>
+        </foreach>) t where 1=1
         <if test="area != null">
-            and a.area = (#{area})
+            and t.area = (#{area})
         </if>
         <if test="mn != null">
-            and a.mn = (#{mn})
+            and t.mn = (#{mn})
+        </if>
+        <if test="state != null">
+            and t.state = (#{state})
         </if>
         <if test="dateBegin != null">
-            and b.data_time >= (#{dateBegin})
+            and t.data_time >= (#{dateBegin})
         </if>
         <if test="dateEnd != null">
-            and b.data_time &lt;= (#{dateEnd})
+            and t.data_time &lt;= (#{dateEnd})
         </if>
-        order by b.data_time desc
+        order by t.data_time desc
 
     </select>
 

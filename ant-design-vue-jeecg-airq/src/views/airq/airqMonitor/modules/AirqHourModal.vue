@@ -14,12 +14,12 @@
         <a-row>
           <a-col span="12">
             <a-form-item label="行政区域" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <area-link-select type="cascader" v-decorator="['area']" placeholder="请选择所属区域" show-search style="width: 100%" optionFilterProp="children"/>
+              <area-link-select type="cascader" v-decorator="['area']" placeholder="请选择所属区域" show-search style="width: 100%" optionFilterProp="children" :disabled="disableSubmit"/>
             </a-form-item>
           </a-col>
           <a-col span="12">
             <a-form-item label="监测点位名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-select v-decorator="['mn']" show-search style="width: 100%" optionFilterProp="children" placeholder="请选择监测点位名称">
+              <a-select v-decorator="['mn']" show-search style="width: 100%" optionFilterProp="children" placeholder="请选择监测点位名称" :disabled="disableSubmit">
                 <a-select-option v-for="item in items" :key="item.value" :value="item.key">
                   {{item.value}}
                 </a-select-option>
@@ -31,84 +31,84 @@
         <a-row>
           <a-col span="12">
             <a-form-item label="采集时间" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <j-date placeholder="请输入采集时间" v-decorator="['dataTime']" :trigger-change="true" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" style="width: 100%"/>
+              <j-date placeholder="请输入采集时间" v-decorator="['dataTime']" :trigger-change="true" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" style="width: 100%" :disabled="disableSubmit"/>
             </a-form-item>
           </a-col>
           <a-col span="12">
             <a-form-item label="SO2(1h)" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input-number v-decorator="['a21026Avg']" placeholder="请输入SO2" style="width: 100%"/>
+              <a-input-number v-decorator="['a21026Avg']" placeholder="请输入SO2" style="width: 100%" :disabled="disableSubmit"/>
             </a-form-item>
           </a-col>
         </a-row>
         <a-row>
           <a-col span="12">
             <a-form-item label="NO2(1h)" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input-number v-decorator="['a21004Avg']" placeholder="请输入NO2" style="width: 100%"/>
+              <a-input-number v-decorator="['a21004Avg']" placeholder="请输入NO2" style="width: 100%" :disabled="disableSubmit"/>
             </a-form-item>
           </a-col>
           <a-col span="12">
             <a-form-item label="PM10(1h)" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input-number v-decorator="['a3400201Avg']" placeholder="请输入PM10(1h)" style="width: 100%"/>
+              <a-input-number v-decorator="['a3400201Avg']" placeholder="请输入PM10(1h)" style="width: 100%" :disabled="disableSubmit"/>
             </a-form-item>
           </a-col>
         </a-row>
         <a-row>
           <a-col span="12">
             <a-form-item label="PM10(24h)" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input-number v-decorator="['a3400224Avg']" placeholder="请输入PM10(24h)" style="width: 100%"/>
+              <a-input-number v-decorator="['a3400224Avg']" placeholder="请输入PM10(24h)" style="width: 100%" :disabled="disableSubmit"/>
             </a-form-item>
           </a-col>
           <a-col span="12">
             <a-form-item label="CO(1h)" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input-number v-decorator="['a21005Avg']" placeholder="请输入CO" style="width: 100%"/>
+              <a-input-number v-decorator="['a21005Avg']" placeholder="请输入CO" style="width: 100%" :disabled="disableSubmit"/>
             </a-form-item>
           </a-col>
         </a-row>
         <a-row>
           <a-col span="12">
             <a-form-item label="O3(1h)" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input-number v-decorator="['a0502401Avg']" placeholder="请输入O3(1h)" style="width: 100%"/>
+              <a-input-number v-decorator="['a0502401Avg']" placeholder="请输入O3(1h)" style="width: 100%" :disabled="disableSubmit"/>
             </a-form-item>
           </a-col>
           <a-col span="12">
             <a-form-item label="O3(8h)" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input-number v-decorator="['a0502408Avg']" placeholder="请输入O3(8h)" style="width: 100%"/>
+              <a-input-number v-decorator="['a0502408Avg']" placeholder="请输入O3(8h)" style="width: 100%" :disabled="disableSubmit"/>
             </a-form-item>
           </a-col>
         </a-row>
         <a-row>
           <a-col span="12">
             <a-form-item label="PM2.5(1h)" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input-number v-decorator="['a3400401Avg']" placeholder="请输入PM2.5(1h)" style="width: 100%"/>
+              <a-input-number v-decorator="['a3400401Avg']" placeholder="请输入PM2.5(1h)" style="width: 100%" :disabled="disableSubmit"/>
             </a-form-item>
           </a-col>
           <a-col span="12">
             <a-form-item label="PM2.5(24h)" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input-number v-decorator="['a3400424Avg']" placeholder="请输入PM2.5(24h)" style="width: 100%"/>
+              <a-input-number v-decorator="['a3400424Avg']" placeholder="请输入PM2.5(24h)" style="width: 100%" :disabled="disableSubmit"/>
             </a-form-item>
           </a-col>
         </a-row>
         <a-row>
           <a-col span="12">
             <a-form-item label="温度" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input-number v-decorator="['a01001Avg']" placeholder="请输入温度" style="width: 100%"/>
+              <a-input-number v-decorator="['a01001Avg']" placeholder="请输入温度" style="width: 100%" :disabled="disableSubmit"/>
             </a-form-item>
           </a-col>
           <a-col span="12">
             <a-form-item label="湿度" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input-number v-decorator="['a01002Avg']" placeholder="请输入湿度" style="width: 100%"/>
+              <a-input-number v-decorator="['a01002Avg']" placeholder="请输入湿度" style="width: 100%" :disabled="disableSubmit"/>
             </a-form-item>
           </a-col>
         </a-row>
         <a-row>
           <a-col span="12">
             <a-form-item label="风速" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input-number v-decorator="['a01007Avg']" placeholder="请输入风速" style="width: 100%"/>
+              <a-input-number v-decorator="['a01007Avg']" placeholder="请输入风速" style="width: 100%" :disabled="disableSubmit"/>
             </a-form-item>
           </a-col>
           <a-col span="12">
             <a-form-item label="风向" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <j-dict-select-tag type="list" v-decorator="['a01008Avg']" :trigger-change="true" dictCode="wind" placeholder="请输入风向"/>
+              <j-dict-select-tag type="list" v-decorator="['a01008Avg']" :trigger-change="true" dictCode="wind" placeholder="请输入风向" :disabled="disableSubmit"/>
             </a-form-item>
           </a-col>
         </a-row>
@@ -138,12 +138,26 @@
             </a-form-item>
           </a-col>
         </a-row>
+        <a-row v-if="monitorTag !== 'add'">
+          <a-col span="12">
+            <a-form-item label="状态" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <j-dict-select-tag type="list" v-decorator="['state']" :trigger-change="true" dictCode="airDataStatus" placeholder="请选择状态" :disabled="true"/>
+            </a-form-item>
+          </a-col>
+        </a-row>
+        <a-row v-if="monitorTag !== 'add'">
+          <a-col span="12">
+            <a-form-item label="审核说明:" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <a-textarea v-decorator="['content']" placeholder="审核说明" :rows="2" :disabled="true"/>
+            </a-form-item>
+          </a-col>
+        </a-row>
 
       </a-form>
     </a-spin>
     <template slot="footer">
       <a-button type="primary" @click="handleOk" v-if="monitorTag !== 'view'">暂存</a-button>
-      <a-button type="primary" @click="handSubmit" v-if="monitorTag !== 'view'">提交</a-button>
+      <a-button type="primary" @click="handleSubmit" v-if="monitorTag !== 'view'">提交</a-button>
       <a-button type="primary" @click="handleCancel">关闭</a-button>
     </template>
   </j-modal>
@@ -175,6 +189,7 @@
         dateFormat:"YYYY-MM-DD HH:mm:ss",
         items:[],
         monitorTag:'',
+        disableSubmit:false,
         width:1000,
         visible: false,
         model: {},
@@ -192,6 +207,7 @@
         url: {
           add: "/hour/airqHour/add",
           edit: "/hour/airqHour/edit",
+          submit:'/hour/airqHour/submit'
         }
       }
     },
@@ -276,12 +292,34 @@
       handleCancel () {
         this.close()
       },
-      handSubmit(){
+      popupCallback(row){
+        this.form.setFieldsValue(pick(row,'dataTime','createTime','mn','state','level','firstCode','aqi','a01006Avg','a01006Iaqi','a21005Avg','a21005Iaqi','a3400201Avg','a3400201Iaqi','a01007Avg','a01007Iaqi','a21004Avg','a21004Iaqi','a3400424Avg','a3400424Iaqi','a01001Avg','a01001Iaqi','a21002Avg','a21002Iaqi','a0502408Avg','a0502408Iaqi','a3400401Avg','a3400401Iaqi','a0502401Avg','a0502401Iaqi','a01002Avg','a01002Iaqi','a21026Avg','a21026Iaqi','a3400224Avg','a3400224Iaqi','a21003Avg','a21003Iaqi'))
+      },
+      handleSubmit(){
+        const that = this;
+        // 触发表单验证
+        this.form.validateFields((err, values) => {
+          if (!err) {
+            that.confirmLoading = true;
+            let httpUrl = this.url.submit;
+            let method = 'post';
+            let formData = Object.assign(this.model, values);
+            formData.createTime = moment().format(this.dateFormat);
+            httpAction(httpUrl,formData,method).then((res)=>{
+              if(res.success){
+                that.$message.success(res.message);
+                that.$emit('ok');
+              }else{
+                that.$message.warning(res.message);
+              }
+            }).finally(() => {
+              that.confirmLoading = false;
+              that.close();
+            })
+          }
 
-      }
-      // popupCallback(row){
-      //   this.form.setFieldsValue(pick(row,'dataTime','createTime','mn','state','level','firstCode','aqi','a01006Avg','a01006Iaqi','a21005Avg','a21005Iaqi','a3400201Avg','a3400201Iaqi','a01007Avg','a01007Iaqi','a21004Avg','a21004Iaqi','a3400424Avg','a3400424Iaqi','a01001Avg','a01001Iaqi','a21002Avg','a21002Iaqi','a0502408Avg','a0502408Iaqi','a3400401Avg','a3400401Iaqi','a0502401Avg','a0502401Iaqi','a01002Avg','a01002Iaqi','a21026Avg','a21026Iaqi','a3400224Avg','a3400224Iaqi','a21003Avg','a21003Iaqi'))
-      // },
+        })
+      },
 
       
     }
