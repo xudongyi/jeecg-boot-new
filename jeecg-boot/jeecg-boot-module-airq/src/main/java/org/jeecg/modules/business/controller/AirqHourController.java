@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSONObject;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.modules.business.entity.AirqHour;
@@ -220,6 +221,7 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 	@ApiOperation(value="airq_hour-添加", notes="airq_hour-添加")
 	@PostMapping(value = "/add")
 	public Result<?> add(@RequestBody AirqHour airqHour) {
+		airqHour.setState(1);
 		airqHourService.save(airqHour);
 		return Result.ok("添加成功！");
 	}
@@ -234,6 +236,7 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 	@ApiOperation(value="airq_hour-编辑", notes="airq_hour-编辑")
 	@PutMapping(value = "/edit")
 	public Result<?> edit(@RequestBody AirqHour airqHour) {
+		airqHour.setState(1);
 		airqHourService.updateById(airqHour);
 		return Result.ok("编辑成功!");
 	}

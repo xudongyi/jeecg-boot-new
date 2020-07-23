@@ -41,10 +41,18 @@ public class AirqHourManInsertVO {
     @Excel(name = "录入人", width = 15)
     @ApiModelProperty(value = "录入人")
     private java.lang.String createBy;
+    /**录入人姓名*/
+    @Excel(name = "录入人姓名", width = 15)
+    @ApiModelProperty(value = "录入人姓名")
+    private java.lang.String createName;
     /**审核人*/
     @Excel(name = "审核人", width = 15)
     @ApiModelProperty(value = "审核人")
     private java.lang.String updateBy;
+    /**审核人姓名*/
+    @Excel(name = "审核人姓名", width = 15)
+    @ApiModelProperty(value = "审核人姓名")
+    private java.lang.String updateName;
     /**审核时间*/
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")

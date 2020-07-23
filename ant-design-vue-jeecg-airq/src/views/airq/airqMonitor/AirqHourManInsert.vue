@@ -50,7 +50,7 @@
 
     <!-- 操作按钮区域 -->
     <div class="table-operator">
-      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
+      <a-button @click="toHandleAdd" type="primary" icon="plus">新增</a-button>
       <a-button type="primary" icon="download" @click="handleExportXls('airq_hour')">导出</a-button>
       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
         <a-button type="primary" icon="import">导入</a-button>
@@ -84,19 +84,15 @@
         @change="handleTableChange">
 
         <span slot="action" slot-scope="text, record">
-          <a @click="handleEdit(record)">编辑</a>
+          <a @click="toHandleEdit(record)" v-if="record.state =='2' || record.status=='4' || record.state =='1'">编辑</a>
+          <a-divider type="vertical" v-if="record.state =='2' || record.status=='4'|| record.state =='1'"/>
+          <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)" v-if="record.state =='2' || record.status=='4'|| record.state =='1'">
+            <a>删除</a>
+          </a-popconfirm>
+          <a @click="handleView(record)" v-if="  record.status=='3'">查看</a>
 
-          <a-divider type="vertical" />
-          <a-dropdown>
-            <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
-            <a-menu slot="overlay">
-              <a-menu-item>
-                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
-                  <a>删除</a>
-                </a-popconfirm>
-              </a-menu-item>
-            </a-menu>
-          </a-dropdown>
+
+
         </span>
 
       </a-table>
@@ -300,6 +296,21 @@
         let arr = [];
         this.areaHandler.getAreaBycode(text,arr);
         return arr[0]+arr[1]+arr[2]
+      },
+      toHandleAdd:function(){
+        this.handleAdd();
+        this.$refs.modalForm.monitorTag = 'add';
+      },
+      toHandleEdit:function (record) {
+        this.handleEdit(record);
+        this.$refs.modalForm.monitorTag = 'edit';
+        this.$refs.modalForm.title="编辑";
+      },
+      handleView: function (record) {
+        this.$refs.modalForm.edit(record);
+        this.$refs.modalForm.monitorTag = 'view';
+        this.$refs.modalForm.title = "查看";
+        //this.$refs.modalForm.disableSubmit = true;
       },
     },
     mounted(){
