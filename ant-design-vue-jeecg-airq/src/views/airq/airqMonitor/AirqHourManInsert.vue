@@ -133,6 +133,9 @@
     data () {
       return {
         description: 'airq_hour管理页面',
+        queryParam: {
+          companyIds:this.$store.getters.userInfo.companyIds.join(',')
+        },
         items:[],
         // 表头
         columns: [

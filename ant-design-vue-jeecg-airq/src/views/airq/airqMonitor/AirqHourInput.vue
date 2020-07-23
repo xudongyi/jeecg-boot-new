@@ -109,6 +109,9 @@
           5:'#99004C',
           6:'#7E0023',
         },
+        queryParam: {
+          companyIds:this.$store.getters.userInfo.companyIds.join(',')
+        },
         items:[],
         //表头
         columns:[],
@@ -155,7 +158,7 @@
           {
             title:'首要污染物',
             align:"center",
-            dataIndex: 'meaning'
+            dataIndex: 'firstCode'
           },
           {
             title:'空气质量指数级别',
@@ -366,7 +369,7 @@
     mounted(){
       this.initColumns();
       let that = this;
-      querySiteNameAndMn().then((res)=>{
+      querySiteNameAndMn({companyIds:this.$store.getters.userInfo.companyIds.join(',')}).then((res)=>{
         if(res.success){
           console.log("!!",res.result);
           that.items = res.result;

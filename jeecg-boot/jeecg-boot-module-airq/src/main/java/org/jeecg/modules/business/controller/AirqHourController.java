@@ -84,7 +84,7 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 	 }
 
 	 /**
-	  * 分页列表查询
+	  * 分页列表查询-实时小时数据
 	  *
 	  * @param pageNo
 	  * @param pageSize
@@ -131,7 +131,8 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 	 public Result<?> queryAirqHourInput(@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
 										   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
 										   HttpServletRequest req) throws ParseException {
-		 String area = req.getParameter("area");
+		 String companyIds = req.getParameter("companyIds");
+	 	 String area = req.getParameter("area");
 		 //通过选择站点名称获取站点mn号
 		 String mn = req.getParameter("mn");
 		 String dataTimeBegin = req.getParameter("dataTime_begin");
@@ -146,7 +147,7 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 			 dateEnd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dataTimeEnd);
 		 }
 		 Page<AirqHourInputVO> page = new Page<AirqHourInputVO>(pageNo, pageSize);
-		 IPage<AirqHourInputVO> pageList = airqHourService.queryAirqHourInput(page, area,mn,dateBegin,dateEnd);
+		 IPage<AirqHourInputVO> pageList = airqHourService.queryAirqHourInput(companyIds,page, area,mn,dateBegin,dateEnd);
 		 return Result.ok(pageList);
 	 }
 
@@ -164,6 +165,7 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 	 public Result<?> queryAirqHourManInsert(@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
 										 @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
 										 HttpServletRequest req) throws ParseException {
+		 String companyIds = req.getParameter("companyIds");
 		 String area = req.getParameter("area");
 		 //通过选择站点名称获取站点mn号
 		 String mn = req.getParameter("mn");
@@ -184,7 +186,7 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 			 dateEnd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dataTimeEnd);
 		 }
 		 Page<AirqHourManInsertVO> page = new Page<AirqHourManInsertVO>(pageNo, pageSize);
-		 IPage<AirqHourManInsertVO> pageList = airqHourService.queryAirqHourManInsert(page, area,mn,state,dateBegin,dateEnd);
+		 IPage<AirqHourManInsertVO> pageList = airqHourService.queryAirqHourManInsert(companyIds,page, area,mn,state,dateBegin,dateEnd);
 		 return Result.ok(pageList);
 	 }
 

@@ -24,8 +24,8 @@ public interface AirqHourMapper extends BaseMapper<AirqHour> {
 
     List<AirqHourMonitorVO> queryAirqHourMonitor(String[] companyIds,Page page,String area,String mn, Date dateBegin, Date dateEnd);
 
-    List<AirqHourInputVO> queryAirqHourInput(Page page, String area, String mn, Date dateBegin, Date dateEnd);
+    List<AirqHourInputVO> queryAirqHourInput(String[] companyIds,Page page, String area, String mn, Date dateBegin, Date dateEnd);
 
-    List<AirqHourManInsertVO> queryAirqHourManInsert(Page page, String area, String mn, Integer state,Date dateBegin, Date dateEnd);
+    List<AirqHourManInsertVO> queryAirqHourManInsert(String[] companyIds,Page page, String area, String mn, Integer state,Date dateBegin, Date dateEnd);
 
 }
