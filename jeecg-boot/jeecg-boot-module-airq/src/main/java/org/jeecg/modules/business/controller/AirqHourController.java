@@ -214,7 +214,7 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 			 dateEnd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dataTimeEnd);
 		 }
 		 Page<AirqHourManInsertVO> page = new Page<AirqHourManInsertVO>(pageNo, pageSize);
-		 IPage<AirqHourManInsertVO> pageList = airqHourService.queryAirqHourManInsert(page, area,mn,state,dateBegin,dateEnd);
+		 IPage<AirqHourManInsertVO> pageList = airqHourService.queryAirqHourManInsert(companyIds,page, area,mn,state,dateBegin,dateEnd);
 		 return Result.ok(pageList);
 	 }
 
