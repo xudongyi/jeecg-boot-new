@@ -29,7 +29,7 @@
           <a-col :xl="5" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
-              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
+              <a-button type="primary" @click="toSearchReset" icon="reload" style="margin-left: 8px">重置</a-button>
             </span>
           </a-col>
         </a-row>
@@ -109,6 +109,9 @@
           5:'#99004C',
           6:'#7E0023',
         },
+        queryParam: {
+          companyIds:this.$store.getters.userInfo.companyIds.join(',')
+        },
         items:[],
         //表头
         columns:[],
@@ -154,7 +157,7 @@
           {
             title:'首要污染物',
             align:"center",
-            dataIndex: 'meaning'
+            dataIndex: 'firstCode'
           },
           // {
           //   title:'mn',
@@ -191,7 +194,7 @@
             dataIndex: 'level_dictText',
             key: 'airLevel',
             scopedSlots: { customRender:'airLevel'},
-            sorter: (a, b) => a.level_dictText - b.level_dictText
+            sorter: (a, b) => a.level - b.level
           },
           {
             //title:'a21026Avg',
@@ -278,10 +281,9 @@
             sorter: (a, b) => a.a01007Avg - b.a01007Avg
           },
           {
-            //title:'a21003Avg',
             title:'风向',
             align:"center",
-            dataIndex: 'a01008Avg',
+            dataIndex: 'a01008Avg_dictText',
             sorter: (a, b) => a.a01008Avg - b.a01008Avg
           },
           {
@@ -324,6 +326,10 @@
     methods: {
       initDictConfig(){
         loadAreaDate()
+      },
+      toSearchReset() {
+        this.queryParam = {companyIds:this.$store.getters.userInfo.companyIds.join(',')};
+        this.loadData(1);
       },
       initArea(){
         this.areaHandler = new AreaHandler()

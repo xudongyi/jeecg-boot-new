@@ -29,7 +29,7 @@
           <a-col :xl="5" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
-              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
+              <a-button type="primary" @click="toSearchReset" icon="reload" style="margin-left: 8px">重置</a-button>
             </span>
           </a-col>
         </a-row>
@@ -109,6 +109,9 @@
           5:'#99004C',
           6:'#7E0023',
         },
+        queryParam: {
+          companyIds:this.$store.getters.userInfo.companyIds.join(',')
+        },
         items:[],
         //表头
         columns:[],
@@ -155,7 +158,7 @@
           {
             title:'首要污染物',
             align:"center",
-            dataIndex: 'meaning'
+            dataIndex: 'firstCode'
           },
           {
             title:'空气质量指数级别',
@@ -272,8 +275,8 @@
             //title:'a21003Avg',
             title:'风向',
             align:"center",
-            dataIndex: 'a01008Avg',
-            sorter: (a, b) => a.a01008Avg - b.a01008Avg
+            dataIndex: 'a01008Avg_dictText',
+            sorter: (a, b) => a.a01008Avg_dictText - b.a01008Avg_dictText
           },
           {
             // title:'a01006Avg',
@@ -303,6 +306,10 @@
     methods: {
       initDictConfig(){
         loadAreaDate()
+      },
+      toSearchReset() {
+        this.queryParam = {companyIds:this.$store.getters.userInfo.companyIds.join(',')};
+        this.loadData(1);
       },
       initArea(){
         this.areaHandler = new AreaHandler()
@@ -366,7 +373,7 @@
     mounted(){
       this.initColumns();
       let that = this;
-      querySiteNameAndMn().then((res)=>{
+      querySiteNameAndMn({companyIds:this.$store.getters.userInfo.companyIds.join(',')}).then((res)=>{
         if(res.success){
           console.log("!!",res.result);
           that.items = res.result;

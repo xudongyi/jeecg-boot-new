@@ -51,18 +51,18 @@ public class AirqHourServiceImpl extends ServiceImpl<AirqHourMapper, AirqHour> i
     }
 
     @Override
-    public Page<AirqHourMonitorVO> queryAirqHourMonitor(Page page, String area, String mn, Date dateBegin, Date dateEnd) {
-        return page.setRecords(airqHourMapper.queryAirqHourMonitor(page, area, mn, dateBegin, dateEnd));
+    public Page<AirqHourMonitorVO> queryAirqHourMonitor(String companyIds,Page page, String area, String mn, Date dateBegin, Date dateEnd) {
+        return page.setRecords(airqHourMapper.queryAirqHourMonitor(companyIds.split(","),page, area, mn, dateBegin, dateEnd));
     }
 
     @Override
-    public Page<AirqHourInputVO> queryAirqHourInput(Page page, String area, String mn, Date dateBegin, Date dateEnd) {
-        return page.setRecords(airqHourMapper.queryAirqHourInput(page, area, mn, dateBegin, dateEnd));
+    public Page<AirqHourInputVO> queryAirqHourInput(String companyIds,Page page, String area, String mn, Date dateBegin, Date dateEnd) {
+        return page.setRecords(airqHourMapper.queryAirqHourInput(companyIds.split(","),page, area, mn, dateBegin, dateEnd));
     }
 
     @Override
-    public Page<AirqHourManInsertVO> queryAirqHourManInsert(Page page, String area, String mn, Integer state, Date dateBegin, Date dateEnd) {
-        return page.setRecords(airqHourMapper.queryAirqHourManInsert(page, area, mn, state,dateBegin, dateEnd));
+    public Page<AirqHourManInsertVO> queryAirqHourManInsert(String companyIds,Page page, String area, String mn, Integer state, Date dateBegin, Date dateEnd) {
+        return page.setRecords(airqHourMapper.queryAirqHourManInsert(companyIds.split(","),page, area, mn, state,dateBegin, dateEnd));
     }
 
 

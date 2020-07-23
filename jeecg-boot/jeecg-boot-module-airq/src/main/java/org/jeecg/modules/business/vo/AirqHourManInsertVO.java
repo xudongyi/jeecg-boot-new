@@ -9,6 +9,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 @Data
 public class AirqHourManInsertVO {
+    /**id*/
+    @ApiModelProperty(value = "id")
+    private java.lang.String id;
     /*
     行政区域
      */
@@ -32,6 +35,32 @@ public class AirqHourManInsertVO {
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "数据时间")
     private java.util.Date dataTime;
+    /**录入时间*/
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty(value = "createTime")
+    private java.util.Date createTime;
+    /**录入人*/
+    @Excel(name = "录入人", width = 15)
+    @ApiModelProperty(value = "录入人")
+    private java.lang.String createBy;
+    /**录入人姓名*/
+    @Excel(name = "录入人姓名", width = 15)
+    @ApiModelProperty(value = "录入人姓名")
+    private java.lang.String createName;
+    /**审核人*/
+    @Excel(name = "审核人", width = 15)
+    @ApiModelProperty(value = "审核人")
+    private java.lang.String updateBy;
+    /**审核人姓名*/
+    @Excel(name = "审核人姓名", width = 15)
+    @ApiModelProperty(value = "审核人姓名")
+    private java.lang.String updateName;
+    /**审核时间*/
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty(value = "updateTime")
+    private java.util.Date updateTime;
     /**空气质量指数*/
     @Excel(name = "空气质量指数", width = 15)
     @ApiModelProperty(value = "空气质量指数")
@@ -106,7 +135,8 @@ public class AirqHourManInsertVO {
     @ApiModelProperty(value = "气压")
     private java.lang.Double a01006Avg;
     /**风向*/
-    @Excel(name = "风向", width = 15)
+    @Excel(name = "风向", width = 15, dicCode = "wind")
+    @Dict(dicCode = "wind")
     @ApiModelProperty(value = "风向")
-    private java.lang.Double a01008Avg;
+    private java.lang.Integer a01008Avg;
 }

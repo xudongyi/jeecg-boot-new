@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import java.util.*;
 
 @Component
@@ -16,7 +17,7 @@ import java.util.*;
 public class AirQualityUtil {
     @Autowired
     private RedisUtil redisUtil;
-    @Autowired
+    @Resource
     private AirQualityMapper airQualityMapper;
 
     @PostConstruct
@@ -62,8 +63,8 @@ public class AirQualityUtil {
                         list.add(v);
                         result.put(key, list);
                     }
-                } catch (Exception var8) {
-                    this.log.info("初始化空气质量分指数计算标准出错:" + var8.getMessage());
+                } catch (Exception e) {
+                    this.log.info("初始化空气质量分指数计算标准出错:" + e.getMessage());
                 }
             }
         }
@@ -73,7 +74,7 @@ public class AirQualityUtil {
 
             while(e.hasNext()) {
                 String key = (String)e.next();
-                this.redisUtil.hset("airq_aqi_map", key, result.get(key));
+                this.redisUtil.hset("airq_aqi_map", key,  CommonsUtil.toJsonStr(result.get(key)));
             }
         } else {
             this.log.info("初始化空气质量分指数计算标准失败:未取到值");
@@ -87,7 +88,7 @@ public class AirQualityUtil {
         if (data != null && data.size() > 0) {
             for(int i = 0; i < data.size(); ++i) {
                 try {
-                    this.redisUtil.hset("airq_level_map",data.get(i).get("level")+"", data.get(i));
+                    this.redisUtil.hset("airq_level_map",data.get(i).get("level")+"",  CommonsUtil.toJsonStr(data.get(i)));
                 } catch (Exception e) {
                     this.log.debug("Redis提示[初始化空气质量等级]出错:" + e.getMessage());
                 }
