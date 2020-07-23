@@ -1,5 +1,7 @@
 package org.jeecg.modules.business.service.impl;
 
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
 import org.jeecg.modules.business.entity.AirqHour;
@@ -9,11 +11,14 @@ import org.jeecg.modules.business.vo.AirSiteInfo;
 import org.jeecg.modules.business.vo.AirqHourInputVO;
 import org.jeecg.modules.business.vo.AirqHourManInsertVO;
 import org.jeecg.modules.business.vo.AirqHourMonitorVO;
+import org.jeecg.modules.business.vo.AirqHourQualityVo;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import javax.annotation.Resource;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -26,12 +31,23 @@ import java.util.List;
 @Service
 public class AirqHourServiceImpl extends ServiceImpl<AirqHourMapper, AirqHour> implements IAirqHourService {
 
+    SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+
     @Resource
     private AirqHourMapper airqHourMapper;
 
     @Override
     public List<AirSiteInfo> queryInfoByCompanyId(List<String> companyIds) {
         return airqHourMapper.queryInfoByCompanyId(companyIds);
+    }
+
+    @Override
+    public List<AirqHourQualityVo> queryHourAirQuality(List<String> companyIds, String datatime,String datatime2,String area,String mn) {
+        Timestamp ts = DateUtil.parse(datatime, "yyyy-MM-dd HH").toTimestamp();
+        Timestamp ts2 = DateUtil.parse(datatime2, "yyyy-MM-dd HH").toTimestamp();
+
+        return airqHourMapper.queryHourAirQuality(companyIds,ts,ts2,area,mn);
     }
 
     @Override

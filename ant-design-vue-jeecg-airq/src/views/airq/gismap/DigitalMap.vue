@@ -37,11 +37,11 @@
           </div>
           <div style="margin: 5px 0 0 100px; ">
             <p>{{getAreaBycode(detail.area)}}</p>
-            <p>{{detail.createTime}}</p>
+            <p>{{detail.dataTime}}</p>
             <p ><a-tag color="#f50">
               {{detail.aqi}}
             </a-tag></p>
-            <p>{{detail.meaning}}</p>
+            <p>111{{detail.meaning}}</p>
           </div>
         </div>
         <div style="border-top: 1px solid #F9F9F9">

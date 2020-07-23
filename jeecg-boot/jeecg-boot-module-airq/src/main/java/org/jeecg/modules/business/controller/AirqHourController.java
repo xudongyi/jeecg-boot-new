@@ -3,13 +3,18 @@ package org.jeecg.modules.business.controller;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import cn.hutool.core.util.StrUtil;
+import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
+import org.jeecg.common.system.vo.LoginUser;
+import org.jeecg.common.util.oConvertUtils;
+import org.jeecg.modules.business.constant.SelfExcelConstants;
 import org.jeecg.modules.business.entity.AirqHour;
 import org.jeecg.modules.business.entity.SiteMonitorPoint;
 import org.jeecg.modules.business.service.IAirqHourService;
@@ -21,9 +26,14 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.jeecg.common.system.base.controller.JeecgController;
 import org.jeecg.modules.business.service.ISiteMonitorPointService;
+import org.jeecg.modules.business.view.SelfEntityExcelView;
 import org.jeecg.modules.business.vo.AirqHourInputVO;
 import org.jeecg.modules.business.vo.AirqHourManInsertVO;
 import org.jeecg.modules.business.vo.AirqHourMonitorVO;
+import org.jeecg.modules.business.vo.AirqHourQualityVo;
+import org.jeecgframework.poi.excel.def.NormalExcelConstants;
+import org.jeecgframework.poi.excel.entity.ExportParams;
+import org.jeecgframework.poi.excel.view.JeecgEntityExcelView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -70,19 +80,35 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 		return Result.ok(pageList);
 	}
 	 /**
-	  * 分页列表查询
+	  * 查询站点最新的
 	  *
 	  * @param companyIds
 	  * @return
 	  */
 	 @AutoLog(value = "查询站点最新的")
-	 @ApiOperation(value="airq_hour-分页列表查询", notes="airq_hour-分页列表查询")
+	 @ApiOperation(value="airq_hour-查询站点最新的", notes="airq_hour-查询站点最新的")
 	 @GetMapping(value = "/queryLastAirInfo")
 	 public Result<?> queryLastAirInfo(@RequestParam(name="companyIds",required=true) String companyIds) {
 
-		 return Result.ok(airqHourService.queryInfoByCompanyId(Arrays.asList(companyIds.split(","))));
+	 	return Result.ok(airqHourService.queryInfoByCompanyId(Arrays.asList(companyIds.split(","))));
 	 }
-
+	 /**
+	  * 空气质量实时报
+	  *
+	  * @param companyIds
+	  * @return
+	  */
+	 @AutoLog(value = "空气质量实时报")
+	 @ApiOperation(value="airq_hour-空气质量实时报", notes="airq_hour-空气质量实时报")
+	 @GetMapping(value = "/queryHourAirQuality")
+	 public Result<?> queryHourAirQuality(@RequestParam(name="companyIds",required=true) String companyIds
+										  ,@RequestParam(name="datatime",required=true) String datatime
+			 								,@RequestParam(name="datatime2",required=true) String datatime2
+			 								,@RequestParam(name="area",required=false) String area
+			 								,@RequestParam(name="mn",required=false) String mn) {
+		//根据小时查询
+	 	return Result.ok(airqHourService.queryHourAirQuality(Arrays.asList(companyIds.split(",")),datatime,datatime2,area,mn));
+	 }
 	 /**
 	  * 分页列表查询
 	  *
@@ -202,6 +228,7 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 			 Map<String,String> param = new HashMap<>();
 			 param.put("key",siteMonitorPoint.getMn());
 			 param.put("value",siteMonitorPoint.getSiteName());
+			 param.put("area",siteMonitorPoint.getArea());
 			 result.add(param);
 		 });
 	 	 return Result.ok(result);
@@ -303,4 +330,23 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
         return super.importExcel(request, response, AirqHour.class);
     }
 
+	 /**
+	  * 导出excel
+	  *
+	  * @param request
+	  */
+	 @RequestMapping(value = "/exportQuality")
+	 public ModelAndView exportQuality(HttpServletRequest request) {
+
+		 List<AirqHourQualityVo> exportList =  airqHourService.queryHourAirQuality(Arrays.asList(request.getParameter("companyIds").split(","))
+				 ,request.getParameter("datatime"),request.getParameter("datatime2"),request.getParameter("area"),request.getParameter("mn"));
+		 // Step.3 AutoPoi 导出Excel
+		 ModelAndView mv = new ModelAndView(new SelfEntityExcelView());
+		 mv.addObject(SelfExcelConstants.TITLE, "空气质量指数实时报"); //此处设置的filename无效 ,前端会重更新设置一下
+		 mv.addObject(SelfExcelConstants.SHEET_NAME, "空气质量指数实时报");
+		 mv.addObject(SelfExcelConstants.CLAZZ, AirqHourQualityVo.class);
+		 mv.addObject(SelfExcelConstants.DATA_LIST, exportList);
+		 return mv;
+
+	 }
 }

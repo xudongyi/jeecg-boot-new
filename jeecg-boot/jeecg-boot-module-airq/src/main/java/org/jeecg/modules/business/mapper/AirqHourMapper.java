@@ -8,7 +8,9 @@ import org.jeecg.modules.business.vo.AirSiteInfo;
 import org.jeecg.modules.business.vo.AirqHourInputVO;
 import org.jeecg.modules.business.vo.AirqHourManInsertVO;
 import org.jeecg.modules.business.vo.AirqHourMonitorVO;
+import org.jeecg.modules.business.vo.AirqHourQualityVo;
 
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
@@ -21,7 +23,7 @@ import java.util.List;
 public interface AirqHourMapper extends BaseMapper<AirqHour> {
 
     List<AirSiteInfo> queryInfoByCompanyId(@Param("companyIds")List<String> companyIds);
-
+    List<AirqHourQualityVo> queryHourAirQuality(@Param("companyIds")List<String> companyIds, @Param("datatime")Timestamp datatime,@Param("datatime2")Timestamp datatime2,@Param("area")String area, @Param("mn")String mn);
     List<AirqHourMonitorVO> queryAirqHourMonitor(Page page,String area,String mn, Date dateBegin, Date dateEnd);
 
     List<AirqHourInputVO> queryAirqHourInput(Page page, String area, String mn, Date dateBegin, Date dateEnd);

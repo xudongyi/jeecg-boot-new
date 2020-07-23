@@ -11,8 +11,10 @@ const queryUnit = (params)=>getAction("/device/siteMonitorDevice/queryUnit",para
 const loadBaiduMap = (params)=>getAction("/site/siteMonitorPoint/loadBaiduMap",params);
 const queryLastAirInfo = (params)=>getAction("/hour/airqHour/queryLastAirInfo",params);
 const querySiteNameAndMn = (params)=>getAction("/hour/airqHour/querySiteNameAndMn",params);
+const queryHourAirQuality = (params)=>getAction("/hour/airqHour/queryHourAirQuality",params);
 const queryStatistic = (params)=>getAction("/statistic/queryEvaluate",params);
 export {
+  queryCompanyName,
   querySiteName,
   queryFiles,
   queryPollution,
@@ -20,5 +22,6 @@ export {
   loadBaiduMap,
   queryLastAirInfo,
   queryStatistic,
-  querySiteNameAndMn
+  querySiteNameAndMn,
+  queryHourAirQuality
 }

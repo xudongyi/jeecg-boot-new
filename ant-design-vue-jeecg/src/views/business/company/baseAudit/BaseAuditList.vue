@@ -448,7 +448,7 @@
 
     mounted() {
       let that = this;
-      console.log(this.$store.getters.userInfo);
+      // console.log(this.$store.getters.userInfo);
       queryCompanyName({companyIds:this.$store.getters.userInfo.companyIds.join(',')}).then((res) => {
 
         if(res.success){
