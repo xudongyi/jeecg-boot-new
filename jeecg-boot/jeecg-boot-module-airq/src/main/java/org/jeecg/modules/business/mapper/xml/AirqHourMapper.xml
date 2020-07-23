@@ -97,16 +97,16 @@
             #{id}
         </foreach>
         <if test="area != null">
-            and t1.area = (#{area})
+            and a.area = (#{area})
         </if>
         <if test="mn != null">
-            and t1.mn = (#{mn})
+            and a.mn = (#{mn})
         </if>
         <if test="dateBegin != null">
-            and t1.data_time >= (#{dateBegin})
+            and b.data_time >= (#{dateBegin})
         </if>
         <if test="dateEnd != null">
-            and t1.data_time &lt;= (#{dateEnd})
+            and b.data_time &lt;= (#{dateEnd})
         </if>
         order by b.aqi asc,b.data_time desc
 
@@ -159,16 +159,16 @@
             #{id}
         </foreach>
         <if test="area != null">
-            and t1.area = (#{area})
+            and a.area = (#{area})
         </if>
         <if test="mn != null">
-            and t1.mn = (#{mn})
+            and a.mn = (#{mn})
         </if>
         <if test="dateBegin != null">
-            and t1.data_time >= (#{dateBegin})
+            and b.data_time >= (#{dateBegin})
         </if>
         <if test="dateEnd != null">
-            and t1.data_time &lt;= (#{dateEnd})
+            and b.data_time &lt;= (#{dateEnd})
         </if>
         order by b.data_time desc
 
@@ -227,16 +227,16 @@
             #{id}
         </foreach>
         <if test="area != null">
-            and t1.area = (#{area})
+            and a.area = (#{area})
         </if>
         <if test="mn != null">
-            and t1.mn = (#{mn})
+            and a.mn = (#{mn})
         </if>
         <if test="dateBegin != null">
-            and t1.data_time >= (#{dateBegin})
+            and b.data_time >= (#{dateBegin})
         </if>
         <if test="dateEnd != null">
-            and t1.data_time &lt;= (#{dateEnd})
+            and b.data_time &lt;= (#{dateEnd})
         </if>
         order by b.data_time desc
 
