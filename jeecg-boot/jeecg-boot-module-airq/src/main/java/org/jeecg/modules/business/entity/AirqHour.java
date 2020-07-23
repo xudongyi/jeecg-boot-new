@@ -108,7 +108,7 @@ public class AirqHour implements Serializable {
     /**风向*/
     @Excel(name = "风向", width = 15)
     @ApiModelProperty(value = "风向")
-    private java.lang.Double a01008Avg;
+    private java.lang.Integer a01008Avg;
     /**风速Iaqi*/
     @Excel(name = "风向Iaqi", width = 15)
     @ApiModelProperty(value = "风向Iaqi")

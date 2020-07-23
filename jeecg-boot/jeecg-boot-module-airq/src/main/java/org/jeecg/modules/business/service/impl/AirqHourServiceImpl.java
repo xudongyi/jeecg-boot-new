@@ -35,8 +35,8 @@ public class AirqHourServiceImpl extends ServiceImpl<AirqHourMapper, AirqHour> i
     }
 
     @Override
-    public Page<AirqHourMonitorVO> queryAirqHourMonitor(Page page, String area, String mn, Date dateBegin, Date dateEnd) {
-        return page.setRecords(airqHourMapper.queryAirqHourMonitor(page, area, mn, dateBegin, dateEnd));
+    public Page<AirqHourMonitorVO> queryAirqHourMonitor(String companyIds,Page page, String area, String mn, Date dateBegin, Date dateEnd) {
+        return page.setRecords(airqHourMapper.queryAirqHourMonitor(companyIds.split(","),page, area, mn, dateBegin, dateEnd));
     }
 
     @Override

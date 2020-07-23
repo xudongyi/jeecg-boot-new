@@ -97,6 +97,7 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 	 public Result<?> queryAirqHourMonitor(@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
 										   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
 										   HttpServletRequest req) throws ParseException {
+		 String companyIds = req.getParameter("companyIds");
 	 	 String area = req.getParameter("area");
 	 	 //通过选择站点名称获取站点mn号
 		 String mn = req.getParameter("mn");
@@ -112,7 +113,7 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 			 dateEnd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dataTimeEnd);
 		 }
 		 Page<AirqHourMonitorVO> page = new Page<AirqHourMonitorVO>(pageNo, pageSize);
-		 IPage<AirqHourMonitorVO> pageList = airqHourService.queryAirqHourMonitor(page, area,mn,dateBegin,dateEnd);
+		 IPage<AirqHourMonitorVO> pageList = airqHourService.queryAirqHourMonitor(companyIds,page, area,mn,dateBegin,dateEnd);
 		 return Result.ok(pageList);
 	 }
 

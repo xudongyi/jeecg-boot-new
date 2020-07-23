@@ -22,7 +22,7 @@ public interface IAirqHourService extends IService<AirqHour> {
 
     List<AirSiteInfo> queryInfoByCompanyId(List<String> companyIds);
 
-    Page<AirqHourMonitorVO> queryAirqHourMonitor(Page page, String area, String mn, Date dateBegin, Date dateEnd);
+    Page<AirqHourMonitorVO> queryAirqHourMonitor(String companyIds,Page page, String area, String mn, Date dateBegin, Date dateEnd);
 
     Page<AirqHourInputVO> queryAirqHourInput(Page page, String area, String mn, Date dateBegin, Date dateEnd);
 

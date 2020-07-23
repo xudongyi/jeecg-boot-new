@@ -106,7 +106,8 @@ public class AirqHourInputVO {
     @ApiModelProperty(value = "气压")
     private java.lang.Double a01006Avg;
     /**风向*/
-    @Excel(name = "风向", width = 15)
+    @Excel(name = "风向", width = 15, dicCode = "wind")
+    @Dict(dicCode = "wind")
     @ApiModelProperty(value = "风向")
-    private java.lang.Double a01008Avg;
+    private java.lang.Integer a01008Avg;
 }

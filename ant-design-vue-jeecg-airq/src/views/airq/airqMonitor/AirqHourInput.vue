@@ -272,8 +272,8 @@
             //title:'a21003Avg',
             title:'风向',
             align:"center",
-            dataIndex: 'a01008Avg',
-            sorter: (a, b) => a.a01008Avg - b.a01008Avg
+            dataIndex: 'a01008Avg_dictText',
+            sorter: (a, b) => a.a01008Avg_dictText - b.a01008Avg_dictText
           },
           {
             // title:'a01006Avg',

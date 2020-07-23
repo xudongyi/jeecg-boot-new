@@ -22,7 +22,7 @@ public interface AirqHourMapper extends BaseMapper<AirqHour> {
 
     List<AirSiteInfo> queryInfoByCompanyId(@Param("companyIds")List<String> companyIds);
 
-    List<AirqHourMonitorVO> queryAirqHourMonitor(Page page,String area,String mn, Date dateBegin, Date dateEnd);
+    List<AirqHourMonitorVO> queryAirqHourMonitor(String[] companyIds,Page page,String area,String mn, Date dateBegin, Date dateEnd);
 
     List<AirqHourInputVO> queryAirqHourInput(Page page, String area, String mn, Date dateBegin, Date dateEnd);
 

@@ -4,6 +4,21 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
+          <a-col :xl="5" :lg="7" :md="8" :sm="24">
+            <a-form-item label="所属区域">
+              <area-link-select type="cascader" v-model="queryParam.area" placeholder="请选择所属区域" show-search style="width: 100%" optionFilterProp="children"/>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="5" :lg="7" :md="8" :sm="24">
+            <a-form-item label="监测点位名称">
+              <a-select v-model="queryParam.mn" show-search style="width: 100%" optionFilterProp="children" placeholder="请选择监测点位名称">
+                <!--                <a-select-option :value="companyIds">请选择</a-select-option>-->
+                <a-select-option v-for="item in items" :key="item.value" :value="item.key">
+                  {{item.value}}
+                </a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
           <a-col :xl="10" :lg="11" :md="12" :sm="24">
             <a-form-item label="数据时间">
               <j-date :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择开始时间" class="query-group-cust" v-model="queryParam.dataTime_begin"></j-date>
@@ -12,13 +27,13 @@
             </a-form-item>
           </a-col>
           <template v-if="toggleSearchStatus">
-            <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-col :xl="4" :lg="7" :md="8" :sm="24">
               <a-form-item label="小时数据平台状态">
                 <j-dict-select-tag placeholder="请选择小时数据平台状态"  dictCode="airDataStatus" :excludeFields="['0']"/>
               </a-form-item>
             </a-col>
           </template>
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+          <a-col :xl="4" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
@@ -68,26 +83,6 @@
         class="j-table-force-nowrap"
         @change="handleTableChange">
 
-        <template slot="htmlSlot" slot-scope="text">
-          <div v-html="text"></div>
-        </template>
-        <template slot="imgSlot" slot-scope="text">
-          <span v-if="!text" style="font-size: 12px;font-style: italic;">无图片</span>
-          <img v-else :src="getImgView(text)" height="25px" alt="" style="max-width:80px;font-size: 12px;font-style: italic;"/>
-        </template>
-        <template slot="fileSlot" slot-scope="text">
-          <span v-if="!text" style="font-size: 12px;font-style: italic;">无文件</span>
-          <a-button
-            v-else
-            :ghost="true"
-            type="primary"
-            icon="download"
-            size="small"
-            @click="uploadFile(text)">
-            下载
-          </a-button>
-        </template>
-
         <span slot="action" slot-scope="text, record">
           <a @click="handleEdit(record)">编辑</a>
 
@@ -120,6 +115,11 @@
   import JDictSelectTag from '@/components/dict/JDictSelectTag'
   import JDate from '@/components/jeecg/JDate.vue'
   import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
+  import {loadAreaDate} from '../component/areaUtil'
+  import AreaHandler from "../component/AreaHandler"
+  import {querySiteNameAndMn} from "../../requestAction/request";
+  import Vue from 'vue'
+  import AreaLinkSelect from '../component/AreaLinkSelect'
 
   export default {
     name: "AirqHourManInsert",
@@ -127,11 +127,13 @@
     components: {
       JDictSelectTag,
       JDate,
-      AirqHourModal
+      AirqHourModal,
+      AreaLinkSelect
     },
     data () {
       return {
         description: 'airq_hour管理页面',
+        items:[],
         // 表头
         columns: [
           {
@@ -238,10 +240,9 @@
             dataIndex: 'a01007Avg'
           },
           {
-            //title:'a21003Avg',
             title:'风向',
             align:"center",
-            dataIndex: 'a01008Avg'
+            dataIndex: 'a01008Avg_dictText'
           },
           {
             // title:'a01006Avg',
@@ -266,6 +267,7 @@
           importExcelUrl: "hour/airqHour/importExcel",
         },
         dictOptions:{},
+        areaHandler:''
       }
     },
     computed: {
@@ -275,7 +277,34 @@
     },
     methods: {
       initDictConfig(){
-      }
+        loadAreaDate()
+      },
+      initArea(){
+        this.areaHandler = new AreaHandler()
+      },
+      getAreaByCode(text){
+        if(!text)
+          return ''
+        //初始化
+        if(this.areaHandler==='')
+        {
+          this.initArea()
+        }
+        let arr = [];
+        this.areaHandler.getAreaBycode(text,arr);
+        return arr[0]+arr[1]+arr[2]
+      },
+    },
+    mounted(){
+
+      let that = this;
+      querySiteNameAndMn({companyIds:this.$store.getters.userInfo.companyIds.join(',')}).then((res)=>{
+        if(res.success){
+          console.log("!!",res.result);
+          that.items = res.result;
+
+        }
+      })
     }
   }
 </script>
