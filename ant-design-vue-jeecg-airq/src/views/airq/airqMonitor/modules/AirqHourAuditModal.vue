@@ -142,10 +142,10 @@
           <a-col span="12">
             <a-form-item label="审核结果：" :labelCol="labelCol" :wrapperCol="wrapperCol">
               <a-radio-group v-model="result" :disabled="disableSubmit">
-                <a-radio value = 1>
+                <a-radio value = '3'>
                   审核通过
                 </a-radio>
-                <a-radio value = 4>
+                <a-radio value = '4'>
                   审核不通过
                 </a-radio>
               </a-radio-group>
@@ -196,7 +196,7 @@
         items:[],
         siteOriginal:[],
         monitorTag:'',
-        result:1,
+        result:'3',
         disableSubmit:false,
         width:1000,
         visible: false,
@@ -257,7 +257,7 @@
         this.form.resetFields();
         this.model = Object.assign({}, record);
         this.visible = true;
-        if(record.state===1||record.state===4)
+        if(record.state==='3'||record.state==='4')
           this.result = record.state;
         if(record.updateTime){
           if (this.timer) {
