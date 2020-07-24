@@ -91,10 +91,13 @@
             <a>删除</a>
           </a-popconfirm>
           <a @click="handleView(record)" v-if="record.state ===1 ||  record.state===3">查看</a>
-
-
-
         </span>
+
+        <span slot="state" slot-scope="text,record">
+          <a-tag :color="colors[record.state]" style="width: 90%">
+            {{ text}}
+          </a-tag>
+         </span>
 
       </a-table>
     </div>
@@ -131,6 +134,13 @@
     data () {
       return {
         description: 'airq_hour管理页面',
+        colors:{
+          0:'black',
+          1:'green',
+          2:'black',
+          3:'blue',
+          4:'red',
+        },
         queryParam: {
           companyIds:this.$store.getters.userInfo.companyIds.join(',')
         },
@@ -163,9 +173,11 @@
             dataIndex: 'dataTime'
           },
           {
-            title:'小时数据平台状态',
+            title:'状态',
             align:"center",
-            dataIndex: 'state_dictText'
+            dataIndex: 'state_dictText',
+            key: 'state',
+            scopedSlots: { customRender:'state'},
           },
           {
             //title:'a21026Avg',

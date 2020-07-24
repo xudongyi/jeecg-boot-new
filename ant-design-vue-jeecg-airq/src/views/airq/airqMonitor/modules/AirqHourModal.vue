@@ -257,7 +257,7 @@
           this.model.createTime =moment(record.createTime).format(this.dateFormat);
         this.model.createName = this.$store.getters.userInfo.realname;
         this.$nextTick(() => {
-          _this.form.setFieldsValue(pick(this.model,'area','mn','dataTime','createTime','createName','updateName','updateTime','state','a01008Avg','a01006Avg','a21005Avg','a3400201Avg','a01007Avg','a21004Avg','a3400424Avg','a01001Avg','a21002Avg','a0502408Avg','a3400401Avg','a0502401Avg','a01002Avg','a21026Avg','a3400224Avg','a21003Avg'))
+          _this.form.setFieldsValue(pick(this.model,'area','mn','dataTime','content','createTime','createName','updateName','updateTime','state','a01008Avg','a01006Avg','a21005Avg','a3400201Avg','a01007Avg','a21004Avg','a3400424Avg','a01001Avg','a21002Avg','a0502408Avg','a3400401Avg','a0502401Avg','a01002Avg','a21026Avg','a3400224Avg','a21003Avg'))
         })
       },
       close () {

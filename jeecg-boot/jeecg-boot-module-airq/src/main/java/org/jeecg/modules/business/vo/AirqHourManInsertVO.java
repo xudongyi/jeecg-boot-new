@@ -25,6 +25,10 @@ public class AirqHourManInsertVO {
     @Excel(name = "mn号", width = 15)
     @ApiModelProperty(value = "mn号")
     private java.lang.String mn;
+    /**审核说明*/
+    @Excel(name = "审核说明", width = 15)
+    @ApiModelProperty(value = "审核说明")
+    private java.lang.String content;
     /*
     监测点位名称
      */

@@ -63,6 +63,10 @@ public class AirqHour implements Serializable {
 	@Excel(name = "mn号", width = 15)
     @ApiModelProperty(value = "mn号")
     private java.lang.String mn;
+    /**审核说明*/
+    @Excel(name = "审核说明", width = 15)
+    @ApiModelProperty(value = "审核说明")
+    private java.lang.String content;
 	/**小时数据平台状态*/
 	@Excel(name = "小时数据平台状态", width = 15, dicCode = "airDataStatus")
     @Dict(dicCode = "airDataStatus")

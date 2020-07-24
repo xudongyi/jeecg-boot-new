@@ -111,7 +111,7 @@
         <result column="mn" property="mn" jdbcType="VARCHAR"/>
         <result column="area" property="area" jdbcType="VARCHAR"/>
         <result column="site_name" property="siteName" jdbcType="VARCHAR"/>
-        <result column="aqi" property="aqi" jdbcType="VARCHAR"/>
+        <result column="aqi" property="aqi" jdbcType="DOUBLE"/>
         <result column="data_time" property="dataTime" jdbcType="TIMESTAMP"/>
         <result column="first_code" property="firstCode" jdbcType="VARCHAR"/>
         <result column="airLevel" property="airLevel" jdbcType="VARCHAR"/>
@@ -174,7 +174,7 @@
         <result column="area" property="area" jdbcType="VARCHAR"/>
         <result column="state" property="state" jdbcType="INTEGER"/>
         <result column="site_name" property="siteName" jdbcType="VARCHAR"/>
-        <result column="aqi" property="aqi" jdbcType="VARCHAR"/>
+        <result column="aqi" property="aqi" jdbcType="DOUBLE"/>
         <result column="data_time" property="dataTime" jdbcType="TIMESTAMP"/>
         <result column="first_code" property="firstCode" jdbcType="VARCHAR"/>
         <result column="airLevel" property="airLevel" jdbcType="VARCHAR"/>
@@ -234,10 +234,11 @@
     <resultMap id="AirqHourManInsertVO" type="org.jeecg.modules.business.vo.AirqHourManInsertVO" >
         <result column="id" property="id" jdbcType="VARCHAR"/>
         <result column="mn" property="mn" jdbcType="VARCHAR"/>
+        <result column="content" property="content" jdbcType="VARCHAR"/>
         <result column="area" property="area" jdbcType="VARCHAR"/>
         <result column="state" property="state" jdbcType="INTEGER"/>
         <result column="site_name" property="siteName" jdbcType="VARCHAR"/>
-        <result column="aqi" property="aqi" jdbcType="VARCHAR"/>
+        <result column="aqi" property="aqi" jdbcType="DOUBLE"/>
         <result column="data_time" property="dataTime" jdbcType="TIMESTAMP"/>
         <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
         <result column="create_by" property="createBy" jdbcType="VARCHAR"/>
@@ -266,7 +267,7 @@
 
     <select id="queryAirqHourManInsert" resultMap="AirqHourManInsertVO">
         select t.* from
-        (select b.id,a.mn,a.site_name,b.`level` as airLevel,b.level,a.area,b.aqi,
+        (select b.id,a.mn,a.site_name,b.`level` as airLevel,b.level,a.area,b.aqi,b.content,
         b.data_time,b.create_time,t1.realname as createName,t2.realname as updateName,b.first_code,b.state,
         b.a21026_avg,b.a21004_avg,b.a3400201_avg,b.a3400224_avg,
         b.a21005_avg,b.a0502401_avg,b.a0502408_avg,b.a3400401_avg,
