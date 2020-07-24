@@ -1,5 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.jeecg.modules.business.mapper.AirqMonthMapper">
-
+    <resultMap id="AirqVO" type="org.jeecg.modules.business.vo.AirqVO">
+        <result column="value" property="value" jdbcType="NUMERIC"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="level" property="level" jdbcType="VARCHAR"/>
+    </resultMap>
+    <select id="findEvaluate" parameterType="String" resultMap="AirqVO">
+        SELECT
+        COUNT( 1 ) as value,
+        airq_level.level_grade as name,	airq_level.`level` AS level
+        FROM
+        airq_level
+        LEFT JOIN airq_month ON airq_month.`LEVEL` = airq_level.`level`
+        WHERE
+        airq_month.MN IN (${mns})
+        <if test="timeStart != null and  timeEnd !=null">
+            AND `MONTH` BETWEEN #{timeStart} AND #{timeEnd}
+        </if>
+        GROUP BY
+        airq_month.`LEVEL`
+        UNION all (select 0 as number ,level_grade,`level` from airq_level where level_grade not in (
+        SELECT
+        level_grade
+        FROM
+        airq_level
+        LEFT JOIN airq_month ON airq_month.`LEVEL` = airq_level.`level`
+        WHERE
+        airq_month.MN IN (${mns})
+        <if test="timeStart != null and  timeEnd !=null">
+            AND `MONTH` BETWEEN #{timeStart} AND #{timeEnd}
+        </if>
+        GROUP BY
+        airq_month.`LEVEL`
+        ))
+        ORDER BY level
+    </select>
 </mapper>

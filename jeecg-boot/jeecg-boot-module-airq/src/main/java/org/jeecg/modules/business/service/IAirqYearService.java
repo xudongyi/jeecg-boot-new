@@ -2,6 +2,9 @@ package org.jeecg.modules.business.service;
 
 import org.jeecg.modules.business.entity.AirqYear;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.jeecg.modules.business.vo.AirqVO;
+
+import java.util.List;
 
 /**
  * @Description: airq_year
@@ -11,4 +14,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IAirqYearService extends IService<AirqYear> {
 
+    List<AirqVO> findEvaluate(String searchTime, List<String> mns);
 }

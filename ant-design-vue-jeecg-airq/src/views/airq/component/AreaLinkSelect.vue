@@ -32,6 +32,13 @@
         default: '100%'
       }
     },
+    // 定义model属性
+    model: {
+      // prop即 父组件使用 v-model 绑定的属性,这个名称是自定义的
+      prop: "value",
+      // event即 子组件会向父组件触发的事件,父组件的 v-model可以监听到这个事件,并将vlaue赋值给v-model绑定的属性
+      event: "input"
+    },
     data() {
       return {
         innerValue: [],
@@ -70,6 +77,7 @@
       value: {
         immediate: true,
         handler() {
+          debugger
           this.loadDataByValue(this.value)
         }
       },

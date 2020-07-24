@@ -2,6 +2,9 @@ package org.jeecg.modules.business.mapper;
 
 import org.jeecg.modules.business.entity.AirqMonth;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.jeecg.modules.business.vo.AirqVO;
+
+import java.util.List;
 
 /**
  * @Description: airq_month
@@ -11,4 +14,5 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface AirqMonthMapper extends BaseMapper<AirqMonth> {
 
+    List<AirqVO> findEvaluate(String mns, String timeStart, String timeEnd);
 }

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.jeecg.modules.business.mapper.AirqDayMapper">
-    <resultMap id="AirqDayVO" type="org.jeecg.modules.business.vo.AirqDayVO">
+    <resultMap id="AirqVO" type="org.jeecg.modules.business.vo.AirqVO">
         <result column="value" property="value" jdbcType="NUMERIC"/>
         <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="level" property="level" jdbcType="VARCHAR"/>
     </resultMap>
     <resultMap id="AirqDayQualityVo" type="org.jeecg.modules.business.vo.AirqDayQualityVo">
         <result column="mn" property="mn" jdbcType="VARCHAR"/>
@@ -29,34 +30,35 @@
         <result column="a3400424_Avg" property="a3400424Avg" jdbcType="DOUBLE"/>
         <result column="a3400424_Iaqi" property="a3400424Iaqi" jdbcType="DOUBLE"/>
     </resultMap>
-    <select id="findEvaluate" parameterType="String" resultMap="AirqDayVO">
+    <select id="findEvaluate" parameterType="String" resultMap="AirqVO">
         SELECT
         COUNT( 1 ) as value,
-        airq_level.level_grade as name
+        airq_level.level_grade as name,	airq_level.`level` AS level
         FROM
         airq_level
         LEFT JOIN airq_day ON airq_day.`LEVEL` = airq_level.`level`
         WHERE
-        airq_day. MN IN (${mns})
+        airq_day.MN IN (${mns})
         <if test="timeStart != null and  timeEnd !=null">
             AND DATA_TIME BETWEEN #{timeStart} AND #{timeEnd}
         </if>
         GROUP BY
         airq_day.`LEVEL`
-        UNION all (select 0 as number ,level_grade from airq_level where level_grade not in (
+        UNION all (select 0 as number ,level_grade,`level` from airq_level where level_grade not in (
         SELECT
         level_grade
         FROM
         airq_level
         LEFT JOIN airq_day ON airq_day.`LEVEL` = airq_level.`level`
         WHERE
-        airq_day. MN IN (${mns})
+        airq_day.MN IN (${mns})
         <if test="timeStart != null and  timeEnd !=null">
             AND DATA_TIME BETWEEN #{timeStart} AND #{timeEnd}
         </if>
         GROUP BY
         airq_day.`LEVEL`
         ))
+        ORDER BY level
     </select>
     <select id="queryDayAirQuality"   resultMap="AirqDayQualityVo">
 

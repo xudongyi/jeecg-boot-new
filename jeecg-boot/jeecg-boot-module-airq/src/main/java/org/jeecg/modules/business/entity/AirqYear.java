@@ -48,6 +48,10 @@ public class AirqYear implements Serializable {
 	@Excel(name = "mn", width = 15)
     @ApiModelProperty(value = "mn")
     private java.lang.String mn;
+    /**level*/
+    @Excel(name = "level", width = 15)
+    @ApiModelProperty(value = "level")
+    private java.lang.String level;
 	/**fineDays*/
 	@Excel(name = "fineDays", width = 15)
     @ApiModelProperty(value = "fineDays")

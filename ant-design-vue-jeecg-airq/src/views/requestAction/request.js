@@ -15,6 +15,7 @@ const queryHourAirQuality = (params)=>getAction("/hour/airqHour/queryHourAirQual
 const queryDayAirQuality = (params)=>getAction("/day/airqDay/queryDayAirQuality",params);
 
 const queryStatistic = (params)=>getAction("/statistic/queryEvaluate",params);
+const queryTrend = (params)=>getAction("/statistic/queryTrend",params);
 export {
   queryCompanyName,
   querySiteName,
@@ -25,6 +26,7 @@ export {
   queryLastAirInfo,
   queryStatistic,
   querySiteNameAndMn,
+  queryTrend,
   queryHourAirQuality,
   queryDayAirQuality
 }

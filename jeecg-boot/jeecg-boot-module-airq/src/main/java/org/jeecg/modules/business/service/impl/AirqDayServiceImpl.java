@@ -10,6 +10,7 @@ import org.jeecg.modules.business.service.IAirqDayService;
 import org.jeecg.modules.business.utils.RedisCacheUtil;
 import org.jeecg.modules.business.vo.AirqDayQualityVo;
 import org.jeecg.modules.business.vo.AirqDayVO;
+import org.jeecg.modules.business.vo.AirqVO;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -30,7 +31,7 @@ public class AirqDayServiceImpl extends ServiceImpl<AirqDayMapper, AirqDay> impl
     @Resource
     private RedisCacheUtil redisCacheUtil;
     @Override
-    public List<AirqDayVO> findEvaluate(String searchTime, List<String> mns) {
+    public List<AirqVO> findEvaluate(String searchTime, List<String> mns) {
         String[] times = null;
         String timeStart = null;
         String timeEnd = null;

@@ -10,26 +10,26 @@
         style="border-top:1px solid rgba(217,217,217,1);height: 88%">
         <a-form>
           <a-form-item label="数据类型" :labelCol="labelCol" :wrapperCol="wrapperCol">
-            <a-radio-group default-value="day" button-style="solid" @change="dataTypeChange" style="width: 100%">
-              <a-radio-button value="day" style="width: 33.3%;text-align:center;">
+            <a-radio-group default-value="hour" button-style="solid" @change="dataTypeChange" style="width: 100%">
+              <a-radio-button value="hour" style="width: 50%;text-align:center;">
+                小时
+              </a-radio-button>
+              <a-radio-button value="day" style="width: 50%;text-align:center;">
                 日
-              </a-radio-button>
-              <a-radio-button value="month" style="width: 33.3%;text-align:center;">
-                月
-              </a-radio-button>
-              <a-radio-button value="year" style="width: 33.3%;text-align:center;">
-                年
               </a-radio-button>
             </a-radio-group>
           </a-form-item>
-          <a-form-item label="查询时间" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-form-item label="查询时间" :labelCol="labelCol" :wrapperCol="wrapperCol" style="width: 100%">
             <a-range-picker
               :placeholder="placeholder"
               :format="format"
               :mode="mode2"
+              timeformat="HH"
               :value="timeValue"
               @change="searchTimeChange"
               @panelChange="handlePanelChange"
+              :showTime="showTime"
+              style="width: 100%"
             />
           </a-form-item>
           <a-form-item label="行政区域" :labelCol="labelCol" :wrapperCol="wrapperCol">
@@ -95,19 +95,28 @@
           <a-radio-button value="A21005" style="width: 10%;text-align:center;">
             CO
           </a-radio-button>
-          <a-radio-button value="A05024" style="width: 10%;text-align:center;">
-            O<sub>3</sub>
+          <a-radio-button value="A01001" style="width: 10%;text-align:center;">
+            温度
+          </a-radio-button>
+          <a-radio-button value="A01002" style="width: 10%;text-align:center;">
+            湿度
+          </a-radio-button>
+          <a-radio-button value="A01007" style="width: 10%;text-align:center;">
+            风速
+          </a-radio-button>
+          <a-radio-button value="A01006" style="width: 10%;text-align:center;">
+            气压
           </a-radio-button>
         </a-radio-group>
         <a-button type="primary"  style="float:right;margin-right: 17px" @click="downPic" size="small">导出图片</a-button>
       </div>
-      <div id="evaluate" style="width:100%;height:80%;z-index:19;"></div>
+      <div id="trend" style="width:100%;height:80%;z-index:19;"></div>
     </a-layout-content>
   </a-layout>
 </template>
 
 <script>
-  import {querySiteName,queryStatistic} from "../../requestAction/request";
+  import {querySiteName,queryTrend} from "../../requestAction/request";
   import 'vue-happy-scroll/docs/happy-scroll.css'
   import AreaLinkSelect from '../component/AreaLinkSelect'
   import JDictSelectTag from "@/components/dict/JDictSelectTag"
@@ -130,16 +139,17 @@
     data() {
       return {
         mode2: ["date","date"],
-        placeholder:["开始日期","结束日期"],
-        format:"YYYY-MM-DD",
-        titleText:"大气环境质量(AQI)评价分析结果",
-        radioObj:{"AQI":"AQI","A34004":"PM2.5","A34002":"PM10","A21026":"SO2","A21004":"NO2","A21005":"CO","A05024":"O3"},
+        placeholder:["开始时间","结束时间"],
+        format:"YYYY-MM-DD HH",
+        titleText:"大气环境质量(AQI)趋势分析结果",
+        radioObj:{"AQI":"AQI","A34004":"PM2.5","A34002":"PM10","A21026":"SO2","A21004":"NO2","A21005":"CO","A05024":"O3","A01001":"温度","A01002":"湿度","A01007":"风速","A01006":"气压"},
+        showTime:{format:'HH'},
         autoExpandParent: true,
         expandedKeys: [],
         siteType:3,
         data: [],
         myChart:{},
-        dataType:'day',
+        dataType:'hour',
         pollutionType:"AQI",
         searchTime:[],
         timeValue:[],
@@ -158,7 +168,7 @@
         },
         wrapperCol: {
           xs: {span: 24},
-          sm: {span: 16},
+          sm: {span: 17},
         },
       }
     },
@@ -273,7 +283,7 @@
       },
       drawLine(data,titleText) {
         var echarts = require('echarts');
-        var myChart = echarts.init(document.getElementById('evaluate'));
+        var myChart = echarts.init(document.getElementById('trend'));
         this.myChart = myChart;
         myChart.setOption({
           title: {
@@ -282,43 +292,23 @@
             left: 'center'
           },
           tooltip: {
-            trigger: 'item',
-            formatter: '{b} : {c} ({d}%)'
+            trigger: 'axis',
           },
+          color:['#00E400','#EFD600','#FF7E00'],
           legend: {
+            data: data["siteName"],
             bottom: 10,
-            left: 'center',
-            data: ['优', '良', '轻度污染', '中度污染', '重度污染',"严重污染"]
+            left:'center'
           },
-          series: [
-            {
-              type: 'pie',
-              radius: '65%',
-              center: ['50%', '50%'],
-              selectedMode: 'single',
-              data: data,
-              emphasis: {
-                itemStyle: {
-                  shadowBlur: 10,
-                  shadowOffsetX: 0,
-                  shadowColor: 'rgba(0, 0, 0, 0.5)',
-
-                }
-              },
-              itemStyle: {
-                normal:{
-                  color:function(params) {
-                    //自定义颜色
-                    var colorList = [
-                      '#00E400','#EFD600','#FF7E00','#FF0000','#99004C', '#7E0023'
-                    ];
-                    return colorList[params.dataIndex]
-                  },
-
-                }
-              }
-            }
-          ]
+          xAxis: {
+            type: 'category',
+            data: data["dateTimes"],
+          },
+          yAxis: {
+            type: 'value',
+            name:"AQI"
+          },
+          series: data["series"]
         });
       },
       parseDate(value){
@@ -344,7 +334,11 @@
             }
           )
         })
-        queryStatistic({dataType: that.dataType,pollutionType:that.pollutionType,searchTime:that.searchTime.join(","),checkedKeys:checkSites.join(",")}).then((res) => {
+        queryTrend({dataType: that.dataType,pollutionType:that.pollutionType,searchTime:that.searchTime.join(","),checkedKeys:checkSites.join(",")}).then((res) => {
+          
+          let siteName = res.result["siteName"];
+          let dateTimes = res.result["dateTimes"];
+          let series = res.result["series"];
           this.drawLine(res.result,this.titleText);
         })
       },
@@ -359,26 +353,24 @@
         this.dataType = dataType;
         this.timeValue = [];
         if(dataType==="day"){
+          this.showTime = false;
           this.mode2= ["date","date"]
           this.format="YYYY-MM-DD"
           this.placeholder=["开始日期","结束日期"]
-        }else if(dataType==="month"){
-          this.mode2 = ["month","month"]
-          this.placeholder=["开始月份","结束月份"]
-          this.format="YYYY-MM"
-        }else if(dataType==="year"){
-          this.mode2 = ["year","year"]
-          this.placeholder=["开始年份","结束年份"]
-          this.format="YYYY"
+        }else if(dataType==="hour"){
+          this.showTime = {format:'HH'};
+          this.mode2 = ["date","date"]
+          this.placeholder=["开始时间","结束时间"]
+          this.format="YYYY-MM-DD HH"
         }
         this.searchQuery();
       },
       pollutionTypeChange(e){
         this.pollutionType = e.target.value;
-        this.titleText = "大气环境质量("+this.radioObj[e.target.value]+")评价分析结果" ;
+        this.titleText = "大气环境质量("+this.radioObj[e.target.value]+")趋势分析结果" ;
         this.searchQuery();
       },
-      searchTimeChange(value,dataStr) {
+      searchTimeChange(value) {
         this.timeValue = value;
         this.searchTime = this.parseDate(value);
       },
@@ -428,7 +420,7 @@
         sites.forEach(e=>{
           checkSites.push(e.key);
         })
-        queryStatistic({dataType: that.dataType,pollutionType:that.pollutionType,searchTime:that.searchTime.join(","),checkedKeys:checkSites.join(",")}).then((res) => {
+        queryTrend({dataType: that.dataType,pollutionType:that.pollutionType,searchTime:that.searchTime.join(","),checkedKeys:checkSites.join(",")}).then((res) => {
           that.drawLine(res.result,that.titleText);
         })
       })
