@@ -7,6 +7,8 @@ package org.jeecg.modules.business.constant;
  */
 public interface SelfExcelConstants {
     public static final String TITLE = "title";	//标题
+    public static final String FOOTER = "footer";	//注脚
+
     public static final String SHEET_NAME = "sheetName";	//sheetName
     public static final String CLAZZ = "clazz";	//sheetName
     public static final String DATA_LIST = "dataList";//数据

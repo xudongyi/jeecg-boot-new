@@ -49,6 +49,7 @@
       :pagination="ipagination"
       class="j-table-force-nowrap"
       bordered
+      @change="handleTableChange"
     >
 
         <span slot="leveltype" slot-scope="text,record">
@@ -117,6 +118,7 @@
                 title: '监测点位名称',
                 dataIndex: 'siteName',
                 align:"center",
+                customRender: this.renderContent
 
               },
               {
@@ -378,11 +380,17 @@
       watch: {
         dataSource(val){
           this.rowspan(val)
-          console.log(this.spanArr,this.position)
+
         }
       },
         methods:{
           dataformat(val){
+
+          },
+          handleTableChange(pagination, filters, sorter) {
+            //分页、排序、筛选变化时触发
+            //TODO 筛选
+            this.ipagination = pagination;
 
           },
           initDictData(dictCode) {
@@ -419,7 +427,6 @@
             return val
           },
           renderContentArea(value, row, index){
-            console.log(value,row,index)
             return this.renderContent(this.getAreaBycode(value),row,index)
           },
           renderContent (value, row, index)  {

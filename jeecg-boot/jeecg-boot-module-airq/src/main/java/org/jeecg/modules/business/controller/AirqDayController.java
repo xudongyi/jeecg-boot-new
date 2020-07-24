@@ -152,5 +152,21 @@ public class AirqDayController extends JeecgController<AirqDay, IAirqDayService>
     public Result<?> importExcel(HttpServletRequest request, HttpServletResponse response) {
         return super.importExcel(request, response, AirqDay.class);
     }
-
+	 /**
+	  * 空气质量实日报
+	  *
+	  * @param companyIds
+	  * @return
+	  */
+	 @AutoLog(value = "空气质量实日报")
+	 @ApiOperation(value="airq_Day-空气质量实日报", notes="airq_Day-空气质量实日报")
+	 @GetMapping(value = "/queryDayAirQuality")
+	 public Result<?> queryHourAirQuality(@RequestParam(name="companyIds",required=true) String companyIds
+			 ,@RequestParam(name="datatime",required=true) String datatime
+			 ,@RequestParam(name="datatime2",required=true) String datatime2
+			 ,@RequestParam(name="area",required=false) String area
+			 ,@RequestParam(name="mn",required=false) String mn) {
+		 //根据小时查询
+		 return Result.ok(airqDayService.queryDayAirQuality(Arrays.asList(companyIds.split(",")),datatime,datatime2,area,mn));
+	 }
 }

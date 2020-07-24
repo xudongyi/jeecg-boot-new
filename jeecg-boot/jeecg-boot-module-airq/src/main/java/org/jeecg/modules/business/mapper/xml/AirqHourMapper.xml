@@ -76,13 +76,12 @@
         <foreach collection="companyIds" item="id" index="index" open="(" close=")" separator=",">
             #{id}
         </foreach>
-        group by
+        group by site_name
         )
          and company_id in
           <foreach collection="companyIds" item="id" index="index" open="(" close=")" separator=",">
             #{id}
         </foreach>
-    group by site_name
     </select>
     <select id="queryHourAirQuality"   resultMap="AirqHourQualityVo">
 

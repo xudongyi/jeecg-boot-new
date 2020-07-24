@@ -208,8 +208,16 @@ public class SelfEntityExcelView extends MiniAbstractExcelView {
                 else
                     row.createCell( i).setCellValue(val.toString());
             }
+            rowNum++;
         }
+        //注脚
+        if(model.get(SelfExcelConstants.FOOTER)!=null){
+             row = sheet.createRow(rowNum);
+            HSSFCell cell  = row.createCell(0);
+            cell.setCellValue(model.get(SelfExcelConstants.FOOTER).toString());
+            sheet.addMergedRegion(new CellRangeAddress(0,0,0,excelSelves.size()-1));//横向：合并第一行
 
+        }
 
         //默认是 .xls
         codedFileName += HSSF;

@@ -389,6 +389,8 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 		 mv.addObject(SelfExcelConstants.SHEET_NAME, "空气质量指数实时报");
 		 mv.addObject(SelfExcelConstants.CLAZZ, AirqHourQualityVo.class);
 		 mv.addObject(SelfExcelConstants.DATA_LIST, exportList);
+		 mv.addObject(SelfExcelConstants.FOOTER, "注：缺测指标的浓度及分指数均使用NA标识。");
+
 		 return mv;
 
 	 }
