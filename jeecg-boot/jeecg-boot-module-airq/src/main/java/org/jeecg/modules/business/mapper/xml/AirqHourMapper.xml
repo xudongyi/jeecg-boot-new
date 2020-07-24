@@ -304,4 +304,77 @@
 
     </select>
 
+    <resultMap id="AirqHourAuditVO" type="org.jeecg.modules.business.vo.AirqHourAuditVO" >
+        <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="mn" property="mn" jdbcType="VARCHAR"/>
+        <result column="content" property="content" jdbcType="VARCHAR"/>
+        <result column="area" property="area" jdbcType="VARCHAR"/>
+        <result column="state" property="state" jdbcType="INTEGER"/>
+        <result column="site_name" property="siteName" jdbcType="VARCHAR"/>
+        <result column="aqi" property="aqi" jdbcType="DOUBLE"/>
+        <result column="data_time" property="dataTime" jdbcType="TIMESTAMP"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="create_by" property="createBy" jdbcType="VARCHAR"/>
+        <result column="update_by" property="updateBy" jdbcType="VARCHAR"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="first_code" property="firstCode" jdbcType="VARCHAR"/>
+        <result column="airLevel" property="airLevel" jdbcType="VARCHAR"/>
+        <result column="level" property="level" jdbcType="VARCHAR"/>
+        <result column="A21026_avg" property="a21026Avg" jdbcType="DOUBLE"/>
+        <result column="A21004_avg" property="a21004Avg" jdbcType="DOUBLE"/>
+        <result column="A3400201_avg" property="a3400201Avg" jdbcType="DOUBLE"/>
+        <result column="a3400224_avg" property="a3400224Avg" jdbcType="DOUBLE"/>
+        <result column="A21005_avg" property="a21005Avg" jdbcType="DOUBLE"/>
+        <result column="A0502401_avg" property="a0502401Avg" jdbcType="DOUBLE"/>
+        <result column="A0502408_avg" property="a0502408Avg" jdbcType="DOUBLE"/>
+        <result column="A3400401_avg" property="a3400401Avg" jdbcType="DOUBLE"/>
+        <result column="a3400424_avg" property="a3400424Avg" jdbcType="DOUBLE"/>
+        <result column="A01001_avg" property="a01001Avg" jdbcType="DOUBLE"/>
+        <result column="A01002_avg" property="a01002Avg" jdbcType="DOUBLE"/>
+        <result column="A01007_avg" property="a01007Avg" jdbcType="DOUBLE"/>
+        <result column="A01006_avg" property="a01006Avg" jdbcType="DOUBLE"/>
+        <result column="A01008_AVG" property="a01008Avg" jdbcType="INTEGER"/>
+        <result column="meaning" property="meaning" jdbcType="VARCHAR"/>
+
+    </resultMap>
+
+    <select id="queryAirqHourAudit" resultMap="AirqHourAuditVO">
+        select t.* from
+        (select b.id,a.mn,a.site_name,b.`level` as airLevel,b.level,a.area,b.aqi,b.content,
+        b.data_time,b.create_time,t1.realname as createName,t2.realname as updateName,b.first_code,b.state,
+        b.a21026_avg,b.a21004_avg,b.a3400201_avg,b.a3400224_avg,
+        b.a21005_avg,b.a0502401_avg,b.a0502408_avg,b.a3400401_avg,
+        b.a3400424_avg,b.a01001_avg,b.a01002_avg,b.a01007_avg,b.a01006_avg,b.A01008_AVG
+
+        from airq_hour b INNER JOIN(select a.mn,
+        max(b.data_time) data_time
+        from airq_hour b left join site_monitor_point a on b.mn = a.mn
+        WHERE b.state in (1,3,4) group by a.mn) c on b.mn = c.mn and b.data_time = c.data_time
+        left join site_monitor_point a on b.mn = a.mn
+        left join sys_user t1 on t1.id=b.create_by
+        left join sys_user t2 on t2.id=b.update_by
+        WHERE b.state in (1,3,4)
+        and a.company_id in
+        <foreach collection="companyIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>) t where 1=1
+        <if test="area != null">
+            and t.area = (#{area})
+        </if>
+        <if test="mn != null">
+            and t.mn = (#{mn})
+        </if>
+        <if test="state != null">
+            and t.state = (#{state})
+        </if>
+        <if test="dateBegin != null">
+            and t.data_time >= (#{dateBegin})
+        </if>
+        <if test="dateEnd != null">
+            and t.data_time &lt;= (#{dateEnd})
+        </if>
+        order by t.data_time desc
+
+    </select>
+
 </mapper>

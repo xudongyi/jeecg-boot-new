@@ -4,11 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.jeecg.modules.business.entity.AirqHour;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.jeecg.modules.business.vo.AirSiteInfo;
-import org.jeecg.modules.business.vo.AirqHourInputVO;
-import org.jeecg.modules.business.vo.AirqHourManInsertVO;
-import org.jeecg.modules.business.vo.AirqHourMonitorVO;
-import org.jeecg.modules.business.vo.AirqHourQualityVo;
+import org.jeecg.modules.business.vo.*;
 
 import java.util.Date;
 import java.util.List;
@@ -29,5 +25,7 @@ public interface IAirqHourService extends IService<AirqHour> {
     Page<AirqHourInputVO> queryAirqHourInput(String companyIds,Page page, String area, String mn, Date dateBegin, Date dateEnd);
 
     Page<AirqHourManInsertVO> queryAirqHourManInsert(String companyIds,Page page, String area, String mn,Integer state, Date dateBegin, Date dateEnd);
+
+    Page<AirqHourAuditVO> queryAirqHourAudit(String companyIds, Page page, String area, String mn, Integer state, Date dateBegin, Date dateEnd);
 
 }
