@@ -52,10 +52,10 @@
     <div class="table-operator">
       <a-button @click="toHandleAdd" type="primary" icon="plus">新增</a-button>
       <a-button @click="batchSubmit" type="primary" icon="snippets">批量提交</a-button>
-      <a-button type="primary" icon="download" @click="handleExportXls('airq_hour')">导出</a-button>
-      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
-        <a-button type="primary" icon="import">导入</a-button>
-      </a-upload>
+<!--      <a-button type="primary" icon="download" @click="handleExportXls('airq_hour')">导出</a-button>-->
+<!--      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">-->
+<!--        <a-button type="primary" icon="import">导入</a-button>-->
+<!--      </a-upload>-->
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
           <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
@@ -85,12 +85,12 @@
         @change="handleTableChange">
 
         <span slot="action" slot-scope="text, record">
-          <a @click="toHandleEdit(record)" v-if="record.state ===2 || record.status===4">编辑</a>
-          <a-divider type="vertical" v-if="record.state ===2 || record.state===4"/>
-          <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)" v-if="record.state ===2 || record.state===4">
+          <a @click="toHandleEdit(record)" v-if="record.state ===1 || record.state=== 4">编辑</a>
+          <a-divider type="vertical" v-if="record.state ===1 || record.state=== 4"/>
+          <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)" v-if="record.state ===1 || record.state===4">
             <a>删除</a>
           </a-popconfirm>
-          <a @click="handleView(record)" v-if="record.state ===1 ||  record.state===3">查看</a>
+          <a @click="handleView(record)" v-if="record.state ===2 ||  record.state===3">查看</a>
         </span>
 
         <span slot="state" slot-scope="text,record">
@@ -137,7 +137,7 @@
         colors:{
           0:'black',
           1:'green',
-          2:'black',
+          2:'grey',
           3:'blue',
           4:'red',
         },
@@ -291,7 +291,7 @@
         return {
           getCheckboxProps: record => ({
             props: {
-              disabled: record.state !== 2,
+              disabled: record.state !== 1,
               name: record.projectName,
             },
           }),

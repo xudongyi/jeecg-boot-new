@@ -148,7 +148,7 @@
             dataIndex: 'dataTime',
           },
           {
-            title:'空气质量指数(AQI)',
+            title:'AQI',
             align:"center",
             dataIndex: 'aqi',
             sorter: (a, b) => a.aqi - b.aqi

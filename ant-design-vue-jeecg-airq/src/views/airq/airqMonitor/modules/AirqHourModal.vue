@@ -14,12 +14,12 @@
         <a-row>
           <a-col span="12">
             <a-form-item label="行政区域" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <area-link-select @change="areaChange" type="cascader" v-decorator="['area']" placeholder="请选择所属区域" show-search style="width: 100%" optionFilterProp="children" :disabled="disableSubmit"/>
+              <area-link-select @change="areaChange" type="cascader" v-decorator="['area', validatorRules.area]" placeholder="请选择所属区域" show-search style="width: 100%" optionFilterProp="children" :disabled="disableSubmit"/>
             </a-form-item>
           </a-col>
           <a-col span="12">
             <a-form-item label="监测点位名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-select v-decorator="['mn']" show-search style="width: 100%" optionFilterProp="children" placeholder="请选择监测点位名称" :disabled="disableSubmit">
+              <a-select v-decorator="['mn', validatorRules.mn]" show-search style="width: 100%" optionFilterProp="children" placeholder="请选择监测点位名称" :disabled="disableSubmit">
                 <a-select-option v-for="item in items" :key="item.value" :value="item.key">
                   {{item.value}}
                 </a-select-option>
@@ -31,7 +31,7 @@
         <a-row>
           <a-col span="12">
             <a-form-item label="采集时间" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <j-date placeholder="请输入采集时间" v-decorator="['dataTime']" :trigger-change="true" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" style="width: 100%" :disabled="disableSubmit"/>
+              <j-date placeholder="请输入采集时间" v-decorator="['dataTime', validatorRules.dataTime]" :trigger-change="true" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" style="width: 100%" :disabled="disableSubmit"/>
             </a-form-item>
           </a-col>
           <a-col span="12">
@@ -204,6 +204,21 @@
         },
         confirmLoading: false,
         validatorRules: {
+          area: {
+            rules: [
+              { required: true, message: '请选择行政区域!'},
+            ]
+          },
+          mn: {
+            rules: [
+              { required: true, message: '请选择监测点位名称!'},
+            ]
+          },
+          dataTime: {
+            rules: [
+              { required: true, message: '请输入采集时间!'},
+            ]
+          },
         },
         url: {
           add: "/hour/airqHour/add",

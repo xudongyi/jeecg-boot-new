@@ -11,7 +11,7 @@
           </a-col>
           <a-col :xl="5" :lg="7" :md="8" :sm="24">
             <a-form-item label="监测点位名称">
-              <a-select v-model="queryParam.mn" show-search style="width: 100%" optionFilterProp="children">
+              <a-select v-model="queryParam.mn" show-search style="width: 100%" optionFilterProp="children" placeholder="请选择监测点位名称">
                 <!--                <a-select-option :value="companyIds">请选择</a-select-option>-->
                 <a-select-option v-for="item in items" :key="item.value" :value="item.key">
                   {{item.value}}
@@ -36,6 +36,14 @@
       </a-form>
     </div>
     <!-- 查询区域-END -->
+
+    <!-- 操作按钮区域 -->
+    <div class="table-operator">
+      <a-button type="primary" icon="download" @click="handleExportXls('airq_hour')">导出</a-button>
+<!--      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">-->
+<!--        <a-button type="primary" icon="import">导入</a-button>-->
+<!--      </a-upload>-->
+    </div>
 
     <!-- table区域-begin -->
     <div>
@@ -149,7 +157,7 @@
             dataIndex: 'dataTime',
           },
           {
-            title:'空气质量指数(AQI)',
+            title:'AQI',
             align:"center",
             dataIndex: 'aqi',
             sorter: (a, b) => a.aqi - b.aqi

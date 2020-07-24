@@ -29,7 +29,7 @@
           <template v-if="toggleSearchStatus">
             <a-col :xl="4" :lg="7" :md="8" :sm="24">
               <a-form-item label="状态">
-                <j-dict-select-tag v-model="queryParam.state" placeholder="请选择状态"  dictCode="airDataStatus" :excludeFields="['0']"/>
+                <j-dict-select-tag v-model="queryParam.state" placeholder="请选择状态"  dictCode="airDataStatus" :excludeFields="['0','2']"/>
               </a-form-item>
             </a-col>
           </template>
@@ -80,8 +80,8 @@
         @change="handleTableChange">
 
         <span slot="action" slot-scope="text, record">
-          <a @click="toHandleEdit(record)" v-if="record.state === 3">去审核</a>
-          <a @click="handleView(record)" v-if="record.state ===1 || record.state===4">查看</a>
+          <a @click="toHandleEdit(record)" v-if="record.state === 2">去审核</a>
+          <a @click="handleView(record)" v-if="record.state ===3 || record.state===4">查看</a>
         </span>
 
         <span slot="state" slot-scope="text,record">
@@ -283,7 +283,7 @@
         return {
           getCheckboxProps: record => ({
             props: {
-              disabled: record.state !== 3,
+              disabled: record.state !== 2,
               name: record.projectName,
             },
           }),
