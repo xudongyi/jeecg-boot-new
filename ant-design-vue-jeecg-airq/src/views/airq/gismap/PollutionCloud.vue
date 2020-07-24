@@ -42,8 +42,8 @@
           //热力点
           heatmapPoint(){
             this.points = [
-              {"lng":120.918261,"lat":32.021984,"count":5000},
-              {"lng":120.918261,"lat":32.021984,"count":5000},
+              {"lng":120.918261,"lat":32.021984,"count":500},
+              // {"lng":120.918261,"lat":32.021984,"count":5000},
            ];
             this.heatmapOverlay = new BMapLib.HeatmapOverlay({"radius":20});
             this.map.addOverlay(this.heatmapOverlay);

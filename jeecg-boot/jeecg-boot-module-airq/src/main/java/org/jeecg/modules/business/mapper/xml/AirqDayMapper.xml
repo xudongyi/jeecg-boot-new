@@ -5,6 +5,30 @@
         <result column="value" property="value" jdbcType="NUMERIC"/>
         <result column="name" property="name" jdbcType="VARCHAR"/>
     </resultMap>
+    <resultMap id="AirqDayQualityVo" type="org.jeecg.modules.business.vo.AirqDayQualityVo">
+        <result column="mn" property="mn" jdbcType="VARCHAR"/>
+        <result column="company_Id" property="companyId" jdbcType="VARCHAR"/>
+        <result column="area" property="area" jdbcType="VARCHAR"/>
+        <result column="site_Name" property="siteName" jdbcType="VARCHAR"/>
+        <result column="data_Time" property="dataTime" jdbcType="TIMESTAMP"/>
+        <result column="aqi" property="aqi" jdbcType="VARCHAR"/>
+        <result column="first_Code" property="firstCode" jdbcType="VARCHAR"/>
+        <result column="level" property="level" jdbcType="VARCHAR"/>
+        <result column="a21026_Avg" property="a21026Avg" jdbcType="DOUBLE"/>
+        <result column="a21026_Iaqi" property="a21026Iaqi" jdbcType="DOUBLE"/>
+        <result column="a21004_Avg" property="a21004Avg" jdbcType="DOUBLE"/>
+        <result column="a21004_Iaqi" property="a21004Iaqi" jdbcType="DOUBLE"/>
+        <result column="a3400224_Avg" property="a3400224Avg" jdbcType="DOUBLE"/>
+        <result column="a3400224_Iaqi" property="a3400224Iaqi" jdbcType="DOUBLE"/>
+        <result column="a21005_Avg" property="a21005Avg" jdbcType="DOUBLE"/>
+        <result column="a21005_Iaqi" property="a21005Iaqi" jdbcType="DOUBLE"/>
+        <result column="a0502401_Avg" property="a0502401Avg" jdbcType="DOUBLE"/>
+        <result column="a0502401_Iaqi" property="a0502401Iaqi" jdbcType="DOUBLE"/>
+        <result column="a0502408_Avg" property="a0502408Avg" jdbcType="DOUBLE"/>
+        <result column="a0502408_Iaqi" property="a0502408Iaqi" jdbcType="DOUBLE"/>
+        <result column="a3400424_Avg" property="a3400424Avg" jdbcType="DOUBLE"/>
+        <result column="a3400424_Iaqi" property="a3400424Iaqi" jdbcType="DOUBLE"/>
+    </resultMap>
     <select id="findEvaluate" parameterType="String" resultMap="AirqDayVO">
         SELECT
         COUNT( 1 ) as value,
@@ -34,5 +58,44 @@
         airq_day.`LEVEL`
         ))
     </select>
+    <select id="queryDayAirQuality"   resultMap="AirqDayQualityVo">
 
+        select a.mn,
+        company_Id,
+        area,
+        site_Name,
+        data_Time,
+        aqi,
+        first_Code,
+        level,
+        a21026_Avg,
+        a21026_Iaqi,
+        a21004_Avg,
+        a21004_Iaqi,
+        a3400224_Avg,
+        a3400224_Iaqi,
+        a21005_Avg,
+        a21005_Iaqi,
+        a0502401_Avg,
+        a0502401_Iaqi,
+        a0502408_Avg,
+        a0502408_Iaqi,
+        a3400424_Avg,
+        a3400424_Iaqi
+        from site_monitor_point a left join airq_day b on a.mn = b.MN
+        where site_type = '3'  and
+        b.data_time <![CDATA[ >= ]]> #{datatime}
+        and b.data_time <![CDATA[ <= ]]> #{datatime2}
+        and company_id in
+        <foreach collection="companyIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        <if test="area != null and area!=''">
+            and a.area = #{area}
+        </if>
+        <if test="mn != null and mn!=''">
+            and a.mn = #{mn}
+        </if>
+
+    </select>
 </mapper>

@@ -20,9 +20,15 @@
               </a-select>
             </a-form-item>
           </a-col>
-          <a-col :xl="5" :lg="6" :md="8" :sm="24">
+          <a-col :xl="10" :lg="6" :md="8" :sm="24">
             <a-form-item label="数据时间：">
-              <a-range-picker  />
+              <a-date-picker placeholder="请选择数据时间"     class="query-group-cust"
+                             @change="handleDateChange"   @panelChange="panelChange"
+                             format="YYYY-MM-DD"  :value="queryParam.datatime" valueFormat="YYYY-MM-DD" />
+              <span class="query-group-split-cust"></span>
+              <a-date-picker placeholder="请选择数据时间" :value="queryParam.datatime2"     class="query-group-cust"
+                             @change="handleDateChange2"
+                             format="YYYY-MM-DD"  valueFormat="YYYY-MM-DD"  />
             </a-form-item>
           </a-col>
 
@@ -30,7 +36,7 @@
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <a-button type="primary" @click="localReset" icon="reload" style="margin-left: 8px">重置</a-button>
-              <a-button type="primary" icon="download"  style="margin-left: 8px"  @click="handleExportXls('')">导出</a-button>
+              <a-button type="primary" icon="download"  style="margin-left: 8px"  @click="handleExportXls('空气质量指数实时报')">导出</a-button>
 
             </span>
           </a-col>
@@ -44,6 +50,7 @@
       :pagination="ipagination"
       class="j-table-force-nowrap"
       bordered
+      @change="handleTableChange"
     >
 
         <span slot="leveltype" slot-scope="text,record">
@@ -60,11 +67,12 @@
 </template>
 
 <script>
-  import {queryHourAirQuality, querySiteNameAndMn} from "../../requestAction/request";
+  import {queryDayAirQuality, querySiteNameAndMn} from "../../requestAction/request";
   import AreaLinkSelect from "../component/AreaLinkSelect";
   import moment from 'moment'
   import AreaHandler from "../component/AreaHandler";
-  import {ajaxGetDictItems,getDictItemsFromCache} from '@/api/api'
+  import {ajaxGetDictItems, getDictItemsFromCache} from '@/api/api'
+  import {downFile} from '@/api/manage'
 
   export default {
     name: "AirqDayQuality",
@@ -111,6 +119,7 @@
             title: '监测点位名称',
             dataIndex: 'siteName',
             align:"center",
+            customRender: this.renderContent
 
           },
           {
@@ -128,7 +137,7 @@
           },
           {
             title: '首要污染物',
-            dataIndex: 'firstCode',
+            dataIndex: 'meaning',
             align:"center",
 
           },
@@ -149,7 +158,8 @@
                 return "五级";
               }else
                 return "六级";
-            }
+            },
+            sorter: (a, b) => a.level - b.level,
           },
           {
             title: '空气质量指数类别',
@@ -159,174 +169,162 @@
             scopedSlots: { customRender:'leveltype'},
           },
           {
-            title: 'SO2(1h)',
+            title: '二氧化硫（SO2）24小时平均',
             children: [
               {
                 title: '浓度(μg/m3)',
                 dataIndex: 'a21026Avg',
                 align:"center",
-                customRender:this.renderEmpty
+                customRender:this.renderEmpty,
+                sorter: (a, b) => a.a21026Avg - b.a21026Avg,
+
               },
               {
                 title: '分指数',
                 dataIndex: 'a21026Iaqi',
                 align:"center",
-                customRender:this.renderEmpty
+                customRender:this.renderEmpty,
+                sorter: (a, b) => a.a21026Iaqi - b.a21026Iaqi,
 
               }
             ]
           },
           {
-            title: 'NO2(1h)',
+            title: '二氧化氮（NO2）24小时平均',
             children: [
               {
                 title: '浓度(μg/m3)',
                 dataIndex: 'a21004Avg',
                 align:"center",
-                customRender:this.renderEmpty
+                customRender:this.renderEmpty,
+                sorter: (a, b) => a.a21004Avg - b.a21004Avg,
+
 
               },
               {
                 title: '分指数',
                 dataIndex: 'a21004Iaqi',
                 align:"center",
-                customRender:this.renderEmpty
+                customRender:this.renderEmpty,
+                sorter: (a, b) => a.a21004Iaqi - b.a21004Iaqi,
+
 
               }
             ]
           },
           {
-            title: 'PM10(1h)',
-            children: [
-              {
-                title: '浓度(μg/m3)',
-                dataIndex: 'a3400201Avg',
-                align:"center",
-                customRender:this.renderEmpty
-
-              },
-              {
-                title: '分指数',
-                dataIndex: 'a3400201Iaqi',
-                align:"center",
-                customRender:this.renderEmpty
-
-              }
-            ]
-          },
-          {
-            title: 'PM10(24h)',
+            title: 'PM10 24小时平均',
             children: [
               {
                 title: '浓度(μg/m3)',
                 dataIndex: 'a3400224Avg',
                 align:"center",
-                customRender:this.renderEmpty
+                customRender:this.renderEmpty,
+                sorter: (a, b) => a.a3400201Avg - b.a3400201Avg,
+
 
               },
               {
                 title: '分指数',
                 dataIndex: 'a3400224Iaqi',
                 align:"center",
-                customRender:this.renderEmpty
+                customRender:this.renderEmpty,
+                sorter: (a, b) => a.a3400201Iaqi - b.a3400201Iaqi,
+
 
               }
             ]
           },
           {
-            title: 'CO(1h)',
+            title: '一氧化碳（CO）24小时平均',
             children: [
               {
                 title: '浓度(μg/m3)',
                 dataIndex: 'a21005Avg',
                 align:"center",
-                customRender:this.renderEmpty
+                customRender:this.renderEmpty,
+                sorter: (a, b) => a.a3400224Avg - b.a3400224Avg,
+
 
               },
               {
                 title: '分指数',
                 dataIndex: 'a21005Iaqi',
                 align:"center",
-                customRender:this.renderEmpty
+                customRender:this.renderEmpty,
+                sorter: (a, b) => a.a3400224Iaqi - b.a3400224Iaqi,
+
 
               }
             ]
           },
           {
-            title: 'O3(1h)',
+            title: '臭氧（O3）最大1小时平均',
             children: [
               {
                 title: '浓度(μg/m3)',
                 dataIndex: 'a0502401Avg',
                 align:"center",
-                customRender:this.renderEmpty
+                customRender:this.renderEmpty,
+                sorter: (a, b) => a.a21005Avg - b.a21005Avg,
+
 
               },
               {
                 title: '分指数',
                 dataIndex: 'a0502401Iaqi',
                 align:"center",
-                customRender:this.renderEmpty
-
+                customRender:this.renderEmpty,
+                sorter: (a, b) => a.a21005Iaqi - b.a21005Iaqi,
               }
             ]
           },
           {
-            title: 'O3(8h)',
+            title: '臭氧（O3）最大8小时滑动平均',
             children: [
               {
                 title: '浓度(μg/m3)',
                 dataIndex: 'a0502408Avg',
                 align:"center",
-                customRender:this.renderEmpty
+                customRender:this.renderEmpty,
+                sorter: (a, b) => a.a0502401Avg - b.a0502401Avg,
 
               },
               {
                 title: '分指数',
                 dataIndex: 'a0502408Iaqi',
                 align:"center",
-                customRender:this.renderEmpty
+                customRender:this.renderEmpty,
+                sorter: (a, b) => a.a0502401Iaqi - b.a0502401Iaqi,
 
               }
             ]
+
           },
           {
-            title: 'PM2.5(1h)',
-            children: [
-              {
-                title: '浓度(μg/m3)',
-                dataIndex: 'a3400401Avg',
-                align:"center",
-                customRender:this.renderEmpty
-
-              },
-              {
-                title: '分指数',
-                dataIndex: 'a3400401Iaqi',
-                align:"center",
-                customRender:this.renderEmpty
-
-              }
-            ]
-          },
-          {
-            title: 'PM2.5(24h)',
+            title: 'PM2.524小时平均',
             children: [
               {
                 title: '浓度(μg/m3)',
                 dataIndex: 'a3400424Avg',
                 align:"center",
-                customRender:this.renderEmpty
+                customRender:this.renderEmpty,
+                sorter: (a, b) => a.a0502408Avg - b.a0502408Avg,
+
 
               },
               {
                 title: '分指数',
                 dataIndex: 'a3400424Iaqi',
                 align:"center",
-                customRender:this.renderEmpty
+                customRender:this.renderEmpty,
+                sorter: (a, b) => a.a0502408Iaqi - b.a0502408Iaqi,
 
               }
             ]
+
+
+
           },
         ],
         areaHandler:'',
@@ -349,6 +347,12 @@
     },
     methods:{
       dataformat(val){
+
+      },
+      handleTableChange(pagination, filters, sorter) {
+        //分页、排序、筛选变化时触发
+        //TODO 筛选
+        this.ipagination = pagination;
 
       },
       initDictData(dictCode) {
@@ -405,6 +409,8 @@
         let _this = this
         _this. spanArr=[];
         _this. position=0;
+        if(userData===null)
+          return
         userData.forEach((item,index) => {
           if(index === 0){
             _this.spanArr.push(1);
@@ -437,11 +443,18 @@
         return arr[arr.length-1]
       },
       localReset(){
-        this.queryParam={}
+        this.queryParam={datatime:moment().format('YYYY-MM-DD'),datatime2:moment().format('YYYY-MM-DD')}
+      },
+      panelChange(value){
+        console.log(value)
+        this.queryParam.datatime=value.format('YYYY-MM-DD')
       },
       handleDateChange(mom,dateStr){
         console.log(mom,dateStr)
         this.queryParam.datatime=dateStr
+      },
+      handleDateChange2(mom,dateStr){
+        this.queryParam.datatime2=dateStr
       },
       filterOption(input, option) {
         console.log(input, option)
@@ -465,7 +478,7 @@
       searchQuery(){
         let that = this
         this.queryParam.companyIds=this.$store.getters.userInfo.companyIds.join(',')
-        queryHourAirQuality(this.queryParam).then(res=>{
+        queryDayAirQuality(this.queryParam).then(res=>{
           console.log(res)
           that.dataSource = res.result
         })
@@ -486,11 +499,8 @@
           fileName = "导出文件"
         }
         let param = {...this.queryParam};
-        if(this.selectedRowKeys && this.selectedRowKeys.length>0){
-          param['selections'] = this.selectedRowKeys.join(",")
-        }
         console.log("导出参数",param)
-        downFile(this.url.exportXlsUrl,param).then((data)=>{
+        downFile("/day/airqDay/exportQuality",param).then((data)=>{
           if (!data) {
             this.$message.warning("文件下载失败")
             return
@@ -513,6 +523,7 @@
 
     },
     created() {
+      this.localReset()
       //查询列表
       this.searchQuery();
       //查询  搜索条件

@@ -44,7 +44,7 @@ public class AirHourInfo {
     /**
      * 首要污染物
      */
-    @ExcelSelf(name = "首要污染物",orderNum = 5)
+
     String firstCode;
     /**
      * PM2.5 1小时平均值
@@ -110,6 +110,7 @@ public class AirHourInfo {
      * first——code 的解释
      *
      */
+    @ExcelSelf(name = "首要污染物",orderNum = 5)
     String meaning;
 
 }
