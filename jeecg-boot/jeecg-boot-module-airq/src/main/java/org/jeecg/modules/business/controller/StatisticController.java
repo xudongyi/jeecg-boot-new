@@ -262,13 +262,13 @@ public class StatisticController {
                 } else {
                     String timeStart = null;
                     String timeEnd = null;
-                    String colum = "";
-                    if(pollutionType.equals("A34004")||pollutionType.equals("A34002")){
-                        colum = pollutionType + "01_avg";
-                    }else {
-                        colum = pollutionType + "_avg";
-                    }
                     if ("hour".equals(dataType)) {
+                        String colum = "";
+                        if(pollutionType.equals("A34004")||pollutionType.equals("A34002")){
+                            colum = pollutionType + "01_avg";
+                        }else {
+                            colum = pollutionType + "_avg";
+                        }
                         if (StrUtil.isEmpty(searchTime)) {
                             DateTime yesterday = DateUtil.yesterday();
                             String yesterFormat = DateUtil.format(yesterday, "yyyy-MM-dd");
@@ -310,6 +310,12 @@ public class StatisticController {
                         }
                         resultMap.put("series", series);
                     } else {
+                        String colum = "";
+                        if(pollutionType.equals("A34004")||pollutionType.equals("A34002")){
+                            colum = pollutionType + "24_AVG";
+                        }else {
+                            colum = pollutionType + "_AVG";
+                        }
                         if (StrUtil.isEmpty(searchTime)) {
                             DateTime lastWeek = DateUtil.lastWeek();
                             timeStart = DateUtil.format(lastWeek, "yyyy-MM-dd");
