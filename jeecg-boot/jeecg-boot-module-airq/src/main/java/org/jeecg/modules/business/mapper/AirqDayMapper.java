@@ -1,13 +1,12 @@
 package org.jeecg.modules.business.mapper;
 
-import org.jeecg.modules.business.entity.AirqDay;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.jeecg.modules.business.vo.AirqVO;
 import org.apache.ibatis.annotations.Param;
 import org.jeecg.modules.business.entity.AirqDay;
 import org.jeecg.modules.business.vo.AirqDayQualityVo;
-import org.jeecg.modules.business.vo.AirqDayVO;
+import org.jeecg.modules.business.vo.AirqVO;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 /**

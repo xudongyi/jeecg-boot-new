@@ -9,7 +9,6 @@ import org.jeecg.modules.business.mapper.AirqDayMapper;
 import org.jeecg.modules.business.service.IAirqDayService;
 import org.jeecg.modules.business.utils.RedisCacheUtil;
 import org.jeecg.modules.business.vo.AirqDayQualityVo;
-import org.jeecg.modules.business.vo.AirqDayVO;
 import org.jeecg.modules.business.vo.AirqVO;
 import org.springframework.stereotype.Service;
 
