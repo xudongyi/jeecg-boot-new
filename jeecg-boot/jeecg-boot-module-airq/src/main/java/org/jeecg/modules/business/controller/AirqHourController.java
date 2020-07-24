@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import org.apache.shiro.SecurityUtils;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
@@ -29,10 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jeecg.common.system.base.controller.JeecgController;
 import org.jeecg.modules.business.service.ISiteMonitorPointService;
 import org.jeecg.modules.business.view.SelfEntityExcelView;
-import org.jeecg.modules.business.vo.AirqHourInputVO;
-import org.jeecg.modules.business.vo.AirqHourManInsertVO;
-import org.jeecg.modules.business.vo.AirqHourMonitorVO;
-import org.jeecg.modules.business.vo.AirqHourQualityVo;
+import org.jeecg.modules.business.vo.*;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
 import org.jeecgframework.poi.excel.view.JeecgEntityExcelView;
@@ -221,6 +219,45 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 	 /**
 	  * 分页列表查询
 	  *
+	  * @param pageNo
+	  * @param pageSize
+	  * @param req
+	  * @return
+	  */
+	 @AutoLog(value = "查询站点录入")
+	 @ApiOperation(value="airq_hour-分页列表查询", notes="airq_hour-分页列表查询")
+	 @GetMapping(value = "/queryAirqHourAudit")
+	 public Result<?> queryAirqHourAudit(@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+											 @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
+											 HttpServletRequest req) throws ParseException {
+		 String companyIds = req.getParameter("companyIds");
+		 String area = req.getParameter("area");
+		 //通过选择站点名称获取站点mn号
+		 String mn = req.getParameter("mn");
+		 String dataState = req.getParameter("state");
+		 Integer state = null;
+		 if(!StrUtil.isEmpty(dataState)) {
+			 state = Integer.valueOf(dataState);
+		 }
+		 String dataTimeBegin = req.getParameter("dataTime_begin");
+		 String dataTimeEnd = req.getParameter("dataTime_end");
+		 Date dateBegin;
+		 Date dateEnd;
+		 if(StrUtil.isEmpty(dataTimeBegin) && StrUtil.isEmpty(dataTimeEnd)) {
+			 dateBegin = null;
+			 dateEnd = null;
+		 }else{
+			 dateBegin = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dataTimeBegin);
+			 dateEnd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dataTimeEnd);
+		 }
+		 Page<AirqHourAuditVO> page = new Page<>(pageNo, pageSize);
+		 IPage<AirqHourAuditVO> pageList = airqHourService.queryAirqHourAudit(companyIds,page, area,mn,state,dateBegin,dateEnd);
+		 return Result.ok(pageList);
+	 }
+
+	 /**
+	  * 分页列表查询
+	  *
 	  * @return
 	  */
 	 @AutoLog(value = "查询站点最新的")
@@ -304,6 +341,62 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 		airqHourService.updateById(airqHour);
 		return Result.ok("编辑成功!");
 	}
+
+	 /**
+	  *  审核
+	  *
+	  * @param airqHour
+	  * @return
+	  */
+	 @AutoLog(value = "airq_hour-审核")
+	 @ApiOperation(value="airq_hour-审核", notes="airq_hour-审核")
+	 @PutMapping(value = "/audit")
+	 public Result<?> audit(@RequestBody AirqHour airqHour) {
+		 airqHourService.updateById(airqHour);
+		 return Result.ok("审核成功!");
+	 }
+
+	 /**
+	  * 批量通过
+	  *
+	  * @param jsonObject
+	  */
+	 @PostMapping(value = "/batchPass")
+	 @AutoLog(value = "批量通过")
+	 @ApiOperation(value = "批量通过", notes = "批量通过")
+	 public Result<?> batchPass(@RequestBody JSONObject jsonObject) {
+		 String[]  ids = jsonObject.getString("ids").split(",");
+		 if(ids.length>0){
+			 LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+
+			 LambdaUpdateWrapper updateWrapper = new UpdateWrapper<AirqHour>().lambda().in(AirqHour::getId,Arrays.asList(ids))
+					 .set(AirqHour::getState,1).set(AirqHour::getUpdateTime,new Date())
+					 .set(AirqHour::getUpdateBy,sysUser.getId());
+			 airqHourService.update(updateWrapper);
+		 }
+		 return Result.ok();
+	 }
+
+	 /**
+	  * 批量不通过
+	  *
+	  * @param jsonObject
+	  */
+	 @PostMapping(value = "/batchFail")
+	 @AutoLog(value = "批量不通过")
+	 @ApiOperation(value = "批量不通过", notes = "批量不通过")
+	 public Result<?> batchFail(@RequestBody JSONObject jsonObject) {
+		 String[]  ids = jsonObject.getString("ids").split(",");
+		 if(ids.length>0){
+			 LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+
+			 LambdaUpdateWrapper updateWrapper = new UpdateWrapper<AirqHour>().lambda().in(AirqHour::getId,Arrays.asList(ids))
+					 .set(AirqHour::getState,4).set(AirqHour::getUpdateTime,new Date())
+					 .set(AirqHour::getUpdateBy,sysUser.getId());
+			 airqHourService.update(updateWrapper);
+		 }
+		 return Result.ok();
+	 }
 	
 	/**
 	 *   通过id删除
