@@ -41,7 +41,7 @@
             <p ><a-tag color="#f50">
               {{detail.aqi}}
             </a-tag></p>
-            <p>111{{detail.meaning}}</p>
+            <p>{{detail.meaning}}</p>
           </div>
         </div>
         <div style="border-top: 1px solid #F9F9F9">
@@ -354,7 +354,7 @@
   .pos_fixed
   {
     position:fixed;
-    top:130px;
+    top:90px;
     right:20px;
     z-index: 19;
     width:300px;

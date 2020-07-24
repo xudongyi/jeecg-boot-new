@@ -40,8 +40,13 @@ public class AirqDayQualityVo {
     /**
      * 首要污染物
      */
-    @ExcelSelf(name = "首要污染物",orderNum = 5)
     String firstCode;
+    /**
+     * first——code 的解释
+     *
+     */
+    @ExcelSelf(name = "首要污染物",orderNum = 5)
+    String meaning;
     /**
      * 等级
      * 1 优

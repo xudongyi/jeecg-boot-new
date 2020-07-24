@@ -136,7 +136,7 @@
               },
               {
                 title: '首要污染物',
-                dataIndex: 'firstCode',
+                dataIndex: 'meaning',
                 align:"center",
 
               },

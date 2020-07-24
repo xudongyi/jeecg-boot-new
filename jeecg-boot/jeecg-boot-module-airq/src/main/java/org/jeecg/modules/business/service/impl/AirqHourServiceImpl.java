@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import org.jeecg.modules.business.entity.AirqHour;
 import org.jeecg.modules.business.mapper.AirqHourMapper;
 import org.jeecg.modules.business.service.IAirqHourService;
+import org.jeecg.modules.business.utils.RedisCacheUtil;
 import org.jeecg.modules.business.vo.AirSiteInfo;
 import org.jeecg.modules.business.vo.AirqHourInputVO;
 import org.jeecg.modules.business.vo.AirqHourManInsertVO;
@@ -33,21 +34,29 @@ public class AirqHourServiceImpl extends ServiceImpl<AirqHourMapper, AirqHour> i
 
     SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-
+    @Resource
+    private RedisCacheUtil redisCacheUtil;
     @Resource
     private AirqHourMapper airqHourMapper;
 
     @Override
     public List<AirSiteInfo> queryInfoByCompanyId(List<String> companyIds) {
-        return airqHourMapper.queryInfoByCompanyId(companyIds);
+        List<AirSiteInfo> airSiteInfos =  airqHourMapper.queryInfoByCompanyId(companyIds);
+        airSiteInfos.forEach(airSiteInfo -> {
+            airSiteInfo.setMeaning(redisCacheUtil.transformCode(airSiteInfo.getFirstCode()));
+        });
+        return airSiteInfos;
     }
 
     @Override
     public List<AirqHourQualityVo> queryHourAirQuality(List<String> companyIds, String datatime,String datatime2,String area,String mn) {
         Timestamp ts = DateUtil.parse(datatime, "yyyy-MM-dd HH").toTimestamp();
         Timestamp ts2 = DateUtil.parse(datatime2, "yyyy-MM-dd HH").toTimestamp();
-
-        return airqHourMapper.queryHourAirQuality(companyIds,ts,ts2,area,mn);
+        List<AirqHourQualityVo> airqHourQualityVos = airqHourMapper.queryHourAirQuality(companyIds,ts,ts2,area,mn);
+        airqHourQualityVos.forEach(airqHourQualityVo -> {
+            airqHourQualityVo.setMeaning(redisCacheUtil.transformCode(airqHourQualityVo.getFirstCode()));
+        });
+        return airqHourQualityVos;
     }
 
     @Override

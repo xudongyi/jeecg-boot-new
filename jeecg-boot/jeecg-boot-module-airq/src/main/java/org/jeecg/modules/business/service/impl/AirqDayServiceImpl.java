@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jeecg.modules.business.entity.AirqDay;
 import org.jeecg.modules.business.mapper.AirqDayMapper;
 import org.jeecg.modules.business.service.IAirqDayService;
+import org.jeecg.modules.business.utils.RedisCacheUtil;
 import org.jeecg.modules.business.vo.AirqDayQualityVo;
 import org.jeecg.modules.business.vo.AirqDayVO;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,8 @@ import java.util.List;
 public class AirqDayServiceImpl extends ServiceImpl<AirqDayMapper, AirqDay> implements IAirqDayService {
     @Resource
     private AirqDayMapper airqDayMapper;
-
+    @Resource
+    private RedisCacheUtil redisCacheUtil;
     @Override
     public List<AirqDayVO> findEvaluate(String searchTime, List<String> mns) {
         String[] times = null;
@@ -48,7 +50,10 @@ public class AirqDayServiceImpl extends ServiceImpl<AirqDayMapper, AirqDay> impl
     public List<AirqDayQualityVo> queryDayAirQuality(List<String> companyIds, String datatime, String datatime2, String area, String mn) {
         Timestamp ts = DateUtil.parse(datatime, "yyyy-MM-dd").toTimestamp();
         Timestamp ts2 = DateUtil.parse(datatime2, "yyyy-MM-dd").toTimestamp();
-
-        return airqDayMapper.queryDayAirQuality(companyIds,ts,ts2,area,mn);
+        List<AirqDayQualityVo>  airqDayQualityVos = airqDayMapper.queryDayAirQuality(companyIds,ts,ts2,area,mn);
+        airqDayQualityVos.forEach(airqDayQualityVo -> {
+            airqDayQualityVo.setMeaning(redisCacheUtil.transformCode(airqDayQualityVo.getFirstCode()));
+        });
+        return airqDayQualityVos;
     }
 }

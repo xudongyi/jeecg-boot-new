@@ -1,10 +1,12 @@
 package org.jeecg.modules.business.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
+import org.jeecg.modules.business.constant.SelfExcelConstants;
 import org.jeecg.modules.business.entity.AirqDay;
 import org.jeecg.modules.business.service.IAirqDayService;
 
@@ -14,6 +16,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 
 import org.jeecg.common.system.base.controller.JeecgController;
+import org.jeecg.modules.business.view.SelfEntityExcelView;
+import org.jeecg.modules.business.vo.AirqDayQualityVo;
+import org.jeecg.modules.business.vo.AirqHourQualityVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -168,5 +173,28 @@ public class AirqDayController extends JeecgController<AirqDay, IAirqDayService>
 			 ,@RequestParam(name="mn",required=false) String mn) {
 		 //根据小时查询
 		 return Result.ok(airqDayService.queryDayAirQuality(Arrays.asList(companyIds.split(",")),datatime,datatime2,area,mn));
+	 }
+
+
+	 /**
+	  * 导出excel
+	  *
+	  * @param request
+	  */
+	 @RequestMapping(value = "/exportQuality")
+	 public ModelAndView exportQuality(HttpServletRequest request) {
+
+		 List<AirqDayQualityVo> exportList =  airqDayService.queryDayAirQuality(Arrays.asList(request.getParameter("companyIds").split(","))
+				 ,request.getParameter("datatime"),request.getParameter("datatime2"),request.getParameter("area"),request.getParameter("mn"));
+		 // Step.3 AutoPoi 导出Excel
+		 ModelAndView mv = new ModelAndView(new SelfEntityExcelView());
+		 mv.addObject(SelfExcelConstants.TITLE, "空气质量指数日报"); //此处设置的filename无效 ,前端会重更新设置一下
+		 mv.addObject(SelfExcelConstants.SHEET_NAME, "空气质量指数日报");
+		 mv.addObject(SelfExcelConstants.CLAZZ, AirqDayQualityVo.class);
+		 mv.addObject(SelfExcelConstants.DATA_LIST, exportList);
+		 mv.addObject(SelfExcelConstants.FOOTER, "注：缺测指标的浓度及分指数均使用NA标识。");
+
+		 return mv;
+
 	 }
 }

@@ -137,7 +137,7 @@
           },
           {
             title: '首要污染物',
-            dataIndex: 'firstCode',
+            dataIndex: 'meaning',
             align:"center",
 
           },
@@ -500,7 +500,7 @@
         }
         let param = {...this.queryParam};
         console.log("导出参数",param)
-        downFile("/hour/airqHour/exportQuality",param).then((data)=>{
+        downFile("/day/airqDay/exportQuality",param).then((data)=>{
           if (!data) {
             this.$message.warning("文件下载失败")
             return
