@@ -6,7 +6,7 @@
         <a-row :gutter="24">
           <a-col :xl="5" :lg="7" :md="8" :sm="24">
             <a-form-item label="所属区域">
-              <area-link-select type="cascader" v-model="queryParam.area" show-search style="width: 100%" optionFilterProp="children"/>
+              <area-link-select @change="areaChange" type="cascader" v-model="queryParam.area" show-search style="width: 100%" optionFilterProp="children"/>
             </a-form-item>
           </a-col>
           <a-col :xl="5" :lg="7" :md="8" :sm="24">
@@ -113,6 +113,7 @@
           companyIds:this.$store.getters.userInfo.companyIds.join(',')
         },
         items:[],
+        siteOriginal:[],
         //表头
         columns:[],
         //列设置
@@ -125,9 +126,7 @@
             key:'rowIndex',
             width:60,
             align:"center",
-            customRender:function (t,r,index) {
-              return parseInt(index)+1;
-            },
+            customRender:this.calcIndex,
             scopedSlots: {
               filterDropdown: 'filterDropdown',
               filterIcon: 'filterIcon'},
@@ -346,6 +345,15 @@
         this.areaHandler.getAreaBycode(text,arr);
         return arr[0]+arr[1]+arr[2]
       },
+      areaChange(val){
+        let _this = this
+        _this.items=[]
+        _this.siteOriginal.forEach(e=>{
+          if(e.area === val){
+            _this.items.push(e)
+          }
+        })
+      },
       //列设置更改事件
       onColSettingsChange (checkedValues) {
         var key = this.$route.name+":colsettings";
@@ -388,7 +396,11 @@
           })
           this.columns =  cols;
         }
-      }
+      },
+      calcIndex: function (t,r,index) {
+
+        return parseInt(index)+1+(this.ipagination.current-1)*this.ipagination.pageSize;
+      },
     },
     mounted(){
       this.initColumns();
@@ -396,6 +408,7 @@
       querySiteNameAndMn({companyIds:this.$store.getters.userInfo.companyIds.join(',')}).then((res)=>{
         if(res.success){
           console.log("!!",res.result);
+          that.siteOriginal = res.result;
           that.items = res.result;
         }
       })

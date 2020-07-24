@@ -6,7 +6,7 @@
         <a-row :gutter="24">
           <a-col :xl="5" :lg="7" :md="8" :sm="24">
             <a-form-item label="所属区域">
-              <area-link-select type="cascader" v-model="queryParam.area" placeholder="请选择所属区域" show-search style="width: 100%" optionFilterProp="children"/>
+              <area-link-select @change="areaChange" type="cascader" v-model="queryParam.area" placeholder="请选择所属区域" show-search style="width: 100%" optionFilterProp="children"/>
             </a-form-item>
           </a-col>
           <a-col :xl="5" :lg="7" :md="8" :sm="24">
@@ -135,6 +135,7 @@
           companyIds:this.$store.getters.userInfo.companyIds.join(',')
         },
         items:[],
+        siteOriginal:[],
         // 表头
         columns: [
           {
@@ -143,9 +144,7 @@
             key:'rowIndex',
             width:60,
             align:"center",
-            customRender:function (t,r,index) {
-              return parseInt(index)+1;
-            }
+            customRender:this.calcIndex
           },
           {
             title:'行政区域',
@@ -300,6 +299,15 @@
       initArea(){
         this.areaHandler = new AreaHandler()
       },
+      areaChange(val){
+        let _this = this
+        _this.items=[]
+        _this.siteOriginal.forEach(e=>{
+          if(e.area === val){
+            _this.items.push(e)
+          }
+        })
+      },
       getAreaByCode(text){
         if(!text)
           return ''
@@ -357,13 +365,17 @@
           });
         }
       },
+      calcIndex: function (t,r,index) {
+
+        return parseInt(index)+1+(this.ipagination.current-1)*this.ipagination.pageSize;
+      },
     },
     mounted(){
 
       let that = this;
       querySiteNameAndMn({companyIds:this.$store.getters.userInfo.companyIds.join(',')}).then((res)=>{
         if(res.success){
-          console.log("!!",res.result);
+          that.siteOriginal = res.result;
           that.items = res.result;
 
         }

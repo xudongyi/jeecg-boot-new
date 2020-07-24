@@ -14,7 +14,7 @@
         <a-row>
           <a-col span="12">
             <a-form-item label="行政区域" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <area-link-select type="cascader" v-decorator="['area']" placeholder="请选择所属区域" show-search style="width: 100%" optionFilterProp="children" :disabled="disableSubmit"/>
+              <area-link-select @change="areaChange" type="cascader" v-decorator="['area']" placeholder="请选择所属区域" show-search style="width: 100%" optionFilterProp="children" :disabled="disableSubmit"/>
             </a-form-item>
           </a-col>
           <a-col span="12">
@@ -188,6 +188,7 @@
         title:"操作",
         dateFormat:"YYYY-MM-DD HH:mm:ss",
         items:[],
+        siteOriginal:[],
         monitorTag:'',
         disableSubmit:false,
         width:1000,
@@ -216,6 +217,7 @@
       querySiteNameAndMn({companyIds:this.$store.getters.userInfo.companyIds.join(',')}).then((res)=>{
         if(res.success){
           console.log("!!",res.result);
+          that.siteOriginal = res.result;
           that.items = res.result;
 
         }
@@ -231,6 +233,15 @@
           this.$nextTick(() => { this.form.setFieldsValue(pick(this.model,'createTime'))})
 
         },1000)
+      },
+      areaChange(val){
+        let _this = this;
+        _this.items=[];
+        _this.siteOriginal.forEach(e=>{
+          if(e.area === val){
+            _this.items.push(e)
+          }
+        })
       },
       add () {
         this.edit({});
