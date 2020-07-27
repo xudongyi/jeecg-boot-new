@@ -52,7 +52,7 @@
         class="j-table-force-nowrap"
         @change="handleTableChange">
 
-        <div slot="filterDropdown">
+        <div slot="filterDropdown" >
           <a-card title="自定义列">
             <a-checkbox-group @change="onColSettingsChange" v-model="settingColumns" :defaultValue="settingColumns">
               <a-row>
@@ -418,4 +418,11 @@
 </script>
 <style scoped>
   @import '~@assets/less/common.less';
+
+
 </style>
+<style>
+  .ant-table-filter-dropdown {
+    width: 30%  ;
+    margin-left: 20%  ;}
+  </style>
