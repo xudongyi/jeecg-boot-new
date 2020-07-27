@@ -28,4 +28,6 @@ public interface IAirqHourService extends IService<AirqHour> {
 
     Page<AirqHourAuditVO> queryAirqHourAudit(String companyIds, Page page, String area, String mn, Integer state, Date dateBegin, Date dateEnd);
 
+    Page<SiteQualityEvaluateVO> querySiteQualityEvaluate(String companyIds, Page page, String area, String mn,String level, Integer state, Date dateBegin, Date dateEnd);
+
 }

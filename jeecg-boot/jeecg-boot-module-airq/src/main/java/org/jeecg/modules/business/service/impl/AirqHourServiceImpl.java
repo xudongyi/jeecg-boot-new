@@ -54,12 +54,20 @@ public class AirqHourServiceImpl extends ServiceImpl<AirqHourMapper, AirqHour> i
 
     @Override
     public Page<AirqHourMonitorVO> queryAirqHourMonitor(String companyIds,Page page, String area, String mn, Date dateBegin, Date dateEnd) {
-        return page.setRecords(airqHourMapper.queryAirqHourMonitor(companyIds.split(","),page, area, mn, dateBegin, dateEnd));
+        List<AirqHourMonitorVO> airqHourMonitorVOS = airqHourMapper.queryAirqHourMonitor(companyIds.split(","),page, area, mn, dateBegin, dateEnd);
+        airqHourMonitorVOS.forEach(airqHourMonitorVO -> {
+            airqHourMonitorVO.setMeaning(redisCacheUtil.transformCode(airqHourMonitorVO.getFirstCode()));
+        });
+        return page.setRecords(airqHourMonitorVOS);
     }
 
     @Override
     public Page<AirqHourInputVO> queryAirqHourInput(String companyIds,Page page, String area, String mn, Date dateBegin, Date dateEnd) {
-        return page.setRecords(airqHourMapper.queryAirqHourInput(companyIds.split(","),page, area, mn, dateBegin, dateEnd));
+        List<AirqHourInputVO> airqHourInputVOS = airqHourMapper.queryAirqHourInput(companyIds.split(","),page, area, mn, dateBegin, dateEnd);
+        airqHourInputVOS.forEach(airqHourInputVO -> {
+            airqHourInputVO.setMeaning(redisCacheUtil.transformCode(airqHourInputVO.getFirstCode()));
+        });
+        return page.setRecords(airqHourInputVOS);
     }
 
     @Override
@@ -70,6 +78,15 @@ public class AirqHourServiceImpl extends ServiceImpl<AirqHourMapper, AirqHour> i
     @Override
     public Page<AirqHourAuditVO> queryAirqHourAudit(String companyIds, Page page, String area, String mn, Integer state, Date dateBegin, Date dateEnd) {
         return page.setRecords(airqHourMapper.queryAirqHourAudit(companyIds.split(","),page, area, mn, state,dateBegin, dateEnd));
+    }
+
+    @Override
+    public Page<SiteQualityEvaluateVO> querySiteQualityEvaluate(String companyIds, Page page, String area, String mn, String level, Integer state, Date dateBegin, Date dateEnd) {
+        List<SiteQualityEvaluateVO> siteQualityEvaluateVOS = airqHourMapper.querySiteQualityEvaluate(companyIds.split(","),page,area,mn,level,state,dateBegin,dateEnd);
+        siteQualityEvaluateVOS.forEach(siteQualityEvaluateVO -> {
+            siteQualityEvaluateVO.setMeaning(redisCacheUtil.transformCode(siteQualityEvaluateVO.getFirstCode()));
+        });
+        return page.setRecords(siteQualityEvaluateVOS);
     }
 
 

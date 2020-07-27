@@ -258,6 +258,46 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 	 /**
 	  * 分页列表查询
 	  *
+	  * @param pageNo
+	  * @param pageSize
+	  * @param req
+	  * @return
+	  */
+	 @AutoLog(value = "查询站点录入")
+	 @ApiOperation(value="airq_hour-分页列表查询", notes="airq_hour-分页列表查询")
+	 @GetMapping(value = "/querySiteQualityEvaluate")
+	 public Result<?> querySiteQualityEvaluate(@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+										 @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
+										 HttpServletRequest req) throws ParseException {
+		 String companyIds = req.getParameter("companyIds");
+		 String area = req.getParameter("area");
+		 //通过选择站点名称获取站点mn号
+		 String mn = req.getParameter("mn");
+		 String dataState = req.getParameter("state");
+		 String level = req.getParameter("level");
+		 Integer state = null;
+		 if(!StrUtil.isEmpty(dataState)) {
+			 state = Integer.valueOf(dataState);
+		 }
+		 String dataTimeBegin = req.getParameter("dataTime_begin");
+		 String dataTimeEnd = req.getParameter("dataTime_end");
+		 Date dateBegin;
+		 Date dateEnd;
+		 if(StrUtil.isEmpty(dataTimeBegin) && StrUtil.isEmpty(dataTimeEnd)) {
+			 dateBegin = null;
+			 dateEnd = null;
+		 }else{
+			 dateBegin = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dataTimeBegin);
+			 dateEnd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dataTimeEnd);
+		 }
+		 Page<SiteQualityEvaluateVO> page = new Page<>(pageNo, pageSize);
+		 IPage<SiteQualityEvaluateVO> pageList = airqHourService.querySiteQualityEvaluate(companyIds,page, area,mn,level,state,dateBegin,dateEnd);
+		 return Result.ok(pageList);
+	 }
+
+	 /**
+	  * 分页列表查询
+	  *
 	  * @return
 	  */
 	 @AutoLog(value = "查询站点最新的")
