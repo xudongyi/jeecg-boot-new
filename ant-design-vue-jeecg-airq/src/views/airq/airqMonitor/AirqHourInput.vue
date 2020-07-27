@@ -165,7 +165,7 @@
           {
             title:'首要污染物',
             align:"center",
-            dataIndex: 'firstCode'
+            dataIndex: 'meaning'
           },
           {
             title:'空气质量指数级别',
@@ -406,4 +406,9 @@
 </script>
 <style scoped>
   @import '~@assets/less/common.less';
+</style>
+<style>
+  .ant-table-filter-dropdown {
+    width: 30%  ;
+    margin-left: 20%  ;}
 </style>

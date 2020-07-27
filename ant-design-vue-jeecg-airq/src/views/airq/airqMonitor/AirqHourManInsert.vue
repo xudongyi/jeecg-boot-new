@@ -94,9 +94,9 @@
         </span>
 
         <span slot="state" slot-scope="text,record">
-          <a-tag :color="colors[record.state]" style="width: 90%">
+          <a-badge :color="colors[record.state]" style="margin-left: 1px">
             {{ text}}
-          </a-tag>
+          </a-badge>
          </span>
 
       </a-table>
@@ -136,10 +136,10 @@
         description: 'airq_hour管理页面',
         colors:{
           0:'black',
-          1:'green',
-          2:'grey',
-          3:'blue',
-          4:'red',
+          1:'#0098a1',
+          2:'#707070',
+          3:'#52C41A',
+          4:'#FF0000',
         },
         queryParam: {
           companyIds:this.$store.getters.userInfo.companyIds.join(',')
@@ -397,4 +397,10 @@
 </script>
 <style scoped>
   @import '~@assets/less/common.less';
+</style>
+<style>
+  .ant-badge-dot{
+    top: 50%;
+    right: 103%;
+  }
 </style>

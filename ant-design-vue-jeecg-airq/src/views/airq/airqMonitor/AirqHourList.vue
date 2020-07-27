@@ -156,7 +156,7 @@
           {
             title:'首要污染物',
             align:"center",
-            dataIndex: 'firstCode'
+            dataIndex: 'meaning'
           },
           // {
           //   title:'mn',
@@ -425,4 +425,4 @@
   .ant-table-filter-dropdown {
     width: 30%  ;
     margin-left: 20%  ;}
-  </style>
+</style>
