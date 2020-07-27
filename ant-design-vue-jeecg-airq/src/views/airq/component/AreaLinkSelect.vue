@@ -77,7 +77,6 @@
       value: {
         immediate: true,
         handler() {
-          debugger
           this.loadDataByValue(this.value)
         }
       },
