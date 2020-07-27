@@ -49,6 +49,7 @@
       :dataSource="dataSource"
       :pagination="ipagination"
       class="j-table-force-nowrap"
+      :scroll="{x:3500}"
       bordered
       @change="handleTableChange"
     >
@@ -104,14 +105,17 @@
             title: '序号',
             dataIndex: '',
             key:'rowIndex',
-            width:60,
             align:"center",
+            fixed: 'left',
+            width:65,
             customRender:this.calcIndex
           },
           {
             title: '行政区域',
             dataIndex: 'area',
             align:"center",
+            fixed: 'left',
+            width:100,
             customRender: this.renderContentArea
 
           },
@@ -119,6 +123,8 @@
             title: '监测点位名称',
             dataIndex: 'siteName',
             align:"center",
+            fixed: 'left',
+            width:160,
             customRender: this.renderContent
 
           },
@@ -126,11 +132,13 @@
             title: '数据时间',
             dataIndex: 'dataTime',
             align:"center",
+            fixed: 'left',
+            width:160,
             // customRender: this.dataformat
 
           },
           {
-            title: '空气质量指数（AQI）',
+            title: '空气质量指数(AQI)',
             dataIndex: 'aqi',
             align:"center",
             sorter: (a, b) => a.aqi - b.aqi,
@@ -229,7 +237,7 @@
                 dataIndex: 'a3400224Iaqi',
                 align:"center",
                 customRender:this.renderEmpty,
-                sorter: (a, b) => a.a3400201Iaqi - b.a3400201Iaqi,
+                sorter: (a, b) => a.a3400224Iaqi - b.a3400224Iaqi,
 
 
               }
@@ -443,7 +451,7 @@
         return arr[arr.length-1]
       },
       localReset(){
-        this.queryParam={datatime:moment().format('YYYY-MM-DD'),datatime2:moment().format('YYYY-MM-DD')}
+        this.queryParam={datatime:moment().days(moment().days()-1).format('YYYY-MM-DD'),datatime2:moment().days(moment().days()-1).format('YYYY-MM-DD')}
       },
       panelChange(value){
         console.log(value)
@@ -536,4 +544,7 @@
 </script>
 <style scoped>
   @import '~@assets/less/common.less';
+</style>
+<style>
+  .ant-table td { white-space: nowrap; }
 </style>

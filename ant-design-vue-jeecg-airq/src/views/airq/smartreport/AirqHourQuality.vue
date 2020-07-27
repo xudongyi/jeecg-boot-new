@@ -50,6 +50,8 @@
       class="j-table-force-nowrap"
       bordered
       @change="handleTableChange"
+      :scroll="{x:4000}"
+
     >
 
         <span slot="leveltype" slot-scope="text,record">
@@ -103,7 +105,7 @@
                 title: '序号',
                 dataIndex: '',
                 key:'rowIndex',
-                width:60,
+                width:65,
                 align:"center",
                 customRender:this.calcIndex
               },
@@ -111,6 +113,8 @@
                 title: '行政区域',
                 dataIndex: 'area',
                 align:"center",
+                width:100,
+
                 customRender: this.renderContentArea
 
               },
@@ -118,6 +122,8 @@
                 title: '监测点位名称',
                 dataIndex: 'siteName',
                 align:"center",
+                width:160,
+
                 customRender: this.renderContent
 
               },
@@ -125,11 +131,13 @@
                 title: '数据时间',
                 dataIndex: 'dataTime',
                 align:"center",
+                width:160,
+
                 // customRender: this.dataformat
 
               },
               {
-                title: '空气质量指数（AQI）',
+                title: '空气质量指数(AQI)',
                 dataIndex: 'aqi',
                 align:"center",
                 sorter: (a, b) => a.aqi - b.aqi,
@@ -480,7 +488,7 @@
             return arr[arr.length-1]
           },
           localReset(){
-            this.queryParam={datatime:moment().format('YYYY-MM-DD HH'),datatime2:moment().format('YYYY-MM-DD HH')}
+            this.queryParam={datatime:moment().hours(moment().hours()-1).format('YYYY-MM-DD HH'),datatime2:moment().hours(moment().hours()-1).format('YYYY-MM-DD HH')}
           },
           panelChange(value){
             console.log(value)
