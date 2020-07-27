@@ -377,4 +377,55 @@
 
     </select>
 
+    <resultMap id="SiteQualityEvaluateVO" type="org.jeecg.modules.business.vo.SiteQualityEvaluateVO" >
+        <result column="mn" property="mn" jdbcType="VARCHAR"/>
+        <result column="area" property="area" jdbcType="VARCHAR"/>
+        <result column="site_name" property="siteName" jdbcType="VARCHAR"/>
+        <result column="aqi" property="aqi" jdbcType="DOUBLE"/>
+        <result column="data_time" property="dataTime" jdbcType="TIMESTAMP"/>
+        <result column="first_code" property="firstCode" jdbcType="VARCHAR"/>
+        <result column="airLevel" property="airLevel" jdbcType="VARCHAR"/>
+        <result column="level" property="level" jdbcType="VARCHAR"/>
+        <result column="state" property="state" jdbcType="INTEGER"/>
+        <result column="meaning" property="meaning" jdbcType="VARCHAR"/>
+
+    </resultMap>
+    <select id="querySiteQualityEvaluate" resultMap="SiteQualityEvaluateVO">
+        <!--        站点质量评价 -->
+        select t.* from
+        (select b.id,a.mn,a.site_name,b.`level` as airLevel,b.level,a.area,b.aqi,
+        b.data_time,b.first_code,b.state
+
+        from airq_hour b INNER JOIN(select a.mn,
+        max(b.data_time) data_time
+        from airq_hour b left join site_monitor_point a on b.mn = a.mn
+        WHERE b.state in (0,3) group by a.mn) c on b.mn = c.mn and b.data_time = c.data_time
+        left join site_monitor_point a on b.mn = a.mn
+        WHERE b.state in (0,3)
+        and a.company_id in
+        <foreach collection="companyIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>) t where 1=1
+        <if test="area != null">
+            and t.area = (#{area})
+        </if>
+        <if test="mn != null">
+            and t.mn = (#{mn})
+        </if>
+        <if test="level != null">
+            and t.level = (#{level})
+        </if>
+        <if test="state != null">
+            and t.state = (#{state})
+        </if>
+        <if test="dateBegin != null">
+            and t.data_time >= (#{dateBegin})
+        </if>
+        <if test="dateEnd != null">
+            and t.data_time &lt;= (#{dateEnd})
+        </if>
+        order by t.data_time desc
+
+    </select>
+
 </mapper>

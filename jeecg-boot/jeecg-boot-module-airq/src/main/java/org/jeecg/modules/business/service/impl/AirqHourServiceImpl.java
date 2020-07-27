@@ -80,5 +80,14 @@ public class AirqHourServiceImpl extends ServiceImpl<AirqHourMapper, AirqHour> i
         return page.setRecords(airqHourMapper.queryAirqHourAudit(companyIds.split(","),page, area, mn, state,dateBegin, dateEnd));
     }
 
+    @Override
+    public Page<SiteQualityEvaluateVO> querySiteQualityEvaluate(String companyIds, Page page, String area, String mn, String level, Integer state, Date dateBegin, Date dateEnd) {
+        List<SiteQualityEvaluateVO> siteQualityEvaluateVOS = airqHourMapper.querySiteQualityEvaluate(companyIds.split(","),page,area,mn,level,state,dateBegin,dateEnd);
+        siteQualityEvaluateVOS.forEach(siteQualityEvaluateVO -> {
+            siteQualityEvaluateVO.setMeaning(redisCacheUtil.transformCode(siteQualityEvaluateVO.getFirstCode()));
+        });
+        return page.setRecords(siteQualityEvaluateVOS);
+    }
+
 
 }
