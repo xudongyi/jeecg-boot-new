@@ -36,74 +36,74 @@
           </a-col>
           <a-col span="12">
             <a-form-item label="SO2(1h)" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input-number v-decorator="['a21026Avg']" placeholder="请输入SO2" style="width: 100%" :disabled="disableSubmit"/>
+              <a-input v-decorator="['a21026Avg']" placeholder="请输入SO2" addon-after="μg/m3" style="width: 100%" :disabled="disableSubmit"/>
             </a-form-item>
           </a-col>
         </a-row>
         <a-row>
           <a-col span="12">
             <a-form-item label="NO2(1h)" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input-number v-decorator="['a21004Avg']" placeholder="请输入NO2" style="width: 100%" :disabled="disableSubmit"/>
+              <a-input v-decorator="['a21004Avg']" placeholder="请输入NO2" addon-after="μg/m3" style="width: 100%" :disabled="disableSubmit"/>
             </a-form-item>
           </a-col>
           <a-col span="12">
             <a-form-item label="PM10(1h)" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input-number v-decorator="['a3400201Avg']" placeholder="请输入PM10(1h)" style="width: 100%" :disabled="disableSubmit"/>
+              <a-input v-decorator="['a3400201Avg']" placeholder="请输入PM10(1h)" addon-after="μg/m3" style="width: 100%" :disabled="disableSubmit"/>
             </a-form-item>
           </a-col>
         </a-row>
         <a-row>
           <a-col span="12">
             <a-form-item label="PM10(24h)" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input-number v-decorator="['a3400224Avg']" placeholder="请输入PM10(24h)" style="width: 100%" :disabled="disableSubmit"/>
+              <a-input v-decorator="['a3400224Avg']" placeholder="请输入PM10(24h)" addon-after="μg/m3" style="width: 100%" :disabled="disableSubmit"/>
             </a-form-item>
           </a-col>
           <a-col span="12">
             <a-form-item label="CO(1h)" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input-number v-decorator="['a21005Avg']" placeholder="请输入CO" style="width: 100%" :disabled="disableSubmit"/>
+              <a-input v-decorator="['a21005Avg']" placeholder="请输入CO" addon-after="μg/m3" style="width: 100%" :disabled="disableSubmit"/>
             </a-form-item>
           </a-col>
         </a-row>
         <a-row>
           <a-col span="12">
             <a-form-item label="O3(1h)" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input-number v-decorator="['a0502401Avg']" placeholder="请输入O3(1h)" style="width: 100%" :disabled="disableSubmit"/>
+              <a-input v-decorator="['a0502401Avg']" placeholder="请输入O3(1h)" addon-after="μg/m3" style="width: 100%" :disabled="disableSubmit"/>
             </a-form-item>
           </a-col>
           <a-col span="12">
             <a-form-item label="O3(8h)" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input-number v-decorator="['a0502408Avg']" placeholder="请输入O3(8h)" style="width: 100%" :disabled="disableSubmit"/>
+              <a-input v-decorator="['a0502408Avg']" placeholder="请输入O3(8h)" addon-after="μg/m3" style="width: 100%" :disabled="disableSubmit"/>
             </a-form-item>
           </a-col>
         </a-row>
         <a-row>
           <a-col span="12">
             <a-form-item label="PM2.5(1h)" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input-number v-decorator="['a3400401Avg']" placeholder="请输入PM2.5(1h)" style="width: 100%" :disabled="disableSubmit"/>
+              <a-input v-decorator="['a3400401Avg']" placeholder="请输入PM2.5(1h)" addon-after="μg/m3" style="width: 100%" :disabled="disableSubmit"/>
             </a-form-item>
           </a-col>
           <a-col span="12">
             <a-form-item label="PM2.5(24h)" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input-number v-decorator="['a3400424Avg']" placeholder="请输入PM2.5(24h)" style="width: 100%" :disabled="disableSubmit"/>
+              <a-input v-decorator="['a3400424Avg']" placeholder="请输入PM2.5(24h)" addon-after="μg/m3" style="width: 100%" :disabled="disableSubmit"/>
             </a-form-item>
           </a-col>
         </a-row>
         <a-row>
           <a-col span="12">
             <a-form-item label="温度" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input-number v-decorator="['a01001Avg']" placeholder="请输入温度" style="width: 100%" :disabled="disableSubmit"/>
+              <a-input v-decorator="['a01001Avg']" placeholder="请输入温度" addon-after="℃" style="width: 100%" :disabled="disableSubmit"/>
             </a-form-item>
           </a-col>
           <a-col span="12">
             <a-form-item label="湿度" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input-number v-decorator="['a01002Avg']" placeholder="请输入湿度" style="width: 100%" :disabled="disableSubmit"/>
+              <a-input v-decorator="['a01002Avg']" placeholder="请输入湿度" addon-after="%" style="width: 100%" :disabled="disableSubmit"/>
             </a-form-item>
           </a-col>
         </a-row>
         <a-row>
           <a-col span="12">
             <a-form-item label="风速" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input-number v-decorator="['a01007Avg']" placeholder="请输入风速" style="width: 100%" :disabled="disableSubmit"/>
+              <a-input v-decorator="['a01007Avg']" placeholder="请输入风速" addon-after="m/s" style="width: 100%" :disabled="disableSubmit"/>
             </a-form-item>
           </a-col>
           <a-col span="12">

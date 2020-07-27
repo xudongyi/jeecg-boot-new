@@ -57,6 +57,7 @@
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
+        :scroll="{ x: 3100 }"
         class="j-table-force-nowrap"
         @change="handleTableChange">
 
@@ -138,23 +139,30 @@
             scopedSlots: {
               filterDropdown: 'filterDropdown',
               filterIcon: 'filterIcon'},
+            fixed:'left'
           },
           {
             title:'行政区域',
             align:"center",
             dataIndex: 'area',
             customRender:this.getAreaByCode,
+            fixed:'left',
+            width:150
           },
           {
             title:'监测点位名称',
             align:"center",
             dataIndex: 'siteName',
+            fixed:'left',
+            width:160
           },
           {
             //title:'createTime',
             title:'发布时间',
             align:"center",
             dataIndex: 'dataTime',
+            fixed:'left',
+            width:160
           },
           {
             title:'AQI',
