@@ -151,12 +151,13 @@
             align:"center",
             dataIndex: 'dataTime',
             fixed:'left',
-            width:140
+            width:130
           },
           {
             title:'AQI',
             align:"center",
             dataIndex: 'aqi',
+            width:60,
             sorter: (a, b) => a.aqi - b.aqi
           },
           {
