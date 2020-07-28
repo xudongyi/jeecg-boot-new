@@ -92,6 +92,24 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 
 	 	return Result.ok(airqHourService.queryInfoByCompanyId(Arrays.asList(companyIds.split(","))));
 	 }
+
+	 /**
+	  * 查询站点 一段时间内的数据
+	  *
+	  * @param companyIds
+	  * @return
+	  */
+	 @AutoLog(value = "查询站点最新的")
+	 @ApiOperation(value="airq_hour-查询站点最新的", notes="airq_hour-查询站点最新的")
+	 @GetMapping(value = "/queryPollutionCloud")
+	 public Result<?> queryPollutionCloud(@RequestParam(name="companyIds",required=true) String companyIds
+			 ,@RequestParam(name="datatime",required=true) String datatime
+			 ,@RequestParam(name="datatime2",required=true) String datatime2) {
+	 		//查询所给时间内的所有小时数据
+		 return Result.ok(airqHourService.queryPollutionCloud(Arrays.asList(companyIds.split(",")),datatime,datatime2));
+	 }
+
+
 	 /**
 	  * 空气质量实时报
 	  *

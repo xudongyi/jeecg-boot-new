@@ -62,7 +62,18 @@
         <result column="a3400424_iaqi" property="a3400424Iaqi" jdbcType="DOUBLE"/>
 
     </resultMap>
-
+    <resultMap id="AirHourPlayVo" type="org.jeecg.modules.business.vo.AirHourPlayVo" >
+        <result column="aqi" property="aqi" jdbcType="DOUBLE"/>
+        <result column="a21026_Iaqi" property="a21026Iaqi" jdbcType="DOUBLE"/>
+        <result column="a21004_Iaqi" property="a21004Iaqi" jdbcType="DOUBLE"/>
+        <result column="a3400201_Iaqi" property="a3400201Iaqi" jdbcType="DOUBLE"/>
+        <result column="a3400401_Iaqi" property="a3400401Iaqi" jdbcType="DOUBLE"/>
+        <result column="a21005_Iaqi" property="a21005Iaqi" jdbcType="DOUBLE"/>
+        <result column="a0502401_Iaqi" property="a0502401Iaqi" jdbcType="DOUBLE"/>
+        <result column="site_Longitude" property="siteLongitude" jdbcType="VARCHAR"/>
+        <result column="site_Latitude" property="siteLatitude" jdbcType="VARCHAR"/>
+        <result column="data_time" property="dataTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
     <select id="queryInfoByCompanyId"   resultMap="AirSireInfo">
 
         select b.id, a.mn,online_status,device_status,b.level,site_longitude,site_latitude,company_id,site_name,b.aqi,
@@ -107,6 +118,29 @@
         </if>
 
     </select>
+
+    <select id="queryPollutionCloud"   resultMap="AirHourPlayVo">
+
+        select aqi,
+        a21026_Iaqi,
+        a21004_Iaqi,
+        a3400201_Iaqi,
+        a3400401_Iaqi,
+        a21005_Iaqi,
+        a0502401_Iaqi,
+        site_Longitude,
+        site_Latitude,data_time
+        from site_monitor_point a left join airq_hour b on a.mn = b.MN
+        where site_type = '3'  and
+        b.data_time <![CDATA[ >= ]]> #{datatime}
+        and b.data_time <![CDATA[ <= ]]> #{datatime2}
+        and company_id in
+        <foreach collection="companyIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        order by data_time
+    </select>
+
     <resultMap id="AirqHourMonitorVO" type="org.jeecg.modules.business.vo.AirqHourMonitorVO" >
         <result column="mn" property="mn" jdbcType="VARCHAR"/>
         <result column="area" property="area" jdbcType="VARCHAR"/>

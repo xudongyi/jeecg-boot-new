@@ -25,7 +25,7 @@
     </div>
     <div class="detailArea" v-show="detailAble">
       <a-icon type="close" style="font-size: 20px" @click="closeDetail"/>
-      <div style="margin: 5px 5px 5px 15px;">
+      <div style="margin: 5px 5px 5px 15px;" class="detail">
         <span style="font-size: 16px;font-weight: bold;line-height: 1.5;">{{detail.siteName}}</span>
         <span style="margin-left: 100px">实时数据</span>
         <div style="border-top: 1px solid #F9F9F9">
@@ -183,7 +183,9 @@
         },
         mapInit(point) {
           let vue = this;
-          vue.map = new BMap.Map(vue.$refs.myMap);
+          vue.map = new BMap.Map(vue.$refs.myMap, {
+            enableMapClick: false
+          });
           let marker = new BMap.Point(vue.point.longitude, vue.point.latitude);
           // 设置中心点以及缩放级别
           vue.map.centerAndZoom(marker, this.zoom ? this.zoom : 15);
@@ -225,23 +227,23 @@
               this.visibleAreaPonit();
             }
           });
-          //对地图级别变化、移动结束后 监听获取可视区域
-          vue.map.addEventListener("zoomend", () => {
-            let area = vue.map.getBounds();
-            let zoomSize = vue.map.getZoom();
-            console.log(zoomSize);
-            this.$emit("visibleArea", area);
-            if (this.vevisibleFalg) {
-              this.visibleAreaPonit();
-            }
-          });
-          vue.map.addEventListener("moveend", () => {
-            let area = vue.map.getBounds();
-            this.$emit("visibleArea", area);
-            if (this.vevisibleFalg) {
-              this.visibleAreaPonit();
-            }
-          });
+          // //对地图级别变化、移动结束后 监听获取可视区域
+          // vue.map.addEventListener("zoomend", () => {
+          //   let area = vue.map.getBounds();
+          //   let zoomSize = vue.map.getZoom();
+          //   console.log(zoomSize);
+          //   this.$emit("visibleArea", area);
+          //   if (this.vevisibleFalg) {
+          //     this.visibleAreaPonit();
+          //   }
+          // });
+          // vue.map.addEventListener("moveend", () => {
+          //   let area = vue.map.getBounds();
+          //   this.$emit("visibleArea", area);
+          //   if (this.vevisibleFalg) {
+          //     this.visibleAreaPonit();
+          //   }
+          // });
 
 
         },
@@ -329,6 +331,9 @@
     margin:0px 7px 0px 7px;
     color: #FFFFFF;
   }
+  .detail{
+    color: #FFFFFF;
+  }
   .two-button{
     position:absolute;
     top:80%;
@@ -354,7 +359,7 @@
   .pos_fixed
   {
     position:fixed;
-    top:90px;
+    top:140px;
     right:20px;
     z-index: 19;
     width:300px;
@@ -366,12 +371,12 @@
   .detailArea
   {
     position:fixed;
-    top:200px;
+    top:220px;
     right:20px;
     z-index: 19;
     width:340px;
     height:607px;
-    background:rgba(0,0,0,0.25);
+    background:rgba(0,0,0,0.5);
     box-shadow:0px 3px 7px 0px rgba(0, 0, 0, 0.35);
     border-radius:8px 0px 0px 8px;
   }

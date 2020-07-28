@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import org.jeecg.modules.business.vo.*;
 
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -19,7 +20,7 @@ public interface IAirqHourService extends IService<AirqHour> {
 
     List<AirSiteInfo> queryInfoByCompanyId(List<String> companyIds);
     List<AirqHourQualityVo> queryHourAirQuality(List<String> companyIds, String datatime,String datatime2,String area,String mn);
-
+    LinkedHashMap<String,List<AirHourPlayVo>> queryPollutionCloud(List<String> companyIds, String datatime, String datatime2);
     Page<AirqHourMonitorVO> queryAirqHourMonitor(String companyIds,Page page, String area, String mn, Date dateBegin, Date dateEnd);
 
     Page<AirqHourInputVO> queryAirqHourInput(String companyIds,Page page, String area, String mn, Date dateBegin, Date dateEnd);
