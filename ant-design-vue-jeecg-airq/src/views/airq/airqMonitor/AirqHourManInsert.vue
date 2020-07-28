@@ -81,6 +81,7 @@
         :pagination="ipagination"
         :loading="loading"
         :rowSelection="rowSelection"
+        :scroll="{ x: 3100 }"
         class="j-table-force-nowrap"
         @change="handleTableChange">
 
@@ -94,7 +95,7 @@
         </span>
 
         <span slot="state" slot-scope="text,record">
-          <a-badge :color="colors[record.state]" style="margin-left: 1px">
+          <a-badge :color="colors[record.state]">
             {{ text}}
           </a-badge>
          </span>
@@ -135,7 +136,6 @@
       return {
         description: 'airq_hour管理页面',
         colors:{
-          0:'black',
           1:'#0098a1',
           2:'#707070',
           3:'#52C41A',
@@ -154,23 +154,28 @@
             key:'rowIndex',
             width:60,
             align:"center",
-            customRender:this.calcIndex
+            customRender:this.calcIndex,
+            fixed:'left'
           },
           {
             title:'行政区域',
             align:"center",
             dataIndex: 'area',
             customRender:this.getAreaByCode,
+            fixed:'left'
           },
           {
             title:'监测点位名称',
             align:"center",
             dataIndex: 'siteName',
+            fixed:'left'
           },
           {
             title:'数据时间',
             align:"center",
-            dataIndex: 'dataTime'
+            dataIndex: 'dataTime',
+            fixed:'left',
+            width:150
           },
           {
             title:'状态',
@@ -401,6 +406,6 @@
 <style>
   .ant-badge-dot{
     top: 50%;
-    right: 103%;
+    right: 105%;
   }
 </style>

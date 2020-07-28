@@ -76,6 +76,7 @@
         :pagination="ipagination"
         :loading="loading"
         :rowSelection="rowSelection"
+        :scroll="{ x: 3100 }"
         class="j-table-force-nowrap"
         @change="handleTableChange">
 
@@ -85,9 +86,9 @@
         </span>
 
         <span slot="state" slot-scope="text,record">
-          <a-tag :color="colors[record.state]" style="width: 90%">
+          <a-badge :color="colors[record.state]">
             {{ text}}
-          </a-tag>
+          </a-badge>
          </span>
 
       </a-table>
@@ -127,11 +128,10 @@
       return {
         description: 'airq_hour管理页面',
         colors:{
-          0:'grey',
-          1:'green',
-          2:'black',
-          3:'blue',
-          4:'red',
+          1:'#0098a1',
+          2:'#707070',
+          3:'#52C41A',
+          4:'#FF0000',
         },
         queryParam: {
           companyIds:this.$store.getters.userInfo.companyIds.join(',')
@@ -146,23 +146,28 @@
             key:'rowIndex',
             width:60,
             align:"center",
-            customRender:this.calcIndex
+            customRender:this.calcIndex,
+            fixed:'left'
           },
           {
             title:'行政区域',
             align:"center",
             dataIndex: 'area',
             customRender:this.getAreaByCode,
+            fixed:'left'
           },
           {
             title:'监测点位名称',
             align:"center",
             dataIndex: 'siteName',
+            fixed:'left'
           },
           {
             title:'数据时间',
             align:"center",
-            dataIndex: 'dataTime'
+            dataIndex: 'dataTime',
+            fixed:'left',
+            width:150
           },
           {
             title:'状态',
