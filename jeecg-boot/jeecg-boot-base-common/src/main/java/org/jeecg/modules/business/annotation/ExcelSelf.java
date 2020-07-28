@@ -42,7 +42,7 @@ public @interface ExcelSelf {
     int width() default 15;
 
 
-    String formart() default "";
+    String format() default "";
     /**
      * 方法描述:  字典翻译
      * 作    者： MYP

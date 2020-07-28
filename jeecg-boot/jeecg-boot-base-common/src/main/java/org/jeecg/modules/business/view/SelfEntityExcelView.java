@@ -216,8 +216,8 @@ public class SelfEntityExcelView extends MiniAbstractExcelView {
                 else if(val instanceof Double)
                     row.createCell( i).setCellValue(Double.valueOf(val.toString()));
                 else if(val instanceof Date){
-                    if(!StrUtil.isEmpty(excelSelves.get(i).getAnnotation(ExcelSelf.class).formart()))
-                        formatter = new SimpleDateFormat(excelSelves.get(i).getAnnotation(ExcelSelf.class).formart());
+                    if(!StrUtil.isEmpty(excelSelves.get(i).getAnnotation(ExcelSelf.class).format()))
+                        formatter = new SimpleDateFormat(excelSelves.get(i).getAnnotation(ExcelSelf.class).format());
                     row.createCell( i).setCellValue(formatter.format((Date) val));
                 }
                 else
