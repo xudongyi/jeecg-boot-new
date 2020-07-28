@@ -557,7 +557,6 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 		 String area = req.getParameter("area");
 		 //通过选择站点名称获取站点mn号
 		 String mn = req.getParameter("mn");
-		 String dataState = req.getParameter("state");
 		 String dataTimeBegin = req.getParameter("dataTime_begin");
 		 String dataTimeEnd = req.getParameter("dataTime_end");
 		 Date dateBegin;

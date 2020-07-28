@@ -192,6 +192,16 @@
                 return "手动采集";
               }
             }
+          },
+          {
+            title:'对健康影响情况',
+            align:"center",
+            dataIndex: 'advice'
+          },
+          {
+            title:'建议采取的措施',
+            align:"center",
+            dataIndex: 'levelContent'
           }
         ],
         url: {

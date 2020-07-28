@@ -1,11 +1,15 @@
 package org.jeecg.modules.business.utils;
 
 import cn.hutool.core.util.StrUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.jeecg.common.util.RedisUtil;
+import org.jeecg.modules.business.entity.AirqLevel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import java.util.Map;
 
 @Component
+@Slf4j
 public class RedisCacheUtil {
 
     @Autowired
@@ -28,5 +32,20 @@ public class RedisCacheUtil {
             }
         }
         return  meanings.toString();
+    }
+
+    public AirqLevel getAdviceAndContent(String level) {
+        Map<Object, Object> map = redisUtil.hmget("airq_level_map");
+        if (map != null && !map.isEmpty()) {
+            try {
+               return  (AirqLevel)CommonsUtil.toJsonObject((String) map.get(level), AirqLevel.class);
+            } catch (Exception var12) {
+                this.log.error("Redis错误[获取空气质量等级]:" + var12.getMessage());
+            }
+        } else {
+            this.log.error("Redis提示[获取空气质量等级]:未取到值");
+
+        }
+        return null;
     }
 }

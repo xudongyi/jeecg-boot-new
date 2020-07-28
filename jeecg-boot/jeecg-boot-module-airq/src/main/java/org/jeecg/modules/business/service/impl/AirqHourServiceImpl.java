@@ -1,6 +1,7 @@
 package org.jeecg.modules.business.service.impl;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.jeecg.modules.business.entity.AirqHour;
@@ -109,6 +110,10 @@ public class AirqHourServiceImpl extends ServiceImpl<AirqHourMapper, AirqHour> i
         List<SiteQualityEvaluateVO> siteQualityEvaluateVOS = airqHourMapper.querySiteQualityEvaluate(companyIds.split(","),page,area,mn,level,state,dateBegin,dateEnd);
         siteQualityEvaluateVOS.forEach(siteQualityEvaluateVO -> {
             siteQualityEvaluateVO.setMeaning(redisCacheUtil.transformCode(siteQualityEvaluateVO.getFirstCode()));
+            if(!StrUtil.isEmpty(siteQualityEvaluateVO.getLevel())){
+                siteQualityEvaluateVO.setAdvice(redisCacheUtil.getAdviceAndContent(siteQualityEvaluateVO.getLevel()).getAdvice());
+                siteQualityEvaluateVO.setLevelContent(redisCacheUtil.getAdviceAndContent(siteQualityEvaluateVO.getLevel()).getLevelContent());
+            }
         });
         return page.setRecords(siteQualityEvaluateVOS);
     }
