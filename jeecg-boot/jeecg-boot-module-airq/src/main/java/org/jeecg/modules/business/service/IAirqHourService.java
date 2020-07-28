@@ -23,6 +23,7 @@ public interface IAirqHourService extends IService<AirqHour> {
     Page<AirqHourMonitorVO> queryAirqHourMonitor(String companyIds,Page page, String area, String mn, Date dateBegin, Date dateEnd);
 
     Page<AirqHourInputVO> queryAirqHourInput(String companyIds,Page page, String area, String mn, Date dateBegin, Date dateEnd);
+    List<AirqHourInputVO> queryManInputExport(String companyIds, String area, String mn, Date dateBegin, Date dateEnd);
 
     Page<AirqHourManInsertVO> queryAirqHourManInsert(String companyIds,Page page, String area, String mn,Integer state, Date dateBegin, Date dateEnd);
 

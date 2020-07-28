@@ -1,5 +1,6 @@
 package org.jeecg.modules.business.view;
 
+import cn.hutool.core.util.StrUtil;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.jeecg.modules.business.annotation.ExcelSelf;
@@ -13,6 +14,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Field;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -150,8 +152,17 @@ public class SelfEntityExcelView extends MiniAbstractExcelView {
 
                     }else{
                         //正常的则
-                        cell.setCellValue(excelSelf.father()[i]);
-                        mergeColumn(mergeColumn,excelSelf.father()[i],1 ,rowNum,j,sheet);
+                        if(excelSelf.father().length==0)//没有需要合并 的
+                        {
+
+                            cell.setCellValue(excelSelf.name());
+                            mergeColumn(mergeColumn,excelSelf.name(),1 ,rowNum,j,sheet);
+                        }else{
+
+                            cell.setCellValue(excelSelf.father()[i]);
+                            mergeColumn(mergeColumn,excelSelf.father()[i],1 ,rowNum,j,sheet);
+                        }
+
 
                     }
 
@@ -190,6 +201,7 @@ public class SelfEntityExcelView extends MiniAbstractExcelView {
         List<Object> objs = (List)model.get(SelfExcelConstants.DATA_LIST);
         //处理数据
         //设置列值-内容
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         for (Object o:objs) {
             row = sheet.createRow(rowNum);
             for(int i=0;i<excelSelves.size();i++){
@@ -203,8 +215,11 @@ public class SelfEntityExcelView extends MiniAbstractExcelView {
                     row.createCell( i).setCellValue("NA");
                 else if(val instanceof Double)
                     row.createCell( i).setCellValue(Double.valueOf(val.toString()));
-                else if(val instanceof Date)
-                    row.createCell( i).setCellValue((Date) val);
+                else if(val instanceof Date){
+                    if(!StrUtil.isEmpty(excelSelves.get(i).getAnnotation(ExcelSelf.class).formart()))
+                        formatter = new SimpleDateFormat(excelSelves.get(i).getAnnotation(ExcelSelf.class).formart());
+                    row.createCell( i).setCellValue(formatter.format((Date) val));
+                }
                 else
                     row.createCell( i).setCellValue(val.toString());
             }

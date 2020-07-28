@@ -71,6 +71,15 @@ public class AirqHourServiceImpl extends ServiceImpl<AirqHourMapper, AirqHour> i
     }
 
     @Override
+    public List<AirqHourInputVO> queryManInputExport(String companyIds, String area, String mn, Date dateBegin, Date dateEnd) {
+        List<AirqHourInputVO> airqHourInputVOS = airqHourMapper.queryManInputExport(companyIds.split(","), area,mn,dateBegin,dateEnd);
+        airqHourInputVOS.forEach(airqHourInputVO -> {
+            airqHourInputVO.setMeaning(redisCacheUtil.transformCode(airqHourInputVO.getFirstCode()));
+        });
+        return airqHourInputVOS;
+    }
+
+    @Override
     public Page<AirqHourManInsertVO> queryAirqHourManInsert(String companyIds,Page page, String area, String mn, Integer state, Date dateBegin, Date dateEnd) {
         return page.setRecords(airqHourMapper.queryAirqHourManInsert(companyIds.split(","),page, area, mn, state,dateBegin, dateEnd));
     }

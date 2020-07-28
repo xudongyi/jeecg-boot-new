@@ -527,4 +527,39 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 		 return mv;
 
 	 }
+
+	 /**
+	  * 导出excel
+	  *
+	  * @param req
+	  */
+	 @RequestMapping(value = "/exportManInput")
+	 public ModelAndView exportManInput(HttpServletRequest req) throws ParseException {
+		 String companyIds = req.getParameter("companyIds");
+		 String area = req.getParameter("area");
+		 //通过选择站点名称获取站点mn号
+		 String mn = req.getParameter("mn");
+		 String dataState = req.getParameter("state");
+		 String dataTimeBegin = req.getParameter("dataTime_begin");
+		 String dataTimeEnd = req.getParameter("dataTime_end");
+		 Date dateBegin;
+		 Date dateEnd;
+		 if(StrUtil.isEmpty(dataTimeBegin) && StrUtil.isEmpty(dataTimeEnd)) {
+			 dateBegin = null;
+			 dateEnd = null;
+		 }else{
+			 dateBegin = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dataTimeBegin);
+			 dateEnd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dataTimeEnd);
+		 }
+		 List<AirqHourInputVO> exportList = airqHourService.queryManInputExport(companyIds,area,mn,dateBegin,dateEnd);
+		 // Step.3 AutoPoi 导出Excel
+		 ModelAndView mv = new ModelAndView(new SelfEntityExcelView());
+		 mv.addObject(SelfExcelConstants.TITLE, "人工采集数据"); //此处设置的filename无效 ,前端会重更新设置一下
+		 mv.addObject(SelfExcelConstants.SHEET_NAME, "人工采集数据");
+		 mv.addObject(SelfExcelConstants.CLAZZ, AirqHourInputVO.class);
+		 mv.addObject(SelfExcelConstants.DATA_LIST, exportList);
+		 mv.addObject(SelfExcelConstants.FOOTER, "注：缺测指标的浓度及分指数均使用NA标识。");
+
+		 return mv;
+	 }
 }
