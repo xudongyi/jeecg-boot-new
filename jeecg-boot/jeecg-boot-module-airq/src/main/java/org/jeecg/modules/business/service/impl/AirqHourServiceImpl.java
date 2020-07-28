@@ -13,8 +13,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @Description: airq_hour
@@ -25,7 +24,6 @@ import java.util.List;
 @Service
 public class AirqHourServiceImpl extends ServiceImpl<AirqHourMapper, AirqHour> implements IAirqHourService {
 
-    SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     @Resource
     private RedisCacheUtil redisCacheUtil;
@@ -50,6 +48,23 @@ public class AirqHourServiceImpl extends ServiceImpl<AirqHourMapper, AirqHour> i
             airqHourQualityVo.setMeaning(redisCacheUtil.transformCode(airqHourQualityVo.getFirstCode()));
         });
         return airqHourQualityVos;
+    }
+
+    @Override
+    public LinkedHashMap<String,List<AirHourPlayVo>> queryPollutionCloud(List<String> companyIds, String datatime, String datatime2) {
+        Timestamp ts = DateUtil.parse(datatime, "yyyy-MM-dd").toTimestamp();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(DateUtil.parse(datatime2, "yyyy-MM-dd"));
+        calendar.set(Calendar.HOUR,23);
+        Timestamp ts2 = new Timestamp(calendar.getTimeInMillis());
+        LinkedHashMap<String,List<AirHourPlayVo>> result= new LinkedHashMap<>();
+        airqHourMapper.queryPollutionCloud(companyIds,ts,ts2).forEach(airHourPlayVo->{
+            String dataTime = DateUtil.format(airHourPlayVo.getDataTime(),"yyyy年MM月dd日HH时");
+            result.putIfAbsent(dataTime,new ArrayList<>());
+            result.get(dataTime).add(airHourPlayVo);
+        });
+        return result;
     }
 
     @Override

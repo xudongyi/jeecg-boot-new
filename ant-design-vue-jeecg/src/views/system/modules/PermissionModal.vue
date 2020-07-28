@@ -75,7 +75,7 @@
                 :labelCol="labelCol"
                 :wrapperCol="wrapperCol"
                 label="归属系统">
-          <a-select placeholder="请选择所属系统" v-decorator="[ 'systemId',{}]" >
+          <a-select placeholder="请选择所属系统" v-decorator="[ 'systemId',{rules:[{ required: false, message: '请选择所属系统!'}]}]" >
             <a-select-option v-for="(item, key) in systems" :key="key" :value="item.id">
               <span style="display: inline-block;width: 100%" :title=" item.name ">
                 {{ item.name  }}
