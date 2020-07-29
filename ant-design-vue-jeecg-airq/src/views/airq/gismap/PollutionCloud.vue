@@ -130,7 +130,6 @@
             this.playMap()
           },
           playMap(orginalKey){
-            console.log(this.playerTime,moment().format('HH:mm:ss'))
             if(this.playStatus==='playing'){
               if(orginalKey){
                 this.setData(orginalKey)
@@ -161,7 +160,6 @@
             this.playerTime =moment().hours(moment().hours()-1).format('YYYY年MM月DD日HH时')
           },
           handleDateChange(mom,dateStr){
-            console.log(mom,dateStr)
             this.queryParam.datatime=dateStr
             this.heatmapPoint(this.initHeatMap);
           },
@@ -179,30 +177,85 @@
             // 设置中心点以及缩放级别
             vue.map.centerAndZoom(marker, this.zoom ? this.zoom : 15);
             vue.map.enableScrollWheelZoom(true); // 开启鼠标滚轮缩放
+            // 设置地图风格样式  可自定义
             vue.map.setMapStyle({
               style: 'midnight'
             });
+            this.getBoundary();
+            vue.map.setMapStyleV2({
+              styleJson: [
+                {
+                  "featureType": "building",
+                  "elementType": "all",
+                  "stylers": {
+                    "visibility": "off"
+                  }
+                },
+                {
+                  "featureType": "poilabel",
+                  "elementType": "all",
+                  "stylers": {
+                    "visibility": "off"
+                  }
+                },
+                {
+                  "featureType": "manmade",
+                  "elementType": "all",
+                  "stylers": {
+                    "visibility": "off"
+                  }
+                },
+              ],
+              styleId: "dc1aa993a6301f5cc13823d0e524992c"
+            });
+
+            // // 设置地图风格样式  可自定义
+            // vue.map.setMapStyle({
+            //
+            // });
             vue.dataSet = new mapv.DataSet();
             var options = {
               size: 13,
               gradient: {
-                0.25: "rgb(0,0,255)",
-                0.55: "rgb(0,255,0)",
-                0.85: "yellow",
-                1.0: "rgb(255,0,0)"
+                0.08:  "rgba(0,228,0,1)",
+                0.24:"rgba(250,241,0,1)",
+                0.4:"rgba(255,126,0,1)",
+                0.567:"rgba(255,0,0,1)",
+                0.733:"rgba(153,0,76,1)",
+                1:"rgba(126,0,35,1)"
               },
               max: 100,
               // range: [0, 100], // 过滤显示数据范围
               // minOpacity: 0.5, // 热力图透明度
               // maxOpacity: 1,
-              draw: 'heatmap'
+              draw: 'heatmap',
+             // zIndex: 999999, // 层级
             }
             vue.mapvLayer = new mapv.baiduMapLayer(vue.map, vue.dataSet, options);
 
           },
+          getBoundary(){
+            var bdary = new BMap.Boundary();
+            let vue  = this
+            bdary.get("南通市", function(rs){       //获取行政区域
+              //vue.map.clearOverlays();        //清除地图覆盖物
+              var count = rs.boundaries.length; //行政区域的点有多少个
+              if (count === 0) {
+                alert('未能获取当前输入行政区域');
+                return ;
+              }
+              var pointArray = [];
+              for (var i = 0; i < count; i++) {
+                console.log(rs.boundaries[i])
+                var ply = new BMap.Polygon(rs.boundaries[i], {strokeWeight: 2, strokeColor: "#ff0000",fillColor:""}); //建立多边形覆盖物
+                vue.map.addOverlay(ply);  //添加覆盖物
+                pointArray = pointArray.concat(ply.getPath());
+              }
+              vue.map.setViewport(pointArray);    //调整视野
+            });
+          },
           changeSpeed(val){
             this.playSpeed = 1000-val*100
-            console.log( this.playSpeed)
           },
           //判断浏览区是否支持canvas
           isSupportCanvas(){
@@ -217,8 +270,6 @@
 
               if(res.success){
                 _this.dataSource = res.result
-                for(var i in res.result)
-                  console.log(i)
                 if(callback)
                   callback()
               }else{
@@ -242,12 +293,13 @@
                 data.push({
                   geometry: {
                     type: 'Point',
-                    coordinates: [e.siteLongitude, e.siteLatitude]
+                    coordinates: [e.siteLongitude-Math.random()*0.001, e.siteLatitude-Math.random()*0.001]
                   },
-                  count: e[this.queryParam.pollution]*30
+                  count: e[this.queryParam.pollution]/6
                 })
               })
             }
+            console.log(data[0].count)
             this.dataSet.set(data)
           },
           //隐藏左下角的百度标识

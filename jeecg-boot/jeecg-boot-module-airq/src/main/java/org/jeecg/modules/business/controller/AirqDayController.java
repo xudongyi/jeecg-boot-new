@@ -1,9 +1,10 @@
 package org.jeecg.modules.business.controller;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import cn.hutool.core.date.DateUtil;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.modules.business.constant.SelfExcelConstants;
@@ -166,16 +167,54 @@ public class AirqDayController extends JeecgController<AirqDay, IAirqDayService>
 	 @AutoLog(value = "空气质量实日报")
 	 @ApiOperation(value="airq_Day-空气质量实日报", notes="airq_Day-空气质量实日报")
 	 @GetMapping(value = "/queryDayAirQuality")
-	 public Result<?> queryHourAirQuality(@RequestParam(name="companyIds",required=true) String companyIds
+	 public Result<?> queryDayAirQuality(@RequestParam(name="companyIds",required=true) String companyIds
 			 ,@RequestParam(name="datatime",required=true) String datatime
 			 ,@RequestParam(name="datatime2",required=true) String datatime2
 			 ,@RequestParam(name="area",required=false) String area
 			 ,@RequestParam(name="mn",required=false) String mn) {
-		 //根据小时查询
+		 //根据日起查询
 		 return Result.ok(airqDayService.queryDayAirQuality(Arrays.asList(companyIds.split(",")),datatime,datatime2,area,mn));
 	 }
 
+	 /**
+	  * 空气质量实日报
+	  *
+	  * @param companyIds
+	  * @return
+	  */
+	 @AutoLog(value = "蓝天白云日历")
+	 @ApiOperation(value="airq_Day-蓝天白云日历", notes="airq_Day-蓝天白云日历")
+	 @GetMapping(value = "/queryCalendarAirQuality")
+	 public Result<?> queryCalendarAirQuality(@RequestParam(name="companyIds",required=true) String companyIds
+			 ,@RequestParam(name="area",required=false) String area
+			 ,@RequestParam(name="year",required=false) String year
+			 ,@RequestParam(name="mn",required=false) String mn) {
+	 	String datatime = year + "-01-01";
+	 	String datatime2 = year + "-12-31";
+		 //根据日起查询
+		List<AirqDayQualityVo> airqDayQualityVos =  airqDayService.queryDayAirQuality(Arrays.asList(companyIds.split(",")),datatime,datatime2,area,mn);
+		Map<String,Object> result = new HashMap<>();
+		List<Map<String,Object>> airqList = new ArrayList<>();
+		 Set<String> months = new HashSet<>();
+		for(AirqDayQualityVo airqDayQualityVo:airqDayQualityVos){
+			Map<String,Object> temp = new HashMap<>();
+			temp.put("data", DateUtil.format(airqDayQualityVo.getDataTime(),"yyyy-MM-dd"));
+			temp.put("firstCode",airqDayQualityVo.getMeaning());
+			temp.put("AQI",airqDayQualityVo.getAqi());
+			temp.put("A34004",airqDayQualityVo.getAqi());
+			temp.put("A34002",airqDayQualityVo.getAqi());
+			temp.put("A21026",airqDayQualityVo.getAqi());
+			temp.put("A21005",airqDayQualityVo.getAqi());
+			temp.put("A21004",airqDayQualityVo.getAqi());
+			temp.put("A05024",airqDayQualityVo.getAqi());
+			airqList.add(temp);
+			months.add(DateUtil.format(airqDayQualityVo.getDataTime(),"yyyy-MM"));
+		}
 
+		result.put("dataList",airqList);
+		result.put("months",months);
+		return Result.ok(result);
+	 }
 	 /**
 	  * 导出excel
 	  *

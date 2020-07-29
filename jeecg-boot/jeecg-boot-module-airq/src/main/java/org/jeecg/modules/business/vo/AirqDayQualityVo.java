@@ -135,6 +135,4 @@ public class AirqDayQualityVo {
     Double a3400424Iaqi;
 
 
-
-
 }
