@@ -1,10 +1,15 @@
 package org.jeecg.modules.business.controller;
 
+import java.sql.Timestamp;
+import java.text.ParseException;
 import java.util.Arrays;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import cn.hutool.core.util.StrUtil;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
+import org.jeecg.common.util.DateUtils;
 import org.jeecg.modules.business.entity.AirqYear;
 import org.jeecg.modules.business.service.IAirqYearService;
 
@@ -14,6 +19,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 
 import org.jeecg.common.system.base.controller.JeecgController;
+import org.jeecg.modules.business.vo.AirqYearQualityVO;
+import org.jeecg.modules.business.vo.SiteQualityRankDayVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -56,6 +63,29 @@ public class AirqYearController extends JeecgController<AirqYear, IAirqYearServi
 		IPage<AirqYear> pageList = airqYearService.page(page, queryWrapper);
 		return Result.ok(pageList);
 	}
+
+	 /**
+	  * 空气质量年报
+	  *
+	  * @param req
+	  * @return
+	  */
+	 @AutoLog(value = "空气质量年报")
+	 @ApiOperation(value="空气质量年报", notes="空气质量年报")
+	 @GetMapping(value = "/queryAirqYearQuality")
+	 public Result<?> queryAirqYearQuality(@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+								   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
+								   HttpServletRequest req) {
+		 String companyIds = req.getParameter("companyIds");
+		 String area = req.getParameter("area");
+		 //通过选择站点名称获取站点mn号
+		 String mn = req.getParameter("mn");
+		 String yearBegin = req.getParameter("yearBegin");
+		 String yearEnd = req.getParameter("yearEnd");
+		 Page<AirqYearQualityVO> page = new Page<>(pageNo, pageSize);
+		 IPage<AirqYearQualityVO> pageList = airqYearService.queryAirqYearQuality(companyIds,page, area,mn,yearBegin,yearEnd);
+		 return Result.ok(pageList);
+	 }
 	
 	/**
 	 *   添加

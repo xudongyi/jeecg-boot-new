@@ -201,7 +201,7 @@
             dataIndex: 'level_dictText',
             key: 'airLevel',
             scopedSlots: { customRender:'airLevel'},
-            sorter: (a, b) => a.level_dictText - b.level_dictText
+            sorter: (a, b) => a.level - b.level
           },
           {
             //title:'a21026Avg',
