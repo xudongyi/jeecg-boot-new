@@ -10,25 +10,23 @@
         style="border-top:1px solid rgba(217,217,217,1);height: 88%">
         <a-form>
           <a-form-item label="数据类型" :labelCol="labelCol" :wrapperCol="wrapperCol">
-            <a-radio-group default-value="month" button-style="solid" @change="dataTypeChange" style="width: 100%">
-              <a-radio-button value="month" style="width: 50%;text-align:center;">
-                按月同比
+            <a-radio-group default-value="day" button-style="solid" @change="dataTypeChange" style="width: 100%">
+              <a-radio-button value="day" style="width: 50%;text-align:center;">
+                按日环比
               </a-radio-button>
-              <a-radio-button value="year" style="width: 50%;text-align:center;">
-                按年同比
+              <a-radio-button value="month" style="width: 50%;text-align:center;">
+                按月环比
               </a-radio-button>
             </a-radio-group>
           </a-form-item>
-          <a-form-item label="查询时间" :labelCol="labelCol" :wrapperCol="wrapperCol" style="width: 100%">
-            <a-date-picker
-              placeholder="选择年份"
-              format="YYYY"
-              mode="year"
+          <a-form-item label="查询时间" :labelCol="labelCol" :wrapperCol="wrapperCol">
+            <a-range-picker
+              :placeholder="placeholder"
+              :format="format"
+              :mode="mode2"
               :value="timeValue"
               @change="searchTimeChange"
               @panelChange="handlePanelChange"
-              :showTime="showTime"
-              style="width: 100%"
             />
           </a-form-item>
           <a-form-item label="行政区域" :labelCol="labelCol" :wrapperCol="wrapperCol">
@@ -75,14 +73,14 @@
           style="width:64px;height:17px;font-size:16px;font-family:Microsoft YaHei;font-weight:bold;color:rgba(17,17,17,1);line-height:52px;">分析结果</span>
       </div>
       <div style="margin: 8px 9px;height: 7%">
-        <a-radio-group default-value="total" button-style="solid" style="width: 50%" @change="pollutionTypeChange">
-          <a-radio-button value="total" style="width: 10%;text-align:center;">
+        <a-radio-group default-value="AQI" button-style="solid" style="width: 50%" @change="pollutionTypeChange">
+          <a-radio-button value="AQI" style="width: 10%;text-align:center;">
             AQI
           </a-radio-button>
-          <a-radio-button value="A34004" style="width: 10%;text-align:center;">
+          <a-radio-button value="A3400424" style="width: 10%;text-align:center;">
             PM2.5
           </a-radio-button>
-          <a-radio-button value="A34002" style="width: 10%;text-align:center;">
+          <a-radio-button value="A3400224" style="width: 10%;text-align:center;">
             PM10
           </a-radio-button>
           <a-radio-button value="A21026" style="width: 10%;text-align:center;">
@@ -109,29 +107,25 @@
         </a-radio-group>
         <a-button type="primary" style="float:right;margin-right: 17px" @click="downPic" size="small">导出图片</a-button>
       </div>
-      <div id="compare" style="width:100%;height:80%;z-index:19;"></div>
+      <div id="chain" style="width:100%;height:80%;z-index:19;"></div>
     </a-layout-content>
   </a-layout>
 </template>
 
 <script>
-  import {querySiteName, querySameCompare} from "../../requestAction/request";
+  import {queryChainCompare, querySiteName} from "../../requestAction/request";
   import 'vue-happy-scroll/docs/happy-scroll.css'
   import AreaLinkSelect from '../component/AreaLinkSelect'
   import JDictSelectTag from "@/components/dict/JDictSelectTag"
   import {mixinDevice} from '@/utils/mixin'
-  import {JeecgListMixin} from '@/mixins/JeecgListMixin'
   import {HappyScroll} from 'vue-happy-scroll'
-  import 'vue-happy-scroll/docs/happy-scroll.css'
   import {getAction} from '@/api/manage'
   import moment from 'moment'
-  import JDate from "../../../components/jeecg/JDate";
 
   export default {
     name: "evaluate",
     mixins: [mixinDevice],
     components: {
-      JDate,
       JDictSelectTag,
       AreaLinkSelect,
       HappyScroll,
@@ -139,13 +133,14 @@
 
     data() {
       return {
-        titleText: "大气环境质量(AQI)按月同比分析结果",
-        colors:['#23CFCF', '#5A87D5', '#FFC000'],
-        showTime:{format:'YYYY'},
+        mode2: ["date", "date"],
+        placeholder: ["开始日期", "结束日期"],
+        format: "YYYY-MM-DD",
+        titleText: "大气环境质量(AQI)按月环比分析结果",
         radioObj: {
-          "total": "AQI",
-          "A34004": "PM2.5",
-          "A34002": "PM10",
+          "AQI": "AQI",
+          "A3400424": "PM2.5",
+          "A3400224": "PM10",
           "A21026": "SO2",
           "A21004": "NO2",
           "A21005": "CO",
@@ -155,19 +150,21 @@
           "A01007": "风速",
           "A01006": "气压"
         },
-        dataTypeObj: {"month": "按月同比", "year": "按年同比"},
+        dataTypeObj: {"day": "按日环比", "month": "按月环比"},
         autoExpandParent: true,
         expandedKeys: [],
         siteType: 3,
         data: [],
         myChart: {},
-        dataType: 'month',
-        pollutionType: "total",
-        searchTime: "",
-        timeValue: '',
+        dataType: 'day',
+        pollutionType: "AQI",
+        searchTime: [],
+        timeValue: [],
+        subtext: "",
         treeData: [],
         dataList: [],
         searchValue: '',
+        items: [],
         siteData: [],
         selectedKeys: [],
         area: "",
@@ -178,7 +175,7 @@
         },
         wrapperCol: {
           xs: {span: 24},
-          sm: {span: 17},
+          sm: {span: 16},
         },
       }
     },
@@ -235,8 +232,6 @@
           });
           that.selectedKeys = checkObj
         });
-
-
       },
       dealAreaData(res) {
         let areaSource = [];
@@ -293,18 +288,17 @@
         })
       },
       onCheck(selectedKeys, info) {
-        debugger
         //修改选择数据
         this.selectedKeys = selectedKeys;  //只要站点的
         this.halfselectedKeys = info.halfselectedKeys;
       },
-      drawLine(data, titleText,colors) {
+      drawLine(data, titleText) {
         var echarts = require('echarts');
-        var myChart = echarts.init(document.getElementById('compare'));
+        var myChart = echarts.init(document.getElementById('chain'));
         myChart.clear();
         this.myChart = myChart;
         myChart.setOption({
-          color: colors,
+          color: ['#23CFCF','#FFC000'],
           title: {
             text: titleText,
             left: 'center'
@@ -341,7 +335,7 @@
             },
             {
               type: 'value',
-              name: '同比增长率%',
+              name: '环比增长率%',
               min: data["percentMin"],
               max: data["percentMax"],
               position: 'right',
@@ -351,11 +345,17 @@
         });
       },
       parseDate(value) {
-        return value.format("YYYY");
+        return [value[0].format(this.format), value[1].format(this.format)];
       },
       searchQuery() {
         let checkSites = [];
         let that = this;
+
+        if (that.searchTime && that.searchTime.length > 0) {
+          that.subtext = "(" + that.searchTime.join("~") + ")";
+        } else {
+          that.subtext = "";
+        }
         if (!that.selectedKeys || that.selectedKeys.length == 0) {
           this.$message.error("请选择站点！");
           return;
@@ -363,24 +363,21 @@
         that.selectedKeys.forEach(e => {
           that.siteData.forEach(element => {
               if (e === element.key)
-                checkSites.push(e);
-              return;
+                checkSites.push(e)
             }
           )
         })
-        querySameCompare({
+        queryChainCompare({
           dataType: that.dataType,
           pollutionType: that.pollutionType,
-          searchTime: that.searchTime,
+          searchTime: that.searchTime.join(","),
           selectedKeys: checkSites.join(",")
         }).then((res) => {
-          debugger
-          let series = res.result["series"];
-          this.drawLine(res.result, this.titleText,this.colors);
+          this.drawLine(res.result, this.titleText);
         })
       },
       searchReset() {
-        this.timeValue = '';
+        this.timeValue = [];
         this.selectedKeys = [];
         this.searchValue = "";
         this.area = "";
@@ -389,11 +386,16 @@
         this.titleText = "大气环境质量(" + this.radioObj[this.pollutionType] + ")" + this.dataTypeObj[e.target.value] + "分析结果";
         const dataType = e.target.value;
         this.dataType = dataType;
-        this.timeValue = '';
-        if(dataType==="month"){
-          this.colors = ['#23CFCF', '#5A87D5', '#FFC000'];
-        }else {
-          this.colors = ['#23CFCF', '#FFC000'];
+        this.timeValue = [];
+        this.searchTime = [];
+        if (dataType === "day") {
+          this.mode2 = ["date", "date"]
+          this.format = "YYYY-MM-DD"
+          this.placeholder = ["开始日期", "结束日期"]
+        } else if (dataType === "month") {
+          this.mode2 = ["month", "month"]
+          this.placeholder = ["开始月份", "结束月份"]
+          this.format = "YYYY-MM"
         }
         this.searchQuery();
       },
@@ -402,7 +404,7 @@
         this.titleText = "大气环境质量(" + this.radioObj[e.target.value] + ")" + this.dataTypeObj[this.dataType] + "分析结果";
         this.searchQuery();
       },
-      searchTimeChange(value) {
+      searchTimeChange(value, dataStr) {
         this.timeValue = value;
         this.searchTime = this.parseDate(value);
       },
@@ -427,7 +429,7 @@
         let blob = new Blob([uInt8Array], {type: contentType});
         let evt = document.createEvent("HTMLEvents");
         evt.initEvent("click", true, true);//initEvent 不加后两个参数在FF下会报错  事件类型，是否冒泡，是否阻止浏览器的默认行为
-        aLink.download = "大气环境质量评价分析结果_" + new moment().format('YYYYMMDDHHmmss');
+        aLink.download = this.titleText + new moment().format('YYYYMMDDHHmmss');
         aLink.href = URL.createObjectURL(blob);
         // aLink.dispatchEvent(evt);
         //aLink.click()
@@ -451,17 +453,18 @@
         companyIds: that.$store.getters.userInfo.companyIds.join(','),
         siteType: that.siteType
       }).then((res) => {
+
         let sites = res.result;
         sites.forEach(e => {
           checkSites.push(e.key);
         })
-        querySameCompare({
+        queryChainCompare({
           dataType: that.dataType,
           pollutionType: that.pollutionType,
-          searchTime: that.searchTime,
+          searchTime: that.searchTime.join(","),
           selectedKeys: checkSites.join(",")
         }).then((res) => {
-          that.drawLine(res.result, that.titleText,this.colors);
+          that.drawLine(res.result, that.titleText);
         })
       })
     }
