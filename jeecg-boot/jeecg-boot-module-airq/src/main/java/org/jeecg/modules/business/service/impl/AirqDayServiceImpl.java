@@ -68,4 +68,13 @@ public class AirqDayServiceImpl extends ServiceImpl<AirqDayMapper, AirqDay> impl
         });
         return page.setRecords(siteQualityRankDayVOS);
     }
+
+    @Override
+    public List<SiteQualityRankDayVO> querySiteDayExport(String companyIds, String area, String mn, Date queryDate) {
+        List<SiteQualityRankDayVO> siteQualityRankDayVOS = airqDayMapper.querySiteDayExport(companyIds.split(","),area,mn,queryDate);
+        siteQualityRankDayVOS.forEach(siteQualityRankDayVO -> {
+            siteQualityRankDayVO.setMeaning(redisCacheUtil.transformCode(siteQualityRankDayVO.getFirstCode()));
+        });
+        return siteQualityRankDayVOS;
+    }
 }

@@ -19,15 +19,16 @@
               </a-select>
             </a-form-item>
           </a-col>
-          <a-col :xl="10" :lg="11" :md="12" :sm="24">
+          <a-col :xl="5" :lg="11" :md="12" :sm="24">
             <a-form-item label="数据时间">
-              <j-date date-format="YYYY-MM-DD" placeholder="请选择时间" class="query-group-cust" v-model="queryParam.dataTime"></j-date>
+              <j-date date-format="YYYY-MM-DD" placeholder="请选择时间" v-model="queryParam.dataTime"></j-date>
             </a-form-item>
           </a-col>
-          <a-col :xl="4" :lg="7" :md="8" :sm="24">
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <a-button type="primary" @click="toSearchReset" icon="reload" style="margin-left: 8px">重置</a-button>
+              <a-button type="primary" icon="download" style="margin-left: 8px" @click="handleExportXls('站点质量日排名')">导出</a-button>
             </span>
           </a-col>
         </a-row>
@@ -37,7 +38,7 @@
 
     <!-- 操作按钮区域 -->
     <div class="table-operator">
-      <a-button type="primary" icon="download" @click="handleExportXls('airq_hour')">导出</a-button>
+
       <!--      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">-->
       <!--        <a-button type="primary" icon="import">导入</a-button>-->
       <!--      </a-upload>-->
@@ -236,7 +237,7 @@
         ],
         url: {
           list: "/day/airqDay/querySiteDay",
-          exportXlsUrl: "/day/airqDay"
+          exportXlsUrl: "/day/airqDay/exportSiteDay"
         },
         dictOptions:{},
         areaHandler:''
