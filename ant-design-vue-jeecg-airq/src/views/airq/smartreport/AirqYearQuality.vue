@@ -4,12 +4,12 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
-          <a-col :xl="5" :lg="7" :md="8" :sm="24">
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="所属区域">
               <area-link-select @change="areaChange" type="cascader" v-model="queryParam.area" placeholder="请选择所属区域" show-search style="width: 100%" optionFilterProp="children"/>
             </a-form-item>
           </a-col>
-          <a-col :xl="5" :lg="7" :md="8" :sm="24">
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="监测点位名称">
               <a-select v-model="queryParam.mn" show-search style="width: 100%" optionFilterProp="children" placeholder="请选择监测点位名称">
                 <!--                <a-select-option :value="companyIds">请选择</a-select-option>-->
@@ -21,13 +21,13 @@
           </a-col>
           <a-col :xl="6" :lg="11" :md="12" :sm="24">
             <a-form-item label="数据时间">
-              <a-select v-model="queryParam.yearBegin" show-search @visible-change="yearChange($event)" style="width: 100px">
+              <a-select v-model="queryParam.yearBegin" show-search @visible-change="yearChange($event)" style="width: 120px">
                 <a-select-option v-for="item in years" :key="item.value"  :value="item.value">
                   {{item.value}}
                 </a-select-option>
               </a-select>
               <span class="query-group-split-cust"></span>
-              <a-select v-model="queryParam.yearEnd" show-search @visible-change="yearChange($event)" style="width: 100px">
+              <a-select v-model="queryParam.yearEnd" show-search @visible-change="yearChange($event)" style="width: 120px">
                 <a-select-option v-for="item in years" :key="item.value"  :value="item.value">
                   {{item.value}}
                 </a-select-option>
@@ -257,8 +257,8 @@
         ],
         url: {
           list: "/year/airqYear/queryAirqYearQuality",
-          exportXlsUrl: "/year/airqYear/exportXls",
-          importExcelUrl: "/year/airqYear/importExcel",
+          exportXlsUrl: "/year/airqYear/exportAirqYearQuality",
+          //importExcelUrl: "/year/airqYear/importExcel",
         },
         dictOptions:{},
         areaHandler:''

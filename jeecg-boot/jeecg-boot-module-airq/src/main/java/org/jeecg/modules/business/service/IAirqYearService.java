@@ -19,4 +19,5 @@ public interface IAirqYearService extends IService<AirqYear> {
     List<AirqVO> findEvaluate(String searchTime, List<String> mns);
 
     Page<AirqYearQualityVO> queryAirqYearQuality(String companyIds, Page page, String area, String mn, String yearBegin,String yearEnd);
+    List<AirqYearQualityVO> exportAirqYearQuality(String companyIds, String area, String mn, String yearBegin,String yearEnd);
 }

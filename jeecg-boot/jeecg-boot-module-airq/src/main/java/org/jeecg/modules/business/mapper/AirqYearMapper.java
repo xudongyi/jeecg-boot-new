@@ -19,4 +19,5 @@ public interface AirqYearMapper extends BaseMapper<AirqYear> {
     List<AirqVO> findEvaluate(String mns, String timeStart, String timeEnd);
 
     List<AirqYearQualityVO> queryAirqYearQuality(String[] companyIds, Page page, String area, String mn, String yearBegin,String yearEnd);
-}
+    List<AirqYearQualityVO> exportAirqYearQuality(String[] companyIds, String area, String mn, String yearBegin,String yearEnd);
+ }
