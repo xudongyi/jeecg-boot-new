@@ -100,4 +100,61 @@
         </if>
 
     </select>
+
+
+    <resultMap id="SiteQualityRankDayVO" type="org.jeecg.modules.business.vo.SiteQualityRankDayVO" >
+        <result column="mn" property="mn" jdbcType="VARCHAR"/>
+        <result column="area" property="area" jdbcType="VARCHAR"/>
+        <result column="site_name" property="siteName" jdbcType="VARCHAR"/>
+        <result column="aqi" property="aqi" jdbcType="DOUBLE"/>
+        <result column="data_time" property="dataTime" jdbcType="TIMESTAMP"/>
+        <result column="first_code" property="firstCode" jdbcType="VARCHAR"/>
+        <result column="airLevel" property="airLevel" jdbcType="VARCHAR"/>
+        <result column="level" property="level" jdbcType="VARCHAR"/>
+        <result column="A21026_avg" property="a21026Avg" jdbcType="DOUBLE"/>
+        <result column="A21004_avg" property="a21004Avg" jdbcType="DOUBLE"/>
+        <result column="A3400201_avg" property="a3400201Avg" jdbcType="DOUBLE"/>
+        <result column="a3400224_avg" property="a3400224Avg" jdbcType="DOUBLE"/>
+        <result column="A21005_avg" property="a21005Avg" jdbcType="DOUBLE"/>
+        <result column="A0502401_avg" property="a0502401Avg" jdbcType="DOUBLE"/>
+        <result column="A0502408_avg" property="a0502408Avg" jdbcType="DOUBLE"/>
+        <result column="A3400401_avg" property="a3400401Avg" jdbcType="DOUBLE"/>
+        <result column="a3400424_avg" property="a3400424Avg" jdbcType="DOUBLE"/>
+        <result column="meaning" property="meaning" jdbcType="VARCHAR"/>
+        <result column="rank" property="rank" jdbcType="VARCHAR"/>
+
+    </resultMap>
+    <select id="querySiteDay" resultMap="SiteQualityRankDayVO">
+        select @rows:=@rows+1 as rows,
+        if(@aqi=t.aqi,@rownum:=@rownum,@rownum:=@rownum+1) as rank,
+        @aqi:=t.aqi,t.* from
+
+        (select  b.id,a.mn,a.site_name,b.`level` as airLevel,b.level,a.area,b.aqi,
+        a.company_id,b.DATA_TIME,b.FIRST_CODE,
+        b.a21026_avg,b.a21004_avg,b.a3400201_avg,b.a3400224_avg,
+        b.a21005_avg,b.a0502401_avg,b.a0502408_avg,b.a3400401_avg,
+        b.a3400424_avg
+
+        from airq_day b INNER JOIN(select a.mn,
+        max(b.data_time) data_time
+        from airq_day b  left join site_monitor_point a on b.mn = a.mn
+        WHERE b.state in (0,1) group by a.mn) c on b.mn = c.mn and b.data_time = c.data_time
+        left join site_monitor_point a on  b.mn = a.mn
+        WHERE b.state in (0,1)) t,(select @rownum:=0,@aqi:=0,@rows:=0) r
+        where t.company_id in
+        <foreach collection="companyIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        <if test="area != null">
+            and t.area = (#{area})
+        </if>
+        <if test="mn != null">
+            and t.mn = (#{mn})
+        </if>
+        <if test="queryDate != null">
+            and t.data_time = (#{queryDate})
+        </if>
+        order by t.aqi asc
+
+    </select>
 </mapper>

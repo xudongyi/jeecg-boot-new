@@ -1,12 +1,23 @@
 package org.jeecg.modules.business.controller;
 
 import java.util.*;
+import java.sql.Struct;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import cn.hutool.core.date.DateUtil;
+
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.StrUtil;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
+import org.jeecg.common.util.DateUtils;
 import org.jeecg.modules.business.constant.SelfExcelConstants;
 import org.jeecg.modules.business.entity.AirqDay;
 import org.jeecg.modules.business.service.IAirqDayService;
@@ -20,6 +31,8 @@ import org.jeecg.common.system.base.controller.JeecgController;
 import org.jeecg.modules.business.view.SelfEntityExcelView;
 import org.jeecg.modules.business.vo.AirqDayQualityVo;
 import org.jeecg.modules.business.vo.AirqHourQualityVo;
+import org.jeecg.modules.business.vo.SiteQualityEvaluateVO;
+import org.jeecg.modules.business.vo.SiteQualityRankDayVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -235,5 +248,33 @@ public class AirqDayController extends JeecgController<AirqDay, IAirqDayService>
 
 		 return mv;
 
+	 }
+
+	 /**
+	  * 站点质量日排名
+	  *
+	  * @param req
+	  * @return
+	  */
+	 @AutoLog(value = "站点质量日排名")
+	 @ApiOperation(value="airq_Day-站点质量日排名", notes="airq_Day-站点质量日排名")
+	 @GetMapping(value = "/querySiteDay")
+	 public Result<?> querySiteDay(@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+								   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
+								   HttpServletRequest req) throws ParseException {
+		 String companyIds = req.getParameter("companyIds");
+		 String area = req.getParameter("area");
+		 //通过选择站点名称获取站点mn号
+		 String mn = req.getParameter("mn");
+		 String dataTime = req.getParameter("dataTime");
+		 Timestamp queryDate;
+		 if(StrUtil.isEmpty(dataTime)) {
+		 	queryDate = null;
+		 }else {
+		 	queryDate = DateUtils.parseTimestamp(dataTime,"yyyy-MM-dd");
+		 }
+		 Page<SiteQualityRankDayVO> page = new Page<>(pageNo, pageSize);
+		 IPage<SiteQualityRankDayVO> pageList = airqDayService.querySiteDay(companyIds,page, area,mn,queryDate);
+		 return Result.ok(pageList);
 	 }
 }

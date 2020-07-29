@@ -1,6 +1,7 @@
 package org.jeecg.modules.business.service.impl;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.jeecg.modules.business.entity.AirqHour;
@@ -86,6 +87,15 @@ public class AirqHourServiceImpl extends ServiceImpl<AirqHourMapper, AirqHour> i
     }
 
     @Override
+    public List<AirqHourInputVO> queryManInputExport(String companyIds, String area, String mn, Date dateBegin, Date dateEnd) {
+        List<AirqHourInputVO> airqHourInputVOS = airqHourMapper.queryManInputExport(companyIds.split(","), area,mn,dateBegin,dateEnd);
+        airqHourInputVOS.forEach(airqHourInputVO -> {
+            airqHourInputVO.setMeaning(redisCacheUtil.transformCode(airqHourInputVO.getFirstCode()));
+        });
+        return airqHourInputVOS;
+    }
+
+    @Override
     public Page<AirqHourManInsertVO> queryAirqHourManInsert(String companyIds,Page page, String area, String mn, Integer state, Date dateBegin, Date dateEnd) {
         return page.setRecords(airqHourMapper.queryAirqHourManInsert(companyIds.split(","),page, area, mn, state,dateBegin, dateEnd));
     }
@@ -100,6 +110,10 @@ public class AirqHourServiceImpl extends ServiceImpl<AirqHourMapper, AirqHour> i
         List<SiteQualityEvaluateVO> siteQualityEvaluateVOS = airqHourMapper.querySiteQualityEvaluate(companyIds.split(","),page,area,mn,level,state,dateBegin,dateEnd);
         siteQualityEvaluateVOS.forEach(siteQualityEvaluateVO -> {
             siteQualityEvaluateVO.setMeaning(redisCacheUtil.transformCode(siteQualityEvaluateVO.getFirstCode()));
+            if(!StrUtil.isEmpty(siteQualityEvaluateVO.getLevel())){
+                siteQualityEvaluateVO.setAdvice(redisCacheUtil.getAdviceAndContent(siteQualityEvaluateVO.getLevel()).getAdvice());
+                siteQualityEvaluateVO.setLevelContent(redisCacheUtil.getAdviceAndContent(siteQualityEvaluateVO.getLevel()).getLevelContent());
+            }
         });
         return page.setRecords(siteQualityEvaluateVOS);
     }

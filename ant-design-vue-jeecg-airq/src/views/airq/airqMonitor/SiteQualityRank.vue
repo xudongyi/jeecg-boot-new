@@ -21,37 +21,27 @@
           </a-col>
           <a-col :xl="10" :lg="11" :md="12" :sm="24">
             <a-form-item label="数据时间">
-              <j-date :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择开始时间" class="query-group-cust" v-model="queryParam.dataTime_begin"></j-date>
-              <span class="query-group-split-cust"></span>
-              <j-date :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择结束时间" class="query-group-cust" v-model="queryParam.dataTime_end"></j-date>
+              <j-date date-format="YYYY-MM-DD" placeholder="请选择时间" class="query-group-cust" v-model="queryParam.dataTime"></j-date>
             </a-form-item>
           </a-col>
-          <template v-if="toggleSearchStatus">
-            <a-col :xl="4" :lg="7" :md="8" :sm="24">
-              <a-form-item label="等级">
-                <j-dict-select-tag v-model="queryParam.level" placeholder="请选择状态"  dictCode="airLevel"/>
-              </a-form-item>
-            </a-col>
-            <a-col :xl="4" :lg="7" :md="8" :sm="24">
-              <a-form-item label="来源">
-                <j-dict-select-tag v-model="queryParam.state" placeholder="请选择状态"  dictCode="dataFrom"/>
-              </a-form-item>
-            </a-col>
-          </template>
           <a-col :xl="4" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <a-button type="primary" @click="toSearchReset" icon="reload" style="margin-left: 8px">重置</a-button>
-              <a @click="handleToggleSearch" style="margin-left: 8px">
-                {{ toggleSearchStatus ? '收起' : '展开' }}
-                <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>
-              </a>
             </span>
           </a-col>
         </a-row>
       </a-form>
     </div>
     <!-- 查询区域-END -->
+
+    <!-- 操作按钮区域 -->
+    <div class="table-operator">
+      <a-button type="primary" icon="download" @click="handleExportXls('airq_hour')">导出</a-button>
+      <!--      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">-->
+      <!--        <a-button type="primary" icon="import">导入</a-button>-->
+      <!--      </a-upload>-->
+    </div>
 
     <!-- table区域-begin -->
     <div>
@@ -95,7 +85,7 @@
   import AreaLinkSelect from '../component/AreaLinkSelect'
 
   export default {
-    name: "SiteQualityEvaluate",
+    name: "SiteQualityRank",
     mixins:[JeecgListMixin, mixinDevice],
     components: {
       JDictSelectTag,
@@ -104,7 +94,7 @@
     },
     data () {
       return {
-        description: 'airq_hour管理页面',
+        description: '站点质量排名页面',
         tagColors:{
           1:'#00E400',
           2:'#EFD600',
@@ -147,7 +137,8 @@
           {
             title:'AQI',
             align:"center",
-            dataIndex: 'aqi'
+            dataIndex: 'aqi',
+            sorter: (a, b) => a.aqi - b.aqi
           },
           {
             title:'首要污染物',
@@ -171,40 +162,81 @@
                 return "五级";
               }else
                 return "六级";
-            }
+            },
+            sorter: (a, b) => a.level - b.level
           },
           {
             title:'空气质量指数类别',
             align:"center",
             dataIndex: 'level_dictText',
             key: 'airLevel',
-            scopedSlots: { customRender:'airLevel'}
+            scopedSlots: { customRender:'airLevel'},
+            sorter: (a, b) => a.level - b.level
           },
           {
-            title:'数据来源',
+            title:'站点排名',
             align:"center",
-            dataIndex: 'state',
-            customRender:function (text){
-              if(text === 0){
-                return "自动采集";
-              }else if(text===3){
-                return "手动采集";
-              }
-            }
+            dataIndex: 'rank',
+            sorter: (a, b) => a.rank - b.rank
           },
           {
-            title:'对健康影响情况',
+            title:'SO2 μg/m3',
             align:"center",
-            dataIndex: 'advice'
+            dataIndex: 'a21026Avg',
+            sorter: (a, b) => a.a21026Avg - b.a21026Avg
           },
           {
-            title:'建议采取的措施',
+            title:'NO2 μg/m3',
             align:"center",
-            dataIndex: 'levelContent'
+            dataIndex: 'a21004Avg',
+            sorter: (a, b) => a.a21004Avg - b.a21004Avg
+          },
+          {
+            title:'PM10(1h)μg/m3',
+            align:"center",
+            dataIndex: 'a3400201Avg',
+            sorter: (a, b) => a.a3400201Avg - b.a3400201Avg
+          },
+          {
+            title:'PM10(24h)μg/m3',
+            align:"center",
+            dataIndex: 'a3400224Avg',
+            sorter: (a, b) => a.a3400224Avg - b.a3400224Avg
+          },
+          {
+            title:'COμg/m3',
+            align:"center",
+            dataIndex: 'a21005Avg',
+            sorter: (a, b) => a.a21005Avg - b.a21005Avg
+          },
+          {
+            title:'O3(1h)μg/m3',
+            align:"center",
+            dataIndex: 'a0502401Avg',
+            sorter: (a, b) => a.a0502401Avg - b.a0502401Avg
+          },
+          {
+            title:'O3(8h)μg/m3',
+            align:"center",
+            dataIndex: 'a0502408Avg',
+            sorter: (a, b) => a.a0502408Avg - b.a0502408Avg
+          },
+          {
+            title:'PM2.5(1h)μg/m3',
+            align:"center",
+            dataIndex: 'a3400401Avg',
+            sorter: (a, b) => a.a3400401Avg - b.a3400401Avg
+          },
+          {
+            title:'PM2.5(24h)μg/m3',
+            align:"center",
+            dataIndex: 'a3400424Avg',
+            sorter: (a, b) => a.a3400424Avg - b.a3400424Avg
           }
         ],
         url: {
-          list: "/hour/airqHour/querySiteQualityEvaluate",
+          list: "/day/airqDay/querySiteDay",
+          exportXlsUrl: "/day/airqDay"
         },
         dictOptions:{},
         areaHandler:''

@@ -22,11 +22,10 @@ public interface AirqHourMapper extends BaseMapper<AirqHour> {
     List<AirqHourQualityVo> queryHourAirQuality(@Param("companyIds")List<String> companyIds, @Param("datatime")Timestamp datatime,@Param("datatime2")Timestamp datatime2,@Param("area")String area, @Param("mn")String mn);
     List<AirHourPlayVo> queryPollutionCloud(@Param("companyIds")List<String> companyIds,  @Param("datatime")Timestamp datatime, @Param("datatime2")Timestamp datatime2);
 
-    List<AirqHourMonitorVO> queryAirqHourMonitor(Page page,String area,String mn, Date dateBegin, Date dateEnd);
-
     List<AirqHourMonitorVO> queryAirqHourMonitor(String[] companyIds,Page page,String area,String mn, Date dateBegin, Date dateEnd);
 
     List<AirqHourInputVO> queryAirqHourInput(String[] companyIds,Page page, String area, String mn, Date dateBegin, Date dateEnd);
+    List<AirqHourInputVO> queryManInputExport(String[] companyIds, String area, String mn, Date dateBegin, Date dateEnd);
 
     List<AirqHourManInsertVO> queryAirqHourManInsert(String[] companyIds,Page page, String area, String mn, Integer state,Date dateBegin, Date dateEnd);
 

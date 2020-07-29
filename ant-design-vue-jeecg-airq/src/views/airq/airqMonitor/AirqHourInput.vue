@@ -303,10 +303,7 @@
         ],
         url: {
           list: "/hour/airqHour/queryInputAirqHour",
-          delete: "/hour/airqHour/delete",
-          deleteBatch: "/hour/airqHour/deleteBatch",
-          exportXlsUrl: "/hour/airqHour/exportXls",
-          importExcelUrl: "hour/airqHour/importExcel",
+          exportXlsUrl: "/hour/airqHour/exportManInput"
         },
         dictOptions:{},
         areaHandler:''

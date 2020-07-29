@@ -1,12 +1,15 @@
 package org.jeecg.modules.business.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
 import org.jeecg.modules.business.entity.AirqDay;
 import org.jeecg.modules.business.vo.AirqDayQualityVo;
 import org.jeecg.modules.business.vo.AirqVO;
+import org.jeecg.modules.business.vo.SiteQualityRankDayVO;
 
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -21,4 +24,5 @@ public interface AirqDayMapper extends BaseMapper<AirqDay> {
 
     List<AirqDayQualityVo> queryDayAirQuality(@Param("companyIds")List<String> companyIds, @Param("datatime") Timestamp datatime, @Param("datatime2")Timestamp datatime2, @Param("area")String area, @Param("mn")String mn);
 
+    List<SiteQualityRankDayVO> querySiteDay(String[] companyIds, Page page, String area, String mn, Date queryDate);
 }
