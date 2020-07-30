@@ -48,11 +48,11 @@ public class AirqMonthQualityVO {
     @ApiModelProperty(value = "空气质量级别")
     private String level;
     /**SO2*/
-    @ExcelSelf(name = "二氧化硫(SO2)年平均浓度(μg/m3)", width = 15,orderNum = 8)
+    @ExcelSelf(name = "二氧化硫(SO2)年平均浓度(μg/m3)", width = 20,orderNum = 8)
     @ApiModelProperty(value = "SO2")
     private Double a21026Avg;
     /**NO2*/
-    @ExcelSelf(name = "二氧化氮(NO2)年平均浓度(μg/m3)", width = 15,orderNum = 9)
+    @ExcelSelf(name = "二氧化氮(NO2)年平均浓度(μg/m3)", width = 20,orderNum = 9)
     @ApiModelProperty(value = "NO2")
     private Double a21004Avg;
     /**PM10*/
