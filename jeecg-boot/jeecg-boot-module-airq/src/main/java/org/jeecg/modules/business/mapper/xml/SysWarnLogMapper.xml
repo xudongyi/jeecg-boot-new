@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.business.mapper.SysWarnLogMapper">
+
+    <resultMap id="WarnLogVO" type="org.jeecg.modules.business.vo.WarnLogVO" >
+        <result column="monitor_id" property="monitorId" jdbcType="VARCHAR"/>
+        <result column="area" property="area" jdbcType="VARCHAR"/>
+        <result column="site_name" property="siteName" jdbcType="VARCHAR"/>
+        <result column="flag" property="flag" jdbcType="VARCHAR"/>
+        <result column="content" property="content" jdbcType="VARCHAR"/>
+        <result column="warn_time" property="warnTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <select id="queryWarnLogInfo" resultMap="WarnLogVO">
+        select b.area,b.site_name,a.flag,a.content,a.warn_time,a.monitor_id
+        from sys_warn_log a left join site_monitor_point b on a.monitor_id = b.id
+        WHERE b.company_id in
+        <foreach collection="companyIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        <if test="area != null">
+            and b.area = (#{area})
+        </if>
+        <if test="monitorId != null">
+            and a.monitor_id = (#{monitorId})
+        </if>
+        <if test="flag != null">
+            and a.flag = (#{flag})
+        </if>
+        <if test="dateBegin != null">
+            and a.warn_time >= (#{dateBegin})
+        </if>
+        <if test="dateEnd != null">
+            and a.warn_time &lt;= (#{dateEnd})
+        </if>
+        order by a.warn_time desc
+    </select>
+    <select id="exportWarnLogInfo" resultMap="WarnLogVO">
+        select b.area,b.site_name,a.flag,a.content,a.warn_time,a.monitor_id
+        from sys_warn_log a left join site_monitor_point b on a.monitor_id = b.id
+        WHERE b.company_id in
+        <foreach collection="companyIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        <if test="area != null">
+            and b.area = (#{area})
+        </if>
+        <if test="monitorId != null">
+            and a.monitor_id = (#{monitorId})
+        </if>
+        <if test="flag != null">
+            and a.flag = (#{flag})
+        </if>
+        <if test="dateBegin != null">
+            and a.warn_time >= (#{dateBegin})
+        </if>
+        <if test="dateEnd != null">
+            and a.warn_time &lt;= (#{dateEnd})
+        </if>
+        order by a.warn_time desc
+    </select>
+
+</mapper>
