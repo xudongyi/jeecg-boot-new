@@ -1,5 +1,7 @@
 package org.jeecg.modules.business.controller;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -10,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import lombok.SneakyThrows;
 import org.apache.shiro.SecurityUtils;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
@@ -29,6 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.jeecg.common.system.base.controller.JeecgController;
 import org.jeecg.modules.business.service.ISiteMonitorPointService;
+import org.jeecg.modules.business.utils.AirQualityUtil;
 import org.jeecg.modules.business.view.SelfEntityExcelView;
 import org.jeecg.modules.business.vo.*;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
@@ -57,7 +61,9 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 
 	@Autowired
 	private ISiteMonitorPointService siteMonitorPointService;
-	
+
+	@Autowired
+    AirQualityUtil airQualityUtil;
 	/**
 	 * 分页列表查询
 	 *
@@ -324,7 +330,7 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 	 public Result<?> querySiteNameAndMn(@RequestParam(name="companyIds",required=true) String companyIds) {
 		 List<String> idList =  Arrays.asList(companyIds.split(","));
 		 List<Map<String,String>> result = new ArrayList<>();
-		 siteMonitorPointService.list(new QueryWrapper<SiteMonitorPoint>().lambda().in(SiteMonitorPoint::getCompanyId,idList)).forEach(siteMonitorPoint -> {
+		 siteMonitorPointService.list(new QueryWrapper<SiteMonitorPoint>().lambda().eq(SiteMonitorPoint::getSiteType,3).in(SiteMonitorPoint::getCompanyId,idList)).forEach(siteMonitorPoint -> {
 			 Map<String,String> param = new HashMap<>();
 			 param.put("key",siteMonitorPoint.getMn());
 			 param.put("value",siteMonitorPoint.getSiteName());
@@ -374,10 +380,31 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 	 * @param airqHour
 	 * @return
 	 */
+	@SneakyThrows
 	@AutoLog(value = "airq_hour-添加")
 	@ApiOperation(value="airq_hour-添加", notes="airq_hour-添加")
 	@PostMapping(value = "/add")
 	public Result<?> add(@RequestBody AirqHour airqHour) {
+        for(Field field:airqHour.getClass().getDeclaredFields()){
+			field.setAccessible(true);
+        	String fielName =  field.getName();
+        	//是不是值
+			if(fielName.endsWith("Avg")){
+
+				//对象
+				Object val = field.get(airqHour);
+				if(val!=null&&!val.toString().equals("")){
+					String code = fielName.substring(0,6);
+					code = code.substring(0, 1).toUpperCase() + code.substring(1);
+					int type = fielName.length()>=11? Integer.valueOf(fielName.substring(7,8)):1;
+
+					double aqi =	airQualityUtil.getAQI( code,  type,Double.valueOf(val.toString()));
+					Method mtd = airqHour.getClass().getMethod("set"+code+"Iaqi", Double.class);
+					mtd.invoke(airqHour, aqi);
+				}
+			}
+        }
+
 		//2-暂存
 		airqHour.setState(2);
 		airqHourService.save(airqHour);

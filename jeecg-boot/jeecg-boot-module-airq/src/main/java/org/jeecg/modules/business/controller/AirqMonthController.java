@@ -3,6 +3,9 @@ package org.jeecg.modules.business.controller;
 import java.util.Arrays;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.StrUtil;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.modules.business.entity.AirqMonth;
@@ -14,6 +17,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 
 import org.jeecg.common.system.base.controller.JeecgController;
+import org.jeecg.modules.business.vo.AirqMonthQualityVO;
+import org.jeecg.modules.business.vo.AirqYearQualityVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -56,6 +61,35 @@ public class AirqMonthController extends JeecgController<AirqMonth, IAirqMonthSe
 		IPage<AirqMonth> pageList = airqMonthService.page(page, queryWrapper);
 		return Result.ok(pageList);
 	}
+
+	 /**
+	  * 空气质量月报
+	  *
+	  * @param req
+	  * @return
+	  */
+	 @AutoLog(value = "空气质量月报")
+	 @ApiOperation(value="空气质量月报", notes="空气质量月报")
+	 @GetMapping(value = "/queryAirqMonthQuality")
+	 public Result<?> queryAirqYearQuality(@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+										   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
+										   HttpServletRequest req) {
+		 String companyIds = req.getParameter("companyIds");
+		 String area = req.getParameter("area");
+		 //通过选择站点名称获取站点mn号
+		 String mn = req.getParameter("mn");
+		 String startTime = null;
+		 String endTime = null;
+		 String searchTime = req.getParameter("searchTime");
+		 if(StrUtil.isNotEmpty(searchTime)){
+			 String[] times = searchTime.split(",");
+			 startTime = times[0];
+			 endTime = times[1];
+		 }
+		 Page<AirqMonthQualityVO> page = new Page<>(pageNo, pageSize);
+		 IPage<AirqMonthQualityVO> pageList = airqMonthService.queryAirqMonthQuality(companyIds,page, area,mn,searchTime,startTime,endTime);
+		 return Result.ok(pageList);
+	 }
 	
 	/**
 	 *   添加

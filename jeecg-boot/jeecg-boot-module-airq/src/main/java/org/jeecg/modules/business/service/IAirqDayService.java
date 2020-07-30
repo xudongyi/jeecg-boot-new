@@ -25,4 +25,5 @@ public interface IAirqDayService extends IService<AirqDay> {
     List<AirqVO> findEvaluate(String searchTime, List<String> mns);
     List<Map<String,Object>>  queryCalendarAirQuality(String datatime, String datatime2,String area,List<String> checkedKeys);
     Page<SiteQualityRankDayVO> querySiteDay(String companyIds,Page page, String area, String mn, Date queryDate);
+    List<SiteQualityRankDayVO> querySiteDayExport(String companyIds, String area, String mn, Date queryDate);
 }

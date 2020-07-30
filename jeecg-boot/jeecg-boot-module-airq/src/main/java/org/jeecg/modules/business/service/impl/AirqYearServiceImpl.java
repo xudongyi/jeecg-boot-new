@@ -1,11 +1,14 @@
 package org.jeecg.modules.business.service.impl;
 
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.commons.lang3.StringUtils;
 import org.jeecg.modules.business.entity.AirqYear;
 import org.jeecg.modules.business.mapper.AirqYearMapper;
 import org.jeecg.modules.business.service.IAirqYearService;
+import org.jeecg.modules.business.utils.RedisCacheUtil;
 import org.jeecg.modules.business.vo.AirqVO;
+import org.jeecg.modules.business.vo.AirqYearQualityVO;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -26,6 +29,9 @@ public class AirqYearServiceImpl extends ServiceImpl<AirqYearMapper, AirqYear> i
     @Resource
     private AirqYearMapper airqYearMapper;
 
+    @Resource
+    private RedisCacheUtil redisCacheUtil;
+
     @Override
     public List<AirqVO> findEvaluate(String searchTime, List<String> mns) {
         String[] times = null;
@@ -41,5 +47,23 @@ public class AirqYearServiceImpl extends ServiceImpl<AirqYearMapper, AirqYear> i
             mnsTemp.add(i,"'"+mns.get(i)+"'");
         }
         return airqYearMapper.findEvaluate(StringUtils.join(mnsTemp.toArray(), ","),timeStart,timeEnd);
+    }
+
+    @Override
+    public Page<AirqYearQualityVO> queryAirqYearQuality(String companyIds, Page page, String area, String mn, String yearBegin,String yearEnd) {
+        List<AirqYearQualityVO> airqYearQualityVOS = airqYearMapper.queryAirqYearQuality(companyIds.split(","), page,area,mn,yearBegin,yearEnd);
+        airqYearQualityVOS.forEach(airqYearQualityVO -> {
+            airqYearQualityVO.setMeaning(redisCacheUtil.transformCode(airqYearQualityVO.getFirstCode()));
+        });
+        return page.setRecords(airqYearQualityVOS);
+    }
+
+    @Override
+    public List<AirqYearQualityVO> exportAirqYearQuality(String companyIds, String area, String mn, String yearBegin, String yearEnd) {
+        List<AirqYearQualityVO> airqYearQualityVOS = airqYearMapper.exportAirqYearQuality(companyIds.split(","),area,mn,yearBegin,yearEnd);
+        airqYearQualityVOS.forEach(airqYearQualityVO -> {
+            airqYearQualityVO.setMeaning(redisCacheUtil.transformCode(airqYearQualityVO.getFirstCode()));
+        });
+        return airqYearQualityVOS;
     }
 }

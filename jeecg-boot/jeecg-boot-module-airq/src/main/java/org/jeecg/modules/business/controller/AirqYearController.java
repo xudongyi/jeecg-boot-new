@@ -1,10 +1,17 @@
 package org.jeecg.modules.business.controller;
 
+import java.sql.Timestamp;
+import java.text.ParseException;
 import java.util.Arrays;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import cn.hutool.core.util.StrUtil;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
+import org.jeecg.common.util.DateUtils;
+import org.jeecg.modules.business.constant.SelfExcelConstants;
 import org.jeecg.modules.business.entity.AirqYear;
 import org.jeecg.modules.business.service.IAirqYearService;
 
@@ -14,6 +21,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 
 import org.jeecg.common.system.base.controller.JeecgController;
+import org.jeecg.modules.business.view.SelfEntityExcelView;
+import org.jeecg.modules.business.vo.AirqYearQualityVO;
+import org.jeecg.modules.business.vo.SiteQualityRankDayVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -56,6 +66,29 @@ public class AirqYearController extends JeecgController<AirqYear, IAirqYearServi
 		IPage<AirqYear> pageList = airqYearService.page(page, queryWrapper);
 		return Result.ok(pageList);
 	}
+
+	 /**
+	  * 空气质量年报
+	  *
+	  * @param req
+	  * @return
+	  */
+	 @AutoLog(value = "空气质量年报")
+	 @ApiOperation(value="空气质量年报", notes="空气质量年报")
+	 @GetMapping(value = "/queryAirqYearQuality")
+	 public Result<?> queryAirqYearQuality(@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+								   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
+								   HttpServletRequest req) {
+		 String companyIds = req.getParameter("companyIds");
+		 String area = req.getParameter("area");
+		 //通过选择站点名称获取站点mn号
+		 String mn = req.getParameter("mn");
+		 String yearBegin = req.getParameter("yearBegin");
+		 String yearEnd = req.getParameter("yearEnd");
+		 Page<AirqYearQualityVO> page = new Page<>(pageNo, pageSize);
+		 IPage<AirqYearQualityVO> pageList = airqYearService.queryAirqYearQuality(companyIds,page, area,mn,yearBegin,yearEnd);
+		 return Result.ok(pageList);
+	 }
 	
 	/**
 	 *   添加
@@ -140,6 +173,32 @@ public class AirqYearController extends JeecgController<AirqYear, IAirqYearServi
     public ModelAndView exportXls(HttpServletRequest request, AirqYear airqYear) {
         return super.exportXls(request, airqYear, AirqYear.class, "airq_year");
     }
+
+	 /**
+	  * 导出excel
+	  * 空气质量年报
+	  *
+	  * @param req
+	  */
+	 @RequestMapping(value = "/exportAirqYearQuality")
+	 public ModelAndView exportAirqYearQuality(HttpServletRequest req) throws ParseException {
+		 String companyIds = req.getParameter("companyIds");
+		 String area = req.getParameter("area");
+		 //通过选择站点名称获取站点mn号
+		 String mn = req.getParameter("mn");
+		 String yearBegin = req.getParameter("yearBegin");
+		 String yearEnd = req.getParameter("yearEnd");
+		 List<AirqYearQualityVO> exportList = airqYearService.exportAirqYearQuality(companyIds,area,mn,yearBegin,yearEnd);
+		 // Step.3 AutoPoi 导出Excel
+		 ModelAndView mv = new ModelAndView(new SelfEntityExcelView());
+		 mv.addObject(SelfExcelConstants.TITLE, "空气质量年报"); //此处设置的filename无效 ,前端会重更新设置一下
+		 mv.addObject(SelfExcelConstants.SHEET_NAME, "空气质量年报");
+		 mv.addObject(SelfExcelConstants.CLAZZ, AirqYearQualityVO.class);
+		 mv.addObject(SelfExcelConstants.DATA_LIST, exportList);
+		 mv.addObject(SelfExcelConstants.FOOTER, "注：缺测指标的浓度及分指数均使用NA标识。");
+
+		 return mv;
+	 }
 
     /**
       * 通过excel导入数据

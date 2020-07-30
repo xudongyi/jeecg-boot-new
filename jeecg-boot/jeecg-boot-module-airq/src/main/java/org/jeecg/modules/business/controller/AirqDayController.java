@@ -19,6 +19,7 @@ import org.jeecg.modules.business.service.IAirqDayService;
 import org.jeecg.modules.business.view.SelfEntityExcelView;
 import org.jeecg.modules.business.vo.AirqDayQualityVo;
 import org.jeecg.modules.business.vo.SiteQualityRankDayVO;
+import org.jeecg.modules.business.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -255,5 +256,35 @@ public class AirqDayController extends JeecgController<AirqDay, IAirqDayService>
 		 Page<SiteQualityRankDayVO> page = new Page<>(pageNo, pageSize);
 		 IPage<SiteQualityRankDayVO> pageList = airqDayService.querySiteDay(companyIds,page, area,mn,queryDate);
 		 return Result.ok(pageList);
+	 }
+
+	 /**
+	  * 导出excel 站点质量日排名
+	  *
+	  * @param req
+	  */
+	 @RequestMapping(value = "/exportSiteDay")
+	 public ModelAndView exportSiteDay(HttpServletRequest req) throws ParseException {
+		 String companyIds = req.getParameter("companyIds");
+		 String area = req.getParameter("area");
+		 //通过选择站点名称获取站点mn号
+		 String mn = req.getParameter("mn");
+		 String dataTime = req.getParameter("dataTime");
+		 Timestamp queryDate;
+		 if(StrUtil.isEmpty(dataTime)) {
+			 queryDate = null;
+		 }else {
+			 queryDate = DateUtils.parseTimestamp(dataTime,"yyyy-MM-dd");
+		 }
+		 List<SiteQualityRankDayVO> exportList = airqDayService.querySiteDayExport(companyIds,area,mn,queryDate);
+		 // Step.3 AutoPoi 导出Excel
+		 ModelAndView mv = new ModelAndView(new SelfEntityExcelView());
+		 mv.addObject(SelfExcelConstants.TITLE, "站点质量日排名"); //此处设置的filename无效 ,前端会重更新设置一下
+		 mv.addObject(SelfExcelConstants.SHEET_NAME, "站点质量日排名");
+		 mv.addObject(SelfExcelConstants.CLAZZ, SiteQualityRankDayVO.class);
+		 mv.addObject(SelfExcelConstants.DATA_LIST, exportList);
+		 mv.addObject(SelfExcelConstants.FOOTER, "注：缺测指标的浓度及分指数均使用NA标识。");
+
+		 return mv;
 	 }
 }

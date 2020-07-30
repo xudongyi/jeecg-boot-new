@@ -30,6 +30,7 @@
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <a-button type="primary" @click="toSearchReset" icon="reload" style="margin-left: 8px">重置</a-button>
+              <a-button type="primary" icon="download" style="margin-left: 8px" @click="handleExportXls('人工录入数据')">导出</a-button>
             </span>
           </a-col>
         </a-row>
@@ -39,7 +40,7 @@
 
     <!-- 操作按钮区域 -->
     <div class="table-operator">
-      <a-button type="primary" icon="download" @click="handleExportXls('airq_hour')">导出</a-button>
+
 <!--      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">-->
 <!--        <a-button type="primary" icon="import">导入</a-button>-->
 <!--      </a-upload>-->
@@ -200,7 +201,7 @@
             dataIndex: 'level_dictText',
             key: 'airLevel',
             scopedSlots: { customRender:'airLevel'},
-            sorter: (a, b) => a.level_dictText - b.level_dictText
+            sorter: (a, b) => a.level - b.level
           },
           {
             //title:'a21026Avg',

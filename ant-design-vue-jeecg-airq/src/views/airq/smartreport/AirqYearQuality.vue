@@ -4,12 +4,12 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
-          <a-col :xl="5" :lg="7" :md="8" :sm="24">
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="所属区域">
               <area-link-select @change="areaChange" type="cascader" v-model="queryParam.area" placeholder="请选择所属区域" show-search style="width: 100%" optionFilterProp="children"/>
             </a-form-item>
           </a-col>
-          <a-col :xl="5" :lg="7" :md="8" :sm="24">
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="监测点位名称">
               <a-select v-model="queryParam.mn" show-search style="width: 100%" optionFilterProp="children" placeholder="请选择监测点位名称">
                 <!--                <a-select-option :value="companyIds">请选择</a-select-option>-->
@@ -19,16 +19,26 @@
               </a-select>
             </a-form-item>
           </a-col>
-          <a-col :xl="5" :lg="11" :md="12" :sm="24">
+          <a-col :xl="6" :lg="11" :md="12" :sm="24">
             <a-form-item label="数据时间">
-              <j-date date-format="YYYY-MM-DD" placeholder="请选择时间" v-model="queryParam.dataTime"></j-date>
+              <a-select v-model="queryParam.yearBegin" show-search @visible-change="yearChange($event)" style="width: 120px">
+                <a-select-option v-for="item in years" :key="item.value"  :value="item.value">
+                  {{item.value}}
+                </a-select-option>
+              </a-select>
+              <span class="query-group-split-cust"></span>
+              <a-select v-model="queryParam.yearEnd" show-search @visible-change="yearChange($event)" style="width: 120px">
+                <a-select-option v-for="item in years" :key="item.value"  :value="item.value">
+                  {{item.value}}
+                </a-select-option>
+              </a-select>
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <a-button type="primary" @click="toSearchReset" icon="reload" style="margin-left: 8px">重置</a-button>
-              <a-button type="primary" icon="download" style="margin-left: 8px" @click="handleExportXls('站点质量日排名')">导出</a-button>
+              <a-button type="primary" icon="download" style="margin-left: 8px" @click="handleExportXls('空气质量年报')">导出</a-button>
             </span>
           </a-col>
         </a-row>
@@ -36,26 +46,17 @@
     </div>
     <!-- 查询区域-END -->
 
-    <!-- 操作按钮区域 -->
-    <div class="table-operator">
-
-      <!--      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">-->
-      <!--        <a-button type="primary" icon="import">导入</a-button>-->
-      <!--      </a-upload>-->
-    </div>
-
     <!-- table区域-begin -->
     <div>
-
       <a-table
         ref="table"
         size="middle"
         bordered
-        rowKey="id"
         :columns="columns"
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
+        :scroll="{ x: 2000 }"
         class="j-table-force-nowrap"
         @change="handleTableChange">
 
@@ -86,7 +87,7 @@
   import AreaLinkSelect from '../component/AreaLinkSelect'
 
   export default {
-    name: "SiteQualityRank",
+    name: "AirqYearQuality",
     mixins:[JeecgListMixin, mixinDevice],
     components: {
       JDictSelectTag,
@@ -95,7 +96,8 @@
     },
     data () {
       return {
-        description: '站点质量排名页面',
+        description: 'airq_hour管理页面',
+        years:[],
         tagColors:{
           1:'#00E400',
           2:'#EFD600',
@@ -117,29 +119,35 @@
             key:'rowIndex',
             width:60,
             align:"center",
-            customRender:this.calcIndex
+            customRender:this.calcIndex,
+            fixed:'left'
           },
           {
             title:'行政区域',
             align:"center",
             dataIndex: 'area',
             customRender:this.getAreaByCode,
+            fixed:'left',
+            width:150
           },
           {
             title:'监测点位名称',
             align:"center",
             dataIndex: 'siteName',
+            fixed:'left',
+            width:150
           },
           {
-            title:'数据时间',
+            title:'年份',
             align:"center",
-            dataIndex: 'dataTime'
+            dataIndex: 'year',
+            fixed:'left',
+            width: 100
           },
           {
-            title:'AQI',
+            title:'综合指数',
             align:"center",
-            dataIndex: 'aqi',
-            sorter: (a, b) => a.aqi - b.aqi
+            dataIndex: 'totalI'
           },
           {
             title:'首要污染物',
@@ -175,69 +183,82 @@
             sorter: (a, b) => a.level - b.level
           },
           {
-            title:'站点排名',
-            align:"center",
-            dataIndex: 'rank',
-            sorter: (a, b) => a.rank - b.rank
-          },
-          {
-            title:'SO2 μg/m3',
+            title:() => {
+              return (
+                <div>
+                  <span>二氧化硫(SO2)</span><br/>
+                  <span>年平均浓度(μg/m3)</span>
+                </div>
+              )},
             align:"center",
             dataIndex: 'a21026Avg',
             sorter: (a, b) => a.a21026Avg - b.a21026Avg
           },
           {
-            title:'NO2 μg/m3',
+            title:() => {
+              return (
+                <div>
+                  <span>二氧化氮(NO2)</span><br/>
+                  <span>年平均浓度(μg/m3)</span>
+                </div>
+              )},
             align:"center",
             dataIndex: 'a21004Avg',
             sorter: (a, b) => a.a21004Avg - b.a21004Avg
           },
           {
-            title:'PM10(1h)μg/m3',
+            title:() => {
+              return (
+                <div>
+                  <span>PM10</span><br/>
+                  <span>年平均浓度(μg/m3)</span>
+                </div>
+              )},
             align:"center",
-            dataIndex: 'a3400201Avg',
-            sorter: (a, b) => a.a3400201Avg - b.a3400201Avg
+            dataIndex: 'a34002Avg',
+            sorter: (a, b) => a.a34002Avg - b.a34002Avg
           },
           {
-            title:'PM10(24h)μg/m3',
-            align:"center",
-            dataIndex: 'a3400224Avg',
-            sorter: (a, b) => a.a3400224Avg - b.a3400224Avg
-          },
-          {
-            title:'COμg/m3',
+            title:() => {
+              return (
+                <div>
+                  <span>一氧化碳(CO)</span><br/>
+                  <span>年平均浓度(μg/m3)</span>
+                </div>
+              )},
             align:"center",
             dataIndex: 'a21005Avg',
             sorter: (a, b) => a.a21005Avg - b.a21005Avg
           },
           {
-            title:'O3(1h)μg/m3',
+            title:() => {
+              return (
+                <div>
+                  <span>臭氧(O3)</span><br/>
+                  <span>年平均浓度(μg/m3)</span>
+                </div>
+              )},
             align:"center",
-            dataIndex: 'a0502401Avg',
-            sorter: (a, b) => a.a0502401Avg - b.a0502401Avg
+            dataIndex: 'a05024Avg',
+            sorter: (a, b) => a.a05024Avg - b.a05024Avg
           },
           {
-            title:'O3(8h)μg/m3',
+            title:() => {
+              return (
+                <div>
+                  <span>PM2.5</span><br/>
+                  <span>年平均浓度(μg/m3)</span>
+                </div>
+              )},
             align:"center",
-            dataIndex: 'a0502408Avg',
-            sorter: (a, b) => a.a0502408Avg - b.a0502408Avg
-          },
-          {
-            title:'PM2.5(1h)μg/m3',
-            align:"center",
-            dataIndex: 'a3400401Avg',
-            sorter: (a, b) => a.a3400401Avg - b.a3400401Avg
-          },
-          {
-            title:'PM2.5(24h)μg/m3',
-            align:"center",
-            dataIndex: 'a3400424Avg',
-            sorter: (a, b) => a.a3400424Avg - b.a3400424Avg
+            dataIndex: 'a34004Avg',
+            sorter: (a, b) => a.a34004Avg - b.a34004Avg
           }
         ],
         url: {
-          list: "/day/airqDay/querySiteDay",
-          exportXlsUrl: "/day/airqDay/exportSiteDay"
+          list: "/year/airqYear/queryAirqYearQuality",
+          exportXlsUrl: "/year/airqYear/exportAirqYearQuality",
+          //importExcelUrl: "/year/airqYear/importExcel",
         },
         dictOptions:{},
         areaHandler:''
@@ -246,7 +267,7 @@
     computed: {
       importExcelUrl: function(){
         return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
-      },
+      }
     },
     methods: {
       initDictConfig(){
@@ -284,9 +305,19 @@
 
         return parseInt(index)+1+(this.ipagination.current-1)*this.ipagination.pageSize;
       },
+      yearChange () {
+        var myDate = new Date()
+        var startYear = myDate.getFullYear() - 20// 起始年份
+        var endYear = myDate.getFullYear() + 20// 结束年份
+
+        this.years = []
+        for (var i = startYear; i <= endYear; i++) {
+          this.years.push({value: i, label: i})
+        }
+      }
     },
     mounted(){
-
+      this.yearChange();
       let that = this;
       querySiteNameAndMn({companyIds:this.$store.getters.userInfo.companyIds.join(',')}).then((res)=>{
         if(res.success){
@@ -304,6 +335,6 @@
 <style>
   .ant-badge-dot{
     top: 50%;
-    right: 103%;
+    right: 105%;
   }
 </style>

@@ -19,16 +19,23 @@
               </a-select>
             </a-form-item>
           </a-col>
-          <a-col :xl="5" :lg="11" :md="12" :sm="24">
+          <a-col :xl="6" :lg="11" :md="12" :sm="24">
             <a-form-item label="数据时间">
-              <j-date date-format="YYYY-MM-DD" placeholder="请选择时间" v-model="queryParam.dataTime"></j-date>
+              <a-range-picker
+              :placeholder="['开始月份','结束月份']"
+              format="YYYY-MM"
+              :value="timeValue"
+              :mode="['month','month']"
+              @change="searchTimeChange"
+              @panelChange="handlePanelChange"
+            />
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <a-button type="primary" @click="toSearchReset" icon="reload" style="margin-left: 8px">重置</a-button>
-              <a-button type="primary" icon="download" style="margin-left: 8px" @click="handleExportXls('站点质量日排名')">导出</a-button>
+              <a-button type="primary" icon="export" style="margin-left: 8px" @click="handleExportXls('空气质量年报')">导出</a-button>
             </span>
           </a-col>
         </a-row>
@@ -36,26 +43,17 @@
     </div>
     <!-- 查询区域-END -->
 
-    <!-- 操作按钮区域 -->
-    <div class="table-operator">
-
-      <!--      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">-->
-      <!--        <a-button type="primary" icon="import">导入</a-button>-->
-      <!--      </a-upload>-->
-    </div>
-
     <!-- table区域-begin -->
     <div>
-
       <a-table
         ref="table"
         size="middle"
         bordered
-        rowKey="id"
         :columns="columns"
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
+        :scroll="{ x: 2000 }"
         class="j-table-force-nowrap"
         @change="handleTableChange">
 
@@ -86,7 +84,7 @@
   import AreaLinkSelect from '../component/AreaLinkSelect'
 
   export default {
-    name: "SiteQualityRank",
+    name: "AirqMonthQuality",
     mixins:[JeecgListMixin, mixinDevice],
     components: {
       JDictSelectTag,
@@ -95,7 +93,9 @@
     },
     data () {
       return {
-        description: '站点质量排名页面',
+        description: '管理页面',
+        searchTime:[],
+        timeValue:[],
         tagColors:{
           1:'#00E400',
           2:'#EFD600',
@@ -117,29 +117,35 @@
             key:'rowIndex',
             width:60,
             align:"center",
-            customRender:this.calcIndex
+            customRender:this.calcIndex,
+            fixed:'left'
           },
           {
             title:'行政区域',
             align:"center",
             dataIndex: 'area',
             customRender:this.getAreaByCode,
+            fixed:'left',
+            width:150
           },
           {
             title:'监测点位名称',
             align:"center",
             dataIndex: 'siteName',
+            fixed:'left',
+            width:150
           },
           {
             title:'数据时间',
             align:"center",
-            dataIndex: 'dataTime'
+            dataIndex: 'month',
+            fixed:'left',
+            width: 100
           },
           {
-            title:'AQI',
+            title:'综合指数',
             align:"center",
-            dataIndex: 'aqi',
-            sorter: (a, b) => a.aqi - b.aqi
+            dataIndex: 'totalI'
           },
           {
             title:'首要污染物',
@@ -175,69 +181,82 @@
             sorter: (a, b) => a.level - b.level
           },
           {
-            title:'站点排名',
-            align:"center",
-            dataIndex: 'rank',
-            sorter: (a, b) => a.rank - b.rank
-          },
-          {
-            title:'SO2 μg/m3',
+            title:() => {
+              return (
+                <div>
+                  <span>二氧化硫(SO2)</span><br/>
+                  <span>年平均浓度(μg/m3)</span>
+                </div>
+              )},
             align:"center",
             dataIndex: 'a21026Avg',
             sorter: (a, b) => a.a21026Avg - b.a21026Avg
           },
           {
-            title:'NO2 μg/m3',
+            title:() => {
+              return (
+                <div>
+                  <span>二氧化氮(NO2)</span><br/>
+                  <span>年平均浓度(μg/m3)</span>
+                </div>
+              )},
             align:"center",
             dataIndex: 'a21004Avg',
             sorter: (a, b) => a.a21004Avg - b.a21004Avg
           },
           {
-            title:'PM10(1h)μg/m3',
+            title:() => {
+              return (
+                <div>
+                  <span>PM10</span><br/>
+                  <span>年平均浓度(μg/m3)</span>
+                </div>
+              )},
             align:"center",
-            dataIndex: 'a3400201Avg',
-            sorter: (a, b) => a.a3400201Avg - b.a3400201Avg
+            dataIndex: 'a34002Avg',
+            sorter: (a, b) => a.a34002Avg - b.a34002Avg
           },
           {
-            title:'PM10(24h)μg/m3',
-            align:"center",
-            dataIndex: 'a3400224Avg',
-            sorter: (a, b) => a.a3400224Avg - b.a3400224Avg
-          },
-          {
-            title:'COμg/m3',
+            title:() => {
+              return (
+                <div>
+                  <span>一氧化碳(CO)</span><br/>
+                  <span>年平均浓度(μg/m3)</span>
+                </div>
+              )},
             align:"center",
             dataIndex: 'a21005Avg',
             sorter: (a, b) => a.a21005Avg - b.a21005Avg
           },
           {
-            title:'O3(1h)μg/m3',
+            title:() => {
+              return (
+                <div>
+                  <span>臭氧(O3)</span><br/>
+                  <span>年平均浓度(μg/m3)</span>
+                </div>
+              )},
             align:"center",
-            dataIndex: 'a0502401Avg',
-            sorter: (a, b) => a.a0502401Avg - b.a0502401Avg
+            dataIndex: 'a05024Avg',
+            sorter: (a, b) => a.a05024Avg - b.a05024Avg
           },
           {
-            title:'O3(8h)μg/m3',
+            title:() => {
+              return (
+                <div>
+                  <span>PM2.5</span><br/>
+                  <span>年平均浓度(μg/m3)</span>
+                </div>
+              )},
             align:"center",
-            dataIndex: 'a0502408Avg',
-            sorter: (a, b) => a.a0502408Avg - b.a0502408Avg
-          },
-          {
-            title:'PM2.5(1h)μg/m3',
-            align:"center",
-            dataIndex: 'a3400401Avg',
-            sorter: (a, b) => a.a3400401Avg - b.a3400401Avg
-          },
-          {
-            title:'PM2.5(24h)μg/m3',
-            align:"center",
-            dataIndex: 'a3400424Avg',
-            sorter: (a, b) => a.a3400424Avg - b.a3400424Avg
+            dataIndex: 'a34004Avg',
+            sorter: (a, b) => a.a34004Avg - b.a34004Avg
           }
         ],
         url: {
-          list: "/day/airqDay/querySiteDay",
-          exportXlsUrl: "/day/airqDay/exportSiteDay"
+          list: "/month/airqMonth/queryAirqMonthQuality",
+          exportXlsUrl: "/month/airqMonth/exportXls",
+          importExcelUrl: "/month/airqMonth/importExcel",
         },
         dictOptions:{},
         areaHandler:''
@@ -246,7 +265,7 @@
     computed: {
       importExcelUrl: function(){
         return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
-      },
+      }
     },
     methods: {
       initDictConfig(){
@@ -254,6 +273,8 @@
       },
       toSearchReset() {
         this.queryParam = {companyIds:this.$store.getters.userInfo.companyIds.join(',')};
+        this.timeValue = [];
+        this.searchTime = [];
         this.loadData(1);
       },
       initArea(){
@@ -281,18 +302,29 @@
         return arr[0]+arr[1]+arr[2]
       },
       calcIndex: function (t,r,index) {
-
         return parseInt(index)+1+(this.ipagination.current-1)*this.ipagination.pageSize;
+      },
+      searchTimeChange(value,dataStr) {
+        this.timeValue = value;
+        this.searchTime = this.parseDate(value);
+        this.queryParam.searchTime = this.parseDate(value);
+      },
+      handlePanelChange(value, mode) {
+        debugger
+        this.timeValue = value;
+        this.searchTime = this.parseDate(value);
+        this.queryParam.searchTime = this.parseDate(value).join(",");
+      },
+      parseDate(value){
+        return  [value[0].format("YYYY-MM"),value[1].format("YYYY-MM")];
       },
     },
     mounted(){
-
       let that = this;
       querySiteNameAndMn({companyIds:this.$store.getters.userInfo.companyIds.join(',')}).then((res)=>{
         if(res.success){
           that.siteOriginal = res.result;
           that.items = res.result;
-
         }
       })
     }
@@ -304,6 +336,6 @@
 <style>
   .ant-badge-dot{
     top: 50%;
-    right: 103%;
+    right: 105%;
   }
 </style>
