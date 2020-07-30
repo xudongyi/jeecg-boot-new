@@ -61,10 +61,13 @@
         b.a21026_avg,b.a21004_avg,b.a34002_avg,
         b.a21005_avg,b.a05024_avg,b.a34004_avg
 
-        from airq_year b INNER JOIN(select a.mn,
+        from airq_year b
+        <if test="yearBegin == null or yearEnd ==null">
+        INNER JOIN(select a.mn,
         max(b.year) year
         from airq_year b  left join site_monitor_point a on b.mn = a.mn
          group by a.mn) c on b.mn = c.mn and b.year = c.year
+        </if>
         left join site_monitor_point a on  b.mn = a.mn
         WHERE
          a.company_id in
@@ -93,10 +96,13 @@
         b.a21026_avg,b.a21004_avg,b.a34002_avg,
         b.a21005_avg,b.a05024_avg,b.a34004_avg
 
-        from airq_year b INNER JOIN(select a.mn,
+        from airq_year b
+        <if test="yearBegin == null or yearEnd ==null">
+        INNER JOIN(select a.mn,
         max(b.year) year
         from airq_year b  left join site_monitor_point a on b.mn = a.mn
         group by a.mn) c on b.mn = c.mn and b.year = c.year
+        </if>
         left join site_monitor_point a on  b.mn = a.mn
         WHERE
         a.company_id in
