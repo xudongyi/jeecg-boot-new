@@ -1,21 +1,19 @@
-package org.jeecg.modules.system.entity;
+package org.jeecg.modules.business.entity;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Date;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-import org.jeecg.common.aspect.annotation.Dict;
-import org.jeecgframework.poi.excel.annotation.Excel;
 
 /**
  * <p>
- *
+ * 字典表
  * </p>
  *
  * @Author zhangweijian
@@ -24,7 +22,7 @@ import org.jeecgframework.poi.excel.annotation.Excel;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-public class SysDictItem implements Serializable {
+public class SysDict implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -33,49 +31,54 @@ public class SysDictItem implements Serializable {
      */
     @TableId(type = IdType.ID_WORKER_STR)
     private String id;
+    
+    /**
+     * [预留字段，暂时无用]
+     * 字典类型,0 string,1 number类型,2 boolean
+     * 前端js对stirng类型和number类型 boolean 类型敏感，需要区分。在select 标签匹配的时候会用到
+     * 默认为string类型
+     */
+    private Integer type;
+    
+    /**
+     * 字典名称
+     */
+    private String dictName;
 
     /**
-     * 字典id
+     * 字典编码
      */
-    private String dictId;
-
-    /**
-     * 字典项文本
-     */
-    @Excel(name = "字典项文本", width = 20)
-    private String itemText;
-
-    /**
-     * 字典项值
-     */
-    @Excel(name = "字典项值", width = 30)
-    private String itemValue;
+    private String dictCode;
 
     /**
      * 描述
      */
-    @Excel(name = "描述", width = 40)
     private String description;
 
     /**
-     * 排序
+     * 删除状态
      */
-    @Excel(name = "排序", width = 15,type=4)
-    private Integer sortOrder;
-
+    @TableLogic
+    private Integer delFlag;
 
     /**
-     * 状态（1启用 0不启用）
+     * 创建人
      */
-    @Dict(dicCode = "dict_item_status")
-    private Integer status;
-
     private String createBy;
 
+    /**
+     * 创建时间
+     */
     private Date createTime;
 
+    /**
+     * 更新人
+     */
     private String updateBy;
 
+    /**
+     * 更新时间
+     */
     private Date updateTime;
 
 

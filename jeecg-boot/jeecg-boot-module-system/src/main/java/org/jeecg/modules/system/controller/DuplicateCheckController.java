@@ -4,8 +4,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.jeecg.common.api.vo.Result;
-import org.jeecg.modules.system.mapper.SysDictMapper;
-import org.jeecg.modules.system.model.DuplicateCheckVo;
+import org.jeecg.modules.business.mapper.SysDictMapper;
+import org.jeecg.modules.business.model.DuplicateCheckVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;

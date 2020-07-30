@@ -19,7 +19,7 @@ import org.jeecg.common.system.vo.DictModel;
 import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.common.util.oConvertUtils;
 import org.jeecg.modules.system.entity.SysCategory;
-import org.jeecg.modules.system.model.TreeSelectModel;
+import org.jeecg.modules.business.model.TreeSelectModel;
 import org.jeecg.modules.system.service.ISysCategoryService;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;

@@ -1,7 +1,7 @@
 package org.jeecg.modules.system.vo;
 
 import lombok.Data;
-import org.jeecg.modules.system.entity.SysDictItem;
+import org.jeecg.modules.business.entity.SysDictItem;
 import org.jeecgframework.poi.excel.annotation.Excel;
 import org.jeecgframework.poi.excel.annotation.ExcelCollection;
 

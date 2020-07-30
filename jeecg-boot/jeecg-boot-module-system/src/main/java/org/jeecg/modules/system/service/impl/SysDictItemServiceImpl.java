@@ -1,7 +1,7 @@
 package org.jeecg.modules.system.service.impl;
 
-import org.jeecg.modules.system.entity.SysDictItem;
-import org.jeecg.modules.system.mapper.SysDictItemMapper;
+import org.jeecg.modules.business.entity.SysDictItem;
+import org.jeecg.modules.business.mapper.SysDictItemMapper;
 import org.jeecg.modules.system.service.ISysDictItemService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;

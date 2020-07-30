@@ -8,7 +8,7 @@ import org.jeecg.common.system.util.JwtUtil;
 import org.jeecg.common.util.RedisUtil;
 import org.jeecg.modules.system.entity.SysDepart;
 import org.jeecg.modules.system.service.ISysDepartService;
-import org.jeecg.modules.system.service.ISysDictService;
+import org.jeecg.modules.business.service.ISysDictService;
 import org.jeecg.modules.system.service.ISysUserService;
 import org.jeecg.modules.system.vo.SysUserVo;
 

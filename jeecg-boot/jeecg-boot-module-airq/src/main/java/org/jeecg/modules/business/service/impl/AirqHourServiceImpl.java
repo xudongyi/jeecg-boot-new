@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.jeecg.modules.business.entity.AirqHour;
+import org.jeecg.modules.business.entity.AirqLevel;
 import org.jeecg.modules.business.mapper.AirqHourMapper;
 import org.jeecg.modules.business.service.IAirqHourService;
 import org.jeecg.modules.business.utils.RedisCacheUtil;
@@ -13,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -27,7 +27,7 @@ public class AirqHourServiceImpl extends ServiceImpl<AirqHourMapper, AirqHour> i
 
 
     @Resource
-    private RedisCacheUtil redisCacheUtil;
+    private RedisCacheUtil<AirqLevel> redisCacheUtil;
     @Resource
     private AirqHourMapper airqHourMapper;
 
@@ -111,8 +111,9 @@ public class AirqHourServiceImpl extends ServiceImpl<AirqHourMapper, AirqHour> i
         siteQualityEvaluateVOS.forEach(siteQualityEvaluateVO -> {
             siteQualityEvaluateVO.setMeaning(redisCacheUtil.transformCode(siteQualityEvaluateVO.getFirstCode()));
             if(!StrUtil.isEmpty(siteQualityEvaluateVO.getLevel())){
-                siteQualityEvaluateVO.setAdvice(redisCacheUtil.getAdviceAndContent(siteQualityEvaluateVO.getLevel()).getAdvice());
-                siteQualityEvaluateVO.setLevelContent(redisCacheUtil.getAdviceAndContent(siteQualityEvaluateVO.getLevel()).getLevelContent());
+                AirqLevel airqLevel = redisCacheUtil.getAdviceAndContent(siteQualityEvaluateVO.getLevel(), AirqLevel.class);
+                siteQualityEvaluateVO.setAdvice(airqLevel.getAdvice());
+                siteQualityEvaluateVO.setLevelContent(airqLevel.getLevelContent());
             }
         });
         return page.setRecords(siteQualityEvaluateVOS);

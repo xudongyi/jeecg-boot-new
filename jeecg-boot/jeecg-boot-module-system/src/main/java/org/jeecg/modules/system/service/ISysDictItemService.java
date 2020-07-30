@@ -1,6 +1,6 @@
 package org.jeecg.modules.system.service;
 
-import org.jeecg.modules.system.entity.SysDictItem;
+import org.jeecg.modules.business.entity.SysDictItem;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;

@@ -6,7 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.jeecg.modules.system.entity.SysCategory;
-import org.jeecg.modules.system.model.TreeSelectModel;
+import org.jeecg.modules.business.model.TreeSelectModel;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 

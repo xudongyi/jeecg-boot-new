@@ -1,20 +1,19 @@
-package org.jeecg.modules.system.mapper;
+package org.jeecg.modules.business.mapper;
 
-import java.util.List;
-import java.util.Map;
-
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.ResultType;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.jeecg.common.system.vo.DictModel;
 import org.jeecg.common.system.vo.DictQuery;
-import org.jeecg.modules.system.entity.SysDict;
-import org.jeecg.modules.system.model.DuplicateCheckVo;
-import org.jeecg.modules.system.model.TreeSelectModel;
+import org.jeecg.modules.business.entity.SysDict;
+import org.jeecg.modules.business.model.DuplicateCheckVo;
+import org.jeecg.modules.business.model.TreeSelectModel;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -82,7 +81,7 @@ public interface SysDictMapper extends BaseMapper<SysDict> {
 	 * @return
 	 */
 	@Deprecated
-	List<TreeSelectModel> queryTreeList(@Param("query") Map<String, String> query,@Param("table") String table,@Param("text") String text,@Param("code") String code,@Param("pidField") String pidField,@Param("pid") String pid,@Param("hasChildField") String hasChildField);
+	List<TreeSelectModel> queryTreeList(@Param("query") Map<String, String> query, @Param("table") String table, @Param("text") String text, @Param("code") String code, @Param("pidField") String pidField, @Param("pid") String pid, @Param("hasChildField") String hasChildField);
 
 	/**
 	 * 删除

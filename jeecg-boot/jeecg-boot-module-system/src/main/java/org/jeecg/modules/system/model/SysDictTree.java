@@ -3,7 +3,7 @@ package org.jeecg.modules.system.model;
 import java.io.Serializable;
 import java.util.Date;
 
-import org.jeecg.modules.system.entity.SysDict;
+import org.jeecg.modules.business.entity.SysDict;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;

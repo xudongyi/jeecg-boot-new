@@ -1,4 +1,4 @@
-package org.jeecg.modules.system.model;
+package org.jeecg.modules.business.model;
 
 import java.io.Serializable;
 import java.util.List;

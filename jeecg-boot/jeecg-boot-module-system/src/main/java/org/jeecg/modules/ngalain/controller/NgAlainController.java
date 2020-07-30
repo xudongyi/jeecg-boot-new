@@ -2,7 +2,6 @@ package org.jeecg.modules.ngalain.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -11,7 +10,7 @@ import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.vo.DictModel;
 import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.modules.ngalain.service.NgAlainService;
-import org.jeecg.modules.system.service.ISysDictService;
+import org.jeecg.modules.business.service.ISysDictService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;

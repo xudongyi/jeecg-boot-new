@@ -1,8 +1,8 @@
-package org.jeecg.modules.system.mapper;
+package org.jeecg.modules.business.mapper;
 
-import org.apache.ibatis.annotations.Select;
-import org.jeecg.modules.system.entity.SysDictItem;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Select;
+import org.jeecg.modules.business.entity.SysDictItem;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package org.jeecg.modules.system.service.impl;
+package org.jeecg.modules.business.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -8,12 +8,12 @@ import org.jeecg.common.constant.CacheConstant;
 import org.jeecg.common.constant.CommonConstant;
 import org.jeecg.common.system.vo.DictModel;
 import org.jeecg.common.system.vo.DictQuery;
-import org.jeecg.modules.system.entity.SysDict;
-import org.jeecg.modules.system.entity.SysDictItem;
-import org.jeecg.modules.system.mapper.SysDictItemMapper;
-import org.jeecg.modules.system.mapper.SysDictMapper;
-import org.jeecg.modules.system.model.TreeSelectModel;
-import org.jeecg.modules.system.service.ISysDictService;
+import org.jeecg.modules.business.entity.SysDict;
+import org.jeecg.modules.business.entity.SysDictItem;
+import org.jeecg.modules.business.mapper.SysDictItemMapper;
+import org.jeecg.modules.business.mapper.SysDictMapper;
+import org.jeecg.modules.business.model.TreeSelectModel;
+import org.jeecg.modules.business.service.ISysDictService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;

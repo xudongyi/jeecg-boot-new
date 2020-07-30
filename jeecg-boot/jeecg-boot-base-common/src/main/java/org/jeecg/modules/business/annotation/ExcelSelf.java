@@ -50,10 +50,8 @@ public @interface ExcelSelf {
      *
      * @return 返回类型： int
      */
-    String dictTable() default "";
-
-    String dicCode() default "";
-
-    String dicText() default "";
-
+    String dictType() default ""; //table  查询数据库  redis查询redis缓存  dict数据字典
+    String dicCode() default "";//table的表名  redis的第一个键  dict的code
+    String[] dicText() default {};//table的列 0-value的列 ，1-key的列 ---redis  和 dict 用不上
+    //颜色
 }

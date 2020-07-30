@@ -14,7 +14,7 @@ import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.Dict;
 import org.jeecg.common.constant.CommonConstant;
 import org.jeecg.common.util.oConvertUtils;
-import org.jeecg.modules.system.service.ISysDictService;
+import org.jeecg.modules.business.service.ISysDictService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;

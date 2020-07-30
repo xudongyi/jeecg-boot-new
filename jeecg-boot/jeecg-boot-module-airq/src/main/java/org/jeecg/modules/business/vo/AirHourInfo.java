@@ -3,6 +3,7 @@ package org.jeecg.modules.business.vo;
 import lombok.Data;
 import org.jeecg.common.aspect.annotation.Dict;
 import org.jeecg.modules.business.annotation.ExcelSelf;
+import org.jeecg.modules.business.constant.SelfExcelConstants;
 
 import java.util.Date;
 
@@ -104,7 +105,8 @@ public class AirHourInfo {
     /**
      *地址
      */
-    @ExcelSelf(name = "行政区域",orderNum = 1)
+    @ExcelSelf(name = "行政区域",orderNum = 1,dictType = SelfExcelConstants.ANNOTATION_TABLE,
+    dicCode = "SYS_AREA",dicText = {"NAME","CODE"})
     String area;
     /**
      * first——code 的解释

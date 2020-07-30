@@ -2,11 +2,10 @@ package org.jeecg.modules.system.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.jeecg.common.system.vo.DictModel;
 import org.jeecg.common.util.oConvertUtils;
-import org.jeecg.modules.system.mapper.SysDictMapper;
+import org.jeecg.modules.business.mapper.SysDictMapper;
 import org.jeecgframework.dict.service.AutoPoiDictServiceI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

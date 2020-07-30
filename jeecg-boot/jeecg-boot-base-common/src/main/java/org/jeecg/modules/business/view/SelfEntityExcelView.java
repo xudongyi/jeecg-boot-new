@@ -3,11 +3,14 @@ package org.jeecg.modules.business.view;
 import cn.hutool.core.util.StrUtil;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.jeecg.common.util.RedisUtil;
 import org.jeecg.modules.business.annotation.ExcelSelf;
 import org.jeecg.modules.business.constant.SelfExcelConstants;
 import org.jeecg.modules.business.entity.MergeColumn;
+import org.jeecg.modules.business.service.ISysDictService;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.view.MiniAbstractExcelView;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import javax.servlet.ServletOutputStream;
@@ -25,9 +28,14 @@ import java.util.*;
 @Controller(NormalExcelConstants.JEECG_ENTITY_EXCEL_VIEW)
 public class SelfEntityExcelView extends MiniAbstractExcelView {
 
-    public SelfEntityExcelView() {
+    public SelfEntityExcelView(ISysDictService sysDictService, RedisUtil redisUtil) {
         super();
+        this.sysDictService = sysDictService;
+        this.redisUtil = redisUtil;
     }
+
+     final ISysDictService sysDictService;
+     final RedisUtil redisUtil;
 
     @Override
     protected void renderMergedOutputModel(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -56,11 +64,6 @@ public class SelfEntityExcelView extends MiniAbstractExcelView {
         }
         //还有name一列
         titleRows = titleRows+1;
-
-
-
-
-
 
         String codedFileName = "临时文件";
         HSSFWorkbook workbook = new HSSFWorkbook();
@@ -197,8 +200,19 @@ public class SelfEntityExcelView extends MiniAbstractExcelView {
             }
             rowNum++;
         }
+
         //结果集
         List<Object> objs = (List)model.get(SelfExcelConstants.DATA_LIST);
+        //设置单元格风格，居中对齐.  title的样式
+        HSSFCellStyle contentcs = workbook.createCellStyle();
+        contentcs.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+
+
+        //设置字体:
+        HSSFFont contentFont = workbook.createFont();
+        contentFont.setFontName("宋体");
+        contentFont.setFontHeightInPoints((short) 11);//设置字体大小
+        contentcs.setFont(contentFont);//要用到的字体格式
         //处理数据
         //设置列值-内容
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -206,22 +220,26 @@ public class SelfEntityExcelView extends MiniAbstractExcelView {
             row = sheet.createRow(rowNum);
             for(int i=0;i<excelSelves.size();i++){
                 excelSelves.get(i).setAccessible(true);
-                //字典
-//                if(){
-//
-//                }
+                ExcelSelf excelSelf = excelSelves.get(i).getAnnotation(ExcelSelf.class);
+                HSSFCell cell = row.createCell( i);
                 Object val = excelSelves.get(i).get(o);
                 if(val==null||val.equals(""))
-                    row.createCell( i).setCellValue("NA");
+                    cell.setCellValue("NA");
+                else if(!StrUtil.isEmpty(excelSelf.dictType())){
+                        //字典
+                    cell.setCellValue(queryDictTextByKey(excelSelf.dictType(),excelSelf.dicCode(), excelSelf.dicText(),val));
+                }
                 else if(val instanceof Double)
-                    row.createCell( i).setCellValue(Double.valueOf(val.toString()));
+                    cell.setCellValue(Double.parseDouble(val.toString()));
                 else if(val instanceof Date){
-                    if(!StrUtil.isEmpty(excelSelves.get(i).getAnnotation(ExcelSelf.class).format()))
-                        formatter = new SimpleDateFormat(excelSelves.get(i).getAnnotation(ExcelSelf.class).format());
-                    row.createCell( i).setCellValue(formatter.format((Date) val));
+                    if(!StrUtil.isEmpty(excelSelf.format()))
+                        formatter = new SimpleDateFormat(excelSelf.format());
+                    cell.setCellValue(formatter.format((Date) val));
                 }
                 else
-                    row.createCell( i).setCellValue(val.toString());
+                    cell.setCellValue(val.toString());
+
+                cell.setCellStyle(contentcs);
             }
             rowNum++;
         }
@@ -246,6 +264,33 @@ public class SelfEntityExcelView extends MiniAbstractExcelView {
         ServletOutputStream out = response.getOutputStream();
         workbook.write(out);
         out.flush();
+    }
+
+    /**
+     *  字典
+     */
+    private String  queryDictTextByKey(String type,String code,String[] text,Object val){
+        StringBuilder textValue=new StringBuilder();
+
+        for(String key:val.toString().split(",")){
+            String tmp = null;
+            if(type.equals(SelfExcelConstants.ANNOTATION_DICT))
+                tmp =   sysDictService.queryDictTextByKey(code,key.trim());
+            else if (type.equals(SelfExcelConstants.ANNOTATION_REDIS))
+                tmp =   redisUtil.hget(code,key).toString();
+            else{
+                tmp = sysDictService.queryTableDictTextByKey(code,text[0],text[1],key.trim());
+            }
+
+            if (tmp != null) {
+                if (textValue.length()>0) {
+                    textValue.append(",");
+                }
+                textValue.append(tmp);
+            }
+        }
+
+        return textValue.toString();
     }
 
     private void mergeColumn(MergeColumn mergeColumn,String name, int rownum,int row,int column,HSSFSheet sheet){

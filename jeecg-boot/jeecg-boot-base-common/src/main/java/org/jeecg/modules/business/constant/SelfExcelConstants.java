@@ -12,4 +12,10 @@ public interface SelfExcelConstants {
     public static final String SHEET_NAME = "sheetName";	//sheetName
     public static final String CLAZZ = "clazz";	//sheetName
     public static final String DATA_LIST = "dataList";//数据
+
+    //-------table  查询数据库  redis查询redis缓存  dict数据字典------------//
+    public static final String ANNOTATION_DICT = "dict";
+    public static final String ANNOTATION_REDIS = "redis";
+    public static final String ANNOTATION_TABLE = "table";
+    //
 }

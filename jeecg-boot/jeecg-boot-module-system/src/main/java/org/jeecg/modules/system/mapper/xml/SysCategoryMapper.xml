@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.jeecg.modules.system.mapper.SysCategoryMapper">
 
-	<select id="queryListByPid" parameterType="Object" resultType="org.jeecg.modules.system.model.TreeSelectModel">
+	<select id="queryListByPid" parameterType="Object" resultType="org.jeecg.modules.business.model.TreeSelectModel">
 		select code,
 			   name as "title",
 			   id as "key",
