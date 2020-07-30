@@ -34,6 +34,5 @@ export {
   queryDayAirQuality,
   querySameCompare,
   queryCalendarAirQuality,
-  querySameCompare,
   queryChainCompare
 }
