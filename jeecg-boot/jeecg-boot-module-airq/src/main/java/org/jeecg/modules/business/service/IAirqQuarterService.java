@@ -6,6 +6,8 @@ import org.jeecg.modules.business.entity.AirqQuarter;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.jeecg.modules.business.vo.AirqQuarterQualityVO;
 
+import java.util.List;
+
 /**
  * @Description: airq_quarter
  * @Author: jeecg-boot
@@ -15,4 +17,6 @@ import org.jeecg.modules.business.vo.AirqQuarterQualityVO;
 public interface IAirqQuarterService extends IService<AirqQuarter> {
 
     IPage<AirqQuarterQualityVO> queryAirqQuarterQuality(String companyIds, Page<AirqQuarterQualityVO> page, String area, String mn, String year, String quarter);
+
+    List<AirqQuarterQualityVO> exportAirqQuarterQuality(String companyIds, String area, String mn, String year, String quarter);
 }

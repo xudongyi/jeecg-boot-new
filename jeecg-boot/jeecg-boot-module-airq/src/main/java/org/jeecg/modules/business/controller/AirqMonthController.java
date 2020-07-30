@@ -187,7 +187,7 @@ public class AirqMonthController extends JeecgController<AirqMonth, IAirqMonthSe
 	  * @param req
 	  */
 	 @RequestMapping(value = "/exportAirqMonthQuality")
-	 public ModelAndView exportAirqYearQuality(HttpServletRequest req) throws ParseException {
+	 public ModelAndView exportAirqMonthQuality(HttpServletRequest req) throws ParseException {
 		 String companyIds = req.getParameter("companyIds");
 		 String area = req.getParameter("area");
 		 //通过选择站点名称获取站点mn号

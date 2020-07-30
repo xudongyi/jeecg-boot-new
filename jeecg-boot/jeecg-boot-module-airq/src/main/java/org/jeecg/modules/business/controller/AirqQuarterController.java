@@ -1,6 +1,8 @@
 package org.jeecg.modules.business.controller;
 
+import java.text.ParseException;
 import java.util.Arrays;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -8,6 +10,8 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
+import org.jeecg.common.util.RedisUtil;
+import org.jeecg.modules.business.constant.SelfExcelConstants;
 import org.jeecg.modules.business.entity.AirqQuarter;
 import org.jeecg.modules.business.service.IAirqQuarterService;
 
@@ -17,6 +21,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 
 import org.jeecg.common.system.base.controller.JeecgController;
+import org.jeecg.modules.business.service.ISysDictService;
+import org.jeecg.modules.business.view.SelfEntityExcelView;
 import org.jeecg.modules.business.vo.AirqMonthQualityVO;
 import org.jeecg.modules.business.vo.AirqQuarterQualityVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +45,10 @@ import org.jeecg.common.aspect.annotation.AutoLog;
 public class AirqQuarterController extends JeecgController<AirqQuarter, IAirqQuarterService> {
 	@Autowired
 	private IAirqQuarterService airqQuarterService;
+	 @Autowired
+	 private ISysDictService sysDictService;
+	 @Autowired
+	 private RedisUtil redisUtil;
 	
 	/**
 	 * 分页列表查询
@@ -172,13 +182,37 @@ public class AirqQuarterController extends JeecgController<AirqQuarter, IAirqQua
     /**
     * 导出excel
     *
-    * @param request
-    * @param airqQuarter
+    * @param req
     */
-    @RequestMapping(value = "/exportXls")
-    public ModelAndView exportXls(HttpServletRequest request, AirqQuarter airqQuarter) {
-        return super.exportXls(request, airqQuarter, AirqQuarter.class, "airq_quarter");
-    }
+    @RequestMapping(value = "/exportAirqQuarterQuality")
+	public ModelAndView exportAirqQuarterQuality(HttpServletRequest req) throws ParseException {
+		String companyIds = req.getParameter("companyIds");
+		String area = req.getParameter("area");
+		//通过选择站点名称获取站点mn号
+		String mn = req.getParameter("mn");
+		String year = req.getParameter("year");
+		String quarter = req.getParameter("quarter");
+		//判断是否选择年和季度
+		if(StrUtil.isEmpty(year)){
+			//获取当前年
+			int currYear = DateUtil.thisYear();
+			//获取当前季度
+			int currQuarter = DateUtil.quarter(DateUtil.date());
+			if(currQuarter==1){
+				year = StrUtil.toString(currYear-1);
+				quarter = "第四季度";
+			}
+		}
+		List<AirqQuarterQualityVO> exportList =  airqQuarterService.exportAirqQuarterQuality(companyIds, area,mn,year,quarter);
+		// Step.3 AutoPoi 导出Excel
+		ModelAndView mv = new ModelAndView(new SelfEntityExcelView(sysDictService,redisUtil));
+		mv.addObject(SelfExcelConstants.TITLE, "空气质量季报"); //此处设置的filename无效 ,前端会重更新设置一下
+		mv.addObject(SelfExcelConstants.SHEET_NAME, "空气质量季报");
+		mv.addObject(SelfExcelConstants.CLAZZ, AirqQuarterQualityVO.class);
+		mv.addObject(SelfExcelConstants.DATA_LIST, exportList);
+		mv.addObject(SelfExcelConstants.FOOTER, "注：缺测指标的浓度及分指数均使用NA标识。");
+		return mv;
+	}
 
     /**
       * 通过excel导入数据

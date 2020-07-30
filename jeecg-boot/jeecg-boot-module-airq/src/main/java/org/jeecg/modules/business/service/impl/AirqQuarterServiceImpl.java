@@ -38,4 +38,13 @@ public class AirqQuarterServiceImpl extends ServiceImpl<AirqQuarterMapper, AirqQ
         });
         return page.setRecords(airqQuarterQualityVOS);
     }
+
+    @Override
+    public List<AirqQuarterQualityVO> exportAirqQuarterQuality(String companyIds, String area, String mn, String year, String quarter) {
+        List<AirqQuarterQualityVO> airqQuarterQualityVOS = airqQuarterMapper.queryAirqQuarterQuality(companyIds.split(","),null,area,mn,year,quarter);
+        airqQuarterQualityVOS.forEach(airqQuarterQualityVO -> {
+            airqQuarterQualityVO.setMeaning(redisCacheUtil.transformCode(airqQuarterQualityVO.getFirstCode()));
+        });
+        return airqQuarterQualityVOS;
+    }
 }

@@ -21,15 +21,18 @@
               </a-select>
             </a-form-item>
           </a-col>
-          <a-col :xl="6" :lg="11" :md="12" :sm="24">
-            <a-form-item label="数据时间">
+          <a-col :xl="3" :lg="7" :md="8" :sm="24">
+            <a-form-item label="年份">
               <a-select v-model="queryParam.year" show-search @visible-change="yearChange($event)"
                         @change="quarterChange" style="width: 120px">
                 <a-select-option v-for="item in years" :key="item.value" :value="item.value">
                   {{item.value}}
                 </a-select-option>
               </a-select>
-              <span class="query-group-split-cust"></span>
+            </a-form-item>
+            </a-col>
+          <a-col :xl="3" :lg="7" :md="8" :sm="24">
+            <a-form-item label="季度">
               <a-select v-model="queryParam.quarter" style="width: 120px">
                 <a-select-option v-for="item in quarters" :key="item.value" :value="item.value">
                   {{item.value}}

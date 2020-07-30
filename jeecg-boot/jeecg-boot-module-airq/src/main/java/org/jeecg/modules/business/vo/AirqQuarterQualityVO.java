@@ -4,13 +4,14 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.jeecg.common.aspect.annotation.Dict;
 import org.jeecg.modules.business.annotation.ExcelSelf;
+import org.jeecg.modules.business.constant.SelfExcelConstants;
 
 @Data
 public class AirqQuarterQualityVO {
     /*
     行政区域
      */
-    @ExcelSelf(name = "行政区域",orderNum = 1)
+    @ExcelSelf(name = "行政区域", width = 15,orderNum = 1,dictType = SelfExcelConstants.ANNOTATION_TABLE,dicCode = "SYS_AREA",dicText = {"NAME","CODE"})
     private String area;
     /**mn号*/
 
@@ -43,10 +44,10 @@ public class AirqQuarterQualityVO {
     /*
     等级1-6级
      */
-    @ExcelSelf(name = "空气质量指数级别", width = 15,dicCode = "airLevel",orderNum = 7)
+    @ExcelSelf(name = "空气质量指数级别", width = 15,dicCode = "airLevel",orderNum = 7,dictType = SelfExcelConstants.ANNOTATION_DICT)
     private String airLevel;
     /**空气质量级别*/
-    @ExcelSelf(name = "空气质量指数类别", width = 15,dicCode = "level",orderNum = 8)
+    @ExcelSelf(name = "空气质量指数类别", width = 15,dicCode = "level",orderNum = 8,bgColor=true,dictType = SelfExcelConstants.ANNOTATION_DICT)
     @Dict(dicCode = "level")
     @ApiModelProperty(value = "空气质量级别")
     private String level;
