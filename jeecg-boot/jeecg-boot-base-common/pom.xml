@@ -28,10 +28,4 @@
 			</snapshots>
 		</repository>
 	</repositories>
-	<dependencies>
-		<dependency>
-			<groupId>org.jeecgframework.boot</groupId>
-			<artifactId>jeecg-boot-module-system</artifactId>
-		</dependency>
-	</dependencies>
 </project>

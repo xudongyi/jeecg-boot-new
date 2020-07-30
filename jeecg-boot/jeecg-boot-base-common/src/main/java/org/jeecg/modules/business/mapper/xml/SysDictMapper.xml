@@ -44,12 +44,12 @@
 	</select>
 
 	<!-- 重复校验 sql语句 -->
-	<select id="duplicateCheckCountSql" resultType="Long" parameterType="org.jeecg.modules.system.model.DuplicateCheckVo">
+	<select id="duplicateCheckCountSql" resultType="Long" parameterType="org.jeecg.modules.business.model.DuplicateCheckVo">
 		SELECT COUNT(*) FROM ${tableName} WHERE ${fieldName} = #{fieldVal} and id &lt;&gt; #{dataId}
 	</select>
 	
 	<!-- 重复校验 sql语句 -->
-	<select id="duplicateCheckCountSqlNoDataId" resultType="Long" parameterType="org.jeecg.modules.system.model.DuplicateCheckVo">
+	<select id="duplicateCheckCountSqlNoDataId" resultType="Long" parameterType="org.jeecg.modules.business.model.DuplicateCheckVo">
 		SELECT COUNT(*) FROM ${tableName} WHERE ${fieldName} = #{fieldVal}
 	</select>
 		
@@ -69,7 +69,7 @@
 	</select>
 	
 	<!-- 根据表名、显示字段名、存储字段名、父ID查询树 -->
-	<select id="queryTreeList" parameterType="Object" resultType="org.jeecg.modules.system.model.TreeSelectModel">
+	<select id="queryTreeList" parameterType="Object" resultType="org.jeecg.modules.business.model.TreeSelectModel">
 		select ${text} as "title",
 			   ${code} as "key",
 			   <if test="hasChildField != null and hasChildField != ''">

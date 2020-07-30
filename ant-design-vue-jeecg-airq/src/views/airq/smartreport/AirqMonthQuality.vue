@@ -35,7 +35,7 @@
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <a-button type="primary" @click="toSearchReset" icon="reload" style="margin-left: 8px">重置</a-button>
-              <a-button type="primary" icon="export" style="margin-left: 8px" @click="handleExportXls('空气质量年报')">导出</a-button>
+              <a-button type="primary" icon="export" style="margin-left: 8px" @click="handleExportXls('空气质量季度报表')">导出</a-button>
             </span>
           </a-col>
         </a-row>
@@ -185,7 +185,7 @@
               return (
                 <div>
                   <span>二氧化硫(SO2)</span><br/>
-                  <span>年平均浓度(μg/m3)</span>
+                  <span>季度平均浓度(μg/m3)</span>
                 </div>
               )},
             align:"center",
@@ -197,7 +197,7 @@
               return (
                 <div>
                   <span>二氧化氮(NO2)</span><br/>
-                  <span>年平均浓度(μg/m3)</span>
+                  <span>季度平均浓度(μg/m3)</span>
                 </div>
               )},
             align:"center",
@@ -209,7 +209,7 @@
               return (
                 <div>
                   <span>PM10</span><br/>
-                  <span>年平均浓度(μg/m3)</span>
+                  <span>季度平均浓度(μg/m3)</span>
                 </div>
               )},
             align:"center",
@@ -221,7 +221,7 @@
               return (
                 <div>
                   <span>一氧化碳(CO)</span><br/>
-                  <span>年平均浓度(μg/m3)</span>
+                  <span>季度平均浓度(μg/m3)</span>
                 </div>
               )},
             align:"center",
@@ -233,7 +233,7 @@
               return (
                 <div>
                   <span>臭氧(O3)</span><br/>
-                  <span>年平均浓度(μg/m3)</span>
+                  <span>季度平均浓度(μg/m3)</span>
                 </div>
               )},
             align:"center",
@@ -245,7 +245,7 @@
               return (
                 <div>
                   <span>PM2.5</span><br/>
-                  <span>年平均浓度(μg/m3)</span>
+                  <span>季度平均浓度(μg/m3)</span>
                 </div>
               )},
             align:"center",
