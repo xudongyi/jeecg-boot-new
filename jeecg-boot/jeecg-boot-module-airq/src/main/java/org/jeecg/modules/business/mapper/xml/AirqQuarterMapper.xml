@@ -44,7 +44,7 @@
         <if test="quarter != null and quarter != '' ">
             and b.quarter = (#{quarter})
         </if>
-        order by b.year desc
+        order by b.year desc,b.create_time
 
     </select>
 </mapper>

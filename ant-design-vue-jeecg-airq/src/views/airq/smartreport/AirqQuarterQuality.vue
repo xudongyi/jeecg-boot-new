@@ -89,10 +89,11 @@
   import {querySiteNameAndMn} from "../../requestAction/request";
   import Vue from 'vue'
   import AreaLinkSelect from '../component/AreaLinkSelect'
+  import {commonUtil} from "../mixins/CommonUtil";
 
   export default {
     name: "AirqQuarterQuality",
-    mixins: [JeecgListMixin, mixinDevice],
+    mixins: [JeecgListMixin, mixinDevice,commonUtil],
     components: {
       JDictSelectTag,
       JDate,
@@ -125,6 +126,7 @@
         items: [],
         siteOriginal: [],
         // 表头
+        mergeKeys:['area','siteName','year'],
         columns: [
           {
             title: '序号',
@@ -139,23 +141,28 @@
             title: '行政区域',
             align: "center",
             dataIndex: 'area',
-            customRender: this.getAreaByCode,
             fixed: 'left',
-            width: 150
+            width: 150,
+            customRender: this.renderContentArea
+
           },
           {
             title: '监测点位名称',
             align: "center",
             dataIndex: 'siteName',
             fixed: 'left',
-            width: 150
+            width: 150,
+            customRender: this.renderContent
+
           },
           {
             title: '年份',
             align: "center",
             dataIndex: 'year',
             fixed: 'left',
-            width: 100
+            width: 100,
+            customRender: this.renderContent
+
           },{
             title: '季度',
             align: "center",
@@ -264,14 +271,14 @@
             },
             align: "center",
             dataIndex: 'a05024Avg',
+            customRender:this.renderEmpty,
             sorter: (a, b) => a.a05024Avg - b.a05024Avg
           },
           {
             title: () => {
               return (
                 < div >
-                < span > PM2
-              .5 < /span><br/ >
+                < span > PM2.5 < /span><br/ >
               < span > 季度平均浓度(μg / m3) < /span>
               < /div>
             )
@@ -287,7 +294,7 @@
           //importExcelUrl: "/month/airqMonth/importExcel",
         },
         dictOptions: {},
-        areaHandler: ''
+
       }
     },
     computed: {
@@ -305,9 +312,7 @@
         this.searchTime = [];
         this.loadData(1);
       },
-      initArea() {
-        this.areaHandler = new AreaHandler()
-      },
+
       areaChange(val) {
         let _this = this
         _this.items = []
@@ -317,17 +322,7 @@
           }
         })
       },
-      getAreaByCode(text) {
-        if (!text)
-          return ''
-        //初始化
-        if (this.areaHandler === '') {
-          this.initArea()
-        }
-        let arr = [];
-        this.areaHandler.getAreaBycode(text, arr);
-        return arr[0] + arr[1] + arr[2]
-      },
+
       calcIndex: function (t, r, index) {
         return parseInt(index) + 1 + (this.ipagination.current - 1) * this.ipagination.pageSize;
       },
