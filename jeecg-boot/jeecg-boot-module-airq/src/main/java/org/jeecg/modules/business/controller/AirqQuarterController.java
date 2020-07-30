@@ -3,6 +3,9 @@ package org.jeecg.modules.business.controller;
 import java.util.Arrays;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.StrUtil;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.modules.business.entity.AirqQuarter;
@@ -14,6 +17,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 
 import org.jeecg.common.system.base.controller.JeecgController;
+import org.jeecg.modules.business.vo.AirqMonthQualityVO;
+import org.jeecg.modules.business.vo.AirqQuarterQualityVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -29,7 +34,7 @@ import org.jeecg.common.aspect.annotation.AutoLog;
  */
 @Api(tags="airq_quarter")
 @RestController
-@RequestMapping("/airq/airqQuarter")
+@RequestMapping("/quarter/airqQuarter")
 @Slf4j
 public class AirqQuarterController extends JeecgController<AirqQuarter, IAirqQuarterService> {
 	@Autowired
@@ -44,7 +49,7 @@ public class AirqQuarterController extends JeecgController<AirqQuarter, IAirqQua
 	 * @param req
 	 * @return
 	 */
-	@AutoLog(value = "airq_quarter-分页列表查询")
+	/*@AutoLog(value = "airq_quarter-分页列表查询")
 	@ApiOperation(value="airq_quarter-分页列表查询", notes="airq_quarter-分页列表查询")
 	@GetMapping(value = "/list")
 	public Result<?> queryPageList(AirqQuarter airqQuarter,
@@ -55,8 +60,42 @@ public class AirqQuarterController extends JeecgController<AirqQuarter, IAirqQua
 		Page<AirqQuarter> page = new Page<AirqQuarter>(pageNo, pageSize);
 		IPage<AirqQuarter> pageList = airqQuarterService.page(page, queryWrapper);
 		return Result.ok(pageList);
-	}
-	
+	}*/
+
+	 /**
+	  * 空气质量月报
+	  *
+	  * @param req
+	  * @return
+	  */
+	 @AutoLog(value = "空气质量季报")
+	 @ApiOperation(value="空气质量季报", notes="空气质量季报")
+	 @GetMapping(value = "/queryAirqQuarterQuality")
+	 public Result<?> queryAirqQuarterQuality(@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+										   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
+										   HttpServletRequest req) {
+		 String companyIds = req.getParameter("companyIds");
+		 String area = req.getParameter("area");
+		 //通过选择站点名称获取站点mn号
+		 String mn = req.getParameter("mn");
+		 String year = req.getParameter("year");
+		 String quarter = req.getParameter("quarter");
+		 //判断是否选择年和季度
+		 if(StrUtil.isEmpty(year)){
+		 	//获取当前年
+			 int currYear = DateUtil.thisYear();
+			 //获取当前季度
+			 int currQuarter = DateUtil.quarter(DateUtil.date());
+			 if(currQuarter==1){
+				 year = StrUtil.toString(currYear-1);
+				 quarter = "第四季度";
+			 }
+		 }
+		 Page<AirqQuarterQualityVO> page = new Page<>(pageNo, pageSize);
+		 IPage<AirqQuarterQualityVO> pageList = airqQuarterService.queryAirqQuarterQuality(companyIds,page, area,mn,year,quarter);
+		 return Result.ok(pageList);
+	 }
+
 	/**
 	 *   添加
 	 *

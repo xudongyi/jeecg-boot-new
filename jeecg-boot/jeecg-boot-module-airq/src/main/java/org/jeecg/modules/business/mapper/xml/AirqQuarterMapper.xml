@@ -2,4 +2,49 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.jeecg.modules.business.mapper.AirqQuarterMapper">
 
+    <resultMap id="AirqQuarterQualityVO" type="org.jeecg.modules.business.vo.AirqQuarterQualityVO" >
+        <result column="mn" property="mn" jdbcType="VARCHAR"/>
+        <result column="area" property="area" jdbcType="VARCHAR"/>
+        <result column="site_name" property="siteName" jdbcType="VARCHAR"/>
+        <result column="total_i" property="totalI" jdbcType="DOUBLE"/>
+        <result column="year" property="year" jdbcType="VARCHAR"/>
+        <result column="quarter" property="quarter" jdbcType="VARCHAR"/>
+        <result column="first_code" property="firstCode" jdbcType="VARCHAR"/>
+        <result column="meaning" property="meaning" jdbcType="VARCHAR"/>
+        <result column="airLevel" property="airLevel" jdbcType="VARCHAR"/>
+        <result column="level" property="level" jdbcType="VARCHAR"/>
+        <result column="A21026_avg" property="a21026Avg" jdbcType="DOUBLE"/>
+        <result column="A21004_avg" property="a21004Avg" jdbcType="DOUBLE"/>
+        <result column="A34002_avg" property="a34002Avg" jdbcType="DOUBLE"/>
+        <result column="A21005_avg" property="a21005Avg" jdbcType="DOUBLE"/>
+        <result column="A05024_avg" property="a05024Avg" jdbcType="DOUBLE"/>
+        <result column="A34004_avg" property="a34004Avg" jdbcType="DOUBLE"/>
+    </resultMap>
+    <select id="queryAirqQuarterQuality" resultMap="AirqQuarterQualityVO">
+        select  a.mn,a.site_name,b.`level` as airLevel,b.level,a.area,b.total_i,
+        b.year,b.quarter,b.first_code,
+        b.a21026_avg,b.a21004_avg,b.a34002_avg,
+        b.a21005_avg,b.a05024_avg,b.a34004_avg
+        from airq_quarter b
+        left join site_monitor_point a on  b.mn = a.mn
+        WHERE
+        a.company_id in
+        <foreach collection="companyIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        <if test="area != null">
+            and a.area = (#{area})
+        </if>
+        <if test="mn != null">
+            and a.mn = (#{mn})
+        </if>
+        <if test="year != null and year != '' ">
+            and b.year = (#{year})
+        </if>
+        <if test="quarter != null and quarter != '' ">
+            and b.quarter = (#{quarter})
+        </if>
+        order by b.year desc
+
+    </select>
 </mapper>

@@ -19,6 +19,4 @@ public interface AirqMonthMapper extends BaseMapper<AirqMonth> {
     List<AirqVO> findEvaluate(String mns, String timeStart, String timeEnd);
 
     List<AirqMonthQualityVO> queryAirqMonthQuality(String[] companyIds, Page page, String area, String mn, String searchTime,String startTime, String endTime);
-
-    List<AirqMonthQualityVO> exportAirqMonthQuality(String[] companyIds, String area, String mn, String searchTime, String startTime, String endTime);
 }
