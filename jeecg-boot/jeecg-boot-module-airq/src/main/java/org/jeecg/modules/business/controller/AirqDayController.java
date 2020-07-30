@@ -13,9 +13,11 @@ import org.jeecg.common.aspect.annotation.AutoLog;
 import org.jeecg.common.system.base.controller.JeecgController;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.util.DateUtils;
+import org.jeecg.common.util.RedisUtil;
 import org.jeecg.modules.business.constant.SelfExcelConstants;
 import org.jeecg.modules.business.entity.AirqDay;
 import org.jeecg.modules.business.service.IAirqDayService;
+import org.jeecg.modules.business.service.ISysDictService;
 import org.jeecg.modules.business.view.SelfEntityExcelView;
 import org.jeecg.modules.business.vo.AirqDayQualityVo;
 import org.jeecg.modules.business.vo.SiteQualityRankDayVO;
@@ -44,7 +46,10 @@ import java.util.*;
 public class AirqDayController extends JeecgController<AirqDay, IAirqDayService> {
 	@Autowired
 	private IAirqDayService airqDayService;
-	
+	@Autowired
+	private ISysDictService sysDictService;
+	@Autowired
+	private RedisUtil redisUtil;
 	/**
 	 * 分页列表查询
 	 *
@@ -219,7 +224,7 @@ public class AirqDayController extends JeecgController<AirqDay, IAirqDayService>
 		 List<AirqDayQualityVo> exportList =  airqDayService.queryDayAirQuality(Arrays.asList(request.getParameter("companyIds").split(","))
 				 ,request.getParameter("datatime"),request.getParameter("datatime2"),request.getParameter("area"),request.getParameter("mn"));
 		 // Step.3 AutoPoi 导出Excel
-		 ModelAndView mv = new ModelAndView(new SelfEntityExcelView());
+		 ModelAndView mv = new ModelAndView(new SelfEntityExcelView(sysDictService,redisUtil));
 		 mv.addObject(SelfExcelConstants.TITLE, "空气质量指数日报"); //此处设置的filename无效 ,前端会重更新设置一下
 		 mv.addObject(SelfExcelConstants.SHEET_NAME, "空气质量指数日报");
 		 mv.addObject(SelfExcelConstants.CLAZZ, AirqDayQualityVo.class);
@@ -278,7 +283,7 @@ public class AirqDayController extends JeecgController<AirqDay, IAirqDayService>
 		 }
 		 List<SiteQualityRankDayVO> exportList = airqDayService.querySiteDayExport(companyIds,area,mn,queryDate);
 		 // Step.3 AutoPoi 导出Excel
-		 ModelAndView mv = new ModelAndView(new SelfEntityExcelView());
+		 ModelAndView mv = new ModelAndView(new SelfEntityExcelView(sysDictService,redisUtil));
 		 mv.addObject(SelfExcelConstants.TITLE, "站点质量日排名"); //此处设置的filename无效 ,前端会重更新设置一下
 		 mv.addObject(SelfExcelConstants.SHEET_NAME, "站点质量日排名");
 		 mv.addObject(SelfExcelConstants.CLAZZ, SiteQualityRankDayVO.class);

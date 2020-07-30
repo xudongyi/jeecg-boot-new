@@ -11,6 +11,7 @@ import cn.hutool.core.util.StrUtil;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.util.DateUtils;
+import org.jeecg.common.util.RedisUtil;
 import org.jeecg.modules.business.constant.SelfExcelConstants;
 import org.jeecg.modules.business.entity.AirqYear;
 import org.jeecg.modules.business.service.IAirqYearService;
@@ -21,6 +22,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 
 import org.jeecg.common.system.base.controller.JeecgController;
+import org.jeecg.modules.business.service.ISysDictService;
 import org.jeecg.modules.business.view.SelfEntityExcelView;
 import org.jeecg.modules.business.vo.AirqYearQualityVO;
 import org.jeecg.modules.business.vo.SiteQualityRankDayVO;
@@ -44,7 +46,10 @@ import org.jeecg.common.aspect.annotation.AutoLog;
 public class AirqYearController extends JeecgController<AirqYear, IAirqYearService> {
 	@Autowired
 	private IAirqYearService airqYearService;
-	
+	 @Autowired
+	 private ISysDictService sysDictService;
+	 @Autowired
+	 private RedisUtil redisUtil;
 	/**
 	 * 分页列表查询
 	 *
@@ -190,7 +195,7 @@ public class AirqYearController extends JeecgController<AirqYear, IAirqYearServi
 		 String yearEnd = req.getParameter("yearEnd");
 		 List<AirqYearQualityVO> exportList = airqYearService.exportAirqYearQuality(companyIds,area,mn,yearBegin,yearEnd);
 		 // Step.3 AutoPoi 导出Excel
-		 ModelAndView mv = new ModelAndView(new SelfEntityExcelView());
+		 ModelAndView mv = new ModelAndView(new SelfEntityExcelView(sysDictService,redisUtil));
 		 mv.addObject(SelfExcelConstants.TITLE, "空气质量年报"); //此处设置的filename无效 ,前端会重更新设置一下
 		 mv.addObject(SelfExcelConstants.SHEET_NAME, "空气质量年报");
 		 mv.addObject(SelfExcelConstants.CLAZZ, AirqYearQualityVO.class);

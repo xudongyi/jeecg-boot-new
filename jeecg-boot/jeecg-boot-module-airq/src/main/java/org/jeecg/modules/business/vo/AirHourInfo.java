@@ -19,9 +19,22 @@ public class AirHourInfo {
      * 5 重度污染
      * 6 严重污染
      */
-    @ExcelSelf(name = "空气质量指数级别",orderNum = 6)
+    @ExcelSelf(name = "空气质量指数级别",orderNum = 6,dictType = SelfExcelConstants.ANNOTATION_DICT,
+            dicCode = "airLevel")
     @Dict(dicCode = "level")
     String level;
+    /**
+     * 等级
+     * 1 优
+     * 2 良
+     * 3 轻度污染
+     * 4 中度污染
+     * 5 重度污染
+     * 6 严重污染
+     */
+    @ExcelSelf(name = "空气质量指数类别",orderNum = 7,dictType = SelfExcelConstants.ANNOTATION_DICT,
+            dicCode = "airLevel")
+    String leveltype;
     /**
      * 所属企业
      */
@@ -29,7 +42,7 @@ public class AirHourInfo {
     /**
      * 站点名称
      */
-    @ExcelSelf(name = "监测点位名称",orderNum = 2)
+    @ExcelSelf(name = "监测点位名称",orderNum = 2,width = 20)
 
     String siteName;
     /**
@@ -40,7 +53,7 @@ public class AirHourInfo {
     /**
      * 创建时间
      */
-    @ExcelSelf(name = "数据时间",orderNum = 3)
+    @ExcelSelf(name = "数据时间",orderNum = 3,width = 20)
     Date dataTime;
     /**
      * 首要污染物

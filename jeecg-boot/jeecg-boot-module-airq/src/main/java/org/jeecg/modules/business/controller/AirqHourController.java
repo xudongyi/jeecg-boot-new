@@ -19,6 +19,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.system.vo.LoginUser;
+import org.jeecg.common.util.RedisUtil;
 import org.jeecg.common.util.oConvertUtils;
 import org.jeecg.modules.business.constant.SelfExcelConstants;
 import org.jeecg.modules.business.entity.AirqHour;
@@ -32,6 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.jeecg.common.system.base.controller.JeecgController;
 import org.jeecg.modules.business.service.ISiteMonitorPointService;
+import org.jeecg.modules.business.service.ISysDictService;
 import org.jeecg.modules.business.utils.AirQualityUtil;
 import org.jeecg.modules.business.view.SelfEntityExcelView;
 import org.jeecg.modules.business.vo.*;
@@ -64,6 +66,10 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 
 	@Autowired
     AirQualityUtil airQualityUtil;
+	 @Autowired
+	 private ISysDictService sysDictService;
+	 @Autowired
+	 private RedisUtil redisUtil;
 	/**
 	 * 分页列表查询
 	 *
@@ -562,7 +568,7 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 		 List<AirqHourQualityVo> exportList =  airqHourService.queryHourAirQuality(Arrays.asList(request.getParameter("companyIds").split(","))
 				 ,request.getParameter("datatime"),request.getParameter("datatime2"),request.getParameter("area"),request.getParameter("mn"));
 		 // Step.3 AutoPoi 导出Excel
-		 ModelAndView mv = new ModelAndView(new SelfEntityExcelView());
+		 ModelAndView mv = new ModelAndView(new SelfEntityExcelView(sysDictService,redisUtil));
 		 mv.addObject(SelfExcelConstants.TITLE, "空气质量指数实时报"); //此处设置的filename无效 ,前端会重更新设置一下
 		 mv.addObject(SelfExcelConstants.SHEET_NAME, "空气质量指数实时报");
 		 mv.addObject(SelfExcelConstants.CLAZZ, AirqHourQualityVo.class);
@@ -597,7 +603,7 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 		 }
 		 List<AirqHourInputVO> exportList = airqHourService.queryManInputExport(companyIds,area,mn,dateBegin,dateEnd);
 		 // Step.3 AutoPoi 导出Excel
-		 ModelAndView mv = new ModelAndView(new SelfEntityExcelView());
+		 ModelAndView mv = new ModelAndView(new SelfEntityExcelView(sysDictService,redisUtil));
 		 mv.addObject(SelfExcelConstants.TITLE, "人工采集数据"); //此处设置的filename无效 ,前端会重更新设置一下
 		 mv.addObject(SelfExcelConstants.SHEET_NAME, "人工采集数据");
 		 mv.addObject(SelfExcelConstants.CLAZZ, AirqHourInputVO.class);

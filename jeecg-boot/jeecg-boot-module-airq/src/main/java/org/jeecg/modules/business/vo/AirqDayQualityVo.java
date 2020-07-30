@@ -4,6 +4,7 @@ package org.jeecg.modules.business.vo;
 import lombok.Data;
 import org.jeecg.common.aspect.annotation.Dict;
 import org.jeecg.modules.business.annotation.ExcelSelf;
+import org.jeecg.modules.business.constant.SelfExcelConstants;
 
 import java.util.Date;
 
@@ -18,19 +19,20 @@ public class AirqDayQualityVo {
     /**
      *地址
      */
-    @ExcelSelf(name = "行政区域",orderNum = 1)
+    @ExcelSelf(name = "行政区域",orderNum = 1,dictType = SelfExcelConstants.ANNOTATION_TABLE,
+            dicCode = "SYS_AREA",dicText = {"NAME","CODE"})
     String area;
 
     /**
      * 站点名称
      */
-    @ExcelSelf(name = "监测点位名称",orderNum = 2)
+    @ExcelSelf(name = "监测点位名称",orderNum = 2,width = 20)
 
     String siteName;
     /**
      * 创建时间
      */
-    @ExcelSelf(name = "数据时间",orderNum = 3)
+    @ExcelSelf(name = "数据时间",orderNum = 3,width = 20)
     Date dataTime;
     /**
      * aqi
@@ -56,8 +58,9 @@ public class AirqDayQualityVo {
      * 5 重度污染
      * 6 严重污染
      */
-    @ExcelSelf(name = "空气质量指数级别",orderNum = 6)
-    @Dict(dicCode = "level")
+    @ExcelSelf(name = "空气质量指数级别",orderNum = 6,dictType = SelfExcelConstants.ANNOTATION_DICT,
+    dicCode = "airLevel")
+    @Dict(dicCode = "Level")
     String level;
 
     /**

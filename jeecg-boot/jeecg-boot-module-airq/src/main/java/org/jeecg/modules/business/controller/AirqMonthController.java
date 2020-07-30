@@ -11,9 +11,11 @@ import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
 import org.jeecg.common.system.base.controller.JeecgController;
 import org.jeecg.common.system.query.QueryGenerator;
+import org.jeecg.common.util.RedisUtil;
 import org.jeecg.modules.business.constant.SelfExcelConstants;
 import org.jeecg.modules.business.entity.AirqMonth;
 import org.jeecg.modules.business.service.IAirqMonthService;
+import org.jeecg.modules.business.service.ISysDictService;
 import org.jeecg.modules.business.view.SelfEntityExcelView;
 import org.jeecg.modules.business.vo.AirqMonthQualityVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +41,10 @@ import java.util.List;
 public class AirqMonthController extends JeecgController<AirqMonth, IAirqMonthService> {
 	@Autowired
 	private IAirqMonthService airqMonthService;
-	
+	 @Autowired
+	 private ISysDictService sysDictService;
+	 @Autowired
+	 private RedisUtil redisUtil;
 	/**
 	 * 分页列表查询
 	 *
@@ -197,7 +202,7 @@ public class AirqMonthController extends JeecgController<AirqMonth, IAirqMonthSe
 		 }
 		 List<AirqMonthQualityVO> exportList = airqMonthService.exportAirqMonthQuality(companyIds, area,mn,searchTime,startTime,endTime);
 		 // Step.3 AutoPoi 导出Excel
-		 ModelAndView mv = new ModelAndView(new SelfEntityExcelView());
+		 ModelAndView mv = new ModelAndView(new SelfEntityExcelView(sysDictService,redisUtil));
 		 mv.addObject(SelfExcelConstants.TITLE, "空气质量月报"); //此处设置的filename无效 ,前端会重更新设置一下
 		 mv.addObject(SelfExcelConstants.SHEET_NAME, "空气质量月报");
 		 mv.addObject(SelfExcelConstants.CLAZZ, AirqMonthQualityVO.class);
