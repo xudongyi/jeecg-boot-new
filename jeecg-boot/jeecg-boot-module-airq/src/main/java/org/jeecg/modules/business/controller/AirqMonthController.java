@@ -1,30 +1,30 @@
 package org.jeecg.modules.business.controller;
 
-import java.util.Arrays;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
-import org.jeecg.common.api.vo.Result;
-import org.jeecg.common.system.query.QueryGenerator;
-import org.jeecg.modules.business.entity.AirqMonth;
-import org.jeecg.modules.business.service.IAirqMonthService;
-
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-
+import org.jeecg.common.api.vo.Result;
+import org.jeecg.common.aspect.annotation.AutoLog;
 import org.jeecg.common.system.base.controller.JeecgController;
+import org.jeecg.common.system.query.QueryGenerator;
+import org.jeecg.modules.business.constant.SelfExcelConstants;
+import org.jeecg.modules.business.entity.AirqMonth;
+import org.jeecg.modules.business.service.IAirqMonthService;
+import org.jeecg.modules.business.view.SelfEntityExcelView;
 import org.jeecg.modules.business.vo.AirqMonthQualityVO;
-import org.jeecg.modules.business.vo.AirqYearQualityVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import org.jeecg.common.aspect.annotation.AutoLog;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.text.ParseException;
+import java.util.Arrays;
+import java.util.List;
 
  /**
  * @Description: airq_month
@@ -170,10 +170,41 @@ public class AirqMonthController extends JeecgController<AirqMonth, IAirqMonthSe
     * @param request
     * @param airqMonth
     */
-    @RequestMapping(value = "/exportXls")
+   /* @RequestMapping(value = "/exportXls")
     public ModelAndView exportXls(HttpServletRequest request, AirqMonth airqMonth) {
         return super.exportXls(request, airqMonth, AirqMonth.class, "airq_month");
-    }
+    }*/
+
+	 /**
+	  * 导出excel
+	  * 空气质量年报
+	  *
+	  * @param req
+	  */
+	 @RequestMapping(value = "/exportAirqMonthQuality")
+	 public ModelAndView exportAirqYearQuality(HttpServletRequest req) throws ParseException {
+		 String companyIds = req.getParameter("companyIds");
+		 String area = req.getParameter("area");
+		 //通过选择站点名称获取站点mn号
+		 String mn = req.getParameter("mn");
+		 String startTime = null;
+		 String endTime = null;
+		 String searchTime = req.getParameter("searchTime");
+		 if(StrUtil.isNotEmpty(searchTime)){
+			 String[] times = searchTime.split(",");
+			 startTime = times[0];
+			 endTime = times[1];
+		 }
+		 List<AirqMonthQualityVO> exportList = airqMonthService.exportAirqMonthQuality(companyIds, area,mn,searchTime,startTime,endTime);
+		 // Step.3 AutoPoi 导出Excel
+		 ModelAndView mv = new ModelAndView(new SelfEntityExcelView());
+		 mv.addObject(SelfExcelConstants.TITLE, "空气质量月报"); //此处设置的filename无效 ,前端会重更新设置一下
+		 mv.addObject(SelfExcelConstants.SHEET_NAME, "空气质量月报");
+		 mv.addObject(SelfExcelConstants.CLAZZ, AirqMonthQualityVO.class);
+		 mv.addObject(SelfExcelConstants.DATA_LIST, exportList);
+		 mv.addObject(SelfExcelConstants.FOOTER, "注：缺测指标的浓度及分指数均使用NA标识。");
+		 return mv;
+	 }
 
     /**
       * 通过excel导入数据

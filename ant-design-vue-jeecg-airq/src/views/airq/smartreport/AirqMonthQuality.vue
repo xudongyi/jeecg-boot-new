@@ -255,8 +255,8 @@
         ],
         url: {
           list: "/month/airqMonth/queryAirqMonthQuality",
-          exportXlsUrl: "/month/airqMonth/exportXls",
-          importExcelUrl: "/month/airqMonth/importExcel",
+          exportXlsUrl: "/month/airqMonth/exportAirqMonthQuality",
+          //importExcelUrl: "/month/airqMonth/importExcel",
         },
         dictOptions:{},
         areaHandler:''

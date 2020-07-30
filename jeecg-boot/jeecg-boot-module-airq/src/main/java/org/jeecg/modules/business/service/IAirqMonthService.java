@@ -20,4 +20,6 @@ public interface IAirqMonthService extends IService<AirqMonth> {
     List<AirqVO> findEvaluate(String searchTime, List<String> mns);
 
     IPage<AirqMonthQualityVO> queryAirqMonthQuality(String companyIds, Page<AirqMonthQualityVO> page, String area, String mn,String searchTime,String startTime, String endTime);
+
+    List<AirqMonthQualityVO> exportAirqMonthQuality(String companyIds, String area, String mn, String searchTime, String startTime, String endTime);
 }
