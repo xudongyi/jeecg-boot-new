@@ -1,5 +1,6 @@
 package org.jeecg.modules.business.annotation;
 
+import javax.validation.groups.Default;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -54,4 +55,5 @@ public @interface ExcelSelf {
     String dicCode() default "";//table的表名  redis的第一个键  dict的code
     String[] dicText() default {};//table的列 0-value的列 ，1-key的列 ---redis  和 dict 用不上
     //颜色
+    boolean bgColor() default false;//颜色  特殊处理
 }

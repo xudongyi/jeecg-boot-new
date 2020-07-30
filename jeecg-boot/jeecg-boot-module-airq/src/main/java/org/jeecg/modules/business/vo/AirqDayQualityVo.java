@@ -62,7 +62,9 @@ public class AirqDayQualityVo {
     dicCode = "airLevel")
     @Dict(dicCode = "Level")
     String level;
-
+    @ExcelSelf(name = "空气质量指数类别",orderNum = 7,dictType = SelfExcelConstants.ANNOTATION_DICT,
+            dicCode = "level",bgColor = true)
+    String leveltype;
     /**
      * SO2 二氧化硫
      */

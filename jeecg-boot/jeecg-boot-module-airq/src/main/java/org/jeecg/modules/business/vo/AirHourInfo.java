@@ -33,7 +33,7 @@ public class AirHourInfo {
      * 6 严重污染
      */
     @ExcelSelf(name = "空气质量指数类别",orderNum = 7,dictType = SelfExcelConstants.ANNOTATION_DICT,
-            dicCode = "airLevel")
+            dicCode = "level",bgColor = true)
     String leveltype;
     /**
      * 所属企业

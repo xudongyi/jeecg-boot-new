@@ -68,6 +68,7 @@ public class AirqDayServiceImpl extends ServiceImpl<AirqDayMapper, AirqDay> impl
         List<AirqDayQualityVo>  airqDayQualityVos = airqDayMapper.queryDayAirQuality(companyIds,ts,ts2,area,mn);
         airqDayQualityVos.forEach(airqDayQualityVo -> {
             airqDayQualityVo.setMeaning(redisCacheUtil.transformCode(airqDayQualityVo.getFirstCode()));
+            airqDayQualityVo.setLeveltype(airqDayQualityVo.getLevel());
         });
         return airqDayQualityVos;
     }

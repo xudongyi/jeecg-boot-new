@@ -47,6 +47,7 @@ public class AirqHourServiceImpl extends ServiceImpl<AirqHourMapper, AirqHour> i
         List<AirqHourQualityVo> airqHourQualityVos = airqHourMapper.queryHourAirQuality(companyIds,ts,ts2,area,mn);
         airqHourQualityVos.forEach(airqHourQualityVo -> {
             airqHourQualityVo.setMeaning(redisCacheUtil.transformCode(airqHourQualityVo.getFirstCode()));
+            airqHourQualityVo.setLeveltype(airqHourQualityVo.getLevel());
         });
         return airqHourQualityVos;
     }
