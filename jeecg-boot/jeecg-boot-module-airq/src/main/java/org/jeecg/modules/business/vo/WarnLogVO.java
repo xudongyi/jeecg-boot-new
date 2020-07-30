@@ -25,7 +25,7 @@ public class WarnLogVO {
     @ExcelSelf(name = "监测点位名称",orderNum = 2)
     private String siteName;
     /**报警类型*/
-    @ExcelSelf(name = "报警类型", width = 15, dicCode = "warnFlag",orderNum = 3,dictType = SelfExcelConstants.ANNOTATION_DICT)
+    @ExcelSelf(name = "报警类型", width = 15, dicCode = "warnFlag",orderNum = 3,dictType = SelfExcelConstants.ANNOTATION_DICT,bgColor = true)
     @Dict(dicCode = "warnFlag")
     @ApiModelProperty(value = "报警类型")
     private java.lang.String flag;

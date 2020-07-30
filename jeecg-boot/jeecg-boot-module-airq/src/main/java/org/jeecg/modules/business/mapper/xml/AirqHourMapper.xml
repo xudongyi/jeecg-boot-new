@@ -177,10 +177,13 @@
         b.a21005_avg,b.a0502401_avg,b.a0502408_avg,b.a3400401_avg,
         b.a3400424_avg,b.a01001_avg,b.a01002_avg,b.a01007_avg,b.a01006_avg,b.A01008_AVG
 
-        from airq_hour b INNER JOIN(select a.mn,
+        from airq_hour b
+        <if test="dateBegin == null or dateEnd==null">
+        INNER JOIN(select a.mn,
         max(b.data_time) data_time
         from airq_hour b  left join site_monitor_point a on b.mn = a.mn
         WHERE b.state in (0) group by a.mn) c on b.mn = c.mn and b.data_time = c.data_time
+        </if>
         left join site_monitor_point a on  b.mn = a.mn
         WHERE b.state in (0)
         and a.company_id in
@@ -239,10 +242,13 @@
         b.a21005_avg,b.a0502401_avg,b.a0502408_avg,b.a3400401_avg,
         b.a3400424_avg,b.a01001_avg,b.a01002_avg,b.a01007_avg,b.a01006_avg,b.A01008_AVG
 
-        from airq_hour b INNER JOIN(select a.mn,
+        from airq_hour b
+        <if test="dateBegin == null or dateEnd==null">
+        INNER JOIN(select a.mn,
         max(b.data_time) data_time
         from airq_hour b  left join site_monitor_point a on b.mn = a.mn
         WHERE b.state in (3) group by a.mn) c on b.mn = c.mn and b.data_time = c.data_time
+        </if>
         left join site_monitor_point a on  b.mn = a.mn
         WHERE b.state in (3)
         and a.company_id in
@@ -272,10 +278,13 @@
         b.a21005_avg,b.a0502401_avg,b.a0502408_avg,b.a3400401_avg,
         b.a3400424_avg,b.a01001_avg,b.a01002_avg,b.a01007_avg,b.a01006_avg,b.A01008_AVG
 
-        from airq_hour b INNER JOIN(select a.mn,
+        from airq_hour b
+        <if test="dateBegin == null or dateEnd==null">
+        INNER JOIN(select a.mn,
         max(b.data_time) data_time
         from airq_hour b  left join site_monitor_point a on b.mn = a.mn
         WHERE b.state in (3) group by a.mn) c on b.mn = c.mn and b.data_time = c.data_time
+        </if>
         left join site_monitor_point a on  b.mn = a.mn
         WHERE b.state in (3)
         and a.company_id in
@@ -340,10 +349,13 @@
         b.a21005_avg,b.a0502401_avg,b.a0502408_avg,b.a3400401_avg,
         b.a3400424_avg,b.a01001_avg,b.a01002_avg,b.a01007_avg,b.a01006_avg,b.A01008_AVG
 
-        from airq_hour b INNER JOIN(select a.mn,
+        from airq_hour b
+        <if test="dateBegin == null or dateEnd==null">
+        INNER JOIN(select a.mn,
         max(b.data_time) data_time
         from airq_hour b left join site_monitor_point a on b.mn = a.mn
         WHERE b.state in (1,2,3,4) group by a.mn) c on b.mn = c.mn and b.data_time = c.data_time
+        </if>
         left join site_monitor_point a on b.mn = a.mn
         left join sys_user t1 on t1.id=b.create_by
         left join sys_user t2 on t2.id=b.update_by
@@ -413,10 +425,13 @@
         b.a21005_avg,b.a0502401_avg,b.a0502408_avg,b.a3400401_avg,
         b.a3400424_avg,b.a01001_avg,b.a01002_avg,b.a01007_avg,b.a01006_avg,b.A01008_AVG
 
-        from airq_hour b INNER JOIN(select a.mn,
+        from airq_hour b
+        <if test="dateBegin == null or dateEnd==null">
+        INNER JOIN(select a.mn,
         max(b.data_time) data_time
         from airq_hour b left join site_monitor_point a on b.mn = a.mn
         WHERE b.state in (2,3,4) group by a.mn) c on b.mn = c.mn and b.data_time = c.data_time
+        </if>
         left join site_monitor_point a on b.mn = a.mn
         left join sys_user t1 on t1.id=b.create_by
         left join sys_user t2 on t2.id=b.update_by
@@ -463,10 +478,13 @@
         (select b.id,a.mn,a.site_name,b.`level` as airLevel,b.level,a.area,b.aqi,
         b.data_time,b.first_code,b.state
 
-        from airq_hour b INNER JOIN(select a.mn,
+        from airq_hour b
+        <if test="dateBegin == null or dateEnd==null">
+        INNER JOIN(select a.mn,
         max(b.data_time) data_time
         from airq_hour b left join site_monitor_point a on b.mn = a.mn
         WHERE b.state in (0,3) group by a.mn) c on b.mn = c.mn and b.data_time = c.data_time
+        </if>
         left join site_monitor_point a on b.mn = a.mn
         WHERE b.state in (0,3)
         and a.company_id in
