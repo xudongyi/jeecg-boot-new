@@ -102,6 +102,31 @@
     </select>
 
 
+    <select id="queryCalendarAirQuality"    resultType="Map">
+        select
+        data_Time dataTime,
+        aqi AQI,
+        A3400424_IAQI A34004,
+        A3400224_IAQI A34002,
+        A21026_IAQI A21026,
+        A21005_IAQI A21005,
+        A21004_IAQI A21004,
+        A0502408_IAQI A05024,
+        FIRST_CODE firstCode
+        from site_monitor_point a left join airq_day b on a.mn = b.MN
+        where site_type = '3' and
+        b.data_time <![CDATA[ >= ]]> #{datatime}
+        and b.data_time <![CDATA[ <= ]]> #{datatime2}
+
+        <if test="area != null and area!=''">
+            and a.area = #{area}
+        </if>
+        and a.id in
+        <foreach collection="checkedKeys" item="checkedKey" index="index" open="(" close=")" separator=",">
+             #{checkedKey}
+        </foreach>
+        order by dataTime
+    </select>
     <resultMap id="SiteQualityRankDayVO" type="org.jeecg.modules.business.vo.SiteQualityRankDayVO" >
         <result column="mn" property="mn" jdbcType="VARCHAR"/>
         <result column="area" property="area" jdbcType="VARCHAR"/>

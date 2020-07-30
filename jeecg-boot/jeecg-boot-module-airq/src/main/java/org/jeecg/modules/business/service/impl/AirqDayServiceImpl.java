@@ -19,6 +19,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description: airq_day
@@ -47,6 +48,17 @@ public class AirqDayServiceImpl extends ServiceImpl<AirqDayMapper, AirqDay> impl
             mnsTemp.add(i,"'"+mns.get(i)+"'");
         }
        return airqDayMapper.findEvaluate(StringUtils.join(mnsTemp.toArray(), ","),timeStart,timeEnd);
+    }
+
+    @Override
+    public List<Map<String, Object>> queryCalendarAirQuality(String datatime, String datatime2, String area, List<String> checkedKeys) {
+        Timestamp ts = DateUtil.parse(datatime, "yyyy-MM-dd").toTimestamp();
+        Timestamp ts2 = DateUtil.parse(datatime2, "yyyy-MM-dd").toTimestamp();
+        List<Map<String,Object>>  airQualitys = airqDayMapper.queryCalendarAirQuality(ts,ts2,area,checkedKeys);
+        airQualitys.forEach(airQuality -> {
+            airQuality.put("firstCode",redisCacheUtil.transformCode(String.valueOf(airQuality.get("firstCode"))));
+        });
+        return airQualitys;
     }
 
     @Override

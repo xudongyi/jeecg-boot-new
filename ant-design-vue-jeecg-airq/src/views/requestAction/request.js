@@ -17,6 +17,7 @@ const queryDayAirQuality = (params)=>getAction("/day/airqDay/queryDayAirQuality"
 const queryStatistic = (params)=>getAction("/statistic/queryEvaluate",params);
 const queryTrend = (params)=>getAction("/statistic/queryTrend",params);
 const querySameCompare = (params)=>getAction("/statistic/querySameCompare",params);
+const queryCalendarAirQuality = (params)=>getAction("/day/airqDay/queryCalendarAirQuality",params);
 const queryChainCompare = (params)=>getAction("/statistic/queryChainCompare",params);
 export {
   queryCompanyName,
@@ -31,6 +32,8 @@ export {
   queryTrend,
   queryHourAirQuality,
   queryDayAirQuality,
+  querySameCompare,
+  queryCalendarAirQuality,
   querySameCompare,
   queryChainCompare
 }

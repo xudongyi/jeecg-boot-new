@@ -295,13 +295,13 @@
         },
         toEarth(){
           this.isEarthMap = true
-          this.map.setMapType(BMAP_EARTH_MAP);
+          console.log(BMAP_SATELLITE_MAP);
+          this.map.setMapType(BMAP_SATELLITE_MAP);
 
         },
         toMap(){
           this.isEarthMap = false
-          this.map.setMapType(BMAP_EARTH_MAP);
-
+          this.map.setMapType(BMAP_NORMAL_MAP);
         },
 
         //隐藏左下角的百度标识

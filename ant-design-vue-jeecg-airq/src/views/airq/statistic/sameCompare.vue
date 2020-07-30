@@ -233,7 +233,7 @@
               that.treeData.push(a)
             }
           });
-          that.selectedKeys = checkObj
+          that.selectedKeys = [checkObj[0]]
         });
 
 
@@ -293,7 +293,7 @@
         })
       },
       onCheck(selectedKeys, info) {
-        debugger
+
         //修改选择数据
         this.selectedKeys = selectedKeys;  //只要站点的
         this.halfselectedKeys = info.halfselectedKeys;

@@ -17,8 +17,8 @@ public class RedisCacheUtil {
 
     //获取
     public String transformCode(String codes){
-        if(StrUtil.isEmpty(codes))
-            return codes;
+        if(StrUtil.isEmpty(codes)||codes.equals("null"))
+            return "";
         String[] codeArr  = codes.split(",");
         String tmp = null;
         StringBuilder meanings = new StringBuilder();
