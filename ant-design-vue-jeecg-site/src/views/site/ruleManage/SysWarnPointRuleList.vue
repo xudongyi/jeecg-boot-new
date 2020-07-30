@@ -70,16 +70,18 @@
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import SysWarnPointRuleModal from './modules/SysWarnPointRuleModal'
   import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
+  import {commonUtil} from "../mixins/CommonUtil";
 
   export default {
     name: "SysWarnPointRuleList",
-    mixins:[JeecgListMixin, mixinDevice],
+    mixins:[JeecgListMixin, mixinDevice,commonUtil],
     components: {
       SysWarnPointRuleModal
     },
     data () {
       return {
         description: '站点报警策略表管理页面',
+        mergeKeys:['siteName','siteType','companyName','siteLevel'],
         // 表头
         columns: [
           {
@@ -205,10 +207,6 @@
             }
           }
         });
-      },
-      calcIndex: function (t,r,index) {
-        console.log(t,r,index)
-        return parseInt(index)+1+(this.ipagination.current-1)*this.ipagination.pageSize;
       },
       initDictConfig(){
       },

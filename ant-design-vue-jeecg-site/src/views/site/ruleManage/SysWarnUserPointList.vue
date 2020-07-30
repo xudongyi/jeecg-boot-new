@@ -89,16 +89,18 @@
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import SysWarnUserPointModal from './modules/SysWarnUserPointModal'
+  import {commonUtil} from "../mixins/CommonUtil";
 
   export default {
     name: "SysWarnUserPointList",
-    mixins:[JeecgListMixin, mixinDevice],
+    mixins:[JeecgListMixin, mixinDevice,commonUtil],
     components: {
       SysWarnUserPointModal
     },
     data () {
       return {
         description: '站点报警短信接收人配置管理页面',
+        mergeKeys:['name','mobile','companyName'],
         // 表头
         columns: [
           {
@@ -212,11 +214,7 @@
         this.handleEdit(record);
         this.$refs.modalForm.title="编辑";
         this.$refs.modalForm.disableSubmit = false;
-      },
-      calcIndex: function (t,r,index) {
-        console.log(t,r,index)
-        return parseInt(index)+1+(this.ipagination.current-1)*this.ipagination.pageSize;
-      },
+      }
     }
   }
 </script>

@@ -85,10 +85,11 @@
   import {querySiteNameAndMn} from "../../requestAction/request";
   import Vue from 'vue'
   import AreaLinkSelect from '../component/AreaLinkSelect'
+  import {commonUtil} from "../mixins/CommonUtil";
 
   export default {
     name: "AirqYearQuality",
-    mixins:[JeecgListMixin, mixinDevice],
+    mixins:[JeecgListMixin, mixinDevice,commonUtil],
     components: {
       JDictSelectTag,
       JDate,
@@ -111,6 +112,7 @@
         },
         items:[],
         siteOriginal:[],
+        mergeKeys:['area'],
         // 表头
         columns: [
           {
@@ -126,9 +128,9 @@
             title:'行政区域',
             align:"center",
             dataIndex: 'area',
-            customRender:this.getAreaByCode,
             fixed:'left',
-            width:150
+            width:150,
+            customRender: this.renderContentArea
           },
           {
             title:'监测点位名称',
@@ -277,9 +279,6 @@
         this.queryParam = {companyIds:this.$store.getters.userInfo.companyIds.join(',')};
         this.loadData(1);
       },
-      initArea(){
-        this.areaHandler = new AreaHandler()
-      },
       areaChange(val){
         let _this = this
         _this.items=[]
@@ -300,10 +299,6 @@
         let arr = [];
         this.areaHandler.getAreaBycode(text,arr);
         return arr[0]+arr[1]+arr[2]
-      },
-      calcIndex: function (t,r,index) {
-
-        return parseInt(index)+1+(this.ipagination.current-1)*this.ipagination.pageSize;
       },
       yearChange () {
         var myDate = new Date()
