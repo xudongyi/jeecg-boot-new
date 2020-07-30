@@ -230,6 +230,32 @@ public class SelfEntityExcelView extends MiniAbstractExcelView {
                 else if(!StrUtil.isEmpty(excelSelf.dictType())){
                         //字典
                     cell.setCellValue(queryDictTextByKey(excelSelf.dictType(),excelSelf.dicCode(), excelSelf.dicText(),val));
+                    //为了  特殊处理
+                    if(excelSelf.bgColor()){
+                        //设置单元格风格，居中对齐.  title的样式
+                        HSSFCellStyle bgcs = workbook.createCellStyle();
+                        bgcs.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+                        bgcs.setFont(contentFont);//要用到的字体格式
+                        //拿到palette颜色板
+                        HSSFPalette palette = workbook.getCustomPalette();
+                        //这个是重点，具体的就是把之前的颜色 HSSFColor.LIME.index
+                        //替换为  RGB(51,204,204) 宝石蓝这种颜色
+                        //你可以改为 RGB(0,255,127)
+
+                        switch (Integer.parseInt(val.toString())){
+                            case 1:   palette.setColorAtIndex(HSSFColor.LIME.index, (byte) 0, (byte) 228, (byte) 0);break;
+                            case 2:   palette.setColorAtIndex(HSSFColor.LIME.index, (byte) 250, (byte) 241, (byte) 0);break;
+                            case 3:   palette.setColorAtIndex(HSSFColor.LIME.index, (byte) 255, (byte) 126, (byte) 0);break;
+                            case 4:   palette.setColorAtIndex(HSSFColor.LIME.index, (byte) 255, (byte) 0, (byte) 0);break;
+                            case 5:   palette.setColorAtIndex(HSSFColor.LIME.index, (byte) 153, (byte) 0, (byte) 76);break;
+                            case 6:   palette.setColorAtIndex(HSSFColor.LIME.index, (byte) 126, (byte) 0, (byte) 35);break;
+                        }
+                        bgcs.setFillForegroundColor(palette.getColor(HSSFColor.LIME.index).getIndex());
+                        bgcs.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+
+                        cell.setCellStyle(bgcs);
+                        bgcs.setFont(contentFont);//要用到的字体格式
+                    }
                 }
                 else if(val instanceof Double)
                     cell.setCellValue(Double.parseDouble(val.toString()));
@@ -241,32 +267,7 @@ public class SelfEntityExcelView extends MiniAbstractExcelView {
                 else
                     cell.setCellValue(val.toString());
 
-                //为了  特殊处理
-                if(excelSelf.bgColor()){
-                    //设置单元格风格，居中对齐.  title的样式
-                    HSSFCellStyle bgcs = workbook.createCellStyle();
-                    bgcs.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-                    bgcs.setFont(contentFont);//要用到的字体格式
-                    //拿到palette颜色板
-                    HSSFPalette palette = workbook.getCustomPalette();
-                    //这个是重点，具体的就是把之前的颜色 HSSFColor.LIME.index
-                    //替换为  RGB(51,204,204) 宝石蓝这种颜色
-                    //你可以改为 RGB(0,255,127)
-
-                    switch (Integer.parseInt(val.toString())){
-                        case 1:   palette.setColorAtIndex(HSSFColor.LIME.index, (byte) 0, (byte) 228, (byte) 0);break;
-                        case 2:   palette.setColorAtIndex(HSSFColor.LIME.index, (byte) 250, (byte) 241, (byte) 0);break;
-                        case 3:   palette.setColorAtIndex(HSSFColor.LIME.index, (byte) 255, (byte) 126, (byte) 0);break;
-                        case 4:   palette.setColorAtIndex(HSSFColor.LIME.index, (byte) 255, (byte) 0, (byte) 0);break;
-                        case 5:   palette.setColorAtIndex(HSSFColor.LIME.index, (byte) 153, (byte) 0, (byte) 76);break;
-                        case 6:   palette.setColorAtIndex(HSSFColor.LIME.index, (byte) 126, (byte) 0, (byte) 35);break;
-                    }
-                    bgcs.setFillForegroundColor(palette.getColor(HSSFColor.LIME.index).getIndex());
-                    bgcs.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
-
-                    cell.setCellStyle(bgcs);
-                    bgcs.setFont(contentFont);//要用到的字体格式
-                }else{
+                if(!excelSelf.bgColor()){
                     cell.setCellStyle(contentcs);
                 }
 
