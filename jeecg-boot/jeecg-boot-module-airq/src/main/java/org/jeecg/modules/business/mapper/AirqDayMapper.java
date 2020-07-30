@@ -11,6 +11,7 @@ import org.jeecg.modules.business.vo.SiteQualityRankDayVO;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description: airq_day
@@ -25,4 +26,7 @@ public interface AirqDayMapper extends BaseMapper<AirqDay> {
     List<AirqDayQualityVo> queryDayAirQuality(@Param("companyIds")List<String> companyIds, @Param("datatime") Timestamp datatime, @Param("datatime2")Timestamp datatime2, @Param("area")String area, @Param("mn")String mn);
 
     List<SiteQualityRankDayVO> querySiteDay(String[] companyIds, Page page, String area, String mn, Date queryDate);
+
+
+    List<Map<String,Object>> queryCalendarAirQuality(@Param("datatime") Timestamp datatime, @Param("datatime2")Timestamp datatime2, @Param("area")String area, @Param("checkedKeys")List<String> checkedKeys);
 }

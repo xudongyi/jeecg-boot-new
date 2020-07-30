@@ -1,44 +1,34 @@
 package org.jeecg.modules.business.controller;
 
-import java.util.*;
-import java.sql.Struct;
-import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import cn.hutool.core.date.DateUtil;
-
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.jeecg.common.api.vo.Result;
+import org.jeecg.common.aspect.annotation.AutoLog;
+import org.jeecg.common.system.base.controller.JeecgController;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.util.DateUtils;
 import org.jeecg.modules.business.constant.SelfExcelConstants;
 import org.jeecg.modules.business.entity.AirqDay;
 import org.jeecg.modules.business.service.IAirqDayService;
-
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import lombok.extern.slf4j.Slf4j;
-
-import org.jeecg.common.system.base.controller.JeecgController;
 import org.jeecg.modules.business.view.SelfEntityExcelView;
 import org.jeecg.modules.business.vo.AirqDayQualityVo;
-import org.jeecg.modules.business.vo.AirqHourQualityVo;
-import org.jeecg.modules.business.vo.SiteQualityEvaluateVO;
 import org.jeecg.modules.business.vo.SiteQualityRankDayVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import org.jeecg.common.aspect.annotation.AutoLog;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.util.*;
 
  /**
  * @Description: airq_day
@@ -192,36 +182,25 @@ public class AirqDayController extends JeecgController<AirqDay, IAirqDayService>
 	 /**
 	  * 空气质量实日报
 	  *
-	  * @param companyIds
 	  * @return
 	  */
 	 @AutoLog(value = "蓝天白云日历")
 	 @ApiOperation(value="airq_Day-蓝天白云日历", notes="airq_Day-蓝天白云日历")
 	 @GetMapping(value = "/queryCalendarAirQuality")
-	 public Result<?> queryCalendarAirQuality(@RequestParam(name="companyIds",required=true) String companyIds
-			 ,@RequestParam(name="area",required=false) String area
-			 ,@RequestParam(name="year",required=false) String year
-			 ,@RequestParam(name="mn",required=false) String mn) {
+	 public Result<?> queryCalendarAirQuality(@RequestParam(name="area",required=false) String area
+			 ,@RequestParam(name="year",required=true) String year,
+			 @RequestParam(name = "checkedKeys", required = true) String checkedKeys) {
 	 	String datatime = year + "-01-01";
 	 	String datatime2 = year + "-12-31";
 		 //根据日起查询
-		List<AirqDayQualityVo> airqDayQualityVos =  airqDayService.queryDayAirQuality(Arrays.asList(companyIds.split(",")),datatime,datatime2,area,mn);
+		 List<Map<String,Object>>  airqList =  airqDayService.queryCalendarAirQuality(datatime,datatime2
+				,area,Arrays.asList(checkedKeys.split(",")));
 		Map<String,Object> result = new HashMap<>();
-		List<Map<String,Object>> airqList = new ArrayList<>();
 		 Set<String> months = new HashSet<>();
-		for(AirqDayQualityVo airqDayQualityVo:airqDayQualityVos){
-			Map<String,Object> temp = new HashMap<>();
-			temp.put("data", DateUtil.format(airqDayQualityVo.getDataTime(),"yyyy-MM-dd"));
-			temp.put("firstCode",airqDayQualityVo.getMeaning());
-			temp.put("AQI",airqDayQualityVo.getAqi());
-			temp.put("A34004",airqDayQualityVo.getAqi());
-			temp.put("A34002",airqDayQualityVo.getAqi());
-			temp.put("A21026",airqDayQualityVo.getAqi());
-			temp.put("A21005",airqDayQualityVo.getAqi());
-			temp.put("A21004",airqDayQualityVo.getAqi());
-			temp.put("A05024",airqDayQualityVo.getAqi());
-			airqList.add(temp);
-			months.add(DateUtil.format(airqDayQualityVo.getDataTime(),"yyyy-MM"));
+		for(Map<String,Object> airqQuality:airqList){
+			airqQuality.put("dataTime",DateUtil.format((Timestamp)airqQuality.get("dataTime"),"yyyy-MM-dd"));
+
+			months.add(airqQuality.get("dataTime").toString().substring(0,7));
 		}
 
 		result.put("dataList",airqList);
