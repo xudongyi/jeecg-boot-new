@@ -133,35 +133,41 @@ public class StatisticController {
                     }
                 } else {
                     if ("day".equals(dataType)) {
-                        QueryWrapper<AirqDay> wrapper = new QueryWrapper<AirqDay>().select(pollutionType + "24_AVG", pollutionType + "24_IAQI").in("MN", mns);
+                        QueryWrapper<AirqDay> wrapper = new QueryWrapper<AirqDay>().select(pollutionType + "_iaqi").in("mn", mns);
                         if (StrUtil.isNotEmpty(searchTime)) {
                             String[] times = searchTime.split(",");
                             String timeStart = times[0];
                             String timeEnd = times[1];
-                            wrapper.between("DATA_TIME", timeStart, timeEnd);
+                            wrapper.between("data_time", timeStart, timeEnd);
                         }
                         List<Map<String, Object>> airqDayMaps = airqDayServic.listMaps(wrapper);
-                        resultList = this.parseEvaluate(airqDayMaps, pollutionType, "24_AVG", 24);
+                        resultList = this.parseEvaluate(airqDayMaps, pollutionType, "_iaqi", 24);
                     } else if ("month".equals(dataType)) {
-                        QueryWrapper<AirqMonth> wrapper = new QueryWrapper<AirqMonth>().select(pollutionType + "_I").in("MN", mns);
+                        if (pollutionType.length() > 6) {
+                            pollutionType = pollutionType.substring(0, 6);
+                        }
+                        QueryWrapper<AirqMonth> wrapper = new QueryWrapper<AirqMonth>().select(pollutionType + "_i").in("mn", mns);
                         if (StrUtil.isNotEmpty(searchTime)) {
                             String[] times = searchTime.split(",");
                             String timeStart = times[0];
                             String timeEnd = times[1];
-                            wrapper.between("MONTH", timeStart, timeEnd);
+                            wrapper.between("month", timeStart, timeEnd);
                         }
                         List<Map<String, Object>> airqMonthMaps = airqMonthService.listMaps(wrapper);
-                        resultList = this.parseEvaluate(airqMonthMaps, pollutionType, "_I", 24);
+                        resultList = this.parseEvaluate(airqMonthMaps, pollutionType, "_i", 24);
                     } else if ("year".equals(dataType)) {
-                        QueryWrapper<AirqYear> wrapper = new QueryWrapper<AirqYear>().select(pollutionType + "_I").in("MN", mns);
+                        if (pollutionType.length() > 6) {
+                            pollutionType = pollutionType.substring(0, 6);
+                        }
+                        QueryWrapper<AirqYear> wrapper = new QueryWrapper<AirqYear>().select(pollutionType + "_i").in("mn", mns);
                         if (StrUtil.isNotEmpty(searchTime)) {
                             String[] times = searchTime.split(",");
                             String timeStart = times[0];
                             String timeEnd = times[1];
-                            wrapper.between("YEAR", timeStart, timeEnd);
+                            wrapper.between("year", timeStart, timeEnd);
                         }
                         List<Map<String, Object>> airqYearMaps = airqYearService.listMaps(wrapper);
-                        resultList = this.parseEvaluate(airqYearMaps, pollutionType, "_I", 24);
+                        resultList = this.parseEvaluate(airqYearMaps, pollutionType, "_i", 24);
                     }
                 }
             }
@@ -500,7 +506,7 @@ public class StatisticController {
                     Map<String, Object> airqYear = airqYearService.getMap(new QueryWrapper<AirqYear>().select("year", pollutionType + "_i").eq("mn", mn).eq("year", searchTime));
                     //组织legend
                     List<String> legend = new ArrayList<>();
-                    legend.add("检测值");
+                    legend.add("监测值");
                     legend.add("同比增长率");
                     resultMap.put("legend", legend);
                     //组织X轴数据
@@ -584,10 +590,10 @@ public class StatisticController {
                 format = "yyyy-MM";
             }
             if (StrUtil.isEmpty(searchTime)) {
-                if("month".equals(dataType)){
-                    timeEnd = DateUtil.format(DateUtil.offsetMonth(DateUtil.date(),-1),format);
-                    timeStart = DateUtil.format(DateUtil.offsetMonth(DateUtil.date(),-6),format);
-                }else{
+                if ("month".equals(dataType)) {
+                    timeEnd = DateUtil.format(DateUtil.offsetMonth(DateUtil.date(), -1), format);
+                    timeStart = DateUtil.format(DateUtil.offsetMonth(DateUtil.date(), -6), format);
+                } else {
                     timeEnd = DateUtil.format(DateUtil.offsetDay(DateUtil.date(), -1), format);
                     timeStart = DateUtil.format(DateUtil.offsetDay(DateUtil.date(), -15), format);
                 }
@@ -675,7 +681,7 @@ public class StatisticController {
                 if (CollectionUtil.isNotEmpty(airqDayMaps)) {
                     for (int i = 0; i < airqDayMaps.size(); i++) {
                         Map<String, Object> airqDayMap = airqDayMaps.get(i);
-                        String month = StrUtil.toString(airqDayMap.get("month")) ;
+                        String month = StrUtil.toString(airqDayMap.get("month"));
                         dateTimes.add(month);
                         if ("AQI".equals(pollutionType)) {
                             double aqi = (Double) airqDayMap.get(colum + "_i");
@@ -719,14 +725,14 @@ public class StatisticController {
 
     private void getResultMap(Map<String, Object> resultMap, List<Double> aqis, List<Double> percents) {
         //aqi最大值
-        if(CollectionUtil.isNotEmpty(aqis)){
+        if (CollectionUtil.isNotEmpty(aqis)) {
             Double maxaqi = Collections.max(aqis);
             if (maxaqi % 100 != 0) {
                 maxaqi = (Math.floor(maxaqi / 100) + 1) * 100;
             }
             resultMap.put("aqiMax", maxaqi);
         }
-        if(CollectionUtil.isNotEmpty(percents)){
+        if (CollectionUtil.isNotEmpty(percents)) {
             Double percentMax = Collections.max(percents);
             Double percentMin = Collections.min(percents);
             if (percentMax % 100 != 0) {
@@ -769,36 +775,44 @@ public class StatisticController {
 
     private List<Map<String, Object>> parseEvaluate(List<Map<String, Object>> airqMaps, String pollutionType, String suffix, int type) {
         List<Map<String, Object>> resultList = new ArrayList<>();
+        String code = pollutionType;
+        if (pollutionType.length() > 6) {
+            code = pollutionType.substring(0, 6);
+        }
         if (CollectionUtil.isNotEmpty(airqMaps)) {
             List<Map<String, Object>> tempList = new ArrayList<>();
             for (int i = 0; i < airqMaps.size(); i++) {
                 Map<String, Object> airqDayMap = airqMaps.get(i);
                 double avg = Double.parseDouble(StrUtil.toString(airqDayMap.get(pollutionType + suffix)));
                 //计算aqi
-                double aqi = airQualityUtil.getAQI(pollutionType, type, avg);
+                double aqi = airQualityUtil.getAQI(code, type, avg);
                 //获取级别
                 String level = airQualityUtil.getLevel(aqi);
                 //获取级别名
                 AirqLevel airqLevel = airqLevelService.getOne(new QueryWrapper<AirqLevel>().lambda().eq(AirqLevel::getLevel, level));
-                String levelGrade = airqLevel.getLevelGrade();
-                Map<String, Object> tempMap = new HashMap<>();
-                tempMap.put("name", levelGrade);
-                tempMap.put("level", level);
-                tempList.add(tempMap);
-            }
-            Map<String, List<Map<String, Object>>> grouplist = tempList.stream().collect(Collectors.groupingBy(e -> e.get("name").toString()));
-            List<AirqLevel> airqLevels = airqLevelService.list();
-            for (int i = 0; i < airqLevels.size(); i++) {
-                int value = 0;
-                Map<String, Object> resultMap = new HashMap<>();
-                AirqLevel airqLevel = airqLevels.get(i);
-                resultMap.put("name", airqLevel.getLevelGrade());
-                List<Map<String, Object>> maps = grouplist.get(airqLevel.getLevelGrade());
-                if (maps != null) {
-                    value = maps.size();
+                if (!"7".equals(level)) {
+                    String levelGrade = airqLevel.getLevelGrade();
+                    Map<String, Object> tempMap = new HashMap<>();
+                    tempMap.put("name", levelGrade);
+                    tempMap.put("level", level);
+                    tempList.add(tempMap);
                 }
-                resultMap.put("value", value);
-                resultList.add(resultMap);
+            }
+            if (tempList != null && tempList.size() > 0) {
+                Map<String, List<Map<String, Object>>> grouplist = tempList.stream().collect(Collectors.groupingBy(e -> e.get("name").toString()));
+                List<AirqLevel> airqLevels = airqLevelService.list(new QueryWrapper<AirqLevel>().lambda().ne(AirqLevel::getLevel,"7"));
+                for (int i = 0; i < airqLevels.size(); i++) {
+                    int value = 0;
+                    Map<String, Object> resultMap = new HashMap<>();
+                    AirqLevel airqLevel = airqLevels.get(i);
+                    resultMap.put("name", airqLevel.getLevelGrade());
+                    List<Map<String, Object>> maps = grouplist.get(airqLevel.getLevelGrade());
+                    if (maps != null) {
+                        value = maps.size();
+                    }
+                    resultMap.put("value", value);
+                    resultList.add(resultMap);
+                }
             }
         }
         return resultList;

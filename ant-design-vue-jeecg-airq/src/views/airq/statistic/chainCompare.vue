@@ -114,11 +114,9 @@
 
 <script>
   import {queryChainCompare, querySiteName} from "../../requestAction/request";
-  import 'vue-happy-scroll/docs/happy-scroll.css'
   import AreaLinkSelect from '../component/AreaLinkSelect'
   import JDictSelectTag from "@/components/dict/JDictSelectTag"
   import {mixinDevice} from '@/utils/mixin'
-  import {HappyScroll} from 'vue-happy-scroll'
   import {getAction} from '@/api/manage'
   import moment from 'moment'
 
@@ -128,7 +126,6 @@
     components: {
       JDictSelectTag,
       AreaLinkSelect,
-      HappyScroll,
     },
 
     data() {
@@ -136,7 +133,7 @@
         mode2: ["date", "date"],
         placeholder: ["开始日期", "结束日期"],
         format: "YYYY-MM-DD",
-        titleText: "大气环境质量(AQI)按月环比分析结果",
+        titleText: "大气环境质量(AQI)按日环比分析结果",
         radioObj: {
           "AQI": "AQI",
           "A3400424": "PM2.5",
@@ -304,7 +301,41 @@
             left: 'center'
           },
           tooltip: {
+
             trigger: 'axis',
+            formatter: function (params) {
+              var htmlStr = '';
+              for(var i=0;i<params.length;i++){
+                var param = params[i];
+                var xName = param.name;//x轴的名称
+                var seriesName = param.seriesName;//图例名称
+                var value = param.value;//y轴值
+                var color = param.color;//图例颜色
+                debugger
+                if(i===0){
+                  htmlStr += xName + '<br/>';//x轴的名称
+                }
+                htmlStr +='<div>';
+                //为了保证和原来的效果一样，这里自己实现了一个点的效果
+                htmlStr += '<span style="margin-right:5px;display:inline-block;width:10px;height:10px;border-radius:5px;background-color:'+color+';"></span>';
+
+                // 文本颜色设置--2020-07-23(需要设置,请解注释下面一行)
+                //htmlStr += '<span style="color:'+color+'">';
+
+                //圆点后面显示的文本
+                if(i<1){
+                  htmlStr += seriesName + '：' + value;
+                }else if(i===1){
+                  htmlStr += seriesName + '：' + value+'%';
+                }
+                // 文本颜色设置--2020-07-23(需要设置,请解注释下面一行)
+                //htmlStr += '</span>';
+
+                htmlStr += '</div>';
+              }
+              return htmlStr;
+            }
+
           },
           grid: {
             right: '20%'
@@ -329,9 +360,6 @@
               min: 0,
               max: data["aqiMax"],
               position: 'left',
-              axisLabel: {
-                formatter: '{value}'
-              }
             },
             {
               type: 'value',
@@ -339,6 +367,9 @@
               min: data["percentMin"],
               max: data["percentMax"],
               position: 'right',
+              axisLabel: {
+                formatter: '{value}%'
+              }
             }
           ],
           series: data["series"]
