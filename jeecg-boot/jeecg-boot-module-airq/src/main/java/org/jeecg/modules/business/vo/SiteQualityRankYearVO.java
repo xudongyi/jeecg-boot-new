@@ -48,12 +48,14 @@ public class SiteQualityRankYearVO {
     @Dict(dicCode = "level")
     @ApiModelProperty(value = "空气质量级别")
     private java.lang.String level;
+    @ExcelSelf(name = "排名", width = 15,orderNum = 8)
+    private String rank;
     /**SO2*/
-    @ExcelSelf(name = "二氧化硫(SO2)年平均浓度(μg/m3)", width = 15,orderNum = 8)
+    @ExcelSelf(name = "二氧化硫(SO2)年平均浓度(μg/m3)", width = 15,orderNum = 9)
     @ApiModelProperty(value = "SO2")
     private java.lang.Double a21026Avg;
     /**NO2*/
-    @ExcelSelf(name = "二氧化氮(NO2)年平均浓度(μg/m3)", width = 15,orderNum = 9)
+    @ExcelSelf(name = "二氧化氮(NO2)年平均浓度(μg/m3)", width = 15,orderNum = 10)
     @ApiModelProperty(value = "NO2")
     private java.lang.Double a21004Avg;
     /**PM10*/
@@ -72,5 +74,5 @@ public class SiteQualityRankYearVO {
     @ExcelSelf(name = "PM2.5年平均浓度(μg/m3)", width = 15,orderNum = 14)
     @ApiModelProperty(value = "PM2.5")
     private java.lang.Double a34004Avg;
-    private String rank;
+
 }

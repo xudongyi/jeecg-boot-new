@@ -80,4 +80,13 @@ public class AirqMonthServiceImpl extends ServiceImpl<AirqMonthMapper, AirqMonth
         return page.setRecords(airqMonthQualityVOS);
     }
 
+    @Override
+    public List<SiteQualityRankMonthVO> exportSiteMonth(String companyIds, String area, String mn, String queryDate) {
+        List<SiteQualityRankMonthVO> airqMonthQualityVOS = airqMonthMapper.querySiteMonth(companyIds.split(","), null,area,mn,queryDate);
+        airqMonthQualityVOS.forEach(airqMonthQualityVO -> {
+            airqMonthQualityVO.setMeaning(redisCacheUtil.transformCode(airqMonthQualityVO.getFirstCode()));
+        });
+        return airqMonthQualityVOS;
+    }
+
 }

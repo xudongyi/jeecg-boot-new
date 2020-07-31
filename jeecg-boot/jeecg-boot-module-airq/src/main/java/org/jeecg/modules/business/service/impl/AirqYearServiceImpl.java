@@ -76,4 +76,13 @@ public class AirqYearServiceImpl extends ServiceImpl<AirqYearMapper, AirqYear> i
         });
         return page.setRecords(airqYearQualityVOS);
     }
+
+    @Override
+    public List<SiteQualityRankYearVO> exportSiteYear(String companyIds, String area, String mn, String queryDate) {
+        List<SiteQualityRankYearVO> airqYearQualityVOS = airqYearMapper.querySiteYear(companyIds.split(","), null,area,mn,queryDate);
+        airqYearQualityVOS.forEach(airqYearQualityVO -> {
+            airqYearQualityVO.setMeaning(redisCacheUtil.transformCode(airqYearQualityVO.getFirstCode()));
+        });
+        return airqYearQualityVOS;
+    }
 }

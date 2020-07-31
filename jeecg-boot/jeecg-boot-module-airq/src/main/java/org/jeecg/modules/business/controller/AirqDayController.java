@@ -291,24 +291,48 @@ public class AirqDayController extends JeecgController<AirqDay, IAirqDayService>
 	 public ModelAndView exportSiteDay(HttpServletRequest req) throws ParseException {
 		 String companyIds = req.getParameter("companyIds");
 		 String area = req.getParameter("area");
-		 //通过选择站点名称获取站点mn号
 		 String mn = req.getParameter("mn");
-		 String dataTime = req.getParameter("dataTime");
+		 String dataTime = req.getParameter("searchTime");
+		 String dataType = req.getParameter("dataType");
 		 Timestamp queryDate;
-		 if(StrUtil.isEmpty(dataTime)) {
-			 queryDate = null;
-		 }else {
-			 queryDate = DateUtils.parseTimestamp(dataTime,"yyyy-MM-dd");
-		 }
-		 List<SiteQualityRankDayVO> exportList = airqDayService.querySiteDayExport(companyIds,area,mn,queryDate);
-		 // Step.3 AutoPoi 导出Excel
-		 ModelAndView mv = new ModelAndView(new SelfEntityExcelView(sysDictService,redisUtil));
-		 mv.addObject(SelfExcelConstants.TITLE, "站点质量日排名"); //此处设置的filename无效 ,前端会重更新设置一下
-		 mv.addObject(SelfExcelConstants.SHEET_NAME, "站点质量日排名");
-		 mv.addObject(SelfExcelConstants.CLAZZ, SiteQualityRankDayVO.class);
-		 mv.addObject(SelfExcelConstants.DATA_LIST, exportList);
-		 mv.addObject(SelfExcelConstants.FOOTER, "注：缺测指标的浓度及分指数均使用NA标识。");
+		 if("day".equals(dataType)) {
+			 if(StrUtil.isEmpty(dataTime)) {
+				 queryDate = null;
+			 }else {
+				 queryDate = DateUtils.parseTimestamp(dataTime,"yyyy-MM-dd");
+			 }
+			 List<SiteQualityRankDayVO> dayList = airqDayService.querySiteDayExport(companyIds,area,mn,queryDate);
+			 // Step.3 AutoPoi 导出Excel
+			 ModelAndView mvDay = new ModelAndView(new SelfEntityExcelView(sysDictService,redisUtil));
+			 mvDay.addObject(SelfExcelConstants.TITLE, "站点质量日排名"); //此处设置的filename无效 ,前端会重更新设置一下
+			 mvDay.addObject(SelfExcelConstants.SHEET_NAME, "站点质量日排名");
+			 mvDay.addObject(SelfExcelConstants.CLAZZ, SiteQualityRankDayVO.class);
+			 mvDay.addObject(SelfExcelConstants.DATA_LIST, dayList);
+			 mvDay.addObject(SelfExcelConstants.FOOTER, "注：缺测指标的浓度及分指数均使用NA标识。");
 
-		 return mv;
+			 return mvDay;
+		 }else if("month".equals(dataType)) {
+		 	List<SiteQualityRankMonthVO> monthList = airqMonthService.exportSiteMonth(companyIds, area,mn,dataTime);
+			 // Step.3 AutoPoi 导出Excel
+			 ModelAndView mvMonth = new ModelAndView(new SelfEntityExcelView(sysDictService,redisUtil));
+			 mvMonth.addObject(SelfExcelConstants.TITLE, "站点质量月排名"); //此处设置的filename无效 ,前端会重更新设置一下
+			 mvMonth.addObject(SelfExcelConstants.SHEET_NAME, "站点质量月排名");
+			 mvMonth.addObject(SelfExcelConstants.CLAZZ, SiteQualityRankMonthVO.class);
+			 mvMonth.addObject(SelfExcelConstants.DATA_LIST, monthList);
+			 mvMonth.addObject(SelfExcelConstants.FOOTER, "注：缺测指标的浓度及分指数均使用NA标识。");
+
+			 return mvMonth;
+		 }else {
+			 List<SiteQualityRankYearVO> yearList = airqYearService.exportSiteYear(companyIds, area,mn,dataTime);
+			 // Step.3 AutoPoi 导出Excel
+			 ModelAndView mvYear = new ModelAndView(new SelfEntityExcelView(sysDictService,redisUtil));
+			 mvYear.addObject(SelfExcelConstants.TITLE, "站点质量年排名"); //此处设置的filename无效 ,前端会重更新设置一下
+			 mvYear.addObject(SelfExcelConstants.SHEET_NAME, "站点质量年排名");
+			 mvYear.addObject(SelfExcelConstants.CLAZZ, SiteQualityRankYearVO.class);
+			 mvYear.addObject(SelfExcelConstants.DATA_LIST, yearList);
+			 mvYear.addObject(SelfExcelConstants.FOOTER, "注：缺测指标的浓度及分指数均使用NA标识。");
+
+			 return mvYear;
+		 }
 	 }
 }

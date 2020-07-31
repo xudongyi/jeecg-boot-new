@@ -25,4 +25,5 @@ public interface IAirqMonthService extends IService<AirqMonth> {
     List<AirqMonthQualityVO> exportAirqMonthQuality(String companyIds, String area, String mn, String searchTime, String startTime, String endTime);
 
     IPage<SiteQualityRankMonthVO> querySiteMonth(String companyIds, Page<SiteQualityRankMonthVO> page, String area, String mn, String queryDate);
+    List<SiteQualityRankMonthVO> exportSiteMonth(String companyIds, String area, String mn, String queryDate);
 }

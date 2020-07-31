@@ -21,7 +21,7 @@
           </a-col>
           <a-col :xl="5" :lg="7" :md="8" :sm="24">
             <a-form-item label="数据类型" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-radio-group default-value="day" button-style="solid" @change="dataTypeChange" style="width: 100%">
+              <a-radio-group v-model="queryParam.dataType" button-style="solid" @change="dataTypeChange" style="width: 100%">
                 <a-radio-button value="day" style="width: 33.3%;text-align:center;">
                   日
                 </a-radio-button>
@@ -51,7 +51,7 @@
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <a-button type="primary" @click="toSearchReset" icon="reload" style="margin-left: 8px">重置</a-button>
-              <a-button type="primary" icon="download" style="margin-left: 8px" @click="handleExportXls('站点质量日排名')">导出</a-button>
+              <a-button type="primary" icon="download" style="margin-left: 8px" @click="handleExportXls('站点质量排名')">导出</a-button>
             </span>
           </a-col>
         </a-row>
@@ -612,7 +612,15 @@
         return  value.format(this.format);
       },
       toSearchReset() {
-        this.queryParam = {companyIds:this.$store.getters.userInfo.companyIds.join(',')};
+        this.queryParam = {companyIds:this.$store.getters.userInfo.companyIds.join(','),dataType:'day'};
+        this.columns =this.columns1;
+        this.mode2= "date";
+        this.format="YYYY-MM-DD";
+        this.placeholder="日期";
+        this.queryParam.dataType = "day";
+        this.showTime = {format:'YYYY-MM-DD'};
+        this.columns = this.columns1;
+        this.timeValue = '';
         this.loadData(1);
       },
       initArea(){

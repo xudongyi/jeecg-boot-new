@@ -24,4 +24,5 @@ public interface IAirqYearService extends IService<AirqYear> {
     List<AirqYearQualityVO> exportAirqYearQuality(String companyIds, String area, String mn, String yearBegin,String yearEnd);
 
     Page<SiteQualityRankYearVO> querySiteYear(String companyIds, Page page, String area, String mn, String queryDate);
+    List<SiteQualityRankYearVO> exportSiteYear(String companyIds, String area, String mn, String queryDate);
 }
