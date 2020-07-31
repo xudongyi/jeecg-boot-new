@@ -6,6 +6,7 @@ import org.jeecg.modules.business.entity.AirqMonth;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.jeecg.modules.business.vo.AirqMonthQualityVO;
 import org.jeecg.modules.business.vo.AirqVO;
+import org.jeecg.modules.business.vo.SiteQualityRankMonthVO;
 
 import java.util.List;
 
@@ -22,4 +23,6 @@ public interface IAirqMonthService extends IService<AirqMonth> {
     IPage<AirqMonthQualityVO> queryAirqMonthQuality(String companyIds, Page<AirqMonthQualityVO> page, String area, String mn,String searchTime,String startTime, String endTime);
 
     List<AirqMonthQualityVO> exportAirqMonthQuality(String companyIds, String area, String mn, String searchTime, String startTime, String endTime);
+
+    IPage<SiteQualityRankMonthVO> querySiteMonth(String companyIds, Page<SiteQualityRankMonthVO> page, String area, String mn, String queryDate);
 }

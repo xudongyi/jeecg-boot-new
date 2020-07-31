@@ -9,6 +9,7 @@ import org.jeecg.modules.business.service.IAirqYearService;
 import org.jeecg.modules.business.utils.RedisCacheUtil;
 import org.jeecg.modules.business.vo.AirqVO;
 import org.jeecg.modules.business.vo.AirqYearQualityVO;
+import org.jeecg.modules.business.vo.SiteQualityRankYearVO;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -65,5 +66,14 @@ public class AirqYearServiceImpl extends ServiceImpl<AirqYearMapper, AirqYear> i
             airqYearQualityVO.setMeaning(redisCacheUtil.transformCode(airqYearQualityVO.getFirstCode()));
         });
         return airqYearQualityVOS;
+    }
+
+    @Override
+    public Page<SiteQualityRankYearVO> querySiteYear(String companyIds, Page page, String area, String mn, String queryDate) {
+        List<SiteQualityRankYearVO> airqYearQualityVOS = airqYearMapper.querySiteYear(companyIds.split(","), page,area,mn,queryDate);
+        airqYearQualityVOS.forEach(airqYearQualityVO -> {
+            airqYearQualityVO.setMeaning(redisCacheUtil.transformCode(airqYearQualityVO.getFirstCode()));
+        });
+        return page.setRecords(airqYearQualityVOS);
     }
 }

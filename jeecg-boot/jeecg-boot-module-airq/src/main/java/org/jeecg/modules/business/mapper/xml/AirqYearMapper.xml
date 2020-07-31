@@ -124,4 +124,58 @@
         order by b.year desc
 
     </select>
+
+    <resultMap id="SiteQualityRankYearVO" type="org.jeecg.modules.business.vo.SiteQualityRankYearVO" >
+        <result column="mn" property="mn" jdbcType="VARCHAR"/>
+        <result column="area" property="area" jdbcType="VARCHAR"/>
+        <result column="site_name" property="siteName" jdbcType="VARCHAR"/>
+        <result column="total_i" property="totalI" jdbcType="DOUBLE"/>
+        <result column="year" property="year" jdbcType="VARCHAR"/>
+        <result column="first_code" property="firstCode" jdbcType="VARCHAR"/>
+        <result column="meaning" property="meaning" jdbcType="VARCHAR"/>
+        <result column="airLevel" property="airLevel" jdbcType="VARCHAR"/>
+        <result column="level" property="level" jdbcType="VARCHAR"/>
+        <result column="rank" property="rank" jdbcType="VARCHAR"/>
+        <result column="A21026_avg" property="a21026Avg" jdbcType="DOUBLE"/>
+        <result column="A21004_avg" property="a21004Avg" jdbcType="DOUBLE"/>
+        <result column="A34002_avg" property="a34002Avg" jdbcType="DOUBLE"/>
+        <result column="A21005_avg" property="a21005Avg" jdbcType="DOUBLE"/>
+        <result column="A05024_avg" property="a05024Avg" jdbcType="DOUBLE"/>
+        <result column="A34004_avg" property="a34004Avg" jdbcType="DOUBLE"/>
+    </resultMap>
+    <select id="querySiteYear" resultMap="SiteQualityRankYearVO">
+        select @rows:=@rows+1 as rows,
+        if(@aqi=t.total_i,@rownum:=@rownum,@rownum:=@rownum+1) as rank,
+        @aqi:=t.total_i,t.* from
+
+        (select  a.mn,a.site_name,b.`level` as airLevel,b.level,a.area,b.total_i,
+        a.company_id,b.year,b.first_code,
+        b.a21026_avg,b.a21004_avg,b.a34002_avg,
+        b.a21005_avg,b.a05024_avg,b.a34004_avg
+
+        from airq_year b
+        <if test="queryDate == null">
+            INNER JOIN(select a.mn,
+            max(b.year) year
+            from airq_year b  left join site_monitor_point a on b.mn = a.mn
+            group by a.mn) c on b.mn = c.mn and b.year = c.year
+        </if>
+        left join site_monitor_point a on  b.mn = a.mn) t,(select @rownum:=0,@aqi:=0,@rows:=0) r
+        WHERE
+        t.company_id in
+        <foreach collection="companyIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        <if test="area != null">
+            and t.area = (#{area})
+        </if>
+        <if test="mn != null">
+            and t.mn = (#{mn})
+        </if>
+        <if test="queryDate != null">
+            and t.year = (#{queryDate})
+        </if>
+        order by ISNULL(t.total_i), t.total_i asc
+
+    </select>
 </mapper>

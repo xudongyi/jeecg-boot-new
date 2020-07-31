@@ -19,9 +19,32 @@
               </a-select>
             </a-form-item>
           </a-col>
+          <a-col :xl="5" :lg="7" :md="8" :sm="24">
+            <a-form-item label="数据类型" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <a-radio-group default-value="day" button-style="solid" @change="dataTypeChange" style="width: 100%">
+                <a-radio-button value="day" style="width: 33.3%;text-align:center;">
+                  日
+                </a-radio-button>
+                <a-radio-button value="month" style="width: 33.3%;text-align:center;">
+                  月
+                </a-radio-button>
+                <a-radio-button value="year" style="width: 33.3%;text-align:center;">
+                  年
+                </a-radio-button>
+              </a-radio-group>
+            </a-form-item>
+          </a-col>
           <a-col :xl="5" :lg="11" :md="12" :sm="24">
-            <a-form-item label="数据时间">
-              <j-date date-format="YYYY-MM-DD" placeholder="请选择时间" v-model="queryParam.dataTime"></j-date>
+            <a-form-item label="数据时间" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <a-date-picker
+                :placeholder="placeholder"
+                :format="format"
+                :mode="mode2"
+                :value="timeValue"
+                @change="searchTimeChange"
+                @panelChange="handlePanelChange"
+                :showTime="showTime"
+              />
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
@@ -35,14 +58,6 @@
       </a-form>
     </div>
     <!-- 查询区域-END -->
-
-    <!-- 操作按钮区域 -->
-    <div class="table-operator">
-
-      <!--      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">-->
-      <!--        <a-button type="primary" icon="import">导入</a-button>-->
-      <!--      </a-upload>-->
-    </div>
 
     <!-- table区域-begin -->
     <div>
@@ -87,6 +102,7 @@
 
   export default {
     name: "SiteQualityRank",
+    //混入的create优先级最高，没办法在他查询之前做预处理
     mixins:[JeecgListMixin, mixinDevice],
     components: {
       JDictSelectTag,
@@ -95,6 +111,20 @@
     },
     data () {
       return {
+        mode2: "date",
+        placeholder:"日期",
+        format:"YYYY-MM-DD",
+        timeValue:'',
+        showTime:{format:'YYYY-MM-DD'},
+        searchTime:'',
+        labelCol: {
+          xs: {span: 24},
+          sm: {span: 6},
+        },
+        wrapperCol: {
+          xs: {span: 24},
+          sm: {span: 16},
+        },
         description: '站点质量排名页面',
         tagColors:{
           1:'#00E400',
@@ -105,12 +135,15 @@
           6:'#7E0023',
         },
         queryParam: {
-          companyIds:this.$store.getters.userInfo.companyIds.join(',')
+          companyIds:this.$store.getters.userInfo.companyIds.join(','),
+          dataType:'day'
         },
         items:[],
         siteOriginal:[],
+        columns:[],
+
         // 表头
-        columns: [
+        columns1: [
           {
             title: '序号',
             dataIndex: '',
@@ -235,12 +268,297 @@
             sorter: (a, b) => a.a3400424Avg - b.a3400424Avg
           }
         ],
+        columns2:[
+          {
+            title: '序号',
+            dataIndex: '',
+            key:'rowIndex',
+            width:60,
+            align:"center",
+            customRender:this.calcIndex,
+          },
+          {
+            title:'行政区域',
+            align:"center",
+            dataIndex: 'area',
+            customRender:this.getAreaByCode,
+          },
+          {
+            title:'监测点位名称',
+            align:"center",
+            dataIndex: 'siteName',
+          },
+          {
+            title:'数据时间',
+            align:"center",
+            dataIndex: 'month',
+          },
+          {
+            title:'综合指数',
+            align:"center",
+            dataIndex: 'totalI'
+          },
+          {
+            title:'首要污染物',
+            align:"center",
+            dataIndex: 'meaning'
+          },
+          {
+            title:'空气质量指数级别',
+            align:"center",
+            dataIndex: 'level',
+            customRender:function (text){
+              if(text === '1'){
+                return "一级";
+              }else if(text==='2'){
+                return "二级";
+              }else if(text==='3'){
+                return "三级";
+              }else if(text==='4'){
+                return "四级";
+              }else if(text==='5'){
+                return "五级";
+              }else
+                return "六级";
+            },
+            sorter: (a, b) => a.level - b.level
+          },
+          {
+            title:'空气质量指数类别',
+            align:"center",
+            dataIndex: 'level_dictText',
+            key: 'airLevel',
+            scopedSlots: { customRender:'airLevel'},
+            sorter: (a, b) => a.level - b.level
+          },
+          {
+            title:'站点排名',
+            align:"center",
+            dataIndex: 'rank',
+            sorter: (a, b) => a.rank - b.rank
+          },
+          {
+            title:() => {
+              return (
+                <div>
+                  <span>二氧化硫(SO2)</span><br/>
+                  <span>月平均浓度(μg/m3)</span>
+                </div>
+              )},
+            align:"center",
+            dataIndex: 'a21026Avg',
+            sorter: (a, b) => a.a21026Avg - b.a21026Avg
+          },
+          {
+            title:() => {
+              return (
+                <div>
+                  <span>二氧化氮(NO2)</span><br/>
+                  <span>月平均浓度(μg/m3)</span>
+                </div>
+              )},
+            align:"center",
+            dataIndex: 'a21004Avg',
+            sorter: (a, b) => a.a21004Avg - b.a21004Avg
+          },
+          {
+            title:() => {
+              return (
+                <div>
+                  <span>PM10</span><br/>
+                  <span>月平均浓度(μg/m3)</span>
+                </div>
+              )},
+            align:"center",
+            dataIndex: 'a34002Avg',
+            sorter: (a, b) => a.a34002Avg - b.a34002Avg
+          },
+          {
+            title:() => {
+              return (
+                <div>
+                  <span>一氧化碳(CO)</span><br/>
+                  <span>月平均浓度(μg/m3)</span>
+                </div>
+              )},
+            align:"center",
+            dataIndex: 'a21005Avg',
+            sorter: (a, b) => a.a21005Avg - b.a21005Avg
+          },
+          {
+            title:() => {
+              return (
+                <div>
+                  <span>臭氧(O3)</span><br/>
+                  <span>月平均浓度(μg/m3)</span>
+                </div>
+              )},
+            align:"center",
+            dataIndex: 'a05024Avg',
+            sorter: (a, b) => a.a05024Avg - b.a05024Avg
+          },
+          {
+            title:() => {
+              return (
+                <div>
+                  <span>PM2.5</span><br/>
+                  <span>月平均浓度(μg/m3)</span>
+                </div>
+              )},
+            align:"center",
+            dataIndex: 'a34004Avg',
+            sorter: (a, b) => a.a34004Avg - b.a34004Avg
+          }
+        ],
+        columns3:[
+          {
+            title: '序号',
+            dataIndex: '',
+            key:'rowIndex',
+            width:60,
+            align:"center",
+            customRender:this.calcIndex,
+          },
+          {
+            title:'行政区域',
+            align:"center",
+            dataIndex: 'area',
+            customRender: this.getAreaByCode
+          },
+          {
+            title:'监测点位名称',
+            align:"center",
+            dataIndex: 'siteName'
+          },
+          {
+            title:'年份',
+            align:"center",
+            dataIndex: 'year',
+          },
+          {
+            title:'综合指数',
+            align:"center",
+            dataIndex: 'totalI'
+          },
+          {
+            title:'首要污染物',
+            align:"center",
+            dataIndex: 'meaning'
+          },
+          {
+            title:'空气质量指数级别',
+            align:"center",
+            dataIndex: 'level',
+            customRender:function (text){
+              if(text === '1'){
+                return "一级";
+              }else if(text==='2'){
+                return "二级";
+              }else if(text==='3'){
+                return "三级";
+              }else if(text==='4'){
+                return "四级";
+              }else if(text==='5'){
+                return "五级";
+              }else
+                return "六级";
+            },
+            sorter: (a, b) => a.level - b.level
+          },
+          {
+            title:'空气质量指数类别',
+            align:"center",
+            dataIndex: 'level_dictText',
+            key: 'airLevel',
+            scopedSlots: { customRender:'airLevel'},
+            sorter: (a, b) => a.level - b.level
+          },
+          {
+            title:'站点排名',
+            align:"center",
+            dataIndex: 'rank',
+            sorter: (a, b) => a.rank - b.rank
+          },
+          {
+            title:() => {
+              return (
+                <div>
+                  <span>二氧化硫(SO2)</span><br/>
+                  <span>年平均浓度(μg/m3)</span>
+                </div>
+              )},
+            align:"center",
+            dataIndex: 'a21026Avg',
+            sorter: (a, b) => a.a21026Avg - b.a21026Avg
+          },
+          {
+            title:() => {
+              return (
+                <div>
+                  <span>二氧化氮(NO2)</span><br/>
+                  <span>年平均浓度(μg/m3)</span>
+                </div>
+              )},
+            align:"center",
+            dataIndex: 'a21004Avg',
+            sorter: (a, b) => a.a21004Avg - b.a21004Avg
+          },
+          {
+            title:() => {
+              return (
+                <div>
+                  <span>PM10</span><br/>
+                  <span>年平均浓度(μg/m3)</span>
+                </div>
+              )},
+            align:"center",
+            dataIndex: 'a34002Avg',
+            sorter: (a, b) => a.a34002Avg - b.a34002Avg
+          },
+          {
+            title:() => {
+              return (
+                <div>
+                  <span>一氧化碳(CO)</span><br/>
+                  <span>年平均浓度(μg/m3)</span>
+                </div>
+              )},
+            align:"center",
+            dataIndex: 'a21005Avg',
+            sorter: (a, b) => a.a21005Avg - b.a21005Avg
+          },
+          {
+            title:() => {
+              return (
+                <div>
+                  <span>臭氧(O3)</span><br/>
+                  <span>年平均浓度(μg/m3)</span>
+                </div>
+              )},
+            align:"center",
+            dataIndex: 'a05024Avg',
+            sorter: (a, b) => a.a05024Avg - b.a05024Avg
+          },
+          {
+            title:() => {
+              return (
+                <div>
+                  <span>PM2.5</span><br/>
+                  <span>年平均浓度(μg/m3)</span>
+                </div>
+              )},
+            align:"center",
+            dataIndex: 'a34004Avg',
+            sorter: (a, b) => a.a34004Avg - b.a34004Avg
+          }
+        ],
         url: {
           list: "/day/airqDay/querySiteDay",
           exportXlsUrl: "/day/airqDay/exportSiteDay"
         },
         dictOptions:{},
-        areaHandler:''
+        areaHandler:'',
+
       }
     },
     computed: {
@@ -252,6 +570,47 @@
       initDictConfig(){
         loadAreaDate()
       },
+      dataTypeChange(e){
+        const dataType = e.target.value;
+        this.dataType = dataType;
+        this.timeValue = '';
+        if(dataType==="day"){
+          this.mode2= "date";
+          this.format="YYYY-MM-DD";
+          this.placeholder="日期";
+          this.queryParam.dataType = "day";
+          this.showTime = {format:'YYYY-MM-DD'};
+          this.columns = this.columns1;
+        }else if(dataType==="month"){
+          this.mode2 = "month";
+          this.placeholder="月份";
+          this.format="YYYY-MM";
+          this.queryParam.dataType = "month";
+          this.showTime = {format:'YYYY-MM'};
+          this.columns = this.columns2;
+        }else if(dataType==="year"){
+          this.mode2 = "year";
+          this.placeholder="年份";
+          this.format="YYYY";
+          this.queryParam.dataType = "year";
+          this.showTime = {format:'YYYY'};
+          this.columns = this.columns3;
+        }
+        this.loadData(1);
+      },
+      searchTimeChange(value,dataStr) {
+        this.timeValue = value;
+        this.searchTime = this.parseDate(value);
+        this.queryParam.searchTime = this.searchTime;
+      },
+      handlePanelChange(value, mode) {
+        this.timeValue = value;
+        this.searchTime = this.parseDate(value);
+        this.queryParam.searchTime = this.searchTime;
+      },
+      parseDate(value){
+        return  value.format(this.format);
+      },
       toSearchReset() {
         this.queryParam = {companyIds:this.$store.getters.userInfo.companyIds.join(',')};
         this.loadData(1);
@@ -262,6 +621,7 @@
       areaChange(val){
         let _this = this
         _this.items=[]
+        if(_this.siteOriginal)
         _this.siteOriginal.forEach(e=>{
           if(e.area === val){
             _this.items.push(e)
@@ -286,13 +646,12 @@
       },
     },
     mounted(){
-
       let that = this;
+      that.columns = that.columns1
       querySiteNameAndMn({companyIds:this.$store.getters.userInfo.companyIds.join(',')}).then((res)=>{
         if(res.success){
           that.siteOriginal = res.result;
           that.items = res.result;
-
         }
       })
     }

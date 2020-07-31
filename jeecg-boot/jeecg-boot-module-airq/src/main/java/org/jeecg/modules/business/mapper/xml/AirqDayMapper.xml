@@ -160,10 +160,13 @@
         b.a21005_avg,b.a0502401_avg,b.a0502408_avg,b.a3400401_avg,
         b.a3400424_avg
 
-        from airq_day b INNER JOIN(select a.mn,
+        from airq_day b
+        <if test="queryDate == null">
+        INNER JOIN(select a.mn,
         max(b.data_time) data_time
         from airq_day b  left join site_monitor_point a on b.mn = a.mn
         WHERE b.state in (0,1) group by a.mn) c on b.mn = c.mn and b.data_time = c.data_time
+        </if>
         left join site_monitor_point a on  b.mn = a.mn
         WHERE b.state in (0,1)) t,(select @rownum:=0,@aqi:=0,@rows:=0) r
         where t.company_id in
@@ -179,7 +182,7 @@
         <if test="queryDate != null">
             and t.data_time = (#{queryDate})
         </if>
-        order by t.aqi asc
+        order by ISNULL(t.aqi), t.aqi asc
 
     </select>
     <select id="querySiteDayExport" resultMap="SiteQualityRankDayVO">
@@ -193,10 +196,13 @@
         b.a21005_avg,b.a0502401_avg,b.a0502408_avg,b.a3400401_avg,
         b.a3400424_avg
 
-        from airq_day b INNER JOIN(select a.mn,
+        from airq_day b
+        <if test="queryDate == null">
+        INNER JOIN(select a.mn,
         max(b.data_time) data_time
         from airq_day b  left join site_monitor_point a on b.mn = a.mn
         WHERE b.state in (0,1) group by a.mn) c on b.mn = c.mn and b.data_time = c.data_time
+        </if>
         left join site_monitor_point a on  b.mn = a.mn
         WHERE b.state in (0,1)) t,(select @rownum:=0,@aqi:=0,@rows:=0) r
         where t.company_id in
@@ -212,7 +218,7 @@
         <if test="queryDate != null">
             and t.data_time = (#{queryDate})
         </if>
-        order by t.aqi asc
+        order by ISNULL(t.aqi), t.aqi asc
 
     </select>
 </mapper>

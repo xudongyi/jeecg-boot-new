@@ -1,5 +1,6 @@
 package org.jeecg.modules.business.service.impl;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -11,11 +12,13 @@ import org.jeecg.modules.business.utils.RedisCacheUtil;
 import org.jeecg.modules.business.vo.AirqMonthQualityVO;
 import org.jeecg.modules.business.vo.AirqVO;
 import org.jeecg.modules.business.vo.AirqYearQualityVO;
+import org.jeecg.modules.business.vo.SiteQualityRankMonthVO;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import javax.annotation.Resource;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,6 +69,15 @@ public class AirqMonthServiceImpl extends ServiceImpl<AirqMonthMapper, AirqMonth
             airqMonthQualityVO.setMeaning(redisCacheUtil.transformCode(airqMonthQualityVO.getFirstCode()));
         });
         return airqMonthQualityVOS;
+    }
+
+    @Override
+    public IPage<SiteQualityRankMonthVO> querySiteMonth(String companyIds, Page<SiteQualityRankMonthVO> page, String area, String mn, String queryDate) {
+        List<SiteQualityRankMonthVO> airqMonthQualityVOS = airqMonthMapper.querySiteMonth(companyIds.split(","), page,area,mn,queryDate);
+        airqMonthQualityVOS.forEach(airqMonthQualityVO -> {
+            airqMonthQualityVO.setMeaning(redisCacheUtil.transformCode(airqMonthQualityVO.getFirstCode()));
+        });
+        return page.setRecords(airqMonthQualityVOS);
     }
 
 }

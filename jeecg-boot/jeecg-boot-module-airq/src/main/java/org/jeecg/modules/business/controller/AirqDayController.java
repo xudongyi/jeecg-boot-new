@@ -17,6 +17,8 @@ import org.jeecg.common.util.RedisUtil;
 import org.jeecg.modules.business.constant.SelfExcelConstants;
 import org.jeecg.modules.business.entity.AirqDay;
 import org.jeecg.modules.business.service.IAirqDayService;
+import org.jeecg.modules.business.service.IAirqMonthService;
+import org.jeecg.modules.business.service.IAirqYearService;
 import org.jeecg.modules.business.service.ISysDictService;
 import org.jeecg.modules.business.view.SelfEntityExcelView;
 import org.jeecg.modules.business.vo.AirqDayQualityVo;
@@ -46,6 +48,10 @@ import java.util.*;
 public class AirqDayController extends JeecgController<AirqDay, IAirqDayService> {
 	@Autowired
 	private IAirqDayService airqDayService;
+	 @Autowired
+	 private IAirqMonthService airqMonthService;
+	 @Autowired
+	 private IAirqYearService airqYearService;
 	@Autowired
 	private ISysDictService sysDictService;
 	@Autowired
@@ -236,31 +242,44 @@ public class AirqDayController extends JeecgController<AirqDay, IAirqDayService>
 	 }
 
 	 /**
-	  * 站点质量日排名
+	  * 站点质量排名
 	  *
 	  * @param req
 	  * @return
 	  */
-	 @AutoLog(value = "站点质量日排名")
-	 @ApiOperation(value="airq_Day-站点质量日排名", notes="airq_Day-站点质量日排名")
+	 @AutoLog(value = "站点质量排名")
+	 @ApiOperation(value="站点质量排名", notes="站点质量排名")
 	 @GetMapping(value = "/querySiteDay")
 	 public Result<?> querySiteDay(@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
 								   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
 								   HttpServletRequest req) throws ParseException {
 		 String companyIds = req.getParameter("companyIds");
 		 String area = req.getParameter("area");
-		 //通过选择站点名称获取站点mn号
 		 String mn = req.getParameter("mn");
-		 String dataTime = req.getParameter("dataTime");
+		 String dataTime = req.getParameter("searchTime");
+		 String dataType = req.getParameter("dataType");
 		 Timestamp queryDate;
-		 if(StrUtil.isEmpty(dataTime)) {
-		 	queryDate = null;
-		 }else {
-		 	queryDate = DateUtils.parseTimestamp(dataTime,"yyyy-MM-dd");
+		 if("day".equals(dataType)) {
+			 if(StrUtil.isEmpty(dataTime)) {
+				 queryDate = null;
+			 }else {
+				 queryDate = DateUtils.parseTimestamp(dataTime,"yyyy-MM-dd");
+			 }
+			 Page<SiteQualityRankDayVO> page = new Page<>(pageNo, pageSize);
+			 IPage<SiteQualityRankDayVO> dayList = airqDayService.querySiteDay(companyIds,page, area,mn,queryDate);
+			 return Result.ok(dayList);
 		 }
-		 Page<SiteQualityRankDayVO> page = new Page<>(pageNo, pageSize);
-		 IPage<SiteQualityRankDayVO> pageList = airqDayService.querySiteDay(companyIds,page, area,mn,queryDate);
-		 return Result.ok(pageList);
+		 else if("month".equals(dataType)) {
+			 Page<SiteQualityRankMonthVO> page = new Page<>(pageNo, pageSize);
+			 IPage<SiteQualityRankMonthVO> monthList = airqMonthService.querySiteMonth(companyIds,page, area,mn,dataTime);
+			 return Result.ok(monthList);
+		 }else{
+			 Page<SiteQualityRankYearVO> page = new Page<>(pageNo, pageSize);
+			 IPage<SiteQualityRankYearVO> yearList = airqYearService.querySiteYear(companyIds,page, area,mn,dataTime);
+			 return Result.ok(yearList);
+		 }
+
+
 	 }
 
 	 /**

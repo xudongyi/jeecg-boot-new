@@ -5,6 +5,7 @@ import org.jeecg.modules.business.entity.AirqYear;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.jeecg.modules.business.vo.AirqVO;
 import org.jeecg.modules.business.vo.AirqYearQualityVO;
+import org.jeecg.modules.business.vo.SiteQualityRankYearVO;
 
 import java.util.List;
 
@@ -20,4 +21,6 @@ public interface AirqYearMapper extends BaseMapper<AirqYear> {
 
     List<AirqYearQualityVO> queryAirqYearQuality(String[] companyIds, Page page, String area, String mn, String yearBegin,String yearEnd);
     List<AirqYearQualityVO> exportAirqYearQuality(String[] companyIds, String area, String mn, String yearBegin,String yearEnd);
+
+    List<SiteQualityRankYearVO> querySiteYear(String[] companyIds, Page page, String area, String mn, String queryDate);
  }
