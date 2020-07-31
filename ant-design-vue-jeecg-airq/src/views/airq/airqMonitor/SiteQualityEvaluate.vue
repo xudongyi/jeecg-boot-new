@@ -65,6 +65,7 @@
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
+        :scroll="{ x: 2800 }"
         class="j-table-force-nowrap"
         @change="handleTableChange">
 
@@ -126,33 +127,42 @@
             key:'rowIndex',
             width:60,
             align:"center",
-            customRender:this.calcIndex
+            customRender:this.calcIndex,
+            fixed:'left'
           },
           {
             title:'行政区域',
             align:"center",
             dataIndex: 'area',
             customRender:this.getAreaByCode,
+            fixed:'left',
+            width:100
           },
           {
             title:'监测点位名称',
             align:"center",
             dataIndex: 'siteName',
+            fixed:'left',
+            width:100
           },
           {
             title:'数据时间',
             align:"center",
-            dataIndex: 'dataTime'
+            dataIndex: 'dataTime',
+            fixed:'left',
+            width:100
           },
           {
             title:'AQI',
             align:"center",
-            dataIndex: 'aqi'
+            dataIndex: 'aqi',
+            width:100
           },
           {
             title:'首要污染物',
             align:"center",
-            dataIndex: 'meaning'
+            dataIndex: 'meaning',
+            width:150
           },
           {
             title:'空气质量指数级别',
@@ -171,14 +181,16 @@
                 return "五级";
               }else
                 return "六级";
-            }
+            },
+            width:150
           },
           {
             title:'空气质量指数类别',
             align:"center",
             dataIndex: 'level_dictText',
             key: 'airLevel',
-            scopedSlots: { customRender:'airLevel'}
+            scopedSlots: { customRender:'airLevel'},
+            width:150
           },
           {
             title:'数据来源',
@@ -190,17 +202,20 @@
               }else if(text===3){
                 return "手动采集";
               }
-            }
+            },
+            width:150
           },
           {
             title:'对健康影响情况',
             align:"center",
-            dataIndex: 'advice'
+            dataIndex: 'advice',
+            width:500
           },
           {
             title:'建议采取的措施',
             align:"center",
-            dataIndex: 'levelContent'
+            dataIndex: 'levelContent',
+            width:500
           }
         ],
         url: {

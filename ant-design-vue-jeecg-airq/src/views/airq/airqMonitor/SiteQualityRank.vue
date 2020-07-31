@@ -71,6 +71,7 @@
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
+        :scroll="{ x: 2600 }"
         class="j-table-force-nowrap"
         @change="handleTableChange">
 
@@ -150,23 +151,33 @@
             key:'rowIndex',
             width:60,
             align:"center",
-            customRender:this.calcIndex
+            customRender:this.calcIndex,
+            fixed:'left'
           },
           {
             title:'行政区域',
             align:"center",
             dataIndex: 'area',
             customRender:this.getAreaByCode,
+            fixed:'left',
+            width:160
           },
           {
             title:'监测点位名称',
             align:"center",
             dataIndex: 'siteName',
+            fixed:'left',
+            width:160
           },
           {
             title:'数据时间',
             align:"center",
-            dataIndex: 'dataTime'
+            dataIndex: 'dataTime',
+            customRender:function (text) {
+              return !text?"":(text.length>10?text.substr(0,10):text)
+            },
+            fixed:'left',
+            width:160
           },
           {
             title:'AQI',
@@ -276,22 +287,29 @@
             width:60,
             align:"center",
             customRender:this.calcIndex,
+            fixed:'left'
           },
           {
             title:'行政区域',
             align:"center",
             dataIndex: 'area',
             customRender:this.getAreaByCode,
+            fixed:'left',
+            width:150
           },
           {
             title:'监测点位名称',
             align:"center",
             dataIndex: 'siteName',
+            fixed:'left',
+            width:150
           },
           {
             title:'数据时间',
             align:"center",
             dataIndex: 'month',
+            fixed:'left',
+            width:150
           },
           {
             title:'综合指数',
@@ -418,22 +436,29 @@
             width:60,
             align:"center",
             customRender:this.calcIndex,
+            fixed:'left'
           },
           {
             title:'行政区域',
             align:"center",
             dataIndex: 'area',
-            customRender: this.getAreaByCode
+            customRender: this.getAreaByCode,
+            fixed:'left',
+            width:150
           },
           {
             title:'监测点位名称',
             align:"center",
-            dataIndex: 'siteName'
+            dataIndex: 'siteName',
+            fixed:'left',
+            width:150
           },
           {
             title:'年份',
             align:"center",
             dataIndex: 'year',
+            fixed:'left',
+            width:150
           },
           {
             title:'综合指数',
