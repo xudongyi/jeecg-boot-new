@@ -272,9 +272,9 @@ public class StatisticController {
                     if ("hour".equals(dataType)) {
                         String colum = "";
                         if (pollutionType.equals("A34004") || pollutionType.equals("A34002")) {
-                            colum = pollutionType + "01_avg";
+                            colum = pollutionType + "01_iaqi";
                         } else {
-                            colum = pollutionType + "_avg";
+                            colum = pollutionType + "_iaqi";
                         }
                         if (StrUtil.isEmpty(searchTime)) {
                             DateTime yesterday = DateUtil.yesterday();
@@ -319,9 +319,9 @@ public class StatisticController {
                     } else {
                         String colum = "";
                         if (pollutionType.equals("A34004") || pollutionType.equals("A34002")) {
-                            colum = pollutionType + "24_AVG";
+                            colum = pollutionType + "24_iaqi";
                         } else {
-                            colum = pollutionType + "_AVG";
+                            colum = pollutionType + "_iaqi";
                         }
                         if (StrUtil.isEmpty(searchTime)) {
                             DateTime lastWeek = DateUtil.lastWeek();
@@ -332,7 +332,7 @@ public class StatisticController {
                             timeStart = split[0];
                             timeEnd = split[1];
                         }
-                        QueryWrapper<AirqDay> wrapper = new QueryWrapper<AirqDay>().select(colum, "data_time", "mn").in("MN", mns).between("data_time", timeStart, timeEnd);
+                        QueryWrapper<AirqDay> wrapper = new QueryWrapper<AirqDay>().select(colum, "data_time", "mn").in("mn", mns).between("data_time", timeStart, timeEnd);
                         List<Map<String, Object>> airqDayMaps = airqDayServic.listMaps(wrapper);
                         List<Map<String, Object>> series = new ArrayList<>();
                         if (CollectionUtil.isNotEmpty(airqDayMaps)) {
@@ -414,8 +414,14 @@ public class StatisticController {
                                 Map<String, Object> lastMap = lastAirqMonths.get(i);
                                 months.add(StrUtil.toString(map.get("month")));
                                 //计算aqi
-                                aqis.add(airQualityUtil.getAQI(pollutionType, 24, (Double) map.get(pollutionType + "_i")));
-                                lastAqis.add(airQualityUtil.getAQI(pollutionType, 24, (Double) lastMap.get(pollutionType + "_i")));
+                                double aqi = airQualityUtil.getAQI(pollutionType, 24, (Double) map.get(pollutionType + "_i"));
+                                double lastAqi = airQualityUtil.getAQI(pollutionType, 24, (Double) lastMap.get(pollutionType + "_i"));
+                                if (aqi > -1) {
+                                    aqis.add(aqi);
+                                }
+                                if (lastAqi > -1) {
+                                    lastAqis.add(lastAqi);
+                                }
                             }
                         } else {
                             for (int i = 0; i < airqMonths.size(); i++) {
@@ -428,143 +434,148 @@ public class StatisticController {
                         }
                     }
                     //最大的aqi
-                    Double aqiMax = Collections.max(aqis);
-                    Double lastAqiMax = Collections.max(lastAqis);
-                    Double maxaqi = aqiMax > lastAqiMax ? aqiMax : lastAqiMax;
-                    maxaqi = (Math.floor(maxaqi / 100) + 1) * 100;
-                    resultMap.put("aqiMax", maxaqi);
-                    //组织legend
-                    List<String> legend = new ArrayList<>();
-                    legend.add(lastYear);
-                    legend.add(searchTime);
-                    legend.add("同比增长率");
-                    resultMap.put("legend", legend);
-                    //组织X轴数据
-                    List<String> monthNums = new ArrayList<>();
-                    if (CollectionUtil.isNotEmpty(months)) {
-                        //组织
-                        for (int i = 0; i < months.size(); i++) {
-                            String month = months.get(i);
-                            String monthNum = month.substring(5, 7) + "月";
-                            monthNums.add(monthNum);
+                    if (aqis != null && aqis.size() > 0 && lastAqis != null && lastAqis.size() > 0) {
+                        double aqiMax = Collections.max(aqis);
+                        double lastAqiMax = Collections.max(lastAqis);
+                        Double maxaqi = aqiMax > lastAqiMax ? aqiMax : lastAqiMax;
+                        maxaqi = (Math.floor(maxaqi / 100) + 1) * 100;
+                        resultMap.put("aqiMax", maxaqi);
+                        //组织legend
+                        List<String> legend = new ArrayList<>();
+                        legend.add(lastYear);
+                        legend.add(searchTime);
+                        legend.add("同比增长率");
+                        resultMap.put("legend", legend);
+                        //组织X轴数据
+                        List<String> monthNums = new ArrayList<>();
+                        if (CollectionUtil.isNotEmpty(months)) {
+                            //组织
+                            for (int i = 0; i < months.size(); i++) {
+                                String month = months.get(i);
+                                String monthNum = month.substring(5, 7) + "月";
+                                monthNums.add(monthNum);
+                            }
                         }
-                    }
-                    resultMap.put("xDate", monthNums);
-                    //组织series
-                    //计算同比增长率
-                    List<Double> percents = new ArrayList<>();
-                    for (int i = 0; i < aqis.size(); i++) {
-                        Double aqi = aqis.get(i);
-                        Double lastAqi = lastAqis.get(i);
-                        double percent = (aqi - lastAqi) / lastAqi;
-                        BigDecimal b = BigDecimal.valueOf(percent * 100);
-                        double f1 = b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-                        percents.add(f1);
-                    }
-                    //最大的增长率
-                    Double percentMax = null;
-                    Double percentMin = null;
-                    if (Collections.max(percents) < 0) {
-                        percentMax = (Math.ceil(Collections.max(percents) / 100) - 1) * 100;
-                    } else {
-                        percentMax = (Math.floor(Collections.max(percents) / 100) + 1) * 100;
-                    }
-                    if (Collections.min(percents) < 0) {
-                        percentMin = (Math.ceil(Collections.min(percents) / 100) - 1) * 100;
-                    } else {
-                        percentMin = (Math.floor(Collections.min(percents) / 100) + 1) * 100;
-                    }
+                        resultMap.put("xDate", monthNums);
+                        //组织series
+                        //计算同比增长率
+                        List<Double> percents = new ArrayList<>();
+                        for (int i = 0; i < aqis.size(); i++) {
+                            Double aqi = aqis.get(i);
+                            Double lastAqi = lastAqis.get(i);
+                            double percent = (aqi - lastAqi) / lastAqi;
+                            BigDecimal b = BigDecimal.valueOf(percent * 100);
+                            double f1 = b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+                            percents.add(f1);
+                        }
+                        //最大的增长率
+                        Double percentMax = null;
+                        Double percentMin = null;
+                        if (Collections.max(percents) < 0) {
+                            percentMax = (Math.ceil(Collections.max(percents) / 100) - 1) * 100;
+                        } else {
+                            percentMax = (Math.floor(Collections.max(percents) / 100) + 1) * 100;
+                        }
+                        if (Collections.min(percents) < 0) {
+                            percentMin = (Math.ceil(Collections.min(percents) / 100) - 1) * 100;
+                        } else {
+                            percentMin = (Math.floor(Collections.min(percents) / 100) + 1) * 100;
+                        }
 
-                    resultMap.put("percentMax", percentMax);
-                    resultMap.put("percentMin", percentMin);
-                    List<Map<String, Object>> series = new ArrayList<>();
-                    for (int i = 0; i < 3; i++) {
-                        Map<String, Object> serieMap = new HashMap<>();
-                        if (i == 0) {
-                            serieMap.put("name", lastYear);
-                            serieMap.put("type", "bar");
-                            serieMap.put("barWidth", 15);
-                            serieMap.put("data", lastAqis);
-                            serieMap.put("barGap", 0);
-                        } else if (i == 1) {
-                            serieMap.put("name", searchTime);
-                            serieMap.put("type", "bar");
-                            serieMap.put("barWidth", 15);
-                            serieMap.put("data", aqis);
-                            serieMap.put("barGap", 0);
-                        } else if (i == 2) {
-                            serieMap.put("name", "同比增长率");
-                            serieMap.put("type", "line");
-                            serieMap.put("yAxisIndex", 1);
-                            serieMap.put("data", percents);
+                        resultMap.put("percentMax", percentMax);
+                        resultMap.put("percentMin", percentMin);
+                        List<Map<String, Object>> series = new ArrayList<>();
+                        for (int i = 0; i < 3; i++) {
+                            Map<String, Object> serieMap = new HashMap<>();
+                            if (i == 0) {
+                                serieMap.put("name", lastYear);
+                                serieMap.put("type", "bar");
+                                serieMap.put("barWidth", 15);
+                                serieMap.put("data", lastAqis);
+                                serieMap.put("barGap", 0);
+                            } else if (i == 1) {
+                                serieMap.put("name", searchTime);
+                                serieMap.put("type", "bar");
+                                serieMap.put("barWidth", 15);
+                                serieMap.put("data", aqis);
+                                serieMap.put("barGap", 0);
+                            } else if (i == 2) {
+                                serieMap.put("name", "同比增长率");
+                                serieMap.put("type", "line");
+                                serieMap.put("yAxisIndex", 1);
+                                serieMap.put("data", percents);
+                            }
+                            series.add(serieMap);
                         }
-                        series.add(serieMap);
+                        resultMap.put("series", series);
                     }
-                    resultMap.put("series", series);
                 } else {
                     Map<String, Object> lastAirqYear = airqYearService.getMap(new QueryWrapper<AirqYear>().select("year", pollutionType + "_i").eq("mn", mn).eq("year", lastYear));
                     Map<String, Object> airqYear = airqYearService.getMap(new QueryWrapper<AirqYear>().select("year", pollutionType + "_i").eq("mn", mn).eq("year", searchTime));
-                    //组织legend
-                    List<String> legend = new ArrayList<>();
-                    legend.add("监测值");
-                    legend.add("同比增长率");
-                    resultMap.put("legend", legend);
-                    //组织X轴数据
-                    List<String> xData = new ArrayList<>();
-                    xData.add(lastYear);
-                    xData.add(searchTime);
-                    resultMap.put("xDate", xData);
-                    //组织data
-                    List<Double> aqis = new ArrayList<>();
-                    Double lastAqi = null;
-                    Double aqi = null;
-                    if ("total".equals(pollutionType)) {
-                        lastAqi = (Double) lastAirqYear.get(pollutionType + "_i");
-                        aqi = (Double) airqYear.get(pollutionType + "_i");
-                    } else {
-                        //计算sqi
-                        lastAqi = airQualityUtil.getAQI(pollutionType, 24, (Double) lastAirqYear.get(pollutionType + "_i"));
-                        aqi = airQualityUtil.getAQI(pollutionType, 24, (Double) airqYear.get(pollutionType + "_i"));
-                    }
-                    aqis.add(lastAqi);
-                    aqis.add(aqi);
-                    //计算aqi上下限
-                    double aqiMax = lastAqi > aqi ? lastAqi : aqi;
-                    aqiMax = (Math.floor(aqiMax / 100) + 1) * 100;
-                    resultMap.put("aqiMax", aqiMax);
-                    //计算同比增长率
-                    double percent = (aqi - lastAqi) / lastAqi;
-                    BigDecimal b = BigDecimal.valueOf(percent * 100);
-                    double f1 = b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-                    List<Double> percents = new ArrayList<>();
-                    percents.add(f1);
-                    double max = 0;
-                    double min = 0;
-                    if (percent < 0) {
-                        min = (Math.ceil(percent / 100) - 1) * 100;
-                    } else {
-                        max = (Math.floor(percent / 100) + 1) * 100;
-                    }
-                    resultMap.put("percentMax", max);
-                    resultMap.put("percentMin", min);
-                    //组织series
-                    List<Map<String, Object>> series = new ArrayList<>();
-                    for (int i = 0; i < 2; i++) {
-                        Map<String, Object> serieMap = new HashMap<>();
-                        if (i == 0) {
-                            serieMap.put("name", "监测值");
-                            serieMap.put("type", "bar");
-                            serieMap.put("barWidth", 15);
-                            serieMap.put("data", aqis);
-                        } else if (i == 1) {
-                            serieMap.put("name", "同比增长率");
-                            serieMap.put("type", "line");
-                            serieMap.put("yAxisIndex", 1);
-                            serieMap.put("data", percents);
+                    if (lastAirqYear != null && lastAirqYear.size() > 0 && airqYear != null && airqYear.size() > 0) {
+                        //组织legend
+                        List<String> legend = new ArrayList<>();
+                        legend.add("监测值");
+                        legend.add("同比增长率");
+                        resultMap.put("legend", legend);
+                        //组织X轴数据
+                        List<String> xData = new ArrayList<>();
+                        xData.add(lastYear);
+                        xData.add(searchTime);
+                        resultMap.put("xDate", xData);
+                        //组织data
+                        List<Double> aqis = new ArrayList<>();
+                        Double lastAqi = null;
+                        Double aqi = null;
+                        if ("total".equals(pollutionType)) {
+                            lastAqi = (Double) lastAirqYear.get(pollutionType + "_i");
+                            aqi = (Double) airqYear.get(pollutionType + "_i");
+                        } else {
+                            //计算sqi
+                            lastAqi = airQualityUtil.getAQI(pollutionType, 24, (Double) lastAirqYear.get(pollutionType + "_i"));
+                            aqi = airQualityUtil.getAQI(pollutionType, 24, (Double) airqYear.get(pollutionType + "_i"));
                         }
-                        series.add(serieMap);
+                        aqis.add(lastAqi);
+                        aqis.add(aqi);
+                        //计算aqi上下限
+                        double aqiMax = lastAqi > aqi ? lastAqi : aqi;
+                        aqiMax = (Math.floor(aqiMax / 100) + 1) * 100;
+                        resultMap.put("aqiMax", aqiMax);
+                        //计算同比增长率
+                        double percent = (aqi - lastAqi) / lastAqi;
+                        BigDecimal b = BigDecimal.valueOf(percent * 100);
+                        double f1 = b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+                        List<Object> percents = new ArrayList<>();
+                        percents.add("-");
+                        percents.add(f1);
+                        double max = 0;
+                        double min = 0;
+                        if (percent < 0) {
+                            min = (Math.ceil(percent / 100) - 1) * 100;
+                        } else {
+                            max = (Math.floor(percent / 100) + 1) * 100;
+                        }
+                        resultMap.put("percentMax", max);
+                        resultMap.put("percentMin", min);
+                        //组织series
+                        List<Map<String, Object>> series = new ArrayList<>();
+                        for (int i = 0; i < 2; i++) {
+                            Map<String, Object> serieMap = new HashMap<>();
+                            if (i == 0) {
+                                serieMap.put("name", "监测值");
+                                serieMap.put("type", "bar");
+                                serieMap.put("barWidth", 15);
+                                serieMap.put("data", aqis);
+                            } else if (i == 1) {
+                                serieMap.put("name", "同比增长率");
+                                serieMap.put("type", "line");
+                                serieMap.put("yAxisIndex", 1);
+                                serieMap.put("data", percents);
+                            }
+                            series.add(serieMap);
+                        }
+                        resultMap.put("series", series);
                     }
-                    resultMap.put("series", series);
                 }
             }
         }
@@ -610,6 +621,8 @@ public class StatisticController {
             List<String> dateTimes = new ArrayList<>();
             List<Double> aqis = new ArrayList<>();
             List<Double> percents = new ArrayList<>();
+            List<Object> resultPercents = new ArrayList<>();
+            resultPercents.add("-");
             if ("day".equals(dataType)) {
                 QueryWrapper<AirqDay> queryWrapper = new QueryWrapper<AirqDay>().eq("mn", mn);
                 if ("AQI".equals(pollutionType)) {
@@ -624,13 +637,14 @@ public class StatisticController {
                             BigDecimal b = BigDecimal.valueOf(percent * 100);
                             double f1 = b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
                             percents.add(f1);
+                            resultPercents.add(f1);
                         }
                         aqis.add(airqDay.getAqi());
                         dateTimes.add(DateUtil.format(airqDay.getDataTime(), format));
                     }
                     resultMap.put("xDate", dateTimes);
                     //aqi最大值
-                    getResultMap(resultMap, aqis, percents);
+                    getResultMap(resultMap, aqis, percents, resultPercents);
                 } else {
                     queryWrapper.select(pollutionType + "_iaqi", "data_time").between("data_time", timeStart, timeEnd).orderByAsc("data_time");
                     List<Map<String, Object>> airqDayMaps = airqDayServic.listMaps(queryWrapper);
@@ -660,10 +674,11 @@ public class StatisticController {
                                 BigDecimal b = BigDecimal.valueOf(percent * 100);
                                 double f1 = b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
                                 percents.add(f1);
+                                resultPercents.add(f1);
                             }
                         }
                         resultMap.put("xDate", dateTimes);
-                        getResultMap(resultMap, aqis, percents);
+                        getResultMap(resultMap, aqis, percents, resultPercents);
                     }
                 }
             } else {
@@ -695,6 +710,7 @@ public class StatisticController {
                                 BigDecimal b = BigDecimal.valueOf(percent * 100);
                                 double f1 = b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
                                 percents.add(f1);
+                                resultPercents.add(f1);
                             }
                         } else {
                             double iaqi = (Double) airqDayMap.get(colum + "_i");
@@ -710,12 +726,13 @@ public class StatisticController {
                                 BigDecimal b = BigDecimal.valueOf(percent * 100);
                                 double f1 = b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
                                 percents.add(f1);
+                                resultPercents.add(f1);
                             }
                             aqis.add(aqi);
                         }
                     }
                     resultMap.put("xDate", dateTimes);
-                    getResultMap(resultMap, aqis, percents);
+                    getResultMap(resultMap, aqis, percents, resultPercents);
                 }
             }
 
@@ -723,7 +740,7 @@ public class StatisticController {
         return Result.ok(resultMap);
     }
 
-    private void getResultMap(Map<String, Object> resultMap, List<Double> aqis, List<Double> percents) {
+    private void getResultMap(Map<String, Object> resultMap, List<Double> aqis, List<Double> percents, List<Object> resultPercents) {
         //aqi最大值
         if (CollectionUtil.isNotEmpty(aqis)) {
             Double maxaqi = Collections.max(aqis);
@@ -765,7 +782,7 @@ public class StatisticController {
                 serieMap.put("name", "环比增长率");
                 serieMap.put("type", "line");
                 serieMap.put("yAxisIndex", 1);
-                serieMap.put("data", percents);
+                serieMap.put("data", resultPercents);
             }
             series.add(serieMap);
         }
@@ -800,7 +817,7 @@ public class StatisticController {
             }
             if (tempList != null && tempList.size() > 0) {
                 Map<String, List<Map<String, Object>>> grouplist = tempList.stream().collect(Collectors.groupingBy(e -> e.get("name").toString()));
-                List<AirqLevel> airqLevels = airqLevelService.list(new QueryWrapper<AirqLevel>().lambda().ne(AirqLevel::getLevel,"7"));
+                List<AirqLevel> airqLevels = airqLevelService.list(new QueryWrapper<AirqLevel>().lambda().ne(AirqLevel::getLevel, "7"));
                 for (int i = 0; i < airqLevels.size(); i++) {
                     int value = 0;
                     Map<String, Object> resultMap = new HashMap<>();

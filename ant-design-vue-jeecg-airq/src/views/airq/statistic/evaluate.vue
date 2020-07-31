@@ -114,7 +114,6 @@
   import {JeecgListMixin} from '@/mixins/JeecgListMixin'
   import {getAction} from '@/api/manage'
   import moment from 'moment'
-  import noDataPng from '@/assets/diynodata.png'
 
   export default {
     name: "evaluate",
@@ -349,11 +348,11 @@
         queryStatistic({dataType: that.dataType,pollutionType:that.pollutionType,searchTime:that.searchTime.join(","),checkedKeys:checkSites.join(",")}).then((res) => {
           var evaluate = document.getElementById("evaluate");
           if(!res.result || res.result.length==0){
-            this.myChart.clear();
+            that.myChart.clear();
             evaluate.style.background=`url(${require("@/assets/diynodata.png")}) no-repeat center`;
           }else{
             evaluate.style.background='';
-            this.drawLine(res.result,this.titleText);
+            that.drawLine(res.result,this.titleText);
           }
         })
       },
@@ -437,11 +436,12 @@
           checkSites.push(e.key);
         })
         queryStatistic({dataType: that.dataType,pollutionType:that.pollutionType,searchTime:that.searchTime.join(","),checkedKeys:checkSites.join(",")}).then((res) => {
-          if(!res.result){
-            this.myChart.clear();
-            var evaluate = document.getElementById("evaluate");
+          let evaluate = document.getElementById("evaluate");
+          if(!res.result|| res.result.length==0){
+            that.myChart.clear();
             evaluate.style.background=`url(${require("@/assets/diynodata.png")}) no-repeat center`;
           }else{
+            evaluate.style.background='';
             that.drawLine(res.result,this.titleText);
           }
         })

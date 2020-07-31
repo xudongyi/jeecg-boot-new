@@ -341,13 +341,12 @@
       quarterChange(value) {
         var myDate = new Date()
         var currYear = myDate.getFullYear();
-        var currMonth = myDate.getMonth();
+        var currMonth = myDate.getMonth()+1;
         if (currYear === value) {
           this.quarters = [];
           //判断当前月份是第几季度
           var currQuarter = Math.floor((currMonth % 3 == 0 ? (currMonth / 3) : (currMonth / 3 + 1)));
           if (currQuarter > 1) {
-            debugger
             for (var i = 1; i < currQuarter; i++) {
               this.quarters.push({value: this.quarterObj[i], label:i})
             }

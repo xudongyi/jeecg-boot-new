@@ -92,7 +92,10 @@
           <a-radio-button value="A21005" style="width: 10%;text-align:center;">
             CO
           </a-radio-button>
-          <a-radio-button value="A01001" style="width: 10%;text-align:center;">
+          <a-radio-button value="A05024" style="width: 10%;text-align:center;">
+            O<sub>3</sub>
+          </a-radio-button>
+         <!-- <a-radio-button value="A01001" style="width: 10%;text-align:center;">
             温度
           </a-radio-button>
           <a-radio-button value="A01002" style="width: 10%;text-align:center;">
@@ -103,7 +106,7 @@
           </a-radio-button>
           <a-radio-button value="A01006" style="width: 10%;text-align:center;">
             气压
-          </a-radio-button>
+          </a-radio-button>-->
         </a-radio-group>
         <a-button type="primary" style="float:right;margin-right: 17px" @click="downPic" size="small">导出图片</a-button>
       </div>
@@ -141,11 +144,11 @@
           "A21026": "SO2",
           "A21004": "NO2",
           "A21005": "CO",
-          "A05024": "O3",
-          "A01001": "温度",
+          "A0502408": "O3",
+         /* "A01001": "温度",
           "A01002": "湿度",
           "A01007": "风速",
-          "A01006": "气压"
+          "A01006": "气压"*/
         },
         dataTypeObj: {"day": "按日环比", "month": "按月环比"},
         autoExpandParent: true,
@@ -301,7 +304,6 @@
             left: 'center'
           },
           tooltip: {
-
             trigger: 'axis',
             formatter: function (params) {
               var htmlStr = '';
@@ -311,26 +313,28 @@
                 var seriesName = param.seriesName;//图例名称
                 var value = param.value;//y轴值
                 var color = param.color;//图例颜色
+                var componentSubType = param.componentSubType;//类型
                 debugger
                 if(i===0){
                   htmlStr += xName + '<br/>';//x轴的名称
                 }
                 htmlStr +='<div>';
                 //为了保证和原来的效果一样，这里自己实现了一个点的效果
-                htmlStr += '<span style="margin-right:5px;display:inline-block;width:10px;height:10px;border-radius:5px;background-color:'+color+';"></span>';
-
+                if(value!="-"){
+                  htmlStr += '<span style="margin-right:5px;display:inline-block;width:10px;height:10px;border-radius:5px;background-color:'+color+';"></span>';
+                }
                 // 文本颜色设置--2020-07-23(需要设置,请解注释下面一行)
                 //htmlStr += '<span style="color:'+color+'">';
-
                 //圆点后面显示的文本
-                if(i<1){
+                if(componentSubType==="bar"){
                   htmlStr += seriesName + '：' + value;
-                }else if(i===1){
-                  htmlStr += seriesName + '：' + value+'%';
+                }else if(componentSubType==="line"){
+                  if(value!="-"){
+                    htmlStr += seriesName + '：' + value+'%';
+                  }
                 }
                 // 文本颜色设置--2020-07-23(需要设置,请解注释下面一行)
                 //htmlStr += '</span>';
-
                 htmlStr += '</div>';
               }
               return htmlStr;
@@ -404,7 +408,14 @@
           searchTime: that.searchTime.join(","),
           selectedKeys: checkSites.join(",")
         }).then((res) => {
-          this.drawLine(res.result, this.titleText);
+          var chain = document.getElementById("chain");
+          if(!res.result|| JSON.stringify(res.result)=== JSON.stringify({})){
+            that.myChart.clear();
+            chain.style.background=`url(${require("@/assets/diynodata.png")}) no-repeat center`;
+          }else{
+            chain.style.background='';
+            that.drawLine(res.result, this.titleText);
+          }
         })
       },
       searchReset() {
@@ -495,7 +506,14 @@
           searchTime: that.searchTime.join(","),
           selectedKeys: checkSites.join(",")
         }).then((res) => {
-          that.drawLine(res.result, that.titleText);
+          var chain = document.getElementById("chain");
+          if(!res.result|| JSON.stringify(res.result)=== JSON.stringify({})){
+            that.myChart.clear();
+            chain.style.background=`url(${require("@/assets/diynodata.png")}) no-repeat center`;
+          }else{
+            chain.style.background='';
+            that.drawLine(res.result, this.titleText);
+          }
         })
       })
     }

@@ -47,7 +47,7 @@
             :expanded-keys="expandedKeys"
             :auto-expand-parent="autoExpandParent"
             :treeData="treeData"
-            :checkedKeys = "checkedKeys"
+            :checkedKeys="checkedKeys"
             @check="onCheck"
             @expand="onExpand"
           >
@@ -65,7 +65,7 @@
       <span
         style="text-align:center;display:block;height: 6%;line-height: 34px;border-top:1px solid rgba(217,217,217,1);">
               <a-button type="primary" @click="searchQuery" style="background-color: #0098A1" size="small">查询</a-button>
-              <a-button type="primary"  @click="searchReset" style="margin-left: 111px" size="small">重置</a-button>
+              <a-button type="primary" @click="searchReset" style="margin-left: 111px" size="small">重置</a-button>
       </span>
     </a-layout-sider>
     <a-layout-content theme="light" width="80%"
@@ -95,20 +95,20 @@
           <a-radio-button value="A21005" style="width: 10%;text-align:center;">
             CO
           </a-radio-button>
-          <a-radio-button value="A01001" style="width: 10%;text-align:center;">
-            温度
-          </a-radio-button>
-          <a-radio-button value="A01002" style="width: 10%;text-align:center;">
-            湿度
-          </a-radio-button>
-          <a-radio-button value="A01007" style="width: 10%;text-align:center;">
-            风速
-          </a-radio-button>
-          <a-radio-button value="A01006" style="width: 10%;text-align:center;">
-            气压
-          </a-radio-button>
+          <!-- <a-radio-button value="A01001" style="width: 10%;text-align:center;">
+             温度
+           </a-radio-button>
+           <a-radio-button value="A01002" style="width: 10%;text-align:center;">
+             湿度
+           </a-radio-button>
+           <a-radio-button value="A01007" style="width: 10%;text-align:center;">
+             风速
+           </a-radio-button>
+           <a-radio-button value="A01006" style="width: 10%;text-align:center;">
+             气压
+           </a-radio-button>-->
         </a-radio-group>
-        <a-button type="primary"  style="float:right;margin-right: 17px" @click="downPic" size="small">导出图片</a-button>
+        <a-button type="primary" style="float:right;margin-right: 17px" @click="downPic" size="small">导出图片</a-button>
       </div>
       <div id="trend" style="width:100%;height:80%;z-index:19;"></div>
     </a-layout-content>
@@ -116,7 +116,7 @@
 </template>
 
 <script>
-  import {querySiteName,queryTrend} from "../../requestAction/request";
+  import {querySiteName, queryTrend} from "../../requestAction/request";
   import AreaLinkSelect from '../component/AreaLinkSelect'
   import JDictSelectTag from "@/components/dict/JDictSelectTag"
   import {mixinDevice} from '@/utils/mixin'
@@ -134,29 +134,37 @@
 
     data() {
       return {
-        mode2: ["date","date"],
-        placeholder:["开始时间","结束时间"],
-        format:"YYYY-MM-DD HH",
-        titleText:"大气环境质量(AQI)趋势分析结果",
-        radioObj:{"AQI":"AQI","A34004":"PM2.5","A34002":"PM10","A21026":"SO2","A21004":"NO2","A21005":"CO","A05024":"O3","A01001":"温度","A01002":"湿度","A01007":"风速","A01006":"气压"},
-        showTime:{format:'HH'},
+        mode2: ["date", "date"],
+        placeholder: ["开始时间", "结束时间"],
+        format: "YYYY-MM-DD HH",
+        titleText: "大气环境质量(AQI)趋势分析结果",
+        radioObj: {
+          "AQI": "AQI",
+          "A34004": "PM2.5",
+          "A34002": "PM10",
+          "A21026": "SO2",
+          "A21004": "NO2",
+          "A21005": "CO",
+          "A05024": "O3"/*,"A01001":"温度","A01002":"湿度","A01007":"风速","A01006":"气压"*/
+        },
+        showTime: {format: 'HH'},
         autoExpandParent: true,
         expandedKeys: [],
-        siteType:3,
+        siteType: 3,
         data: [],
-        myChart:{},
-        dataType:'hour',
-        pollutionType:"AQI",
-        searchTime:[],
-        timeValue:[],
-        subtext:"",
+        myChart: {},
+        dataType: 'hour',
+        pollutionType: "AQI",
+        searchTime: [],
+        timeValue: [],
+        subtext: "",
         treeData: [],
         dataList: [],
         searchValue: '',
         items: [],
         siteData: [],
         checkedKeys: [],
-        area:"",
+        area: "",
         queryParam: {},
         labelCol: {
           xs: {span: 24},
@@ -175,7 +183,11 @@
       },
       selectChange() {
         let that = this;
-        querySiteName({area: this.queryParam.area,companyIds:this.$store.getters.userInfo.companyIds.join(','),siteType:this.siteType}).then((res) => {
+        querySiteName({
+          area: this.queryParam.area,
+          companyIds: this.$store.getters.userInfo.companyIds.join(','),
+          siteType: this.siteType
+        }).then((res) => {
           that.siteData = res.result;
           that.treeData = [];
           let newObj = that.dealAreaData(that.data);
@@ -190,7 +202,7 @@
               b.children.forEach((c) => {
                 let site = [];
                 res.result.forEach((e) => {
-                  if (c.key === e.area){
+                  if (c.key === e.area) {
                     site.push({key: e.key, title: e.siteName})
                     checkObj.push(e.key)
                   }
@@ -277,7 +289,7 @@
         this.checkedKeys = checkedKeys;  //只要站点的
         this.halfCheckedKeys = info.halfCheckedKeys;
       },
-      drawLine(data,titleText) {
+      drawLine(data, titleText) {
         var echarts = require('echarts');
         var myChart = echarts.init(document.getElementById('trend'));
         this.myChart = myChart;
@@ -290,11 +302,11 @@
           tooltip: {
             trigger: 'axis',
           },
-          color:['#00E400','#EFD600','#FF7E00'],
+          color: ['#00E400', '#EFD600', '#FF7E00'],
           legend: {
             data: data["siteName"],
             bottom: 10,
-            left:'center'
+            left: 'center'
           },
           xAxis: {
             type: 'category',
@@ -302,68 +314,75 @@
           },
           yAxis: {
             type: 'value',
-            name:"AQI"
+            name: "AQI"
           },
           series: data["series"]
         });
       },
-      parseDate(value){
-       return  [value[0].format(this.format),value[1].format(this.format)];
+      parseDate(value) {
+        return [value[0].format(this.format), value[1].format(this.format)];
       },
-      searchQuery(){
-        let  checkSites = [];
+      searchQuery() {
+        let checkSites = [];
         let that = this;
 
-        if(that.searchTime && that.searchTime.length>0){
-          that.subtext = "("+that.searchTime.join("~")+")";
-        }else{
+        if (that.searchTime && that.searchTime.length > 0) {
+          that.subtext = "(" + that.searchTime.join("~") + ")";
+        } else {
           that.subtext = "";
         }
-        if(!that.checkedKeys||that.checkedKeys.length==0){
+        if (!that.checkedKeys || that.checkedKeys.length == 0) {
           this.$message.error("请选择站点！");
           return;
         }
-        that.checkedKeys.forEach(e=>{
-          that.siteData.forEach(element=>{
-            if(e===element.key)
-              checkSites.push(e)
+        that.checkedKeys.forEach(e => {
+          that.siteData.forEach(element => {
+              if (e === element.key)
+                checkSites.push(e)
             }
           )
         })
-        queryTrend({dataType: that.dataType,pollutionType:that.pollutionType,searchTime:that.searchTime.join(","),checkedKeys:checkSites.join(",")}).then((res) => {
-          
-          let siteName = res.result["siteName"];
-          let dateTimes = res.result["dateTimes"];
-          let series = res.result["series"];
-          this.drawLine(res.result,this.titleText);
+        queryTrend({
+          dataType: that.dataType,
+          pollutionType: that.pollutionType,
+          searchTime: that.searchTime.join(","),
+          checkedKeys: checkSites.join(",")
+        }).then((res) => {
+          if (!res.result || res.result.length == 0) {
+            this.myChart.clear();
+            let trend = document.getElementById("trend");
+            trend.style.background = `url(${require("@/assets/diynodata.png")}) no-repeat center`;
+          } else {
+            this.drawLine(res.result, this.titleText);
+          }
         })
       },
-      searchReset(){
+      searchReset() {
         this.timeValue = [];
         this.checkedKeys = [];
         this.searchValue = "";
         this.area = "";
       },
-      dataTypeChange(e){
+      dataTypeChange(e) {
         const dataType = e.target.value;
         this.dataType = dataType;
         this.timeValue = [];
-        if(dataType==="day"){
+        if (dataType === "day") {
           this.showTime = false;
-          this.mode2= ["date","date"]
-          this.format="YYYY-MM-DD"
-          this.placeholder=["开始日期","结束日期"]
-        }else if(dataType==="hour"){
-          this.showTime = {format:'HH'};
-          this.mode2 = ["date","date"]
-          this.placeholder=["开始时间","结束时间"]
-          this.format="YYYY-MM-DD HH"
+          this.mode2 = ["date", "date"]
+          this.format = "YYYY-MM-DD"
+          this.placeholder = ["开始日期", "结束日期"]
+        } else if (dataType === "hour") {
+          this.showTime = {format: 'HH'};
+          this.mode2 = ["date", "date"]
+          this.placeholder = ["开始时间", "结束时间"]
+          this.format = "YYYY-MM-DD HH"
         }
         this.searchQuery();
       },
-      pollutionTypeChange(e){
+      pollutionTypeChange(e) {
         this.pollutionType = e.target.value;
-        this.titleText = "大气环境质量("+this.radioObj[e.target.value]+")趋势分析结果" ;
+        this.titleText = "大气环境质量(" + this.radioObj[e.target.value] + ")趋势分析结果";
         this.searchQuery();
       },
       searchTimeChange(value) {
@@ -374,8 +393,8 @@
         this.timeValue = value;
         this.searchTime = this.parseDate(value);
       },
-      downPic(){
-       let base64Url = this.myChart.getDataURL({
+      downPic() {
+        let base64Url = this.myChart.getDataURL({
           pixelRatio: 2,
           backgroundColor: '#fff'
         });
@@ -391,7 +410,7 @@
         let blob = new Blob([uInt8Array], {type: contentType});
         let evt = document.createEvent("HTMLEvents");
         evt.initEvent("click", true, true);//initEvent 不加后两个参数在FF下会报错  事件类型，是否冒泡，是否阻止浏览器的默认行为
-        aLink.download = this.titleText+new moment().format('YYYYMMDDHHmmss');
+        aLink.download = this.titleText + new moment().format('YYYYMMDDHHmmss');
         aLink.href = URL.createObjectURL(blob);
         // aLink.dispatchEvent(evt);
         //aLink.click()
@@ -409,15 +428,31 @@
       })
     }, mounted() {
       var that = this
-      let  checkSites = []
-      querySiteName({area: that.queryParam.area,companyIds:that.$store.getters.userInfo.companyIds.join(','),siteType:that.siteType}).then((res) => {
+      let checkSites = []
+      querySiteName({
+        area: that.queryParam.area,
+        companyIds: that.$store.getters.userInfo.companyIds.join(','),
+        siteType: that.siteType
+      }).then((res) => {
 
         let sites = res.result;
-        sites.forEach(e=>{
+        sites.forEach(e => {
           checkSites.push(e.key);
         })
-        queryTrend({dataType: that.dataType,pollutionType:that.pollutionType,searchTime:that.searchTime.join(","),checkedKeys:checkSites.join(",")}).then((res) => {
-          that.drawLine(res.result,that.titleText);
+        queryTrend({
+          dataType: that.dataType,
+          pollutionType: that.pollutionType,
+          searchTime: that.searchTime.join(","),
+          checkedKeys: checkSites.join(",")
+        }).then((res) => {
+          let trend = document.getElementById("trend");
+          if (!res.result || res.result.length == 0) {
+            this.myChart.clear();
+            trend.style.background = `url(${require("@/assets/diynodata.png")}) no-repeat center`;
+          } else {
+            trend.style.background='';
+            this.drawLine(res.result, this.titleText);
+          }
         })
       })
     }
