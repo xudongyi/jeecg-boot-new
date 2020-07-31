@@ -109,7 +109,7 @@ public class AirQualityUtil {
     public double getAQI(String factorCode, int type, double avg) {
         double aqi = -1.0D;
         Object result = this.redisUtil.hget("airq_aqi_map", factorCode + "-" + type);
-        if (StringUtils.isNotEmpty(result.toString())) {
+        if (result!=null && StringUtils.isNotEmpty(result.toString())) {
             List<AirqAQIBean> list = (List) CommonsUtil.toJsonObject(result.toString(), AirqAQIBean.class);
             if (list != null) {
                 for (int i = 0; i < list.size(); ++i) {

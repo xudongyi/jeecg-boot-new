@@ -117,13 +117,10 @@
 
 <script>
   import {querySiteName,queryTrend} from "../../requestAction/request";
-  import 'vue-happy-scroll/docs/happy-scroll.css'
   import AreaLinkSelect from '../component/AreaLinkSelect'
   import JDictSelectTag from "@/components/dict/JDictSelectTag"
   import {mixinDevice} from '@/utils/mixin'
   import {JeecgListMixin} from '@/mixins/JeecgListMixin'
-  import {HappyScroll} from 'vue-happy-scroll'
-  import 'vue-happy-scroll/docs/happy-scroll.css'
   import {getAction} from '@/api/manage'
   import moment from 'moment'
 
@@ -133,7 +130,6 @@
     components: {
       JDictSelectTag,
       AreaLinkSelect,
-      HappyScroll,
     },
 
     data() {
@@ -395,7 +391,7 @@
         let blob = new Blob([uInt8Array], {type: contentType});
         let evt = document.createEvent("HTMLEvents");
         evt.initEvent("click", true, true);//initEvent 不加后两个参数在FF下会报错  事件类型，是否冒泡，是否阻止浏览器的默认行为
-        aLink.download = "大气环境质量评价分析结果_"+new moment().format('YYYYMMDDHHmmss');
+        aLink.download = this.titleText+new moment().format('YYYYMMDDHHmmss');
         aLink.href = URL.createObjectURL(blob);
         // aLink.dispatchEvent(evt);
         //aLink.click()

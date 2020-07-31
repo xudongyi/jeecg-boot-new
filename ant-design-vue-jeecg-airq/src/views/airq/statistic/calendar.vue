@@ -103,12 +103,9 @@
 
 <script>
   import {querySiteName,queryCalendarAirQuality} from "../../requestAction/request";
-  import 'vue-happy-scroll/docs/happy-scroll.css'
   import AreaLinkSelect from '../component/AreaLinkSelect'
   import JDictSelectTag from "@/components/dict/JDictSelectTag"
   import {mixinDevice} from '@/utils/mixin'
-  import {HappyScroll} from 'vue-happy-scroll'
-  import 'vue-happy-scroll/docs/happy-scroll.css'
   import {getAction} from '@/api/manage'
   import moment from 'moment'
 
@@ -118,7 +115,6 @@
     components: {
       JDictSelectTag,
       AreaLinkSelect,
-      HappyScroll,
     },
 
     data() {
@@ -199,8 +195,12 @@
 
         if(!this.myChart){
           let dom  = document.getElementById("calendar")
-          dom.style.height = 100+360*parseInt(this.queryResult.months.length/3 +1 )+'px'
-          this.myChart = echarts.init( dom);
+           option ={
+            renderer: "Canvas",
+            height:1200
+          }
+          //dom.style.height = 100+360*parseInt(this.queryResult.months.length/3 +(this.queryResult.months.length%3>0?1:0) )+'px'
+          this.myChart = echarts.init( dom,null,option);
         }
         let that = this;
 

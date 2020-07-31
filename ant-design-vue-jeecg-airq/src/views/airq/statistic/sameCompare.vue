@@ -116,13 +116,10 @@
 
 <script>
   import {querySiteName, querySameCompare} from "../../requestAction/request";
-  import 'vue-happy-scroll/docs/happy-scroll.css'
   import AreaLinkSelect from '../component/AreaLinkSelect'
   import JDictSelectTag from "@/components/dict/JDictSelectTag"
   import {mixinDevice} from '@/utils/mixin'
   import {JeecgListMixin} from '@/mixins/JeecgListMixin'
-  import {HappyScroll} from 'vue-happy-scroll'
-  import 'vue-happy-scroll/docs/happy-scroll.css'
   import {getAction} from '@/api/manage'
   import moment from 'moment'
   import JDate from "../../../components/jeecg/JDate";
@@ -134,7 +131,6 @@
       JDate,
       JDictSelectTag,
       AreaLinkSelect,
-      HappyScroll,
     },
 
     data() {
@@ -311,6 +307,43 @@
           },
           tooltip: {
             trigger: 'axis',
+            formatter: function (params) {
+              var htmlStr = '';
+              for(var i=0;i<params.length;i++){
+                var param = params[i];
+                var xName = param.name;//x轴的名称
+                var seriesName = param.seriesName;//图例名称
+                var value = param.value;//y轴值
+                var color = param.color;//图例颜色
+                debugger
+                if(i===0){
+                  htmlStr += xName + '<br/>';//x轴的名称
+                }
+                htmlStr +='<div>';
+                //为了保证和原来的效果一样，这里自己实现了一个点的效果
+                htmlStr += '<span style="margin-right:5px;display:inline-block;width:10px;height:10px;border-radius:5px;background-color:'+color+';"></span>';
+
+                // 文本颜色设置--2020-07-23(需要设置,请解注释下面一行)
+                //htmlStr += '<span style="color:'+color+'">';
+
+                //圆点后面显示的文本
+                if(i<2){
+                  htmlStr += seriesName + '：' + value;
+                }else if(i===2){
+                  htmlStr += seriesName + '：' + value+'%';
+                }
+
+
+
+                // 文本颜色设置--2020-07-23(需要设置,请解注释下面一行)
+                //htmlStr += '</span>';
+
+                htmlStr += '</div>';
+              }
+              return htmlStr;
+            }
+
+
           },
           grid: {
             right: '20%'
@@ -335,9 +368,6 @@
               min: 0,
               max: data["aqiMax"],
               position: 'left',
-              axisLabel: {
-                formatter: '{value}'
-              }
             },
             {
               type: 'value',
@@ -345,6 +375,9 @@
               min: data["percentMin"],
               max: data["percentMax"],
               position: 'right',
+              axisLabel: {
+                formatter: '{value}%'
+              }
             }
           ],
           series: data["series"]
@@ -427,7 +460,7 @@
         let blob = new Blob([uInt8Array], {type: contentType});
         let evt = document.createEvent("HTMLEvents");
         evt.initEvent("click", true, true);//initEvent 不加后两个参数在FF下会报错  事件类型，是否冒泡，是否阻止浏览器的默认行为
-        aLink.download = "大气环境质量评价分析结果_" + new moment().format('YYYYMMDDHHmmss');
+        aLink.download = this.titleText + new moment().format('YYYYMMDDHHmmss');
         aLink.href = URL.createObjectURL(blob);
         // aLink.dispatchEvent(evt);
         //aLink.click()

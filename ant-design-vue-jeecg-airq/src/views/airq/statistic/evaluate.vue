@@ -80,10 +80,10 @@
           <a-radio-button value="AQI" style="width: 10%;text-align:center;">
             AQI
           </a-radio-button>
-          <a-radio-button value="A34004" style="width: 10%;text-align:center;">
+          <a-radio-button value="A3400424" style="width: 10%;text-align:center;">
             PM2.5
           </a-radio-button>
-          <a-radio-button value="A34002" style="width: 10%;text-align:center;">
+          <a-radio-button value="A3400224" style="width: 10%;text-align:center;">
             PM10
           </a-radio-button>
           <a-radio-button value="A21026" style="width: 10%;text-align:center;">
@@ -95,7 +95,7 @@
           <a-radio-button value="A21005" style="width: 10%;text-align:center;">
             CO
           </a-radio-button>
-          <a-radio-button value="A05024" style="width: 10%;text-align:center;">
+          <a-radio-button value="A0502408" style="width: 10%;text-align:center;">
             O<sub>3</sub>
           </a-radio-button>
         </a-radio-group>
@@ -108,15 +108,13 @@
 
 <script>
   import {querySiteName,queryStatistic} from "../../requestAction/request";
-  import 'vue-happy-scroll/docs/happy-scroll.css'
   import AreaLinkSelect from '../component/AreaLinkSelect'
   import JDictSelectTag from "@/components/dict/JDictSelectTag"
   import {mixinDevice} from '@/utils/mixin'
   import {JeecgListMixin} from '@/mixins/JeecgListMixin'
-  import {HappyScroll} from 'vue-happy-scroll'
-  import 'vue-happy-scroll/docs/happy-scroll.css'
   import {getAction} from '@/api/manage'
   import moment from 'moment'
+  import noDataPng from '@/assets/diynodata.png'
 
   export default {
     name: "evaluate",
@@ -124,7 +122,6 @@
     components: {
       JDictSelectTag,
       AreaLinkSelect,
-      HappyScroll,
     },
 
     data() {
@@ -133,7 +130,7 @@
         placeholder:["开始日期","结束日期"],
         format:"YYYY-MM-DD",
         titleText:"大气环境质量(AQI)评价分析结果",
-        radioObj:{"AQI":"AQI","A34004":"PM2.5","A34002":"PM10","A21026":"SO2","A21004":"NO2","A21005":"CO","A05024":"O3"},
+        radioObj:{"AQI":"AQI","A3400424":"PM2.5","A3400224":"PM10","A21026":"SO2","A21004":"NO2","A21005":"CO","A0502408":"O3"},
         autoExpandParent: true,
         expandedKeys: [],
         siteType:3,
@@ -322,7 +319,12 @@
         });
       },
       parseDate(value){
-       return  [value[0].format(this.format),value[1].format(this.format)];
+        if(value.length!=0){
+          return  [value[0].format(this.format),value[1].format(this.format)];
+        }else {
+          return  [];
+        }
+
       },
       searchQuery(){
         let  checkSites = [];
@@ -345,7 +347,14 @@
           )
         })
         queryStatistic({dataType: that.dataType,pollutionType:that.pollutionType,searchTime:that.searchTime.join(","),checkedKeys:checkSites.join(",")}).then((res) => {
-          this.drawLine(res.result,this.titleText);
+          var evaluate = document.getElementById("evaluate");
+          if(!res.result || res.result.length==0){
+            this.myChart.clear();
+            evaluate.style.background=`url(${require("@/assets/diynodata.png")}) no-repeat center`;
+          }else{
+            evaluate.style.background='';
+            this.drawLine(res.result,this.titleText);
+          }
         })
       },
       searchReset(){
@@ -423,13 +432,18 @@
       var that = this
       let  checkSites = []
       querySiteName({area: that.queryParam.area,companyIds:that.$store.getters.userInfo.companyIds.join(','),siteType:that.siteType}).then((res) => {
-
         let sites = res.result;
         sites.forEach(e=>{
           checkSites.push(e.key);
         })
         queryStatistic({dataType: that.dataType,pollutionType:that.pollutionType,searchTime:that.searchTime.join(","),checkedKeys:checkSites.join(",")}).then((res) => {
-          that.drawLine(res.result,that.titleText);
+          if(!res.result){
+            this.myChart.clear();
+            var evaluate = document.getElementById("evaluate");
+            evaluate.style.background=`url(${require("@/assets/diynodata.png")}) no-repeat center`;
+          }else{
+            that.drawLine(res.result,this.titleText);
+          }
         })
       })
     }
@@ -442,7 +456,6 @@
     height: 400px;
     border-top: 1px solid rgba(217, 217, 217, 1);
   }
-
   .ant-form-item {
     margin-bottom: 10px;
   }
