@@ -138,13 +138,15 @@
             align:"center",
             dataIndex: 'area',
             customRender:this.getAreaByCode,
-            fixed:'left'
+            fixed:'left',
+            width:150
           },
           {
             title:'监测点位名称',
             align:"center",
             dataIndex: 'siteName',
-            fixed:'left'
+            fixed:'left',
+            width:150
           },
           {
             title:'发布时间',
@@ -157,7 +159,7 @@
             title:'AQI',
             align:"center",
             dataIndex: 'aqi',
-            width:60,
+            width:130,
             sorter: (a, b) => a.aqi - b.aqi
           },
           {
@@ -190,8 +192,9 @@
                 return "四级";
               }else if(text==='5'){
                 return "五级";
-              }else
+              }else if(text==='6'){
                 return "六级";
+              }
             }
           },
           {

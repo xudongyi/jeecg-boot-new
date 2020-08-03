@@ -154,13 +154,15 @@
             align:"center",
             dataIndex: 'area',
             customRender:this.getAreaByCode,
-            fixed:'left'
+            fixed:'left',
+            width:150
           },
           {
             title:'监测点位名称',
             align:"center",
             dataIndex: 'siteName',
-            fixed:'left'
+            fixed:'left',
+            width:150
           },
           {
             title:'数据时间',

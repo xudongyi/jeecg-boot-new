@@ -391,26 +391,56 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 	@ApiOperation(value="airq_hour-添加", notes="airq_hour-添加")
 	@PostMapping(value = "/add")
 	public Result<?> add(@RequestBody AirqHour airqHour) {
+		Map<String,Double> map = new HashMap<>();
         for(Field field:airqHour.getClass().getDeclaredFields()){
 			field.setAccessible(true);
-        	String fielName =  field.getName();
+        	String fieldName =  field.getName();
         	//是不是值
-			if(fielName.endsWith("Avg")){
+			if(fieldName.endsWith("Avg")){
 
 				//对象
 				Object val = field.get(airqHour);
 				if(val!=null&&!val.toString().equals("")){
-					String code = fielName.substring(0,6);
+					String code = fieldName.substring(0,6);
 					code = code.substring(0, 1).toUpperCase() + code.substring(1);
-					int type = fielName.length()>=11? Integer.valueOf(fielName.substring(7,8)):1;
+					int type = fieldName.length()>=11? Integer.valueOf(fieldName.substring(7,8)):1;
 
 					double aqi =	airQualityUtil.getAQI( code,  type,Double.valueOf(val.toString()));
-					Method mtd = airqHour.getClass().getMethod("set"+code+"Iaqi", Double.class);
+					String newFieldName = fieldName.replace("Avg", "Iaqi");
+					String newCode = newFieldName.substring(0,1).toUpperCase() + newFieldName.substring(1);
+					Method mtd = airqHour.getClass().getMethod("set"+newCode, Double.class);
 					mtd.invoke(airqHour, aqi);
+					//污染因子编码
+					String pollutionCode = fieldName.length()>10? fieldName.substring(0,8):fieldName.substring(0,6);
+					pollutionCode = pollutionCode.substring(0,1).toUpperCase() + pollutionCode.substring(1);
+					map.put(pollutionCode,aqi);
 				}
 			}
         }
-
+		List<Map.Entry<String,Double>> list = new ArrayList(map.entrySet());
+		Collections.sort(list, new Comparator<Map.Entry<String, Double>>() {
+			public int compare(Map.Entry<String, Double> o1, Map.Entry<String, Double> o2)
+			{
+				if ((o2.getValue() - o1.getValue())>0)
+					return 1;
+				else if((o2.getValue() - o1.getValue())==0)
+					return 0;
+				else
+					return -1;
+			}
+		});
+		Double aqi = list.get(0).getValue();
+		airqHour.setAqi(aqi);
+		airqHour.setLevel(airQualityUtil.getLevel(aqi));
+		String firstCode = list.get(0).getKey();
+		for(int i = 1;i < list.size();i++) {
+			if(Double.toString(list.get(i).getValue()).equals(Double.toString(aqi))) {
+				firstCode = firstCode + "," + list.get(i).getKey();
+			}else {
+				break;
+			}
+		}
+		airqHour.setFirstCode(firstCode);
 		//2-暂存
 		airqHour.setState(2);
 		airqHourService.save(airqHour);
@@ -461,7 +491,7 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 			 LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
 
 			 LambdaUpdateWrapper updateWrapper = new UpdateWrapper<AirqHour>().lambda().in(AirqHour::getId,Arrays.asList(ids))
-					 .set(AirqHour::getState,1).set(AirqHour::getUpdateTime,new Date())
+					 .set(AirqHour::getState,3).set(AirqHour::getUpdateTime,new Date())
 					 .set(AirqHour::getUpdateBy,sysUser.getId());
 			 airqHourService.update(updateWrapper);
 		 }

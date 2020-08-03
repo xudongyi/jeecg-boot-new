@@ -10,8 +10,8 @@
             </a-form-item>
           </a-col>
           <a-col :xl="5" :lg="7" :md="8" :sm="24">
-            <a-form-item label="监测点位名称">
-              <a-select v-model="queryParam.mn" show-search style="width: 100%" optionFilterProp="children" placeholder="请选择监测点位名称">
+            <a-form-item label="监测点名称">
+              <a-select v-model="queryParam.mn" show-search style="width: 100%" optionFilterProp="children" placeholder="请选择监测点名称">
                 <!--                <a-select-option :value="companyIds">请选择</a-select-option>-->
                 <a-select-option v-for="item in items" :key="item.value" :value="item.key">
                   {{item.value}}
@@ -162,13 +162,15 @@
             align:"center",
             dataIndex: 'area',
             customRender:this.getAreaByCode,
-            fixed:'left'
+            fixed:'left',
+            width:150
           },
           {
-            title:'监测点位名称',
+            title:'监测点名称',
             align:"center",
             dataIndex: 'siteName',
-            fixed:'left'
+            fixed:'left',
+            width:150
           },
           {
             title:'数据时间',
