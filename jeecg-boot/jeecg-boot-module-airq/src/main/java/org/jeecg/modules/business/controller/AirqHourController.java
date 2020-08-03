@@ -418,16 +418,13 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 			}
         }
 		List<Map.Entry<String,Double>> list = new ArrayList(map.entrySet());
-		Collections.sort(list, new Comparator<Map.Entry<String, Double>>() {
-			public int compare(Map.Entry<String, Double> o1, Map.Entry<String, Double> o2)
-			{
-				if ((o2.getValue() - o1.getValue())>0)
-					return 1;
-				else if((o2.getValue() - o1.getValue())==0)
-					return 0;
-				else
-					return -1;
-			}
+		Collections.sort(list, (o1, o2) -> {
+			if ((o2.getValue() - o1.getValue())>0)
+				return 1;
+			else if((o2.getValue() - o1.getValue())==0)
+				return 0;
+			else
+				return -1;
 		});
 		Double aqi = list.get(0).getValue();
 		airqHour.setAqi(aqi);
@@ -489,7 +486,7 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 		 String[]  ids = jsonObject.getString("ids").split(",");
 		 if(ids.length>0){
 			 LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
-
+			 //3-审核通过
 			 LambdaUpdateWrapper updateWrapper = new UpdateWrapper<AirqHour>().lambda().in(AirqHour::getId,Arrays.asList(ids))
 					 .set(AirqHour::getState,3).set(AirqHour::getUpdateTime,new Date())
 					 .set(AirqHour::getUpdateBy,sysUser.getId());
@@ -510,7 +507,7 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 		 String[]  ids = jsonObject.getString("ids").split(",");
 		 if(ids.length>0){
 			 LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
-
+			 //4-审核不通过
 			 LambdaUpdateWrapper updateWrapper = new UpdateWrapper<AirqHour>().lambda().in(AirqHour::getId,Arrays.asList(ids))
 					 .set(AirqHour::getState,4).set(AirqHour::getUpdateTime,new Date())
 					 .set(AirqHour::getUpdateBy,sysUser.getId());
