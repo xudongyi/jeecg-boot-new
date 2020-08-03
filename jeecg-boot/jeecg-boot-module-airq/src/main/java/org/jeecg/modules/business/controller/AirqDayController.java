@@ -77,7 +77,7 @@ public class AirqDayController extends JeecgController<AirqDay, IAirqDayService>
 		IPage<AirqDay> pageList = airqDayService.page(page, queryWrapper);
 		return Result.ok(pageList);
 	}
-	
+
 	/**
 	 *   添加
 	 *
@@ -91,7 +91,7 @@ public class AirqDayController extends JeecgController<AirqDay, IAirqDayService>
 		airqDayService.save(airqDay);
 		return Result.ok("添加成功！");
 	}
-	
+
 	/**
 	 *  编辑
 	 *
@@ -105,7 +105,7 @@ public class AirqDayController extends JeecgController<AirqDay, IAirqDayService>
 		airqDayService.updateById(airqDay);
 		return Result.ok("编辑成功!");
 	}
-	
+
 	/**
 	 *   通过id删除
 	 *
@@ -119,7 +119,7 @@ public class AirqDayController extends JeecgController<AirqDay, IAirqDayService>
 		airqDayService.removeById(id);
 		return Result.ok("删除成功!");
 	}
-	
+
 	/**
 	 *  批量删除
 	 *
@@ -133,7 +133,7 @@ public class AirqDayController extends JeecgController<AirqDay, IAirqDayService>
 		this.airqDayService.removeByIds(Arrays.asList(ids.split(",")));
 		return Result.ok("批量删除成功!");
 	}
-	
+
 	/**
 	 * 通过id查询
 	 *
@@ -208,15 +208,7 @@ public class AirqDayController extends JeecgController<AirqDay, IAirqDayService>
 		 List<Map<String,Object>>  airqList =  airqDayService.queryCalendarAirQuality(datatime,datatime2
 				,area,Arrays.asList(checkedKeys.split(",")));
 		Map<String,Object> result = new HashMap<>();
-		 Set<String> months = new HashSet<>();
-		for(Map<String,Object> airqQuality:airqList){
-			airqQuality.put("dataTime",DateUtil.format((Timestamp)airqQuality.get("dataTime"),"yyyy-MM-dd"));
-
-			months.add(airqQuality.get("dataTime").toString().substring(0,7));
-		}
-
 		result.put("dataList",airqList);
-		result.put("months",months);
 		return Result.ok(result);
 	 }
 	 /**

@@ -92,7 +92,7 @@
         <span style="font-size:18px;font-weight:bold;color:rgba(0,0,0,1);">南通市蓝天日历（{{timeValue}} 年）统计</span>
       </div>
       <div style="text-align: right">
-      <span style="font-size:14px;font-weight:400;color:rgba(1,1,1,1);">南通市2020年优良天数累计：</span>
+      <span style="font-size:14px;font-weight:400;color:rgba(1,1,1,1);">南通市{{timeValue}}年优良天数累计：</span>
         <span style="font-size:18px;font-weight:Bold;color:#189FF0;">{{countDays}}</span>
         <span style="font-size:14px;font-weight:400;color:rgba(1,1,1,1);">天&#12288;</span>
       </div>
@@ -125,7 +125,7 @@
         siteType:3,
         data: [],
         pollutionType:"AQI",
-        timeValue:2020,
+        timeValue:new moment().format('YYYY'),
         treeData: [],
         searchValue: '',
         siteData: [],
@@ -187,17 +187,18 @@
       },
       drawCalendar(){
         let echarts = require('echarts');
-        this.queryResult.months.push("2020-08")
-        this.queryResult.months.push("2020-08")
-        this.queryResult.months.push("2020-08")
-        this.queryResult.months.push("2020-08")
-        this.queryResult.months.push("2020-08")
+        let year = this.timeValue
+        this.queryResult.months=[]
+        for(let a =1 ;a<=12;a++){
+          this.queryResult.months.push(year+'-'+(a<10?'0':'')+a)
+        }
+
 
         if(!this.myChart){
           let dom  = document.getElementById("calendar")
            option ={
             renderer: "Canvas",
-            height:1200
+            height:1500
           }
           //dom.style.height = 100+360*parseInt(this.queryResult.months.length/3 +(this.queryResult.months.length%3>0?1:0) )+'px'
           this.myChart = echarts.init( dom,null,option);
@@ -214,23 +215,30 @@
           if(tmp[this.pollutionType]<=100)
             this.countDays++;
         }
-
+        let dataArr=[]
+        var date = +echarts.number.parseDate(year + '-01-01');
+        var end = +echarts.number.parseDate((+year + 1) + '-01-01');
+        var dayTime = 3600 * 24 * 1000;
+        for (let time = date; time < end; time += dayTime) {
+          let tmp = echarts.format.formatTime('yyyy-MM-dd', time);
+            dataArr.push([tmp,'','']);
+        }
 
         for (let i = 0;i<this.queryResult.months.length; i++) {
           calendar.push(
             {
               orient: 'vertical',
-              yearLabel: {
-              margin: 40
-              },
-              monthLabel: {
-                nameMap: 'cn',
-                  margin: 10
+              yearLabel:{
+                show:false
               },
               dayLabel: {
                 firstDay: 7,
                 nameMap: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
                 margin: 10
+              },
+              monthLabel: {
+                nameMap: 'cn',
+                margin: 10,
               },
               cellSize: 50,
                 range: this.queryResult.months[i],
@@ -252,7 +260,7 @@
               color: '#000000',
               fontSize:12
             },
-            data: heatmapData
+            data: dataArr
           });
           series.push({
               type: 'scatter',

@@ -107,14 +107,16 @@
                 key:'rowIndex',
                 width:65,
                 align:"center",
-                customRender:this.calcIndex
+                customRender:this.calcIndex,
+                fixed: 'left',
+
               },
               {
                 title: '行政区域',
                 dataIndex: 'area',
                 align:"center",
                 width:100,
-
+                fixed: 'left',
                 customRender: this.renderContentArea
 
               },
@@ -123,7 +125,7 @@
                 dataIndex: 'siteName',
                 align:"center",
                 width:160,
-
+                fixed: 'left',
                 customRender: this.renderContent
 
               },
@@ -132,6 +134,7 @@
                 dataIndex: 'dataTime',
                 align:"center",
                 width:160,
+                fixed: 'left',
 
                 // customRender: this.dataformat
 
