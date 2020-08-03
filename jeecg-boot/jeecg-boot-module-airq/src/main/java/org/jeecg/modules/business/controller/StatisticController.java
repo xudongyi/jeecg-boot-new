@@ -210,28 +210,32 @@ public class StatisticController {
                             timeEnd = split[1];
                         }
                         List<AirqHour> airqHours = airqHourService.list(new QueryWrapper<AirqHour>().select("data_time", "aqi", "mn").in("mn", mns).between("data_time", DateUtil.parse(timeStart, "yyyy-MM-dd HH"), DateUtil.parse(timeEnd, "yyyy-MM-dd HH")).orderByAsc("data_time"));
-                        List<Date> dateTimes = airqHours.stream().map(AirqHour::getDataTime).collect(Collectors.toList());
-                        List<String> dateString = new ArrayList<>();
-                        //转换时间格式
-                        for (int i = 0; i < dateTimes.size(); i++) {
-                            Date date = dateTimes.get(i);
-                            dateString.add(DateUtil.format(date, "HH") + "时");
+                        if (airqHours != null && airqHours.size() > 0) {
+                            List<Date> dateTimes = airqHours.stream().map(AirqHour::getDataTime).distinct().collect(Collectors.toList());
+                            List<String> dateString = new ArrayList<>();
+                            //转换时间格式
+                            for (int i = 0; i < dateTimes.size(); i++) {
+                                Date date = dateTimes.get(i);
+                                dateString.add(DateUtil.format(date, "HH") + "时");
+                            }
+                            resultMap.put("dateTimes", dateString);
+                            Map<String, List<AirqHour>> airqHourGroup = airqHours.stream().collect(Collectors.groupingBy(AirqHour::getMn));
+                            List<Map<String, Object>> series = new ArrayList<>();
+                            for (int i = 0; i < siteMonitorPoints.size(); i++) {
+                                Map<String, Object> aqiMap = new HashMap<>();
+                                SiteMonitorPoint siteMonitorPoint = siteMonitorPoints.get(i);
+                                List<AirqHour> siteAirqHours = airqHourGroup.get(siteMonitorPoint.getMn());
+                                List<Double> aqis = siteAirqHours.stream().map(AirqHour::getAqi).collect(Collectors.toList());
+                                if (aqis != null && aqis.size() > 0) {
+                                    aqiMap.put("data", aqis);
+                                    aqiMap.put("type", "line");
+                                    aqiMap.put("name", siteMonitorPoint.getSiteName());
+                                    aqiMap.put("smooth", true);
+                                    series.add(aqiMap);
+                                }
+                            }
+                            resultMap.put("series", series);
                         }
-                        resultMap.put("dateTimes", dateString);
-                        Map<String, List<AirqHour>> airqHourGroup = airqHours.stream().collect(Collectors.groupingBy(AirqHour::getMn));
-                        List<Map<String, Object>> series = new ArrayList<>();
-                        for (int i = 0; i < siteMonitorPoints.size(); i++) {
-                            Map<String, Object> aqiMap = new HashMap<>();
-                            SiteMonitorPoint siteMonitorPoint = siteMonitorPoints.get(i);
-                            List<AirqHour> siteAirqHours = airqHourGroup.get(siteMonitorPoint.getMn());
-                            List<Double> aqis = siteAirqHours.stream().map(AirqHour::getAqi).collect(Collectors.toList());
-                            aqiMap.put("data", aqis);
-                            aqiMap.put("type", "line");
-                            aqiMap.put("name", siteMonitorPoint.getSiteName());
-                            aqiMap.put("smooth", true);
-                            series.add(aqiMap);
-                        }
-                        resultMap.put("series", series);
                     } else {
                         if (StrUtil.isEmpty(searchTime)) {
                             DateTime lastWeek = DateUtil.lastWeek();
@@ -243,28 +247,32 @@ public class StatisticController {
                             timeEnd = split[1];
                         }
                         List<AirqDay> airqDays = airqDayServic.list(new QueryWrapper<AirqDay>().select("data_time", "aqi", "mn").in("mn", mns).between("data_time", DateUtil.parse(timeStart, "yyyy-MM-dd"), DateUtil.parse(timeEnd, "yyyy-MM-dd")).orderByAsc("data_time"));
-                        List<Date> dateTimes = airqDays.stream().map(AirqDay::getDataTime).collect(Collectors.toList());
-                        List<String> dateString = new ArrayList<>();
-                        //转换时间格式
-                        for (int i = 0; i < dateTimes.size(); i++) {
-                            Date date = dateTimes.get(i);
-                            dateString.add(DateUtil.format(date, "yyyy-MM-dd"));
+                        if (airqDays != null && airqDays.size() > 0) {
+                            List<Date> dateTimes = airqDays.stream().map(AirqDay::getDataTime).distinct().collect(Collectors.toList());
+                            List<String> dateString = new ArrayList<>();
+                            //转换时间格式
+                            for (int i = 0; i < dateTimes.size(); i++) {
+                                Date date = dateTimes.get(i);
+                                dateString.add(DateUtil.format(date, "yyyy-MM-dd"));
+                            }
+                            resultMap.put("dateTimes", dateString);
+                            Map<String, List<AirqDay>> airqHourGroup = airqDays.stream().collect(Collectors.groupingBy(AirqDay::getMn));
+                            List<Map<String, Object>> series = new ArrayList<>();
+                            for (int i = 0; i < siteMonitorPoints.size(); i++) {
+                                Map<String, Object> aqiMap = new HashMap<>();
+                                SiteMonitorPoint siteMonitorPoint = siteMonitorPoints.get(i);
+                                List<AirqDay> siteAirqDates = airqHourGroup.get(siteMonitorPoint.getMn());
+                                List<Double> aqis = airqDays.stream().map(AirqDay::getAqi).collect(Collectors.toList());
+                                if (aqis != null && aqis.size() > 0) {
+                                    aqiMap.put("data", aqis);
+                                    aqiMap.put("type", "line");
+                                    aqiMap.put("name", siteMonitorPoint.getSiteName());
+                                    aqiMap.put("smooth", true);
+                                    series.add(aqiMap);
+                                }
+                            }
+                            resultMap.put("series", series);
                         }
-                        resultMap.put("dateTimes", dateString);
-                        Map<String, List<AirqDay>> airqHourGroup = airqDays.stream().collect(Collectors.groupingBy(AirqDay::getMn));
-                        List<Map<String, Object>> series = new ArrayList<>();
-                        for (int i = 0; i < siteMonitorPoints.size(); i++) {
-                            Map<String, Object> aqiMap = new HashMap<>();
-                            SiteMonitorPoint siteMonitorPoint = siteMonitorPoints.get(i);
-                            List<AirqDay> siteAirqDates = airqHourGroup.get(siteMonitorPoint.getMn());
-                            List<Double> aqis = airqDays.stream().map(AirqDay::getAqi).collect(Collectors.toList());
-                            aqiMap.put("data", aqis);
-                            aqiMap.put("type", "line");
-                            aqiMap.put("name", siteMonitorPoint.getSiteName());
-                            aqiMap.put("smooth", true);
-                            series.add(aqiMap);
-                        }
-                        resultMap.put("series", series);
                     }
                 } else {
                     String timeStart = null;
@@ -289,7 +297,7 @@ public class StatisticController {
                         QueryWrapper<AirqHour> wrapper = new QueryWrapper<AirqHour>().select(colum, "data_time", "mn").in("mn", mns).between("data_time", timeStart, timeEnd);
                         List<Map<String, Object>> airqHours = airqHourService.listMaps(wrapper);
                         List<Map<String, Object>> series = new ArrayList<>();
-                        if (CollectionUtil.isNotEmpty(airqHours)) {
+                        if (airqHours!=null && airqHours.size()>0) {
                             Map<String, List<Map<String, Object>>> grouplist = airqHours.stream().collect(Collectors.groupingBy(e -> e.get("mn").toString()));
                             //查询每个站点下的数据
                             for (int i = 0; i < siteMonitorPoints.size(); i++) {
@@ -300,22 +308,29 @@ public class StatisticController {
                                 List<Double> aqis = new ArrayList<>();
                                 List<String> dateStr = new ArrayList<>();
                                 //计算aqi
-                                for (int j = 0; j < dayMaps.size(); j++) {
-                                    Map<String, Object> dayMap = dayMaps.get(j);
-                                    double avg = Double.parseDouble(StrUtil.toString(dayMap.get(colum)));
-                                    double aqi = airQualityUtil.getAQI(pollutionType, 1, avg);
-                                    aqis.add(aqi);
-                                    dateStr.add(DateUtil.format(DateUtil.parse(StrUtil.toString(dayMap.get("data_time"))), "HH"));
+                                if(dayMaps!=null && dayMaps.size()>0){
+                                    for (int j = 0; j < dayMaps.size(); j++) {
+                                        Map<String, Object> dayMap = dayMaps.get(j);
+                                        Object columRes = dayMap.get(colum);
+                                        if (columRes != null) {
+                                            double avg = Double.parseDouble(StrUtil.toString(columRes));
+                                            double aqi = airQualityUtil.getAQI(pollutionType, 1, avg);
+                                            aqis.add(aqi);
+                                            dateStr.add(DateUtil.format(DateUtil.parse(StrUtil.toString(dayMap.get("data_time"))), "HH"));
+                                        }
+                                    }
+                                    if (aqis != null && aqis.size() > 0) {
+                                        aqiMap.put("data", aqis);
+                                        aqiMap.put("type", "line");
+                                        aqiMap.put("name", siteMonitorPoint.getSiteName());
+                                        aqiMap.put("smooth", true);
+                                        series.add(aqiMap);
+                                        resultMap.put("dateTimes", dateStr);
+                                    }
                                 }
-                                aqiMap.put("data", aqis);
-                                aqiMap.put("type", "line");
-                                aqiMap.put("name", siteMonitorPoint.getSiteName());
-                                aqiMap.put("smooth", true);
-                                series.add(aqiMap);
-                                resultMap.put("dateTimes", dateStr);
                             }
+                            resultMap.put("series", series);
                         }
-                        resultMap.put("series", series);
                     } else {
                         String colum = "";
                         if (pollutionType.equals("A34004") || pollutionType.equals("A34002")) {
@@ -348,20 +363,25 @@ public class StatisticController {
                                 //计算aqi
                                 for (int j = 0; j < dayMaps.size(); j++) {
                                     Map<String, Object> dayMap = dayMaps.get(j);
-                                    double avg = Double.parseDouble(StrUtil.toString(dayMap.get(colum)));
-                                    double aqi = airQualityUtil.getAQI(pollutionType, 24, avg);
-                                    aqis.add(aqi);
-                                    dateStr.add(DateUtil.format(DateUtil.parse(StrUtil.toString(dayMap.get("data_time"))), "yyyy-MM-dd"));
+                                    Object columRes = dayMap.get(colum);
+                                    if (columRes != null) {
+                                        double avg = Double.parseDouble(StrUtil.toString(columRes));
+                                        double aqi = airQualityUtil.getAQI(pollutionType, 1, avg);
+                                        aqis.add(aqi);
+                                        dateStr.add(DateUtil.format(DateUtil.parse(StrUtil.toString(dayMap.get("data_time"))), "HH"));
+                                    }
                                 }
-                                aqiMap.put("data", aqis);
-                                aqiMap.put("type", "line");
-                                aqiMap.put("name", siteMonitorPoint.getSiteName());
-                                aqiMap.put("smooth", true);
-                                series.add(aqiMap);
-                                resultMap.put("dateTimes", dateStr);
+                                if (aqis != null && aqis.size() > 0) {
+                                    aqiMap.put("data", aqis);
+                                    aqiMap.put("type", "line");
+                                    aqiMap.put("name", siteMonitorPoint.getSiteName());
+                                    aqiMap.put("smooth", true);
+                                    series.add(aqiMap);
+                                    resultMap.put("dateTimes", dateStr);
+                                }
                             }
+                            resultMap.put("series", series);
                         }
-                        resultMap.put("series", series);
                     }
                 }
             }
@@ -740,7 +760,8 @@ public class StatisticController {
         return Result.ok(resultMap);
     }
 
-    private void getResultMap(Map<String, Object> resultMap, List<Double> aqis, List<Double> percents, List<Object> resultPercents) {
+    private void getResultMap
+            (Map<String, Object> resultMap, List<Double> aqis, List<Double> percents, List<Object> resultPercents) {
         //aqi最大值
         if (CollectionUtil.isNotEmpty(aqis)) {
             Double maxaqi = Collections.max(aqis);
@@ -790,7 +811,8 @@ public class StatisticController {
     }
 
 
-    private List<Map<String, Object>> parseEvaluate(List<Map<String, Object>> airqMaps, String pollutionType, String suffix, int type) {
+    private List<Map<String, Object>> parseEvaluate(List<Map<String, Object>> airqMaps, String
+            pollutionType, String suffix, int type) {
         List<Map<String, Object>> resultList = new ArrayList<>();
         String code = pollutionType;
         if (pollutionType.length() > 6) {

@@ -356,11 +356,12 @@
     },
     methods: {
       validateMn(rule, value, callback) {
+        debugger
         var params = {
           tableName: 'site_monitor_point',
           fieldName: 'mn',
           fieldVal: value,
-          dataId: this.id
+          dataId: this.model.id
         };
         duplicateCheck(params).then((res) => {
           if (res.success) {
@@ -427,7 +428,7 @@
       handleOk() {
         const that = this;
         // 触发表单验证
-        this.form.validateFields((err, values) => {
+        that.form.validateFields((err, values) => {
             if (!err) {
               that.confirmLoading = true;
               let httpurl = '';

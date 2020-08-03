@@ -292,6 +292,7 @@
       drawLine(data, titleText) {
         var echarts = require('echarts');
         var myChart = echarts.init(document.getElementById('trend'));
+        myChart.clear();
         this.myChart = myChart;
         myChart.setOption({
           title: {
@@ -348,7 +349,7 @@
           searchTime: that.searchTime.join(","),
           checkedKeys: checkSites.join(",")
         }).then((res) => {
-          if (!res.result || res.result.length == 0) {
+          if (!res.result.series || res.result.series.length == 0) {
             this.myChart.clear();
             let trend = document.getElementById("trend");
             trend.style.background = `url(${require("@/assets/diynodata.png")}) no-repeat center`;
@@ -447,7 +448,7 @@
           checkedKeys: checkSites.join(",")
         }).then((res) => {
           let trend = document.getElementById("trend");
-          if (!res.result || res.result.length == 0) {
+          if (!res.result.series || res.result.series.length == 0) {
             this.myChart.clear();
             trend.style.background = `url(${require("@/assets/diynodata.png")}) no-repeat center`;
           } else {

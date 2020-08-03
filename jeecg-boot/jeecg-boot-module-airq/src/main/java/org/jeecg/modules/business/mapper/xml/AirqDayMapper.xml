@@ -39,6 +39,7 @@
         LEFT JOIN airq_day ON airq_day.`LEVEL` = airq_level.`level`
         WHERE
         airq_day.MN IN (${mns})
+        AND airq_level.`level` &lt; 7
         <if test="timeStart != null and  timeEnd !=null">
             AND DATA_TIME BETWEEN #{timeStart} AND #{timeEnd}
         </if>
@@ -52,12 +53,15 @@
         LEFT JOIN airq_day ON airq_day.`LEVEL` = airq_level.`level`
         WHERE
         airq_day.MN IN (${mns})
+        AND airq_level.`level` &lt; 7
         <if test="timeStart != null and  timeEnd !=null">
             AND DATA_TIME BETWEEN #{timeStart} AND #{timeEnd}
         </if>
         GROUP BY
         airq_day.`LEVEL`
-        ))
+        )
+        AND airq_level.`level` &lt; 7
+        )
         ORDER BY level
     </select>
     <select id="queryDayAirQuality"   resultMap="AirqDayQualityVo">

@@ -155,7 +155,7 @@
         expandedKeys: [],
         siteType: 3,
         data: [],
-        myChart: {},
+        myChart: {isNull:true},
         dataType: 'day',
         pollutionType: "AQI",
         searchTime: [],
@@ -295,6 +295,7 @@
       drawLine(data, titleText) {
         var echarts = require('echarts');
         var myChart = echarts.init(document.getElementById('chain'));
+        myChart.isNull=false;
         myChart.clear();
         this.myChart = myChart;
         myChart.setOption({
@@ -410,7 +411,9 @@
         }).then((res) => {
           var chain = document.getElementById("chain");
           if(!res.result|| JSON.stringify(res.result)=== JSON.stringify({})){
-            that.myChart.clear();
+            if(!that.myChart.isNull){
+              that.myChart.clear();
+            }
             chain.style.background=`url(${require("@/assets/diynodata.png")}) no-repeat center`;
           }else{
             chain.style.background='';
@@ -508,7 +511,9 @@
         }).then((res) => {
           var chain = document.getElementById("chain");
           if(!res.result|| JSON.stringify(res.result)=== JSON.stringify({})){
-            that.myChart.clear();
+            if(!that.myChart.isNull){
+              that.myChart.clear();
+            }
             chain.style.background=`url(${require("@/assets/diynodata.png")}) no-repeat center`;
           }else{
             chain.style.background='';

@@ -159,7 +159,7 @@
         expandedKeys: [],
         siteType: 3,
         data: [],
-        myChart: {},
+        myChart: {isNull:true},
         dataType: 'month',
         pollutionType: "total",
         searchTime: "",
@@ -300,6 +300,8 @@
       drawLine(data, titleText,colors) {
         var echarts = require('echarts');
         var myChart = echarts.init(document.getElementById('compare'));
+        myChart.isNull=false;
+        myChart.clear();
         myChart.setOption({
           color: colors,
           title: {
@@ -410,7 +412,9 @@
         }).then((res) => {
           let compare = document.getElementById("compare");
           if(!res.result|| JSON.stringify(res.result)=== JSON.stringify({})){
-            that.myChart.clear();
+            if(!that.myChart.isNull){
+              that.myChart.clear();
+            }
             compare.style.background=`url(${require("@/assets/diynodata.png")}) no-repeat center`;
           }else{
             compare.style.background='';
@@ -501,8 +505,12 @@
           selectedKeys: checkSites.join(",")
         }).then((res) => {
           var compare = document.getElementById("compare");
+          debugger
           if(!res.result|| JSON.stringify(res.result)=== JSON.stringify({})){
-            that.myChart.clear();
+            console.info("myChart",that.myChart.isNull);
+            if(!that.myChart.isNull){
+              that.myChart.clear();
+            }
             compare.style.background=`url(${require("@/assets/diynodata.png")}) no-repeat center`;
           }else{
             compare.style.background='';

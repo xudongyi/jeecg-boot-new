@@ -15,6 +15,7 @@
         LEFT JOIN airq_month ON airq_month.`LEVEL` = airq_level.`level`
         WHERE
         airq_month.MN IN (${mns})
+        AND airq_level.`level` &lt; 7
         <if test="timeStart != null and  timeEnd !=null">
             AND `MONTH` BETWEEN #{timeStart} AND #{timeEnd}
         </if>
@@ -28,12 +29,15 @@
         LEFT JOIN airq_month ON airq_month.`LEVEL` = airq_level.`level`
         WHERE
         airq_month.MN IN (${mns})
+        AND airq_level.`level` &lt; 7
         <if test="timeStart != null and  timeEnd !=null">
             AND `MONTH` BETWEEN #{timeStart} AND #{timeEnd}
         </if>
         GROUP BY
         airq_month.`LEVEL`
-        ))
+        )
+        AND airq_level.`level` &lt; 7
+        )
         ORDER BY level
     </select>
 
