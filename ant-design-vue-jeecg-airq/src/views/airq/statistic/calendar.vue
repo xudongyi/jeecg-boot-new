@@ -92,7 +92,7 @@
         <span style="font-size:18px;font-weight:bold;color:rgba(0,0,0,1);">南通市蓝天日历（{{timeValue}} 年）统计</span>
       </div>
       <div style="text-align: right">
-      <span style="font-size:14px;font-weight:400;color:rgba(1,1,1,1);">南通市2020年优良天数累计：</span>
+      <span style="font-size:14px;font-weight:400;color:rgba(1,1,1,1);">南通市{{timeValue}}年优良天数累计：</span>
         <span style="font-size:18px;font-weight:Bold;color:#189FF0;">{{countDays}}</span>
         <span style="font-size:14px;font-weight:400;color:rgba(1,1,1,1);">天&#12288;</span>
       </div>
@@ -125,7 +125,7 @@
         siteType:3,
         data: [],
         pollutionType:"AQI",
-        timeValue:2020,
+        timeValue:new moment().format('YYYY'),
         treeData: [],
         searchValue: '',
         siteData: [],
@@ -228,14 +228,6 @@
           calendar.push(
             {
               orient: 'vertical',
-
-              monthLabel: {
-                nameMap: 'cn',
-                  margin: 10,
-                verticalAlign:'top',
-                position : 'start',
-                align:'top'
-              },
               yearLabel:{
                 show:false
               },
@@ -243,6 +235,10 @@
                 firstDay: 7,
                 nameMap: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
                 margin: 10
+              },
+              monthLabel: {
+                nameMap: 'cn',
+                margin: 10,
               },
               cellSize: 50,
                 range: this.queryResult.months[i],

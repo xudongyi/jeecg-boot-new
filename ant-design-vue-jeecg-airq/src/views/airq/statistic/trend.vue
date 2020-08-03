@@ -353,6 +353,7 @@
             let trend = document.getElementById("trend");
             trend.style.background = `url(${require("@/assets/diynodata.png")}) no-repeat center`;
           } else {
+            trend.style.background='';
             this.drawLine(res.result, this.titleText);
           }
         })
