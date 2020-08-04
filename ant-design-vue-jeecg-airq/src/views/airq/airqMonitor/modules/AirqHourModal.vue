@@ -18,8 +18,8 @@
             </a-form-item>
           </a-col>
           <a-col span="12">
-            <a-form-item label="监测点位名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-select v-decorator="['mn', validatorRules.mn]" show-search style="width: 100%" optionFilterProp="children" placeholder="请选择监测点位名称" :disabled="disableSubmit">
+            <a-form-item label="监测点名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <a-select v-decorator="['mn', validatorRules.mn]" show-search style="width: 100%" optionFilterProp="children" placeholder="请选择监测点名称" :disabled="disableSubmit">
                 <a-select-option v-for="item in items" :key="item.value" :value="item.key">
                   {{item.value}}
                 </a-select-option>

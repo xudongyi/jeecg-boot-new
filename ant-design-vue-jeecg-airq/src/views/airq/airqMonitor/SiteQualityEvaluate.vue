@@ -179,8 +179,9 @@
                 return "四级";
               }else if(text==='5'){
                 return "五级";
-              }else
+              }else if(text==='6'){
                 return "六级";
+              }
             },
             width:150
           },

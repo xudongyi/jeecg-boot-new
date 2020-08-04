@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.constant.CacheConstant;
@@ -420,7 +421,9 @@ public class LoginController {
 		JSONObject obj = new JSONObject();
 		//用户登录信息
 		obj.put("userInfo", sysUser);
-		
+
+		//获取用户信息
+
 		// 生成token
 		String token = JwtUtil.sign(username, syspassword);
 		// 设置超时时间
@@ -428,6 +431,11 @@ public class LoginController {
 		redisUtil.expire(CommonConstant.PREFIX_USER_TOKEN + token, JwtUtil.EXPIRE_TIME*2 / 1000);
 		//token 信息
 		obj.put("token", token);
+		List<String> companyIds = new ArrayList<>();
+		companySysuserService.list(sysUser.getId()).forEach(companySysuser -> {
+			companyIds.add(companySysuser.getCompanyId());
+		});
+		obj.put("companyIds", StringUtils.join(companyIds.toArray(),","));
 		result.setResult(obj);
 		result.setSuccess(true);
 		result.setCode(200);

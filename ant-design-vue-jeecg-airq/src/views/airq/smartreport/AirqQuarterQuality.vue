@@ -21,26 +21,26 @@
               </a-select>
             </a-form-item>
           </a-col>
-          <a-col :xl="3" :lg="7" :md="8" :sm="24">
+          <a-col :xl="5" :lg="7" :md="8" :sm="24">
             <a-form-item label="年份">
               <a-select v-model="queryParam.year" show-search @visible-change="yearChange($event)"
-                        @change="quarterChange" style="width: 120px">
+                        @change="quarterChange" style="width: 100%">
                 <a-select-option v-for="item in years" :key="item.value" :value="item.value">
                   {{item.value}}
                 </a-select-option>
               </a-select>
             </a-form-item>
             </a-col>
-          <a-col :xl="3" :lg="7" :md="8" :sm="24">
+          <a-col :xl="5" :lg="7" :md="8" :sm="24">
             <a-form-item label="季度">
-              <a-select v-model="queryParam.quarter" style="width: 120px">
+              <a-select v-model="queryParam.quarter" style="width: 100%">
                 <a-select-option v-for="item in quarters" :key="item.value" :value="item.value">
                   {{item.value}}
                 </a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+          <a-col :xl="4" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <a-button type="primary" @click="toSearchReset" icon="reload" style="margin-left: 8px">重置</a-button>
