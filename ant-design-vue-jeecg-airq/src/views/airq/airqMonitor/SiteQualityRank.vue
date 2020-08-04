@@ -40,7 +40,7 @@
                 :placeholder="placeholder"
                 :format="format"
                 :mode="mode2"
-                :value="timeValue"
+                :value="queryParam.searchTime"
                 @change="searchTimeChange"
                 @panelChange="handlePanelChange"
                 :showTime="showTime"
@@ -115,9 +115,7 @@
         mode2: "date",
         placeholder:"日期",
         format:"YYYY-MM-DD",
-        timeValue:'',
         showTime:{format:'YYYY-MM-DD'},
-        searchTime:'',
         labelCol: {
           xs: {span: 24},
           sm: {span: 6},
@@ -137,7 +135,8 @@
         },
         queryParam: {
           companyIds:this.$store.getters.userInfo.companyIds.join(','),
-          dataType:'day'
+          dataType:'day',
+          searchTime:''
         },
         items:[],
         siteOriginal:[],
@@ -599,7 +598,7 @@
       dataTypeChange(e){
         const dataType = e.target.value;
         this.dataType = dataType;
-        this.timeValue = '';
+        this.queryParam.searchTime = null;
         if(dataType==="day"){
           this.mode2= "date";
           this.format="YYYY-MM-DD";
@@ -625,14 +624,16 @@
         this.loadData(1);
       },
       searchTimeChange(value,dataStr) {
-        this.timeValue = value;
-        this.searchTime = this.parseDate(value);
-        this.queryParam.searchTime = this.searchTime;
+        if(value)
+          this.queryParam.searchTime = this.parseDate(value);
+        else
+          this.queryParam.searchTime =''
       },
       handlePanelChange(value, mode) {
-        this.timeValue = value;
-        this.searchTime = this.parseDate(value);
-        this.queryParam.searchTime = this.searchTime;
+        if(value)
+          this.queryParam.searchTime = this.parseDate(value);
+        else
+          this.queryParam.searchTime =''
       },
       parseDate(value){
         return  value.format(this.format);
@@ -646,7 +647,6 @@
         this.queryParam.dataType = "day";
         this.showTime = {format:'YYYY-MM-DD'};
         this.columns = this.columns1;
-        this.timeValue = '';
         this.loadData(1);
       },
       initArea(){
