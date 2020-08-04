@@ -16,7 +16,7 @@
       <div style="margin: 5px 15px 0 75px; ">
         <a-slider  :max="10" :min="0" :default-value="1"  @afterChange="changeSpeed"/>
 
-        <a-radio-group :options="plainOptions" v-model="queryParam.pollution" style="margin-top:5px;" @change="pollutionChange"/>
+        <a-radio-group :options="plainOptions" v-model="queryParam.pollution" style="margin-top:5px; color: #FFFFFF;" @change="pollutionChange"/>
         <div style="margin-top:15px;">
           <a-date-picker placeholder="请选择数据时间"
                          @change="handleDateChange"  style="width: 116px"
