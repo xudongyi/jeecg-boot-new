@@ -9,7 +9,7 @@
 
     <div class="play_area" :style="leftFixed">
       <div style="margin: 5px 0 0 5px; float:left;font-size: 14px">
-        <p style="margin-top:5px;">播放速递：</p>
+        <p style="margin-top:5px;">播放速度：</p>
         <p>选择类型：</p>
         <p style="margin-top:55px;">时间跨度：</p>
       </div>
