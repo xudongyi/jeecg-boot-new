@@ -1,4 +1,4 @@
-import { constantRouterMap } from "@/config/router.config"
+import { asyncRouterMap, constantRouterMap } from "@/config/router.config"
 
 /**
  * 过滤账户是否拥有某一个权限，并将菜单从加载列表移除
@@ -64,17 +64,17 @@ const permission = {
     }
   },
   actions: {
-    // GenerateRoutes({ commit }, data) {
-    //   return new Promise(resolve => {
-    //     const { roles } = data
-    //     console.log('-----mutations---data----', data)
-    //     let accessedRouters
-    //     // accessedRouters = filterAsyncRouter(asyncRouterMap, roles)
-    //     console.log('-----mutations---accessedRouters----', accessedRouters)
-    //     commit('SET_ROUTERS', accessedRouters)
-    //     resolve()
-    //   })
-    // },
+    GenerateRoutes({ commit }, data) {
+      return new Promise(resolve => {
+        const { roles } = data
+        console.log('-----mutations---data----', data)
+        let accessedRouters
+        accessedRouters = filterAsyncRouter(asyncRouterMap, roles)
+        console.log('-----mutations---accessedRouters----', accessedRouters)
+        commit('SET_ROUTERS', accessedRouters)
+        resolve()
+      })
+    },
     // 动态添加主界面路由，需要缓存
     UpdateAppRouter({ commit }, routes) {
       return new Promise(resolve => {
