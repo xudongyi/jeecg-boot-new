@@ -8,7 +8,7 @@
     </div>
 
   </div>
-  <div class="earth" id = "earthimg"></div>
+  <div class="earth" id = "earthimg"  :style = "earthStyle" v-show="showEarth"></div>
   </div>
 </template>
 
@@ -17,31 +17,169 @@
 
   export default {
         name: "MidMenu",
+        props:{
+          memuKey:{
+            type:String,
+            default:'earth'
+          }
+        },
         data(){
           return{
+            earthStyle:{},
             centerMenu:{
                 width:'1500px',
                 'margin-left':'210px',
                 padding:'9rem 18rem 0 18rem'
             },
-            memuData:[
-              {
-                sysName:'一企一档',
-                sysUrl:'http://192.168.0.105:3000'
-              },
-              {
-                sysName:'一站一档',
-                sysUrl:'http://192.168.0.2:8099'
-              },
-              {
-                sysName:'大气环境质量',
-                sysUrl:'http://192.168.0.2:8199'
-              },
-              {
-                sysName:'生态环境大数据',
-                sysUrl:'http://192.168.0.2:8220'
-              },
-            ]
+            totalMenu:{
+              earth:[],
+              Integratedm:[
+
+
+                {
+                  sysName:'大气环境质量',
+                  sysUrl:'http://192.168.0.2:8199'
+                },
+                {
+                  sysName:'生态环境大数据中心',
+                  sysUrl:'http://192.168.0.2:8220'
+                },
+                {
+                  sysName:'企业基础档案',
+                  sysUrl:'http://192.168.0.105:3000'
+                },
+                {
+                  sysName:'站点基础档案',
+                  sysUrl:'http://192.168.0.2:8099'
+                },
+                {
+                  sysName:'园区基础档案',
+                  sysUrl:'http://192.168.0.2:8099'
+                },
+                {
+                  sysName:'企业信用评价',
+                  sysUrl:'http://192.168.0.2:8099'
+                },
+                {
+                  sysName:'环保专项整治',
+                  sysUrl:'http://192.168.0.2:8099'
+                },
+                {
+                  sysName:'移动执法系统',
+                  sysUrl:'http://192.168.0.2:8099'
+                },
+                {
+                  sysName:'重污染天气应急',
+                  sysUrl:'http://192.168.0.2:8099'
+                },
+              ],
+              solidwaste:[
+                {
+                  sysName:'危险废物管理',
+                  sysUrl:'http://192.168.0.2:8220'
+                },
+                {
+                  sysName:'危险化学品管理',
+                  sysUrl:'http://192.168.0.2:8220'
+                },
+                {
+                  sysName:'特征污染物名录库',
+                  sysUrl:'http://192.168.0.2:8220'
+                },
+              ],
+              ecology:[
+                {
+                  sysName:'大气环境质量监控',
+                  sysUrl:'http://192.168.0.2:8199'
+                },
+                {
+                  sysName:'地表水环境监控',
+                  sysUrl:'http://192.168.0.2:8220'
+                },
+                {
+                  sysName:'大气网格化监控',
+                  sysUrl:'http://192.168.0.2:8220'
+                },
+                {
+                  sysName:'扬尘噪声监控',
+                  sysUrl:'http://192.168.0.2:8220'
+                },
+                {
+                  sysName:'河长制管理',
+                  sysUrl:'http://192.168.0.2:8220'
+                },
+                {
+                  sysName:'环境预警管理',
+                  sysUrl:'http://192.168.0.2:8220'
+                },
+              ],
+              pollutions:[
+                {
+                  sysName:'污染源排放在线监控',
+                  sysUrl:'http://192.168.0.2:8220'
+                },
+                {
+                  sysName:'污染源工况监控',
+                  sysUrl:'http://192.168.0.2:8220'
+                },
+                {
+                  sysName:'污染源能耗监控',
+                  sysUrl:'http://192.168.0.2:8220'
+                },
+                {
+                  sysName:'污染源能效监控',
+                  sysUrl:'http://192.168.0.2:8220'
+                },
+                {
+                  sysName:'园区LDAR泄漏检测与修复',
+                  sysUrl:'http://192.168.0.2:8220'
+                },
+              ],
+              emergency:[
+                {
+                  sysName:'应急指挥调度中心',
+                  sysUrl:'http://192.168.0.2:8220'
+                },
+                {
+                  sysName:'风险源申报',
+                  sysUrl:'http://192.168.0.2:8220'
+                },
+                {
+                  sysName:'风险应急信息',
+                  sysUrl:'http://192.168.0.2:8220'
+                },
+                {
+                  sysName:'应急综合业务',
+                  sysUrl:'http://192.168.0.2:8220'
+                },
+                {
+                  sysName:'应急事件评估',
+                  sysUrl:'http://192.168.0.2:8220'
+                },
+                {
+                  sysName:'风险评估预警',
+                  sysUrl:'http://192.168.0.2:8220'
+                },
+              ],
+              traceability:[
+                {
+                  sysName:'污染扩散分析',
+                  sysUrl:'http://192.168.0.2:8220'
+                },
+                {
+                  sysName:'污染溯源分析',
+                  sysUrl:'http://192.168.0.2:8220'
+                }
+              ],
+            }
+          }
+        },
+        computed:{
+          showEarth(){
+            return 'earth'===this.memuKey
+          },
+          memuData(){
+            return this.totalMenu[this.memuKey]
           }
         },
         methods:{
@@ -61,6 +199,12 @@
 
             this.$emit('scaleChange',containerWidth / 1920);
             this.centerMenu['margin-left'] = (containerWidth - 1500*scale)/2+'px';
+
+            this.earthStyle = {
+                width:544*scale+'px',
+                height:544*scale+'px',
+                left: (containerWidth - 544*scale)/2+'px'
+            }
             // sacle 缩放比例。  横竖一起缩放
             // let scale1 = 1;
             // if (containerHeight < height) {
@@ -100,7 +244,8 @@
           }, 100)
         },
         destroyed() {
-          clearInterval(this.InterVal)
+          if(this.InterVal)
+            clearInterval(this.InterVal)
         }
 
   }
@@ -116,10 +261,8 @@
 }
 .earth{
   background: url("~@/assets/earth3D.png")  center center no-repeat;
-  height: 60%;
-  width: 40%;
-  top :15%;
-  left: 30%;
+  background-size:cover;
+  top :18%;
   position: absolute;
 }
 .center-menu{

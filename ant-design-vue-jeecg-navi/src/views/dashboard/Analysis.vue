@@ -1,8 +1,8 @@
 <template>
   <div class="analysis" >
     <top-title :title="title"></top-title>
-    <mid-menu @scaleChange="reScale"></mid-menu>
-    <footer-memu :scale="scale"></footer-memu>
+    <mid-menu @scaleChange="reScale" :memuKey="memuKey"></mid-menu>
+    <footer-memu :scale="scale" @check="check"></footer-memu>
 <!--    <lottie :options="defaultOptions" :height="400" :width="400" />-->
   </div>
 </template>
@@ -25,7 +25,8 @@
       return {
         title:'生态环境大数据及智慧环保监管平台',
         defaultOptions: {animationData: animationData},
-        scale:1
+        scale:1,
+        memuKey:'earth',
       }
     },
     created() {
@@ -33,6 +34,9 @@
     methods: {
       reScale(val){
         this.scale = val;
+      },
+      check(val){
+        this.memuKey = val;
       }
     },
 
