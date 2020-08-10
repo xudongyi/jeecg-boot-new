@@ -116,9 +116,9 @@
 }
 .earth{
   background: url("~@/assets/earth3D.png")  center center no-repeat;
-  height: 55%;
+  height: 60%;
   width: 40%;
-  top :19%;
+  top :15%;
   left: 30%;
   position: absolute;
 }

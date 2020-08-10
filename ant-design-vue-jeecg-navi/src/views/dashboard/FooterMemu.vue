@@ -31,9 +31,9 @@
         <span class="memu-title">扩散溯源分析</span>
       </div >
       <div class="memu-button memu-shape7" :style="marginStyle.visualization"  @mouseover="mouseOver('visualization')" @mouseleave="mouseLeave('visualization')">
-        <icon-hover  ref="visualization" url="memuIcon/icon_visualization_default.png"  :width="36" :height="42"
-                    overUrl="memuIcon/icon_visualization_selected.png" :overWidth="42" :overHeight="47" class="icon-memu"></icon-hover>
-        <span class="memu-title">数据可视化</span>
+        <icon-hover  ref="visualization" url="memuIcon/icon_visualization_default.png"  :width="36" :height="49"
+                    overUrl="memuIcon/icon_visualization_selected.png" :overWidth="42" :overHeight="53" class="icon-memu"></icon-hover>
+        <span class="memu-title" style="line-height: 75px">数据可视化</span>
       </div>
     </div>
 </template>
@@ -105,6 +105,9 @@
             'margin-right': (this.marginLength-5)+'px',
             'margin-top':this.topMargin[key],
              color:'#ffe63d',
+            '-webkit-box-shadow': '#ffe63d 0px 0px 10px',
+            '-moz-box-shadow':' #ffe63d 0px 0px 10px',
+            'box-shadow': '#ffe63d 0px 0px 10px',
             border:'1px solid #ffe63d'
           };
           this.$refs[key].mouseOver();
