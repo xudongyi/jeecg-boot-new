@@ -27,7 +27,7 @@
             memuData:[
               {
                 sysName:'一企一档',
-                sysUrl:'http://192.168.0.2'
+                sysUrl:'http://192.168.0.105:3000'
               },
               {
                 sysName:'一站一档',

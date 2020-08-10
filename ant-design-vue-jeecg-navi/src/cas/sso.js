@@ -10,25 +10,27 @@ const init = (callback) => {
   let token = Vue.ls.get(ACCESS_TOKEN);
   let sevice = "http://"+window.location.host+"/";
   let cookie = Cookies.get('_ticket_uid');
-  if(token){
-    loginSuccess(callback);
-  }else{
-    if(cookie){
-      store.dispatch('CookieLogin',{tc:cookie}).then(res => {
-        //this.departConfirm(res)
-        if(res.success){
-          loginSuccess(callback);
-        }else{
-          callback()
-        }
-      }).catch((err) => {
-        console.log(err);
-        //that.requestFailed(err);
-      });
-    }else{
+
+  if(cookie){
+    store.dispatch('CookieLogin',{tc:cookie}).then(res => {
+      //this.departConfirm(res)
+      if(res.success){
+        loginSuccess(callback);
+      }else{
+        Cookies.remove('_ticket_uid');
+        callback()
+      }
+    }).catch((err) => {
+      console.log(err);
+      Cookies.remove('_ticket_uid');
       callback()
-    }
+      //that.requestFailed(err);
+    });
+  }else{
+    Cookies.remove('_ticket_uid');
+    callback()
   }
+
   console.log("-------单点登录结束-------");
 };
 const SSO = {

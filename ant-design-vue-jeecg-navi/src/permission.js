@@ -6,6 +6,7 @@ import 'nprogress/nprogress.css' // progress bar style
 import notification from 'ant-design-vue/es/notification'
 import { ACCESS_TOKEN,INDEX_MAIN_PAGE_PATH } from '@/store/mutation-types'
 import { generateIndexRouter } from "@/utils/util"
+import Cookies from "js-cookie";
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
@@ -15,7 +16,7 @@ const whiteList = ['/user/login', '/user/register', '/user/register-result','/us
 router.beforeEach((to, from, next) => {
   console.log('from-to',from,to)
   NProgress.start() // start progress bar
-  if (Vue.ls.get(ACCESS_TOKEN)) {
+  if ( Cookies.get('_ticket_uid')) {
     /* has token */
     if (to.path === '/user/login') {
       next({ path: INDEX_MAIN_PAGE_PATH })
