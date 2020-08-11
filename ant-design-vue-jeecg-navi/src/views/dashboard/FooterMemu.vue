@@ -123,7 +123,7 @@
         onCheck(val){
           if('visualization'===val){
             //'生态环境大数据',
-            window.open('http://192.168.0.2:8220')
+            window.open("http://" + document.domain +':8220')
             return
           }
           console.log(val)
@@ -149,7 +149,7 @@
     width: 95%;
     height: 30%;
     position: absolute;
-    top:70%;
+    top:68%;
     left:2.5%;
     text-align: center;
   }

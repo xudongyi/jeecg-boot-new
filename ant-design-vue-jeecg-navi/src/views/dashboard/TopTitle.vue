@@ -21,7 +21,7 @@
 
 <style scoped>
   .TopTitle{
-    height: 15%;
+    height: 10%;
     width: 100%;
   }
   .container {
@@ -29,7 +29,7 @@
     margin: 0 auto;
     position: relative;
     text-align: center;
-    padding: 6rem 1.5rem;
+    padding: 4.5rem 1.5rem;
   }
   .title {
     color: #ffffff;

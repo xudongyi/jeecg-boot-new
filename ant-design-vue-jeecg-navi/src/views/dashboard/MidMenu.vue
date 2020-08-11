@@ -1,6 +1,6 @@
 <template>
   <div>
-  <div class="menu-middle">
+  <div class="menu-middle" v-show="!showEarth">
     <div class="center-menu" :style="centerMenu">
         <div class="memu-item" v-for="item in memuData">
           <span @click="toNewPage(item.sysUrl)">{{item.sysName}}</span>
@@ -8,7 +8,7 @@
     </div>
 
   </div>
-  <div class="earth" id = "earthimg"  :style = "earthStyle" v-show="showEarth"></div>
+  <div class="earth Rotation" id = "earthimg"  :style = "earthStyle" v-show="showEarth"></div>
   </div>
 </template>
 
@@ -29,7 +29,9 @@
             centerMenu:{
                 width:'1500px',
                 'margin-left':'210px',
-                padding:'9rem 18rem 0 18rem'
+                padding:'9rem 16% 0 16%',
+                'font-size':'21px',
+                  'line-height': '70px'
             },
             totalMenu:{
               earth:[],
@@ -38,137 +40,137 @@
 
                 {
                   sysName:'大气环境质量',
-                  sysUrl:'http://192.168.0.2:8199'
+                  sysUrl:'8199'
                 },
                 {
                   sysName:'生态环境大数据中心',
-                  sysUrl:'http://192.168.0.2:8220'
+                  sysUrl:'8220'
                 },
                 {
                   sysName:'企业基础档案',
-                  sysUrl:'http://192.168.0.105:3000'
+                  sysUrl:'80'
                 },
                 {
                   sysName:'站点基础档案',
-                  sysUrl:'http://192.168.0.2:8099'
+                  sysUrl:'8099'
                 },
                 {
                   sysName:'园区基础档案',
-                  sysUrl:'http://192.168.0.2:8099'
+                  sysUrl:'8099'
                 },
                 {
                   sysName:'企业信用评价',
-                  sysUrl:'http://192.168.0.2:8099'
+                  sysUrl:'8099'
                 },
                 {
                   sysName:'环保专项整治',
-                  sysUrl:'http://192.168.0.2:8099'
+                  sysUrl:'8099'
                 },
                 {
                   sysName:'移动执法系统',
-                  sysUrl:'http://192.168.0.2:8099'
+                  sysUrl:'8099'
                 },
                 {
                   sysName:'重污染天气应急',
-                  sysUrl:'http://192.168.0.2:8099'
+                  sysUrl:'8099'
                 },
               ],
               solidwaste:[
                 {
                   sysName:'危险废物管理',
-                  sysUrl:'http://192.168.0.2:8220'
+                  sysUrl:'8220'
                 },
                 {
                   sysName:'危险化学品管理',
-                  sysUrl:'http://192.168.0.2:8220'
+                  sysUrl:'8220'
                 },
                 {
                   sysName:'特征污染物名录库',
-                  sysUrl:'http://192.168.0.2:8220'
+                  sysUrl:'8220'
                 },
               ],
               ecology:[
                 {
                   sysName:'大气环境质量监控',
-                  sysUrl:'http://192.168.0.2:8199'
+                  sysUrl:'8199'
                 },
                 {
                   sysName:'地表水环境监控',
-                  sysUrl:'http://192.168.0.2:8220'
+                  sysUrl:'8220'
                 },
                 {
                   sysName:'大气网格化监控',
-                  sysUrl:'http://192.168.0.2:8220'
+                  sysUrl:'8220'
                 },
                 {
                   sysName:'扬尘噪声监控',
-                  sysUrl:'http://192.168.0.2:8220'
+                  sysUrl:'8220'
                 },
                 {
                   sysName:'河长制管理',
-                  sysUrl:'http://192.168.0.2:8220'
+                  sysUrl:'8220'
                 },
                 {
                   sysName:'环境预警管理',
-                  sysUrl:'http://192.168.0.2:8220'
+                  sysUrl:'8220'
                 },
               ],
               pollutions:[
                 {
                   sysName:'污染源排放在线监控',
-                  sysUrl:'http://192.168.0.2:8220'
+                  sysUrl:'8220'
                 },
                 {
                   sysName:'污染源工况监控',
-                  sysUrl:'http://192.168.0.2:8220'
+                  sysUrl:'8220'
                 },
                 {
                   sysName:'污染源能耗监控',
-                  sysUrl:'http://192.168.0.2:8220'
+                  sysUrl:'8220'
                 },
                 {
                   sysName:'污染源能效监控',
-                  sysUrl:'http://192.168.0.2:8220'
+                  sysUrl:'8220'
                 },
                 {
                   sysName:'园区LDAR泄漏检测与修复',
-                  sysUrl:'http://192.168.0.2:8220'
+                  sysUrl:'8220'
                 },
               ],
               emergency:[
                 {
                   sysName:'应急指挥调度中心',
-                  sysUrl:'http://192.168.0.2:8220'
+                  sysUrl:'8220'
                 },
                 {
                   sysName:'风险源申报',
-                  sysUrl:'http://192.168.0.2:8220'
+                  sysUrl:'8220'
                 },
                 {
                   sysName:'风险应急信息',
-                  sysUrl:'http://192.168.0.2:8220'
+                  sysUrl:'8220'
                 },
                 {
                   sysName:'应急综合业务',
-                  sysUrl:'http://192.168.0.2:8220'
+                  sysUrl:'8220'
                 },
                 {
                   sysName:'应急事件评估',
-                  sysUrl:'http://192.168.0.2:8220'
+                  sysUrl:'8220'
                 },
                 {
                   sysName:'风险评估预警',
-                  sysUrl:'http://192.168.0.2:8220'
+                  sysUrl:'8220'
                 },
               ],
               traceability:[
                 {
                   sysName:'污染扩散分析',
-                  sysUrl:'http://192.168.0.2:8220'
+                  sysUrl:'8220'
                 },
                 {
                   sysName:'污染溯源分析',
-                  sysUrl:'http://192.168.0.2:8220'
+                  sysUrl:'8220'
                 }
               ],
             }
@@ -199,7 +201,8 @@
 
             this.$emit('scaleChange',containerWidth / 1920);
             this.centerMenu['margin-left'] = (containerWidth - 1500*scale)/2+'px';
-
+            this.centerMenu['font-size'] =  21*scale+'px';
+            this.centerMenu['line-height'] = 70*scale+'px';
             this.earthStyle = {
                 width:544*scale+'px',
                 height:544*scale+'px',
@@ -225,45 +228,64 @@
             }, 300));
           },
           toNewPage(url){
-            window.open(url)
+            window.open("http://"+document.domain+':'+url)
           }
         },
         created() {
           this.listenResize();
-          this.rotateVal=0
-          let that = this
-          this.InterVal = setInterval(function () {
-            var img = document.getElementById('earthimg')
-            that.rotateVal += 1
-            // 设置旋转属性(顺时针)
-            img.style.transform = 'rotate(' +  that.rotateVal + 'deg)'
-            // 设置旋转属性(逆时针)
-            //img.style.transform = 'rotate(-' + rotateVal + 'deg)'
-            // 设置旋转时的动画  匀速0.1s
-            img.style.transition = '0.1s linear'
-          }, 100)
+          // this.rotateVal=0
+          // let that = this
+          // this.InterVal = setInterval(function () {
+          //   var img = document.getElementById('earthimg')
+          //   that.rotateVal += 1
+          //   // 设置旋转属性(顺时针)
+          //   img.style.transform = 'rotate(' +  that.rotateVal + 'deg)'
+          //   // 设置旋转属性(逆时针)
+          //   //img.style.transform = 'rotate(-' + rotateVal + 'deg)'
+          //   // 设置旋转时的动画  匀速0.1s
+          //   img.style.transition = '0.1s linear'
+          // }, 100)
         },
-        destroyed() {
-          if(this.InterVal)
-            clearInterval(this.InterVal)
-        }
+        // destroyed() {
+        //   if(this.InterVal)
+        //     clearInterval(this.InterVal)
+        // }
 
   }
 </script>
 
 <style scoped>
-.menu-middle{
+
+  .Rotation
+  {
+    background:blue;
+    position:relative;
+    animation:rotating 15s linear infinite;
+    /*animation:rotating 5s infinite;*/
+    -webkit-animation:rotating 15s linear infinite; /*Safari and Chrome*/
+  }
+
+
+
+  @keyframes rotating{
+    from{transform:rotate(0)}
+    to{transform:rotate(360deg)}
+  }
+
+  .menu-middle{
   height: 55%;
   width: 100%;
   position: absolute;
-  top :15%;
+  top :12%;
   z-index: 2;
+  text-align: center;
 }
 .earth{
   background: url("~@/assets/earth3D.png")  center center no-repeat;
   background-size:cover;
   top :18%;
   position: absolute;
+  border-radius: 250px;
 }
 .center-menu{
   background:url("~@assets/midMenuBg.png") no-repeat;
@@ -273,16 +295,17 @@
 
 }
   .memu-item{
-    width: 15rem;
-    height: 4rem;
+    width: 32%;
+    height: 20%;
     text-align: center;
-    font-size: 1.6rem;
+
     color: #ffffff;
     cursor:pointer;
-    margin: 2.2rem 1.1rem 0 2rem;
-    border:3px;
+    margin: auto;
+    margin-top: 2%;
+    border:2px;
     float: left;
-    line-height: 55px;
+
   }
 .memu-item:hover{
   color: #ecdf51;
