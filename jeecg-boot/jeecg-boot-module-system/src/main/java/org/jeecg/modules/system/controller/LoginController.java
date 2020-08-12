@@ -23,6 +23,7 @@ import org.jeecg.modules.system.model.SysLoginModel;
 import org.jeecg.modules.system.service.ISysDepartService;
 import org.jeecg.modules.business.service.ISysDictService;
 import org.jeecg.modules.system.service.ISysLogService;
+import org.jeecg.modules.system.service.ISysSystemRoleService;
 import org.jeecg.modules.system.service.ISysUserService;
 import org.jeecg.modules.system.util.LoginUtil;
 import org.jeecg.modules.system.util.RandImageUtil;
@@ -57,6 +58,8 @@ public class LoginController {
     private ISysDictService sysDictService;
 	@Autowired
 	private ICompanySysuserService companySysuserService;
+	@Autowired
+	private ISysSystemRoleService sysSystemRoleService;
 
 	private static final String BASE_CHECK_CODES = "qwertyuiplkjhgfdsazxcvbnmQWERTYUPLKJHGFDSAZXCVBNM1234567890";
 
@@ -115,7 +118,7 @@ public class LoginController {
 
 		return result;
 	}
-	
+
 	/**
 	 * 退出登录
 	 * @param request
@@ -147,7 +150,7 @@ public class LoginController {
 	    	return Result.error("Token无效!");
 	    }
 	}
-	
+
 	/**
 	 * 获取访问量
 	 * @return
@@ -178,7 +181,7 @@ public class LoginController {
 		result.success("登录成功");
 		return result;
 	}
-	
+
 	/**
 	 * 获取访问量
 	 * @return
@@ -199,8 +202,8 @@ public class LoginController {
 		result.setResult(oConvertUtils.toLowerCasePageList(list));
 		return result;
 	}
-	
-	
+
+
 	/**
 	 * 登陆成功选择用户当前部门
 	 * @param user
@@ -225,7 +228,7 @@ public class LoginController {
 
 	/**
 	 * 短信登录接口
-	 * 
+	 *
 	 * @param jsonObject
 	 * @return
 	 */
@@ -270,7 +273,7 @@ public class LoginController {
 				if(!result.isSuccess()) {
 					return result;
 				}
-				
+
 				*//**
 				 * smsmode 短信模板方式  0 .登录模板、1.注册模板、2.忘记密码模板
 				 *//*
@@ -302,11 +305,11 @@ public class LoginController {
 		}
 		return result;
 	}*/
-	
+
 
 	/**
 	 * 手机号登录接口
-	 * 
+	 *
 	 * @param jsonObject
 	 * @return
 	 */
@@ -316,14 +319,14 @@ public class LoginController {
 	public Result<JSONObject> phoneLogin(@RequestBody JSONObject jsonObject) {
 		Result<JSONObject> result = new Result<JSONObject>();
 		String phone = jsonObject.getString("mobile");
-		
+
 		//校验用户有效性
 		SysUser sysUser = sysUserService.getUserByPhone(phone);
 		result = sysUserService.checkUserIsEffective(sysUser);
 		if(!result.isSuccess()) {
 			return result;
 		}
-		
+
 		String smscode = jsonObject.getString("captcha");
 		Object code = redisUtil.get(phone);
 		if (!smscode.equals(code)) {
@@ -378,7 +381,7 @@ public class LoginController {
 		}
 		return res;
 	}
-	
+
 	/**
 	 * app登录
 	 * @param sysLoginModel
@@ -390,14 +393,14 @@ public class LoginController {
 		Result<JSONObject> result = new Result<JSONObject>();
 		String username = sysLoginModel.getUsername();
 		String password = sysLoginModel.getPassword();
-		
+
 		//1. 校验用户是否有效
 		SysUser sysUser = sysUserService.getUserByName(username);
 		result = sysUserService.checkUserIsEffective(sysUser);
 		if(!result.isSuccess()) {
 			return result;
 		}
-		
+
 		//2. 校验用户名或密码是否正确
 		String userpassword = PasswordUtil.encrypt(username, password, sysUser.getSalt());
 		String syspassword = sysUser.getPassword();
@@ -405,7 +408,7 @@ public class LoginController {
 			result.error500("用户名或密码错误");
 			return result;
 		}
-		
+
 		String orgCode = sysUser.getOrgCode();
 		if(oConvertUtils.isEmpty(orgCode)) {
 			//如果当前用户无选择部门 查看部门关联信息
@@ -426,15 +429,25 @@ public class LoginController {
 
 		// 生成token
 		String token = JwtUtil.sign(username, syspassword);
+
+		List<String> companyIds = new ArrayList<>();
+		companySysuserService.list(sysUser.getId()).forEach(companySysuser -> {
+			companyIds.add(companySysuser.getCompanyId());
+		});
+		List<String> systemIds = new ArrayList<>();
+		//查询系统权限
+		sysSystemRoleService.querySysRoleByUserId(sysUser.getId()).forEach(sysSystemRole -> {
+			systemIds.add(sysSystemRole.getSystemId());
+		});
+
+
+
 		// 设置超时时间
 		redisUtil.set(CommonConstant.PREFIX_USER_TOKEN + token, token);
 		redisUtil.expire(CommonConstant.PREFIX_USER_TOKEN + token, JwtUtil.EXPIRE_TIME*2 / 1000);
 		//token 信息
 		obj.put("token", token);
-		List<String> companyIds = new ArrayList<>();
-		companySysuserService.list(sysUser.getId()).forEach(companySysuser -> {
-			companyIds.add(companySysuser.getCompanyId());
-		});
+		obj.put("systemIds", StringUtils.join(systemIds.toArray(),","));
 		obj.put("companyIds", StringUtils.join(companyIds.toArray(),","));
 		result.setResult(obj);
 		result.setSuccess(true);
