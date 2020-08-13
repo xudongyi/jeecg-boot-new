@@ -120,5 +120,10 @@ public class AirqHourServiceImpl extends ServiceImpl<AirqHourMapper, AirqHour> i
         return page.setRecords(siteQualityEvaluateVOS);
     }
 
+    @Override
+    public List<Map<String, Object>> queryAirSiteInfo(List<String> companyIds, String siteName) {
+        return airqHourMapper.queryAirSiteInfo(companyIds, siteName);
+    }
+
 
 }

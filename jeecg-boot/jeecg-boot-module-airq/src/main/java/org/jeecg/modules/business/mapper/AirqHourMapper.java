@@ -9,6 +9,7 @@ import org.jeecg.modules.business.vo.*;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description: airq_hour
@@ -32,5 +33,7 @@ public interface AirqHourMapper extends BaseMapper<AirqHour> {
     List<AirqHourAuditVO> queryAirqHourAudit(String[] companyIds, Page page, String area, String mn, Integer state, Date dateBegin, Date dateEnd);
 
     List<SiteQualityEvaluateVO> querySiteQualityEvaluate(String[] companyIds, Page page, String area, String mn,String level, Integer state, Date dateBegin, Date dateEnd);
+
+    List<Map<String,Object>> queryAirSiteInfo(@Param("companyIds")List<String> companyIds,@Param("siteName")String siteName);
 
 }

@@ -2,6 +2,7 @@ package org.jeecg.modules.business.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.apache.ibatis.annotations.Param;
 import org.jeecg.modules.business.entity.AirqHour;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.jeecg.modules.business.vo.*;
@@ -9,6 +10,7 @@ import org.jeecg.modules.business.vo.*;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description: airq_hour
@@ -31,5 +33,7 @@ public interface IAirqHourService extends IService<AirqHour> {
     Page<AirqHourAuditVO> queryAirqHourAudit(String companyIds, Page page, String area, String mn, Integer state, Date dateBegin, Date dateEnd);
 
     Page<SiteQualityEvaluateVO> querySiteQualityEvaluate(String companyIds, Page page, String area, String mn,String level, Integer state, Date dateBegin, Date dateEnd);
+
+    List<Map<String,Object>> queryAirSiteInfo(List<String> companyIds, String siteName);
 
 }

@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import lombok.SneakyThrows;
+import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
@@ -41,6 +42,7 @@ import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
 import org.jeecgframework.poi.excel.view.JeecgEntityExcelView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import io.swagger.annotations.Api;
@@ -638,5 +640,39 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 		 mv.addObject(SelfExcelConstants.FOOTER, "注：缺测指标的浓度及分指数均使用NA标识。");
 
 		 return mv;
+	 }
+
+
+	 /**
+	  * 空气质量app 监测站点
+	  *
+	  * @return
+	  */
+	 @AutoLog(value = "监测站点")
+	 @ApiOperation(value="监测站点", notes="监测站点")
+	 @GetMapping(value = "/queryAirSiteInfo")
+	 public Result<?> queryAirSiteInfo(@RequestParam(name="companyIds",required=true) String companyIds
+			 ,@RequestParam(name="siteName",required=false) String siteName) {
+		 List<Map<String,Object>>  airSiteList =  airqHourService.queryAirSiteInfo(Arrays.asList(companyIds.split(",")),siteName);
+		 Map<String,Object> result = new HashMap<>();
+		 for(Map<String,Object> param:airSiteList){
+			 String value =  sysDictService.queryDictTextByKey("siteLevel", param.get("siteLevel").toString());
+			 param.put("siteLevelName",value);
+			 String levelValue = sysDictService.queryDictTextByKey("level",param.get("level").toString());
+			 if(levelValue.length()>1) {
+			 	levelValue = levelValue.substring(0, 2);
+			 }
+			 param.put("levelName", levelValue);
+			 String firstCode = param.get("firstCode").toString();
+			 List<String> arr = Arrays.asList(firstCode.split(","));
+			 List<String> codeArr = new ArrayList<>();
+			 for (int i=0;i<arr.size();i++) {
+			 	codeArr.add(arr.get(i).substring(0, 6));
+			 }
+			 String code = StringUtils.join(codeArr, ",");
+			 param.put("code", code);
+		 }
+		 result.put("dataList",airSiteList);
+		 return Result.ok(result);
 	 }
 }

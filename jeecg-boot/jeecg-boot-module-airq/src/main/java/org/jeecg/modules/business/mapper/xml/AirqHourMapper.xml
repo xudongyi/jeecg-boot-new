@@ -501,4 +501,36 @@
 
     </select>
 
+    <select id="queryAirSiteInfo"    resultType="Map">
+        select
+        site_name siteName,
+        site_level siteLevel,
+        b.data_time dataTime,
+        b.mn mn,
+        b.level level,
+        aqi AQI,
+        a3400401_avg A34004,
+        a3400201_avg A34002,
+        a21026_avg A21026,
+        a21004_avg A21004,
+        a21005_avg A21005,
+        a0502401_avg A05024,
+        first_code firstCode
+        from airq_hour b
+        INNER JOIN(select a.mn,
+        max(b.data_time) data_time
+        from airq_hour b left join site_monitor_point a on b.mn = a.mn
+        WHERE b.state in (0,3) group by a.mn) c on b.mn = c.mn and b.data_time = c.data_time
+        left join site_monitor_point a on b.mn = a.mn
+        WHERE b.state in (0,3) and a.site_type = '3'
+        and a.company_id in
+        <foreach collection="companyIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        <if test="siteName != null">
+            and siteName LIKE CONCAT(CONCAT('%', #{siteName}), '%')
+        </if>
+        order by b.data_time desc
+    </select>
+
 </mapper>
