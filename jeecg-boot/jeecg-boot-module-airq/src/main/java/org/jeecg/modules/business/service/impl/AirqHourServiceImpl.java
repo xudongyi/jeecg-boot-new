@@ -1,5 +1,6 @@
 package org.jeecg.modules.business.service.impl;
 
+import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -123,6 +124,11 @@ public class AirqHourServiceImpl extends ServiceImpl<AirqHourMapper, AirqHour> i
     @Override
     public List<Map<String, Object>> queryAirSiteInfo(List<String> companyIds, String mn) {
         return airqHourMapper.queryAirSiteInfo(companyIds, mn);
+    }
+
+    @Override
+    public List<AirHourPlayVo> queryAirAvgInfo(List<String> companyIds, DateTime nowDate) {
+        return airqHourMapper.queryAirAvgInfo(companyIds,nowDate);
     }
 
 
