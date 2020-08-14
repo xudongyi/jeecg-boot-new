@@ -9,6 +9,7 @@ import org.jeecg.modules.business.vo.WarnLogVO;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description: 报警日志表
@@ -19,4 +20,6 @@ import java.util.List;
 public interface ISysWarnLogService extends IService<SysWarnLog> {
     Page<WarnLogVO> queryWarnLogInfo(String companyIds, Page page, String area, String monitorId, String dateBegin, String dateEnd,String flag);
     List<WarnLogVO> exportWarnLogInfo(String companyIds, String area, String monitorId, String dateBegin, String dateEnd,String flag);
+
+    List<Map<String,Object>> queryWarnInfo(List<String> companyIds, String monitorId,String dateBegin, String dateEnd,String flag);
 }

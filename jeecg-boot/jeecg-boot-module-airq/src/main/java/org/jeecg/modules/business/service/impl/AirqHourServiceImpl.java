@@ -121,8 +121,8 @@ public class AirqHourServiceImpl extends ServiceImpl<AirqHourMapper, AirqHour> i
     }
 
     @Override
-    public List<Map<String, Object>> queryAirSiteInfo(List<String> companyIds, String siteName) {
-        return airqHourMapper.queryAirSiteInfo(companyIds, siteName);
+    public List<Map<String, Object>> queryAirSiteInfo(List<String> companyIds, String mn) {
+        return airqHourMapper.queryAirSiteInfo(companyIds, mn);
     }
 
 

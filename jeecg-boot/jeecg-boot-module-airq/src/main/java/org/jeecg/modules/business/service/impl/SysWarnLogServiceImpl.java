@@ -16,6 +16,7 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description: 报警日志表
@@ -56,5 +57,22 @@ public class SysWarnLogServiceImpl extends ServiceImpl<SysWarnLogMapper, SysWarn
             dateEnd = new Timestamp(calendar.getTimeInMillis());
         }
         return sysWarnLogMapper.exportWarnLogInfo(companyIds.split(","),area,monitorId,dateBegin,dateEnd,flag);
+    }
+
+    @Override
+    public List<Map<String, Object>> queryWarnInfo(List<String> companyIds, String monitorId, String timeBegin, String timeEnd, String flag) {
+        Timestamp dateBegin = null;
+        Timestamp dateEnd = null;
+        if(StrUtil.isNotEmpty(timeBegin) && StrUtil.isNotEmpty(timeEnd)) {
+            dateBegin = DateUtil.parse(timeBegin, "yyyy-MM-dd").toTimestamp();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(DateUtil.parse(timeEnd, "yyyy-MM-dd"));
+            calendar.set(Calendar.HOUR,23);
+            dateEnd = new Timestamp(calendar.getTimeInMillis());
+        }else{
+            dateBegin = DateUtil.offsetDay(DateUtil.date(),-7).toTimestamp();
+            dateEnd = DateUtil.date().toTimestamp();
+        }
+        return sysWarnLogMapper.queryWarnInfo(companyIds, monitorId, dateBegin, dateEnd, flag);
     }
 }

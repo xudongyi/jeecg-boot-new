@@ -652,8 +652,8 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 	 @ApiOperation(value="监测站点", notes="监测站点")
 	 @GetMapping(value = "/queryAirSiteInfo")
 	 public Result<?> queryAirSiteInfo(@RequestParam(name="companyIds",required=true) String companyIds
-			 ,@RequestParam(name="siteName",required=false) String siteName) {
-		 List<Map<String,Object>>  airSiteList =  airqHourService.queryAirSiteInfo(Arrays.asList(companyIds.split(",")),siteName);
+			 ,@RequestParam(name="mn",required=false) String mn) {
+		 List<Map<String,Object>>  airSiteList =  airqHourService.queryAirSiteInfo(Arrays.asList(companyIds.split(",")),mn);
 		 Map<String,Object> result = new HashMap<>();
 		 for(Map<String,Object> param:airSiteList){
 			 String value =  sysDictService.queryDictTextByKey("siteLevel", param.get("siteLevel").toString());

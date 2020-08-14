@@ -34,6 +34,6 @@ public interface AirqHourMapper extends BaseMapper<AirqHour> {
 
     List<SiteQualityEvaluateVO> querySiteQualityEvaluate(String[] companyIds, Page page, String area, String mn,String level, Integer state, Date dateBegin, Date dateEnd);
 
-    List<Map<String,Object>> queryAirSiteInfo(@Param("companyIds")List<String> companyIds,@Param("siteName")String siteName);
+    List<Map<String,Object>> queryAirSiteInfo(@Param("companyIds")List<String> companyIds,@Param("mn")String mn);
 
 }

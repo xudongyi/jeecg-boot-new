@@ -4,6 +4,8 @@ import java.text.ParseException;
 import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang.StringUtils;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.util.RedisUtil;
@@ -242,5 +244,30 @@ public class SysWarnLogController extends JeecgController<SysWarnLog, ISysWarnLo
     public Result<?> importExcel(HttpServletRequest request, HttpServletResponse response) {
         return super.importExcel(request, response, SysWarnLog.class);
     }
+
+	 /**
+	  * 空气质量app 报警信息
+	  *
+	  * @return
+	  */
+	 @AutoLog(value = "报警信息")
+	 @ApiOperation(value="报警信息", notes="报警信息")
+	 @GetMapping(value = "/queryWarnInfo")
+	 public Result<?> queryWarnInfo(@RequestParam(name="companyIds",required=true) String companyIds
+			 ,@RequestParam(name="monitorId",required=false) String monitorId
+			 ,@RequestParam(name="beginTime",required=false) String beginTime
+			 ,@RequestParam(name="endTime",required=false) String endTime
+			 ,@RequestParam(name="flag",required=false) String flag) {
+		 List<Map<String,Object>>  warnInfoList =
+				 sysWarnLogService.queryWarnInfo(Arrays.asList(companyIds.split(",")),monitorId,beginTime,endTime,flag);
+		 Map<String,Object> result = new HashMap<>();
+		 for(Map<String,Object> param:warnInfoList){
+			 String value =  sysDictService.queryDictTextByKey("flag", param.get("flag").toString());
+			 param.put("flagName",value);
+
+		 }
+		 result.put("dataList",warnInfoList);
+		 return Result.ok(result);
+	 }
 
 }

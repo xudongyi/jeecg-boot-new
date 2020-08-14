@@ -59,4 +59,30 @@
         order by a.warn_time desc
     </select>
 
+    <select id="queryWarnInfo" resultType="Map">
+        select b.site_name siteName,
+        a.flag flag,
+        a.content content,
+        a.warn_time warnTime,
+        a.monitor_id monitorId
+        from sys_warn_log a left join site_monitor_point b on a.monitor_id = b.id
+        WHERE b.company_id in
+        <foreach collection="companyIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        <if test="monitorId != null and monitorId != ''">
+            and a.monitor_id = (#{monitorId})
+        </if>
+        <if test="flag != null">
+            and a.flag = (#{flag})
+        </if>
+        <if test="dateBegin != null">
+            and a.warn_time >= (#{dateBegin})
+        </if>
+        <if test="dateEnd != null">
+            and a.warn_time &lt;= (#{dateEnd})
+        </if>
+        order by a.warn_time desc
+    </select>
+
 </mapper>

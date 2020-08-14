@@ -527,8 +527,8 @@
         <foreach collection="companyIds" item="id" index="index" open="(" close=")" separator=",">
             #{id}
         </foreach>
-        <if test="siteName != null">
-            and siteName LIKE CONCAT(CONCAT('%', #{siteName}), '%')
+        <if test="mn != null and mn !=''">
+            and b.mn = (#{mn})
         </if>
         order by b.data_time desc
     </select>

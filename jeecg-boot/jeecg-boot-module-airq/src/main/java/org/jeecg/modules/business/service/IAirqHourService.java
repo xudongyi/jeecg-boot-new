@@ -34,6 +34,6 @@ public interface IAirqHourService extends IService<AirqHour> {
 
     Page<SiteQualityEvaluateVO> querySiteQualityEvaluate(String companyIds, Page page, String area, String mn,String level, Integer state, Date dateBegin, Date dateEnd);
 
-    List<Map<String,Object>> queryAirSiteInfo(List<String> companyIds, String siteName);
+    List<Map<String,Object>> queryAirSiteInfo(List<String> companyIds, String mn);
 
 }
