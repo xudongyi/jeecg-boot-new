@@ -64,14 +64,11 @@ public class SysWarnLogServiceImpl extends ServiceImpl<SysWarnLogMapper, SysWarn
         Timestamp dateBegin = null;
         Timestamp dateEnd = null;
         if(StrUtil.isNotEmpty(timeBegin) && StrUtil.isNotEmpty(timeEnd)) {
-            dateBegin = DateUtil.parse(timeBegin, "yyyy-MM-dd").toTimestamp();
+            dateBegin = DateUtil.parse(timeBegin, "yyyy-MM-dd HH:mm").toTimestamp();
             Calendar calendar = Calendar.getInstance();
-            calendar.setTime(DateUtil.parse(timeEnd, "yyyy-MM-dd"));
-            calendar.set(Calendar.HOUR,23);
+            calendar.setTime(DateUtil.parse(timeEnd, "yyyy-MM-dd HH:mm"));
+//            calendar.set(Calendar.HOUR,23);
             dateEnd = new Timestamp(calendar.getTimeInMillis());
-        }else{
-            dateBegin = DateUtil.offsetDay(DateUtil.date(),-7).toTimestamp();
-            dateEnd = DateUtil.date().toTimestamp();
         }
         return sysWarnLogMapper.queryWarnInfo(companyIds, monitorId, dateBegin, dateEnd, flag);
     }
