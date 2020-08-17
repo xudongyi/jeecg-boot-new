@@ -20,7 +20,9 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import javax.annotation.Resource;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description: airq_month
@@ -87,6 +89,17 @@ public class AirqMonthServiceImpl extends ServiceImpl<AirqMonthMapper, AirqMonth
             airqMonthQualityVO.setMeaning(redisCacheUtil.transformCode(airqMonthQualityVO.getFirstCode()));
         });
         return airqMonthQualityVOS;
+    }
+
+    @Override
+    public List<Map<String, Object>> queryMonthChartInfo(String mn) {
+        //近12月
+        String end = DateUtil.format(new Date(), "yyyy-MM");
+        Date timeEnd = DateUtil.parse(end,"yyyy-MM");
+        Date timeBegin = DateUtil.offsetMonth(timeEnd, -12);
+        Timestamp dateBegin = new Timestamp(timeBegin.getTime());
+        Timestamp dateEnd = new Timestamp(timeEnd.getTime());
+        return airqMonthMapper.queryMonthChartInfo(mn,dateBegin,dateEnd);
     }
 
 }

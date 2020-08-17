@@ -90,4 +90,16 @@ public class AirqDayServiceImpl extends ServiceImpl<AirqDayMapper, AirqDay> impl
         });
         return siteQualityRankDayVOS;
     }
+
+    @Override
+    public List<Map<String, Object>> queryDayChartInfo(String mn) {
+        //近30天
+        //Date timeEnd = new Date();
+        String end = DateUtil.format(new Date(), "yyyy-MM-dd");
+        Date timeEnd = DateUtil.parse(end,"yyyy-MM-dd");
+        Date timeBegin = DateUtil.offsetDay(timeEnd, -30);
+        Timestamp dateBegin = new Timestamp(timeBegin.getTime());
+        Timestamp dateEnd = new Timestamp(timeEnd.getTime());
+        return airqDayMapper.queryDayChartInfo(mn,dateBegin,dateEnd);
+    }
 }

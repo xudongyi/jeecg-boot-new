@@ -225,4 +225,30 @@
         order by ISNULL(t.aqi), t.aqi asc
 
     </select>
+
+    <select id="queryDayChartInfo"    resultType="Map">
+        select
+        site_name siteName,
+        b.data_time dataTime,
+        b.mn mn,
+        aqi AQI,
+        A3400424_IAQI A34004,
+        A3400224_IAQI A34002,
+        A21026_IAQI A21026,
+        A21004_IAQI A21004,
+        A21005_IAQI A21005,
+        A0502408_IAQI A05024
+        from airq_day b
+        left join site_monitor_point a on b.mn = a.mn
+        WHERE b.state in (0,3) and a.site_type = '3'
+        and b.mn = (#{mn})
+        <if test="dateBegin != null">
+            and b.data_time >= (#{dateBegin})
+        </if>
+        <if test="dateEnd != null">
+            and b.data_time &lt;= (#{dateEnd})
+        </if>
+        order by b.dataTime asc
+    </select>
+
 </mapper>

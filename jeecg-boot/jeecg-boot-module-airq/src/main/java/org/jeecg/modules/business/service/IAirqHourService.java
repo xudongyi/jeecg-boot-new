@@ -37,6 +37,7 @@ public interface IAirqHourService extends IService<AirqHour> {
 
     List<Map<String,Object>> queryAirSiteInfo(List<String> companyIds, String mn);
 
+    List<Map<String,Object>> queryHourChartInfo(String mn);
 
     List<AirHourPlayVo> queryAirAvgInfo(List<String> asList, DateTime nowDate);
 }

@@ -30,4 +30,6 @@ public interface AirqDayMapper extends BaseMapper<AirqDay> {
 
     List<Map<String,Object>> queryCalendarAirQuality(@Param("datatime") Timestamp datatime, @Param("datatime2")Timestamp datatime2, @Param("area")String area, @Param("checkedKeys")List<String> checkedKeys);
     List<SiteQualityRankDayVO> querySiteDayExport(String[] companyIds, String area, String mn, Date queryDate);
+
+    List<Map<String,Object>> queryDayChartInfo(@Param("mn")String mn,@Param("dateBegin")Timestamp dateBegin,@Param("dateEnd")Timestamp dateEnd);
 }

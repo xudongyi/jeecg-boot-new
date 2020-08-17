@@ -520,7 +520,7 @@
         INNER JOIN(select a.mn,
         max(b.data_time) data_time
         from airq_hour b left join site_monitor_point a on b.mn = a.mn
-        WHERE b.state in (0,3) group by a.mn) c on b.mn = c.mn and b.data_time = c.data_time
+        WHERE b.state in (0,3) and b.level !='7' group by a.mn) c on b.mn = c.mn and b.data_time = c.data_time
         left join site_monitor_point a on b.mn = a.mn
         WHERE b.state in (0,3) and a.site_type = '3'
         and a.company_id in
@@ -531,6 +531,31 @@
             and b.mn = (#{mn})
         </if>
         order by b.data_time desc
+    </select>
+
+    <select id="queryHourChartInfo"    resultType="Map">
+        select
+        site_name siteName,
+        b.data_time dataTime,
+        b.mn mn,
+        aqi AQI,
+        a3400401_iaqi A34004,
+        a3400201_iaqi A34002,
+        a21026_iaqi A21026,
+        a21004_iaqi A21004,
+        a21005_iaqi A21005,
+        a0502401_iaqi A05024
+        from airq_hour b
+        left join site_monitor_point a on b.mn = a.mn
+        WHERE b.state in (0,3) and a.site_type = '3' and b.level !='7'
+        and b.mn = (#{mn})
+        <if test="dateBegin != null">
+            and b.data_time >= (#{dateBegin})
+        </if>
+        <if test="dateEnd != null">
+            and b.data_time &lt;= (#{dateEnd})
+        </if>
+        order by b.data_time asc
     </select>
 
     <select id="queryAirAvgInfo"   resultMap="AirHourPlayVo">

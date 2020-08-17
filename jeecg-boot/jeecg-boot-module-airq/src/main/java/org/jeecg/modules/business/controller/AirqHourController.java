@@ -29,7 +29,7 @@ import org.jeecg.modules.business.constant.SelfExcelConstants;
 import org.jeecg.modules.business.entity.AirqHour;
 import org.jeecg.modules.business.entity.AirqLevel;
 import org.jeecg.modules.business.entity.SiteMonitorPoint;
-import org.jeecg.modules.business.service.IAirqHourService;
+import org.jeecg.modules.business.service.*;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -37,9 +37,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 
 import org.jeecg.common.system.base.controller.JeecgController;
-import org.jeecg.modules.business.service.IAirqLevelService;
-import org.jeecg.modules.business.service.ISiteMonitorPointService;
-import org.jeecg.modules.business.service.ISysDictService;
 import org.jeecg.modules.business.service.impl.AirqLevelServiceImpl;
 import org.jeecg.modules.business.utils.AirQualityUtil;
 import org.jeecg.modules.business.view.SelfEntityExcelView;
@@ -68,6 +65,12 @@ import org.jeecg.common.aspect.annotation.AutoLog;
 public class AirqHourController extends JeecgController<AirqHour, IAirqHourService> {
 	@Autowired
 	private IAirqHourService airqHourService;
+
+	 @Autowired
+	 private IAirqDayService airqDayService;
+
+	 @Autowired
+	 private IAirqMonthService airqMonthService;
 
 	@Autowired
 	private ISiteMonitorPointService siteMonitorPointService;
@@ -683,6 +686,66 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 			 param.put("code", code);
 		 }
 		 result.put("dataList",airSiteList);
+		 return Result.ok(result);
+	 }
+
+	 /**
+	  * 空气质量app 监测站点折线图数据
+	  *
+	  * @return
+	  */
+	 @AutoLog(value = "监测站点折线图数据")
+	 @ApiOperation(value="监测站点折线图数据", notes="监测站点折线图数据")
+	 @GetMapping(value = "/queryChartInfo")
+	 public Result<?> queryChartInfo(@RequestParam(name="mn",required=true) String mn
+			 ,@RequestParam(name="timeType",required=false) String timeType,@RequestParam(name="code",required=false) String code) {
+		 List<Map<String,Object>>  airChartList = null;
+		 Map<String,Object> result = new HashMap<>();
+		 List<Double> codeList = null;
+		 List<String> timeList = null;
+	 	 if("0".equals(timeType)) {
+			 airChartList =  airqHourService.queryHourChartInfo(mn);
+			 codeList = new ArrayList<>();
+			 timeList = new ArrayList<>();
+			 for(Map<String,Object> param:airChartList){
+				String value = param.get(code).toString();
+				Double codeValue = Double.parseDouble(value);
+				codeList.add(codeValue);
+				String time = param.get("dataTime").toString().substring(0, 19);
+				timeList.add(time);
+			 }
+
+			 result.put("series",codeList);
+			 result.put("categories",timeList);
+
+		 }else if ("1".equals(timeType)) {
+	 	 	 airChartList = airqDayService.queryDayChartInfo(mn);
+			 codeList = new ArrayList<>();
+			 timeList = new ArrayList<>();
+			 for(Map<String,Object> param:airChartList){
+				 String value = param.get(code).toString();
+				 Double codeValue = Double.parseDouble(value);
+				 codeList.add(codeValue);
+				 String time = param.get("dataTime").toString().substring(0, 19);
+				 timeList.add(time);
+			 }
+			 result.put("series",codeList);
+			 result.put("categories",timeList);
+		 }else if("2".equals(timeType)) {
+	 	 	 airChartList = airqMonthService.queryMonthChartInfo(mn);
+			 codeList = new ArrayList<>();
+			 timeList = new ArrayList<>();
+			 for(Map<String,Object> param:airChartList){
+				 String value = param.get(code).toString();
+				 Double codeValue = Double.parseDouble(value);
+				 codeList.add(codeValue);
+				 String time = param.get("dataTime").toString().substring(0, 19);
+				 timeList.add(time);
+			 }
+			 result.put("series",codeList);
+			 result.put("categories",timeList);
+		 }
+
 		 return Result.ok(result);
 	 }
 

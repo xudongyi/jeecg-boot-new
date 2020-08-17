@@ -9,6 +9,7 @@ import org.jeecg.modules.business.vo.AirqVO;
 import org.jeecg.modules.business.vo.SiteQualityRankMonthVO;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description: airq_month
@@ -26,4 +27,6 @@ public interface IAirqMonthService extends IService<AirqMonth> {
 
     IPage<SiteQualityRankMonthVO> querySiteMonth(String companyIds, Page<SiteQualityRankMonthVO> page, String area, String mn, String queryDate);
     List<SiteQualityRankMonthVO> exportSiteMonth(String companyIds, String area, String mn, String queryDate);
+
+    List<Map<String,Object>> queryMonthChartInfo(String mn);
 }

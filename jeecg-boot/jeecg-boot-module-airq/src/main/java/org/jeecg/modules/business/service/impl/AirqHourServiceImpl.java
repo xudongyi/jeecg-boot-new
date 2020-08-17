@@ -127,6 +127,16 @@ public class AirqHourServiceImpl extends ServiceImpl<AirqHourMapper, AirqHour> i
     }
 
     @Override
+    public List<Map<String, Object>> queryHourChartInfo(String mn) {
+        //近72小时
+        Date timeEnd = new Date();
+        Date timeBegin = DateUtil.offsetHour(timeEnd, -72);
+        Timestamp dateBegin = new Timestamp(timeBegin.getTime());
+        Timestamp dateEnd = new Timestamp(timeEnd.getTime());
+        return airqHourMapper.queryHourChartInfo(mn,dateBegin,dateEnd);
+    }
+
+    @Override
     public List<AirHourPlayVo> queryAirAvgInfo(List<String> companyIds, DateTime nowDate) {
         return airqHourMapper.queryAirAvgInfo(companyIds,nowDate);
     }

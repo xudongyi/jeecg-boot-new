@@ -145,5 +145,29 @@
 
     </select>
 
+    <select id="queryMonthChartInfo"    resultType="Map">
+        select
+        site_name siteName,
+        b.month dataTime,
+        b.mn mn,
+        total_i AQI,
+        A34004_I A34004,
+        A34002_I A34002,
+        A21026_I A21026,
+        A21004_I A21004,
+        A21005_I A21005,
+        A05024_I A05024
+        from airq_month b
+        left join site_monitor_point a on b.mn = a.mn
+        WHERE a.site_type = '3'
+        and b.mn = (#{mn})
+        <if test="dateBegin != null">
+            and b.month >= (#{dateBegin})
+        </if>
+        <if test="dateEnd != null">
+            and b.month &lt;= (#{dateEnd})
+        </if>
+        order by b.month asc
+    </select>
 
 </mapper>
