@@ -1,5 +1,6 @@
 package org.jeecg.modules.business.mapper;
 
+import cn.hutool.core.date.DateTime;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
 import org.jeecg.modules.business.entity.SysWarnLog;
@@ -23,4 +24,6 @@ public interface SysWarnLogMapper extends BaseMapper<SysWarnLog> {
 
     List<Map<String,Object>> queryWarnInfo(@Param("companyIds")List<String> companyIds, @Param("monitorId")String monitorId,@Param("dateBegin")Timestamp dateBegin,
                                            @Param("dateEnd")Timestamp dateEnd,@Param("flag") String flag);
+    List<Map<String,Object>> queryAppPie(@Param("companyIds")List<String> companyIds);
+    Integer queryAppColumn(@Param("companyIds")List<String> companyIds, DateTime startTime, DateTime endTime);
 }

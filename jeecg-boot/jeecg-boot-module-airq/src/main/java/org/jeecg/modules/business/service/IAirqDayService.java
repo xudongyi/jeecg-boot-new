@@ -1,12 +1,10 @@
 package org.jeecg.modules.business.service;
 
+import cn.hutool.core.date.DateTime;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.jeecg.modules.business.entity.AirqDay;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.jeecg.modules.business.vo.AirqDayQualityVo;
-import org.jeecg.modules.business.vo.AirqHourQualityVo;
-import org.jeecg.modules.business.vo.AirqVO;
-import org.jeecg.modules.business.vo.SiteQualityRankDayVO;
+import org.jeecg.modules.business.vo.*;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -26,6 +24,8 @@ public interface IAirqDayService extends IService<AirqDay> {
     List<Map<String,Object>>  queryCalendarAirQuality(String datatime, String datatime2,String area,List<String> checkedKeys);
     Page<SiteQualityRankDayVO> querySiteDay(String companyIds,Page page, String area, String mn, Date queryDate);
     List<SiteQualityRankDayVO> querySiteDayExport(String companyIds, String area, String mn, Date queryDate);
+
+    List<AirqAppLineVO> queryAppLine(List<String> companyIds, DateTime startTime, DateTime endTime);
 
     List<Map<String,Object>> queryDayChartInfo(String mn);
 }

@@ -1,5 +1,6 @@
 package org.jeecg.modules.business.service.impl;
 
+import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -68,5 +69,15 @@ public class SysWarnLogServiceImpl extends ServiceImpl<SysWarnLogMapper, SysWarn
             dateEnd = DateUtil.parse(timeEnd, "yyyy-MM-dd HH:mm").toTimestamp();
         }
         return sysWarnLogMapper.queryWarnInfo(companyIds, monitorId, dateBegin, dateEnd, flag);
+    }
+
+    @Override
+    public List<Map<String, Object>> queryAppPie(List<String> companyIds) {
+        return sysWarnLogMapper.queryAppPie(companyIds);
+    }
+
+    @Override
+    public Integer queryAppColumn(List<String> companyIds, DateTime startTime, DateTime endTime) {
+        return sysWarnLogMapper.queryAppColumn(companyIds,startTime,endTime);
     }
 }
