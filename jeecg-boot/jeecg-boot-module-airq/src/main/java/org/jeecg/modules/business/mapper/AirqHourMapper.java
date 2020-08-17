@@ -1,5 +1,6 @@
 package org.jeecg.modules.business.mapper;
 
+import cn.hutool.core.date.DateTime;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
 import org.jeecg.modules.business.entity.AirqHour;
@@ -36,4 +37,5 @@ public interface AirqHourMapper extends BaseMapper<AirqHour> {
 
     List<Map<String,Object>> queryAirSiteInfo(@Param("companyIds")List<String> companyIds,@Param("mn")String mn);
 
+    List<AirHourPlayVo> queryAirAvgInfo(@Param("companyIds")List<String> companyIds,@Param("dataTime") DateTime nowDate);
 }

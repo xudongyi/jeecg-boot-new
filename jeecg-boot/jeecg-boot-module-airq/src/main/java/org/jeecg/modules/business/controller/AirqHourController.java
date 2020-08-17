@@ -10,6 +10,9 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import lombok.SneakyThrows;
@@ -24,6 +27,7 @@ import org.jeecg.common.util.RedisUtil;
 import org.jeecg.common.util.oConvertUtils;
 import org.jeecg.modules.business.constant.SelfExcelConstants;
 import org.jeecg.modules.business.entity.AirqHour;
+import org.jeecg.modules.business.entity.AirqLevel;
 import org.jeecg.modules.business.entity.SiteMonitorPoint;
 import org.jeecg.modules.business.service.IAirqHourService;
 
@@ -33,8 +37,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 
 import org.jeecg.common.system.base.controller.JeecgController;
+import org.jeecg.modules.business.service.IAirqLevelService;
 import org.jeecg.modules.business.service.ISiteMonitorPointService;
 import org.jeecg.modules.business.service.ISysDictService;
+import org.jeecg.modules.business.service.impl.AirqLevelServiceImpl;
 import org.jeecg.modules.business.utils.AirQualityUtil;
 import org.jeecg.modules.business.view.SelfEntityExcelView;
 import org.jeecg.modules.business.vo.*;
@@ -72,6 +78,10 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 	 private ISysDictService sysDictService;
 	 @Autowired
 	 private RedisUtil redisUtil;
+	 @Autowired
+	 private IAirqLevelService airqLevelService;
+
+	 private static   String factorJson = "[{name: \"PM10\", color:\"#666666\"}, { name: \"PM2.5\", color:\"#666666\"}, { name: \"SO₂\", color:\"#666666\"}, { name: \"NO₂\", color:\"#666666\"}, { name: \"CO\", color:\"#666666\"}, { name: \"O₃\", color:\"#666666\"}]";
 	/**
 	 * 分页列表查询
 	 *
@@ -445,7 +455,7 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 		airqHourService.save(airqHour);
 		return Result.ok("添加成功！");
 	}
-	
+
 	/**
 	 *  编辑
 	 *
@@ -517,7 +527,7 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 		 }
 		 return Result.ok();
 	 }
-	
+
 	/**
 	 *   通过id删除
 	 *
@@ -531,7 +541,7 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 		airqHourService.removeById(id);
 		return Result.ok("删除成功!");
 	}
-	
+
 	/**
 	 *  批量删除
 	 *
@@ -545,7 +555,7 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 		this.airqHourService.removeByIds(Arrays.asList(ids.split(",")));
 		return Result.ok("批量删除成功!");
 	}
-	
+
 	/**
 	 * 通过id查询
 	 *
@@ -674,5 +684,77 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 		 }
 		 result.put("dataList",airSiteList);
 		 return Result.ok(result);
+	 }
+
+	 @AutoLog(value = "获取最新数据的指数")
+	 @ApiOperation(value="获取最新数据的指数", notes="获取最新数据的指数")
+	 @GetMapping(value = "/queryExponent")
+	 public Result<?> queryExponent(@RequestParam(name="companyIds",required=true) String companyIds) {
+		 Map<String,Object> mapResult = null;
+	 	//获取当前时间
+		 String curr = DateUtil.format(DateUtil.date(), "yyyy-MM-dd HH");
+		 DateTime nowDate = DateUtil.parse(curr, "yyyy-MM-dd HH");
+		 //获取所属站点当前数据的平均值
+		 List<AirHourPlayVo> airHourPlayVos = airqHourService.queryAirAvgInfo(Arrays.asList(companyIds.split(",")),nowDate);
+		 List<Double> aqis = new ArrayList<>();
+		 List<Object> exponents = new ArrayList<>();
+		 List<Map<String, String>> factors = (List<Map<String, String>>) JSONObject.parse(factorJson);
+		 if(airHourPlayVos!=null && airHourPlayVos.size()>0){
+			 mapResult = new HashMap<>();
+			 AirHourPlayVo airHourPlayVo = airHourPlayVos.get(0);
+			 Double aqi = airHourPlayVo.getAqi();
+			 String level = airQualityUtil.getLevel(aqi);
+			 mapResult.put("aqiLevel", Integer.valueOf(level));
+			 AirqLevel airqLevel = airqLevelService.getOne(new QueryWrapper<AirqLevel>().lambda().eq(AirqLevel::getLevel, level));
+			 mapResult.put("levelContent",airqLevel.getLevelContent());
+			 mapResult.put("grade",airqLevel.getLevelGrade());
+			 mapResult.put("gradeColor",airqLevel.getLevelRgb());
+			 mapResult.put("aqi",Math.round(aqi));
+			 //计算各污染因子aqi
+			 //pm10 pm2.5 so2 no2 co 03
+			 double a3400201Iaqi = airHourPlayVo.getA3400201Iaqi()==null?-1:airHourPlayVo.getA3400201Iaqi();
+			 double a34002aqi = airQualityUtil.getAQI("A34002", 1, a3400201Iaqi);
+			 aqis.add(a34002aqi);
+
+			 double a3400401Iaqi = airHourPlayVo.getA3400401Iaqi()==null?-1:airHourPlayVo.getA3400401Iaqi();
+			 double a3400401aqi = airQualityUtil.getAQI("A34004", 1, a3400401Iaqi);
+			 aqis.add(a3400401aqi);
+
+			 double a21026Iaqi = airHourPlayVo.getA21026Iaqi()==null?-1:airHourPlayVo.getA21026Iaqi();
+			 double a21026aqi = airQualityUtil.getAQI("A21026", 1, a21026Iaqi);
+			 aqis.add(a21026aqi);
+
+			 double a21004Iaqi = airHourPlayVo.getA21004Iaqi()==null?-1:airHourPlayVo.getA21004Iaqi();
+			 double a21004aqi = airQualityUtil.getAQI("A21004", 1, a21004Iaqi);
+			 aqis.add(a21004aqi);
+
+			 double a21005Iaqi = airHourPlayVo.getA21005Iaqi()==null?-1:airHourPlayVo.getA21005Iaqi();
+			 double a21005aqi = airQualityUtil.getAQI("A21005", 1, a21005Iaqi);
+			 aqis.add(a21005aqi);
+
+			 double a0502401Iaqi = airHourPlayVo.getA0502401Iaqi()==null?-1:airHourPlayVo.getA0502401Iaqi();
+			 double a0502401aqi = airQualityUtil.getAQI("A05024", 1, a0502401Iaqi);
+			 aqis.add(a0502401aqi);
+			 Double maxAqi = Collections.max(aqis);
+			 for (int i = 0; i < aqis.size(); i++) {
+				 Map<String,Object> exponentMap = new HashMap<>();
+				 Double pollutionAqi =  aqis.get(i);
+				//获取level
+				 String pollutionLevel = airQualityUtil.getLevel(pollutionAqi);
+				 AirqLevel airqPollutionLevel = airqLevelService.getOne(new QueryWrapper<AirqLevel>().lambda().eq(AirqLevel::getLevel, pollutionLevel));
+				 exponentMap.put("color",airqPollutionLevel.getLevelRgb());
+				 exponentMap.put("content",pollutionAqi==-1?"":pollutionAqi);
+				 exponents.add(exponentMap);
+				 //判断首要污染物
+				 if(maxAqi==pollutionAqi){
+					 Map<String, String> factorMap = factors.get(i);
+					 factorMap.put("color","#FF0000");
+					 factors.set(i,factorMap);
+				 }
+			 }
+			 mapResult.put("factors",factors);
+			 mapResult.put("exponents",exponents);
+		 }
+		return Result.ok(mapResult);
 	 }
 }
