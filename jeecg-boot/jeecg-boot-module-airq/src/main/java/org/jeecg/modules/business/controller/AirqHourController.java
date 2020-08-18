@@ -2,6 +2,7 @@ package org.jeecg.modules.business.controller;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -708,9 +709,15 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 			 codeList = new ArrayList<>();
 			 timeList = new ArrayList<>();
 			 for(Map<String,Object> param:airChartList){
-				String value = param.get(code).toString();
-				Double codeValue = Double.parseDouble(value);
-				codeList.add(codeValue);
+			 	Double codeValue = null;
+			 	if(param.get(code) != null){
+					String value = param.get(code).toString();
+					BigDecimal max = new BigDecimal(value);
+					codeValue = max.doubleValue();
+					codeList.add(codeValue);
+				}else {
+			 		codeList.add(-1.0);
+				}
 				String time = param.get("dataTime").toString().substring(0, 19);
 				timeList.add(time);
 			 }
@@ -723,10 +730,16 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 			 codeList = new ArrayList<>();
 			 timeList = new ArrayList<>();
 			 for(Map<String,Object> param:airChartList){
-				 String value = param.get(code).toString();
-				 Double codeValue = Double.parseDouble(value);
-				 codeList.add(codeValue);
-				 String time = param.get("dataTime").toString().substring(0, 19);
+				 Double codeValue = null;
+				 if(param.get(code) != null){
+					 String value = param.get(code).toString();
+					 BigDecimal max = new BigDecimal(value);
+					 codeValue = max.doubleValue();
+					 codeList.add(codeValue);
+				 }else {
+					 codeList.add(-1.0);
+				 }
+				 String time = param.get("dataTime").toString().substring(0, 10);
 				 timeList.add(time);
 			 }
 			 result.put("series",codeList);
@@ -736,10 +749,16 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 			 codeList = new ArrayList<>();
 			 timeList = new ArrayList<>();
 			 for(Map<String,Object> param:airChartList){
-				 String value = param.get(code).toString();
-				 Double codeValue = Double.parseDouble(value);
-				 codeList.add(codeValue);
-				 String time = param.get("dataTime").toString().substring(0, 19);
+				 Double codeValue = null;
+				 if(param.get(code) != null){
+					 String value = param.get(code).toString();
+					 BigDecimal max = new BigDecimal(value);
+					 codeValue = max.doubleValue();
+					 codeList.add(codeValue);
+				 }else {
+					 codeList.add(-1.0);
+				 }
+				 String time = param.get("dataTime").toString().substring(0, 7);
 				 timeList.add(time);
 			 }
 			 result.put("series",codeList);

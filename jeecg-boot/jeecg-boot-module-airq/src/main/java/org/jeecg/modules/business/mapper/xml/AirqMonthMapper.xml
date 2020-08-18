@@ -159,7 +159,7 @@
         A05024_I A05024
         from airq_month b
         left join site_monitor_point a on b.mn = a.mn
-        WHERE a.site_type = '3'
+        WHERE a.site_type = '3' and b.level !='7'
         and b.mn = (#{mn})
         <if test="dateBegin != null">
             and b.month >= (#{dateBegin})

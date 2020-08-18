@@ -240,7 +240,7 @@
         A0502408_IAQI A05024
         from airq_day b
         left join site_monitor_point a on b.mn = a.mn
-        WHERE b.state in (0,3) and a.site_type = '3'
+        WHERE b.state in (0,3) and a.site_type = '3' and b.level !='7'
         and b.mn = (#{mn})
         <if test="dateBegin != null">
             and b.data_time >= (#{dateBegin})
@@ -248,7 +248,7 @@
         <if test="dateEnd != null">
             and b.data_time &lt;= (#{dateEnd})
         </if>
-        order by b.dataTime asc
+        order by b.data_time asc
     </select>
 
 </mapper>
