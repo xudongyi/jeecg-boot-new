@@ -789,16 +789,22 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 	 @ApiOperation(value="监测站点详情", notes="监测站点详情")
 	 @GetMapping(value = "/queryAirMoreInfo")
 	 public Result<?> queryAirMoreInfo(@RequestParam(name="mn",required=true) String mn
-			 ,@RequestParam(name="dateBegin",required=false) String dateBegin) {
-		 List<Map<String,Object>>  airMoreList =  airqHourService.queryAirMoreInfo(mn,dateBegin);
+			 ,@RequestParam(name="dateBegin",required=false) String dateBegin
+			 ,@RequestParam(name="time",required=true) String time) {
+		 List<Map<String,Object>>  airMoreList =  null;
 		 Map<String,Object> result = new HashMap<>();
+		 if("0".equals(time)) {
+			 airMoreList =  airqHourService.queryAirMoreInfo(mn,dateBegin);
+		 }else if("1".equals(time)) {
+			 airMoreList = airqDayService.queryAirDayMoreInfo(mn, dateBegin);
+		 }
 		 for(Map<String,Object> param:airMoreList){
 			 if(param.get("level") != null) {
 				 String levelValue = sysDictService.queryDictTextByKey("level",param.get("level").toString());
 				 param.put("levelName", levelValue);
 			 }
 			 if(param.get("A01008") != null) {
-			 	 String windDirection = sysDictService.queryDictTextByKey("wind",param.get("A01008").toString());
+				 String windDirection = sysDictService.queryDictTextByKey("wind",param.get("A01008").toString());
 				 param.put("windDirection", windDirection);
 			 }else {
 				 param.put("windDirection", "");

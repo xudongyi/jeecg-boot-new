@@ -109,4 +109,12 @@ public class AirqDayServiceImpl extends ServiceImpl<AirqDayMapper, AirqDay> impl
         Timestamp dateEnd = new Timestamp(timeEnd.getTime());
         return airqDayMapper.queryDayChartInfo(mn,dateBegin,dateEnd);
     }
+
+    @Override
+    public List<Map<String, Object>> queryAirDayMoreInfo(String mn, String timeBegin) {
+        Date begin = DateUtil.parse(timeBegin,"yyyy-MM-dd");
+        Timestamp dateBegin = DateUtil.parse(timeBegin,"yyyy-MM-dd").toTimestamp();
+        Timestamp dateEnd = DateUtil.offsetDay(begin, 1).toTimestamp();
+        return airqDayMapper.queryAirDayMoreInfo(mn,dateBegin,dateEnd);
+    }
 }

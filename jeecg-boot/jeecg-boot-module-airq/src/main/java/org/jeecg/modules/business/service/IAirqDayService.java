@@ -28,4 +28,6 @@ public interface IAirqDayService extends IService<AirqDay> {
     List<AirqAppLineVO> queryAppLine(List<String> companyIds, DateTime startTime, DateTime endTime);
 
     List<Map<String,Object>> queryDayChartInfo(String mn);
+
+    List<Map<String,Object>> queryAirDayMoreInfo(String mn,String dateTime);
 }
