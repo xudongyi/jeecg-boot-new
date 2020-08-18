@@ -40,4 +40,6 @@ public interface IAirqHourService extends IService<AirqHour> {
     List<AirHourPlayVo> queryAirAvgInfo(List<String> asList, DateTime nowDate);
 
     List<AirqAppLineVO> queryAppLine(List<String> asList, DateTime startTime, DateTime endTime);
+
+    List<Map<String,Object>> queryAirMoreInfo(String mn,String dateBegin);
 }
