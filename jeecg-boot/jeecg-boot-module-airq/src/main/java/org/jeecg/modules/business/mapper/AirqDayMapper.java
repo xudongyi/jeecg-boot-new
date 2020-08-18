@@ -1,9 +1,11 @@
 package org.jeecg.modules.business.mapper;
 
+import cn.hutool.core.date.DateTime;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
 import org.jeecg.modules.business.entity.AirqDay;
+import org.jeecg.modules.business.vo.AirqAppLineVO;
 import org.jeecg.modules.business.vo.AirqDayQualityVo;
 import org.jeecg.modules.business.vo.AirqVO;
 import org.jeecg.modules.business.vo.SiteQualityRankDayVO;
@@ -32,4 +34,6 @@ public interface AirqDayMapper extends BaseMapper<AirqDay> {
     List<SiteQualityRankDayVO> querySiteDayExport(String[] companyIds, String area, String mn, Date queryDate);
 
     List<Map<String,Object>> queryDayChartInfo(@Param("mn")String mn,@Param("dateBegin")Timestamp dateBegin,@Param("dateEnd")Timestamp dateEnd);
+
+    List<AirqAppLineVO> queryAppLine(List<String> companyIds, DateTime startTime, DateTime endTime);
 }

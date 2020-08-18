@@ -85,4 +85,26 @@
         order by a.warn_time desc
     </select>
 
+    <select id="queryAppPie" resultType="Map">
+        SELECT COUNT(1) siteNum,c.flag FROM (select flag,MAX(a.warn_time)
+        from sys_warn_log  a left join site_monitor_point b on a.monitor_id = b.id
+        WHERE b.company_id in
+        <foreach collection="companyIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+         GROUP BY a.monitor_id) c GROUP BY c.flag
+    </select>
+
+    <select id="queryAppColumn" resultType="integer">
+        SELECT COUNT(1) siteNum  FROM sys_warn_log  a left join site_monitor_point b on a.monitor_id = b.id
+        WHERE b.company_id in
+        <foreach collection="companyIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        AND
+        a.warn_time >= (#{startTime})
+        AND
+        a.warn_time &lt;= (#{endTime})
+    </select>
+
 </mapper>

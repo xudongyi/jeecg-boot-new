@@ -40,4 +40,6 @@ public interface AirqHourMapper extends BaseMapper<AirqHour> {
     List<Map<String,Object>> queryHourChartInfo(@Param("mn")String mn,@Param("dateBegin")Timestamp dateBegin,@Param("dateEnd")Timestamp dateEnd);
 
     List<AirHourPlayVo> queryAirAvgInfo(@Param("companyIds")List<String> companyIds,@Param("dataTime") DateTime nowDate);
+
+    List<AirqAppLineVO> queryAppLine(List<String> companyIds, DateTime startTime, DateTime endTime);
 }

@@ -141,5 +141,10 @@ public class AirqHourServiceImpl extends ServiceImpl<AirqHourMapper, AirqHour> i
         return airqHourMapper.queryAirAvgInfo(companyIds,nowDate);
     }
 
+    @Override
+    public List<AirqAppLineVO> queryAppLine(List<String> companyIds, DateTime startTime, DateTime endTime) {
+        return airqHourMapper.queryAppLine(companyIds,startTime,endTime);
+    }
+
 
 }

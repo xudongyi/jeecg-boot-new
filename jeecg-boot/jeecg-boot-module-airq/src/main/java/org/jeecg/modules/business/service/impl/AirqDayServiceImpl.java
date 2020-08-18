@@ -1,5 +1,6 @@
 package org.jeecg.modules.business.service.impl;
 
+import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -9,6 +10,7 @@ import org.jeecg.modules.business.entity.AirqDay;
 import org.jeecg.modules.business.mapper.AirqDayMapper;
 import org.jeecg.modules.business.service.IAirqDayService;
 import org.jeecg.modules.business.utils.RedisCacheUtil;
+import org.jeecg.modules.business.vo.AirqAppLineVO;
 import org.jeecg.modules.business.vo.AirqDayQualityVo;
 import org.jeecg.modules.business.vo.AirqVO;
 import org.jeecg.modules.business.vo.SiteQualityRankDayVO;
@@ -89,6 +91,11 @@ public class AirqDayServiceImpl extends ServiceImpl<AirqDayMapper, AirqDay> impl
             siteQualityRankDayVO.setMeaning(redisCacheUtil.transformCode(siteQualityRankDayVO.getFirstCode()));
         });
         return siteQualityRankDayVOS;
+    }
+
+    @Override
+    public List<AirqAppLineVO> queryAppLine(List<String> companyIds, DateTime startTime, DateTime endTime) {
+        return airqDayMapper.queryAppLine(companyIds,startTime,endTime);
     }
 
     @Override

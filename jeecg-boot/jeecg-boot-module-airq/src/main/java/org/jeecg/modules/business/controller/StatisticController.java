@@ -1,20 +1,21 @@
 package org.jeecg.modules.business.controller;
 
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.date.DateField;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.apache.bcel.generic.RET;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
 import org.jeecg.modules.business.entity.*;
 import org.jeecg.modules.business.service.impl.*;
 import org.jeecg.modules.business.utils.AirQualityUtil;
+import org.jeecg.modules.business.vo.AirHourPlayVo;
+import org.jeecg.modules.business.vo.AirqAppLineVO;
 import org.jeecg.modules.business.vo.AirqVO;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -59,6 +61,11 @@ public class StatisticController {
 
     @Resource
     private AirqHourServiceImpl airqHourService;
+
+    @Resource
+    private SysWarnLogServiceImpl sysWarnLogService;
+
+    private static String factorJson = "[{name: \"PM10\", color:\"#666666\"}, { name: \"PM2.5\", color:\"#666666\"}, { name: \"SO₂\", color:\"#666666\"}, { name: \"NO₂\", color:\"#666666\"}, { name: \"CO\", color:\"#666666\"}, { name: \"O₃\", color:\"#666666\"}]";
 
 
     /**
@@ -297,7 +304,7 @@ public class StatisticController {
                         QueryWrapper<AirqHour> wrapper = new QueryWrapper<AirqHour>().select(colum, "data_time", "mn").in("mn", mns).between("data_time", timeStart, timeEnd);
                         List<Map<String, Object>> airqHours = airqHourService.listMaps(wrapper);
                         List<Map<String, Object>> series = new ArrayList<>();
-                        if (airqHours!=null && airqHours.size()>0) {
+                        if (airqHours != null && airqHours.size() > 0) {
                             Map<String, List<Map<String, Object>>> grouplist = airqHours.stream().collect(Collectors.groupingBy(e -> e.get("mn").toString()));
                             //查询每个站点下的数据
                             for (int i = 0; i < siteMonitorPoints.size(); i++) {
@@ -308,7 +315,7 @@ public class StatisticController {
                                 List<Double> aqis = new ArrayList<>();
                                 List<String> dateStr = new ArrayList<>();
                                 //计算aqi
-                                if(dayMaps!=null && dayMaps.size()>0){
+                                if (dayMaps != null && dayMaps.size() > 0) {
                                     for (int j = 0; j < dayMaps.size(); j++) {
                                         Map<String, Object> dayMap = dayMaps.get(j);
                                         Object columRes = dayMap.get(colum);
@@ -758,6 +765,232 @@ public class StatisticController {
 
         }
         return Result.ok(resultMap);
+    }
+
+    @AutoLog(value = "获取最新数据的指数-app")
+    @ApiOperation(value = "获取最新数据的指数-app", notes = "获取最新数据的指数-app")
+    @GetMapping(value = "app/queryExponent")
+    public Result<?> queryExponent(@RequestParam(name = "companyIds", required = true) String companyIds) {
+        Map<String, Object> mapResult = null;
+        //获取当前时间
+        String curr = DateUtil.format(DateUtil.date(), "yyyy-MM-dd HH");
+        DateTime nowDate = DateUtil.parse(curr, "yyyy-MM-dd HH");
+        //获取所属站点当前数据的平均值
+        List<AirHourPlayVo> airHourPlayVos = airqHourService.queryAirAvgInfo(Arrays.asList(companyIds.split(",")), nowDate);
+        //获取小时AQI趋势
+
+        List<Double> aqis = new ArrayList<>();
+        List<Double> iaqis = new ArrayList<>();
+        List<Object> exponents = new ArrayList<>();
+        List<Map<String, String>> factors = (List<Map<String, String>>) JSONObject.parse(factorJson);
+        //
+        if (airHourPlayVos != null && airHourPlayVos.size() > 0) {
+            mapResult = new HashMap<>();
+            AirHourPlayVo airHourPlayVo = airHourPlayVos.get(0);
+            Double aqi = airHourPlayVo.getAqi();
+            String level = airQualityUtil.getLevel(aqi);
+            mapResult.put("aqiLevel", Integer.valueOf(level));
+            AirqLevel airqLevel = airqLevelService.getOne(new QueryWrapper<AirqLevel>().lambda().eq(AirqLevel::getLevel, level));
+            mapResult.put("levelContent", airqLevel.getLevelContent());
+            mapResult.put("grade", airqLevel.getLevelGrade());
+            mapResult.put("gradeColor", airqLevel.getLevelRgb());
+            mapResult.put("aqi", Math.round(aqi));
+            //计算各污染因子aqi
+            //pm10 pm2.5 so2 no2 co 03
+            double a3400201Iaqi = airHourPlayVo.getA3400201Iaqi() == null ? -1 : airHourPlayVo.getA3400201Iaqi();
+            double a34002aqi = airQualityUtil.getAQI("A34002", 1, a3400201Iaqi);
+            aqis.add(a34002aqi);
+            iaqis.add(a3400201Iaqi);
+            double a3400401Iaqi = airHourPlayVo.getA3400401Iaqi() == null ? -1 : airHourPlayVo.getA3400401Iaqi();
+            double a3400401aqi = airQualityUtil.getAQI("A34004", 1, a3400401Iaqi);
+            aqis.add(a3400401aqi);
+            iaqis.add(a3400401Iaqi);
+            double a21026Iaqi = airHourPlayVo.getA21026Iaqi() == null ? -1 : airHourPlayVo.getA21026Iaqi();
+            double a21026aqi = airQualityUtil.getAQI("A21026", 1, a21026Iaqi);
+            aqis.add(a21026aqi);
+            iaqis.add(a21026Iaqi);
+            double a21004Iaqi = airHourPlayVo.getA21004Iaqi() == null ? -1 : airHourPlayVo.getA21004Iaqi();
+            double a21004aqi = airQualityUtil.getAQI("A21004", 1, a21004Iaqi);
+            aqis.add(a21004aqi);
+            iaqis.add(a21004Iaqi);
+            double a21005Iaqi = airHourPlayVo.getA21005Iaqi() == null ? -1 : airHourPlayVo.getA21005Iaqi();
+            double a21005aqi = airQualityUtil.getAQI("A21005", 1, a21005Iaqi);
+            aqis.add(a21005aqi);
+            iaqis.add(a21005Iaqi);
+            double a0502401Iaqi = airHourPlayVo.getA0502401Iaqi() == null ? -1 : airHourPlayVo.getA0502401Iaqi();
+            double a0502401aqi = airQualityUtil.getAQI("A05024", 1, a0502401Iaqi);
+            aqis.add(a0502401aqi);
+            iaqis.add(a0502401Iaqi);
+            Double maxAqi = Collections.max(aqis);
+            for (int i = 0; i < aqis.size(); i++) {
+                Map<String, Object> exponentMap = new HashMap<>();
+                Double pollutionAqi = aqis.get(i);
+                Double pollutionIaqi = iaqis.get(i);
+                //获取level
+                String pollutionLevel = airQualityUtil.getLevel(pollutionAqi);
+                AirqLevel airqPollutionLevel = airqLevelService.getOne(new QueryWrapper<AirqLevel>().lambda().eq(AirqLevel::getLevel, pollutionLevel));
+                exponentMap.put("color", airqPollutionLevel.getLevelRgb());
+                exponentMap.put("content", pollutionIaqi == -1 ? "" : pollutionIaqi);
+                exponents.add(exponentMap);
+                //判断首要污染物
+                if (maxAqi == pollutionAqi) {
+                    Map<String, String> factorMap = factors.get(i);
+                    factorMap.put("color", "#FF0000");
+                    factors.set(i, factorMap);
+                }
+            }
+            mapResult.put("factors", factors);
+            mapResult.put("exponents", exponents);
+        }
+        return Result.ok(mapResult);
+    }
+
+    @AutoLog(value = "手机app端首页折线图")
+    @ApiOperation(value = "手机app端首页折线图", notes = "手机app端首页折线图")
+    @GetMapping(value = "app/queryLine")
+    public Result<?> queryLine(HttpServletRequest req) {
+        Map<String, Object> mapResult = null;
+        String companyIds = req.getParameter("companyIds");
+        Integer trendType = Integer.parseInt(req.getParameter("trendType") == null ? "0" : req.getParameter("trendType"));
+        if (trendType == null) {
+            trendType = 0;
+        }
+        List<String> dataTimes = new ArrayList<>();
+        List<Double> aqis = new ArrayList<>();
+        //逐小时
+        if (trendType == 0) {
+            //计算开始时间和结束时间
+            //48小时之前的日期
+            DateTime startTime = DateUtil.parse(DateUtil.format(DateUtil.offsetHour(DateUtil.date(), -48), "yyyy-MM-dd HH"), "yyyy-MM-dd HH");
+            //当前小时的日期
+            DateTime endTime = DateUtil.parse(DateUtil.format(DateUtil.date(), "yyyy-MM-dd HH"), "yyyy-MM-dd HH");
+            List<AirqAppLineVO> airqHours = airqHourService.queryAppLine(Arrays.asList(companyIds.split(",")), startTime, endTime);
+            if (CollectionUtil.isNotEmpty(airqHours)) {
+                mapResult = new HashMap<>();
+                for (int i = 0; i < airqHours.size(); i++) {
+                    AirqAppLineVO airqHourAppLineVO = airqHours.get(i);
+                    aqis.add(airqHourAppLineVO.getAqi());
+                    dataTimes.add(DateUtil.format(airqHourAppLineVO.getDataTime(), "HH:mm"));
+                }
+                mapResult.put("xTimes", dataTimes);
+                mapResult.put("aqis", aqis);
+            }
+        } else if (trendType == 1) {
+            //开始时间
+            DateTime startTime = DateUtil.parse(DateUtil.format(DateUtil.offsetDay(DateUtil.date(), -30), "yyyy-MM-dd"), "yyyy-MM-dd");
+            //当前的日期
+            DateTime endTime = DateUtil.parse(DateUtil.format(DateUtil.date(), "yyyy-MM-dd"), "yyyy-MM-dd");
+            List<AirqAppLineVO> airqDays = airqDayServic.queryAppLine(Arrays.asList(companyIds.split(",")), startTime, endTime);
+            if (CollectionUtil.isNotEmpty(airqDays)) {
+                mapResult = new HashMap<>();
+                for (int i = 0; i < airqDays.size(); i++) {
+                    AirqAppLineVO airqDayAppLineVO = airqDays.get(i);
+                    aqis.add(airqDayAppLineVO.getAqi());
+                    dataTimes.add(DateUtil.format(airqDayAppLineVO.getDataTime(), "yyyy-MM-dd"));
+                }
+                mapResult.put("xTimes", dataTimes);
+                mapResult.put("aqis", aqis);
+            }
+        }
+        return Result.ok(mapResult);
+    }
+
+    @AutoLog(value = "手机app端首页饼图")
+    @ApiOperation(value = "手机app端首页饼图", notes = "手机app端首页饼图")
+    @GetMapping(value = "app/queryPie")
+    public Result<?> queryPie(HttpServletRequest req) {
+        String companyIds = req.getParameter("companyIds");
+        Map<String, Object> mapResult = null;
+        if (StrUtil.isNotEmpty(companyIds)) {
+            mapResult = new HashMap<>();
+            List<Object> pieSeries = new ArrayList<>();
+            LambdaQueryWrapper<SiteMonitorPoint> lambdaWrapper = new QueryWrapper<SiteMonitorPoint>().lambda().eq(SiteMonitorPoint::getSiteType, "3");
+            lambdaWrapper.in(SiteMonitorPoint::getCompanyId, Arrays.asList(companyIds.split(",")));
+            int siteSum = siteMonitorPointService.count(lambdaWrapper);
+            //站点数量
+            mapResult.put("siteSum", siteSum);
+            List<Map<String, Object>> newestWarn = sysWarnLogService.queryAppPie(Arrays.asList(companyIds.split(",")));
+            if (CollectionUtil.isNotEmpty(newestWarn)) {
+                for (int i = 0; i < newestWarn.size(); i++) {
+                    Map<String, Object> seriesMap = new HashMap<>();
+                    Map<String, Object> map = newestWarn.get(i);
+                    String flag = StrUtil.toString(map.get("flag"));
+                    if ("0".equals(flag)) {
+                        seriesMap.put("name", "超标报警");
+                        seriesMap.put("color", "#FF2323");
+                        seriesMap.put("data", map.get("siteNum"));
+                    } else if ("1".equals(flag)) {
+                        seriesMap.put("name", "离线");
+                        seriesMap.put("color", "#A1A1A1");
+                        seriesMap.put("data", map.get("siteNum"));
+                    } else if ("2".equals(flag)) {
+                        seriesMap.put("name", "设备故障");
+                        seriesMap.put("color", "#CD66C2");
+                        seriesMap.put("data", map.get("siteNum"));
+                    } else if ("3".equals(flag)) {
+                        seriesMap.put("name", "超标预警");
+                        seriesMap.put("color", "#FF9710");
+                        seriesMap.put("data", map.get("siteNum"));
+                    }
+                    pieSeries.add(seriesMap);
+                }
+                //正常的
+                if (siteSum - newestWarn.size() > 0) {
+                    Map<String, Object> seriesMap = new HashMap<>();
+                    seriesMap.put("name", "正常");
+                    seriesMap.put("color", "#FF9710");
+                    seriesMap.put("data", siteSum - newestWarn.size());
+                    pieSeries.add(seriesMap);
+                }
+                mapResult.put("pieSeries", pieSeries);
+            }
+        }
+        return Result.ok(mapResult);
+    }
+
+    @AutoLog(value = "手机app端首页报警趋势图")
+    @ApiOperation(value = "手机app端首页报警趋势图", notes = "手机app端首页报警趋势图")
+    @GetMapping(value = "app/queryColumn")
+    public Result<?> queryColumn(HttpServletRequest req) {
+        Map<String, Object> mapResult = new HashMap<>();
+        String companyIds = req.getParameter("companyIds");
+        List<Integer> siteNums =  new ArrayList<>();;
+        List<String> xTimes = new ArrayList<>();
+        Integer alertType = Integer.parseInt(req.getParameter("alertType") == null ? "0" : req.getParameter("alertType"));
+        if (alertType == null) {
+            alertType = 0;
+        }
+        //近24小时
+        if (alertType == 0) {
+            for(int i=24;i>=1;i--){
+                DateTime startTime = DateUtil.parse(DateUtil.format(DateUtil.offsetHour(DateUtil.date(), -i), "yyyy-MM-dd HH"), "yyyy-MM-dd HH");
+                DateTime endTime = DateUtil.parse(DateUtil.format(DateUtil.offsetHour(DateUtil.date(), -i+1), "yyyy-MM-dd HH"), "yyyy-MM-dd HH");
+                Integer warn =  sysWarnLogService.queryAppColumn(Arrays.asList(companyIds.split(",")),startTime,endTime);
+                siteNums.add(warn==null?0:warn);
+                xTimes.add(DateUtil.format(startTime, "HH:mm"));
+            }
+            mapResult.put("siteNums",siteNums);
+            mapResult.put("xTimes",xTimes);
+            //最大值
+            Integer max = Collections.max(siteNums);
+            max = (max/10+1)*10;
+            mapResult.put("max",max);
+        }else{
+            for(int i=30;i>=1;i--){
+                DateTime startTime = DateUtil.parse(DateUtil.format(DateUtil.offsetDay(DateUtil.date(), -i), "yyyy-MM-dd"), "yyyy-MM-dd");
+                DateTime endTime = DateUtil.parse(DateUtil.format(DateUtil.offsetDay(DateUtil.date(), -i+1), "yyyy-MM-dd"), "yyyy-MM-dd");
+                Integer warn =  sysWarnLogService.queryAppColumn(Arrays.asList(companyIds.split(",")),startTime,endTime);
+                siteNums.add(warn==null?0:warn);
+                xTimes.add(DateUtil.format(startTime, "yyyy-MM-dd"));
+            }
+            mapResult.put("siteNums",siteNums);
+            mapResult.put("xTimes",xTimes);
+            //最大值
+            Integer max = Collections.max(siteNums);
+            max = (max/10+1)*10;
+            mapResult.put("max",max);
+        }
+        return Result.ok(mapResult);
     }
 
     private void getResultMap

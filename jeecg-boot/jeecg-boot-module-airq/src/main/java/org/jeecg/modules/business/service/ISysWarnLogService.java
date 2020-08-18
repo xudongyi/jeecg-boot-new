@@ -1,5 +1,6 @@
 package org.jeecg.modules.business.service;
 
+import cn.hutool.core.date.DateTime;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.jeecg.modules.business.entity.SysWarnLog;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -22,4 +23,8 @@ public interface ISysWarnLogService extends IService<SysWarnLog> {
     List<WarnLogVO> exportWarnLogInfo(String companyIds, String area, String monitorId, String dateBegin, String dateEnd,String flag);
 
     List<Map<String,Object>> queryWarnInfo(List<String> companyIds, String monitorId,String dateBegin, String dateEnd,String flag);
+
+    List<Map<String, Object>> queryAppPie(List<String> companyIds);
+
+    Integer queryAppColumn(List<String> companyIds, DateTime startTime, DateTime endTime);
 }

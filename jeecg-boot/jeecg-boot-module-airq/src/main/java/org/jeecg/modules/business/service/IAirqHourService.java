@@ -1,9 +1,7 @@
 package org.jeecg.modules.business.service;
 
 import cn.hutool.core.date.DateTime;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.apache.ibatis.annotations.Param;
 import org.jeecg.modules.business.entity.AirqHour;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.jeecg.modules.business.vo.*;
@@ -40,4 +38,6 @@ public interface IAirqHourService extends IService<AirqHour> {
     List<Map<String,Object>> queryHourChartInfo(String mn);
 
     List<AirHourPlayVo> queryAirAvgInfo(List<String> asList, DateTime nowDate);
+
+    List<AirqAppLineVO> queryAppLine(List<String> asList, DateTime startTime, DateTime endTime);
 }

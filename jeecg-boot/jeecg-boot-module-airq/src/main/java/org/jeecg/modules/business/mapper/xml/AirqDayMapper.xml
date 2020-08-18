@@ -225,6 +225,25 @@
         order by ISNULL(t.aqi), t.aqi asc
 
     </select>
+    <resultMap id="AirqDayAppLineVO" type="org.jeecg.modules.business.vo.AirqAppLineVO" >
+        <result column="aqi" property="aqi" jdbcType="DOUBLE"/>
+        <result column="data_time" property="dataTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <select id="queryAppLine"   resultMap="AirqDayAppLineVO">
+        select AVG(a.aqi) AQI,a.data_time from airq_day a
+        left join
+        site_monitor_point b
+        ON a.mn = b.mn
+        WHERE b.site_type='3'
+        AND
+        b.company_id IN
+        <foreach collection="companyIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        AND
+        a.data_time BETWEEN (#{startTime}) AND (#{endTime})
+        GROUP BY a.data_time order by a.data_time asc
+    </select>
 
     <select id="queryDayChartInfo"    resultType="Map">
         select
