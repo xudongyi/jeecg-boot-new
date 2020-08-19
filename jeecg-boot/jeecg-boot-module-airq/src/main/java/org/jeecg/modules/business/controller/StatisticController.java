@@ -779,7 +779,6 @@ public class StatisticController {
         List<AirHourPlayVo> airHourPlayVos = airqHourService.queryAirAvgInfo(Arrays.asList(companyIds.split(",")), nowDate);
         //获取小时AQI趋势
 
-        List<Double> aqis = new ArrayList<>();
         List<Double> iaqis = new ArrayList<>();
         List<Object> exponents = new ArrayList<>();
         List<Map<String, String>> factors = (List<Map<String, String>>) JSONObject.parse(factorJson);
@@ -798,42 +797,29 @@ public class StatisticController {
             //计算各污染因子aqi
             //pm10 pm2.5 so2 no2 co 03
             double a3400201Iaqi = airHourPlayVo.getA3400201Iaqi() == null ? -1 : airHourPlayVo.getA3400201Iaqi();
-            double a34002aqi = airQualityUtil.getAQI("A34002", 1, a3400201Iaqi);
-            aqis.add(a34002aqi);
             iaqis.add(a3400201Iaqi);
             double a3400401Iaqi = airHourPlayVo.getA3400401Iaqi() == null ? -1 : airHourPlayVo.getA3400401Iaqi();
-            double a3400401aqi = airQualityUtil.getAQI("A34004", 1, a3400401Iaqi);
-            aqis.add(a3400401aqi);
             iaqis.add(a3400401Iaqi);
             double a21026Iaqi = airHourPlayVo.getA21026Iaqi() == null ? -1 : airHourPlayVo.getA21026Iaqi();
-            double a21026aqi = airQualityUtil.getAQI("A21026", 1, a21026Iaqi);
-            aqis.add(a21026aqi);
             iaqis.add(a21026Iaqi);
             double a21004Iaqi = airHourPlayVo.getA21004Iaqi() == null ? -1 : airHourPlayVo.getA21004Iaqi();
-            double a21004aqi = airQualityUtil.getAQI("A21004", 1, a21004Iaqi);
-            aqis.add(a21004aqi);
             iaqis.add(a21004Iaqi);
             double a21005Iaqi = airHourPlayVo.getA21005Iaqi() == null ? -1 : airHourPlayVo.getA21005Iaqi();
-            double a21005aqi = airQualityUtil.getAQI("A21005", 1, a21005Iaqi);
-            aqis.add(a21005aqi);
             iaqis.add(a21005Iaqi);
             double a0502401Iaqi = airHourPlayVo.getA0502401Iaqi() == null ? -1 : airHourPlayVo.getA0502401Iaqi();
-            double a0502401aqi = airQualityUtil.getAQI("A05024", 1, a0502401Iaqi);
-            aqis.add(a0502401aqi);
             iaqis.add(a0502401Iaqi);
-            Double maxAqi = Collections.max(aqis);
-            for (int i = 0; i < aqis.size(); i++) {
+            Double maxAqi = Collections.max(iaqis);
+            for (int i = 0; i < iaqis.size(); i++) {
                 Map<String, Object> exponentMap = new HashMap<>();
-                Double pollutionAqi = aqis.get(i);
                 Double pollutionIaqi = iaqis.get(i);
                 //获取level
-                String pollutionLevel = airQualityUtil.getLevel(pollutionAqi);
+                String pollutionLevel = airQualityUtil.getLevel(pollutionIaqi);
                 AirqLevel airqPollutionLevel = airqLevelService.getOne(new QueryWrapper<AirqLevel>().lambda().eq(AirqLevel::getLevel, pollutionLevel));
                 exponentMap.put("color", airqPollutionLevel.getLevelRgb());
                 exponentMap.put("content", pollutionIaqi == -1 ? "" : pollutionIaqi);
                 exponents.add(exponentMap);
                 //判断首要污染物
-                if (maxAqi == pollutionAqi) {
+                if (maxAqi == pollutionIaqi) {
                     Map<String, String> factorMap = factors.get(i);
                     factorMap.put("color", "#FF0000");
                     factors.set(i, factorMap);

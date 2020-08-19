@@ -41,5 +41,9 @@ public interface IAirqHourService extends IService<AirqHour> {
 
     List<AirqAppLineVO> queryAppLine(List<String> asList, DateTime startTime, DateTime endTime);
 
+    List<Map<String,Object>> queryMapSite(List<String> companyIds);
+
+    Map<String, Object> querySiteDetail(List<String> asList, String siteId);
+
     List<Map<String,Object>> queryAirMoreInfo(String mn,String dateBegin);
 }
