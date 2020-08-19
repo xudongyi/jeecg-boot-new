@@ -533,6 +533,39 @@
         order by b.data_time desc
     </select>
 
+    <select id="queryAirMoreInfo"    resultType="Map">
+        select
+        site_name siteName,
+        b.data_time dataTime,
+        b.mn mn,
+        b.level level,
+        aqi AQI,
+        a3400401_avg A34004,
+        a3400201_avg A34002,
+        a21026_avg A21026,
+        a21004_avg A21004,
+        a21005_avg A21005,
+        a0502401_avg A05024,
+        a01001_avg A01001,
+        a01002_avg A01002,
+        a01006_avg A01006,
+        a01007_avg A01007,
+        a01008_avg A01008,
+        first_code firstCode
+        from airq_hour b
+        left join site_monitor_point a on b.mn = a.mn
+        WHERE b.state in (0,3) and a.site_type = '3' and b.level !='7'
+        and b.mn = (#{mn})
+        <if test="dateBegin != null">
+            and b.data_time >= (#{dateBegin})
+        </if>
+        <if test="dateEnd != null">
+            and b.data_time &lt; (#{dateEnd})
+        </if>
+        order by b.data_time desc
+        limit 1
+    </select>
+
     <select id="queryHourChartInfo"    resultType="Map">
         select
         site_name siteName,

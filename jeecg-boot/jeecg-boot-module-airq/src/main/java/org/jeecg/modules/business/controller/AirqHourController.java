@@ -684,14 +684,19 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 			 	levelValue = levelValue.substring(0, 2);
 			 }
 			 param.put("levelName", levelValue);
-			 String firstCode = param.get("firstCode").toString();
-			 List<String> arr = Arrays.asList(firstCode.split(","));
-			 List<String> codeArr = new ArrayList<>();
-			 for (int i=0;i<arr.size();i++) {
-			 	codeArr.add(arr.get(i).substring(0, 6));
+			 if(param.get("firstCode") != null) {
+				 String firstCode = param.get("firstCode").toString();
+				 List<String> arr = Arrays.asList(firstCode.split(","));
+				 List<String> codeArr = new ArrayList<>();
+				 for (int i=0;i<arr.size();i++) {
+					 codeArr.add(arr.get(i).substring(0, 6));
+				 }
+				 String code = StringUtils.join(codeArr, ",");
+				 param.put("code", code);
+			 }else {
+			 	param.put("code", "");
 			 }
-			 String code = StringUtils.join(codeArr, ",");
-			 param.put("code", code);
+
 		 }
 		 result.put("dataList",airSiteList);
 		 return Result.ok(result);
@@ -725,7 +730,7 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 				}else {
 			 		codeList.add(-1.0);
 				}
-				String time = param.get("dataTime").toString().substring(0, 19);
+				String time = param.get("dataTime").toString().substring(5, 19);
 				timeList.add(time);
 			 }
 
@@ -772,6 +777,53 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
 			 result.put("categories",timeList);
 		 }
 
+		 return Result.ok(result);
+	 }
+
+	 /**
+	  * 空气质量app 监测站点详情
+	  *
+	  * @return
+	  */
+	 @AutoLog(value = "监测站点详情")
+	 @ApiOperation(value="监测站点详情", notes="监测站点详情")
+	 @GetMapping(value = "/queryAirMoreInfo")
+	 public Result<?> queryAirMoreInfo(@RequestParam(name="mn",required=true) String mn
+			 ,@RequestParam(name="dateBegin",required=false) String dateBegin
+			 ,@RequestParam(name="time",required=true) String time) {
+		 List<Map<String,Object>>  airMoreList =  null;
+		 Map<String,Object> result = new HashMap<>();
+		 if("0".equals(time)) {
+			 airMoreList =  airqHourService.queryAirMoreInfo(mn,dateBegin);
+		 }else if("1".equals(time)) {
+			 airMoreList = airqDayService.queryAirDayMoreInfo(mn, dateBegin);
+		 }
+		 for(Map<String,Object> param:airMoreList){
+			 if(param.get("level") != null) {
+				 String levelValue = sysDictService.queryDictTextByKey("level",param.get("level").toString());
+				 param.put("levelName", levelValue);
+			 }
+			 if(param.get("A01008") != null) {
+				 String windDirection = sysDictService.queryDictTextByKey("wind",param.get("A01008").toString());
+				 param.put("windDirection", windDirection);
+			 }else {
+				 param.put("windDirection", "");
+			 }
+			 if(param.get("firstCode") != null) {
+				 String firstCode = param.get("firstCode").toString();
+				 List<String> arr = Arrays.asList(firstCode.split(","));
+				 List<String> codeArr = new ArrayList<>();
+				 for (int i=0;i<arr.size();i++) {
+					 codeArr.add(arr.get(i).substring(0, 6));
+				 }
+				 String code = StringUtils.join(codeArr, ",");
+				 param.put("code", code);
+			 }else {
+				 param.put("code", "");
+			 }
+
+		 }
+		 result.put("dataList",airMoreList);
 		 return Result.ok(result);
 	 }
 

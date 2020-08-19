@@ -146,5 +146,13 @@ public class AirqHourServiceImpl extends ServiceImpl<AirqHourMapper, AirqHour> i
         return airqHourMapper.queryAppLine(companyIds,startTime,endTime);
     }
 
+    @Override
+    public List<Map<String, Object>> queryAirMoreInfo(String mn, String timeBegin) {
+        Date begin = DateUtil.parse(timeBegin,"yyyy-MM-dd HH:mm");
+        Timestamp dateBegin = DateUtil.parse(timeBegin,"yyyy-MM-dd HH:mm").toTimestamp();
+        Timestamp dateEnd = DateUtil.offsetHour(begin, 1).toTimestamp();
+        return airqHourMapper.queryAirMoreInfo(mn,dateBegin,dateEnd);
+    }
+
 
 }

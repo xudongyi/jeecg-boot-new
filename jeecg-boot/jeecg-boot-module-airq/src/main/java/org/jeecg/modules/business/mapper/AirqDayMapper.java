@@ -36,4 +36,6 @@ public interface AirqDayMapper extends BaseMapper<AirqDay> {
     List<Map<String,Object>> queryDayChartInfo(@Param("mn")String mn,@Param("dateBegin")Timestamp dateBegin,@Param("dateEnd")Timestamp dateEnd);
 
     List<AirqAppLineVO> queryAppLine(List<String> companyIds, DateTime startTime, DateTime endTime);
+
+    List<Map<String,Object>> queryAirDayMoreInfo(@Param("mn")String mn,@Param("dateBegin")Timestamp dateTime,@Param("dateEnd")Timestamp dateEnd);
 }
