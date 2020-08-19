@@ -381,7 +381,33 @@ public class LoginController {
 		}
 		return res;
 	}
+	/**
+	 * app登录
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/changePassword", method = RequestMethod.POST)
+	public Result<?> mLogin(@RequestBody JSONObject reqObject,HttpServletRequest request) throws Exception {
 
+		String username = JwtUtil.getUsername(TokenUtils.getTokenByRequest(request));
+		//1. 校验用户是否有效
+		SysUser sysUser = sysUserService.getUserByName(username);
+		Result result = sysUserService.checkUserIsEffective(sysUser);
+		if(!result.isSuccess()) {
+			return result;
+		}
+		String password = reqObject.getString("orginal");
+
+		//2. 校验用户名或密码是否正确
+		String userpassword = PasswordUtil.encrypt(username, password, sysUser.getSalt());
+		String syspassword = sysUser.getPassword();
+		if (!syspassword.equals(userpassword)) {
+			result.error500("用户名或密码错误");
+			return result;
+		}
+		sysUser.setPassword( reqObject.getString("newPassword"));
+		return sysUserService.changePassword(sysUser);
+	}
 	/**
 	 * app登录
 	 * @param sysLoginModel
