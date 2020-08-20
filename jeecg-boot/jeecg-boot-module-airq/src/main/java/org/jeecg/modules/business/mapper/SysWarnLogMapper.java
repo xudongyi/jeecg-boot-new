@@ -26,4 +26,6 @@ public interface SysWarnLogMapper extends BaseMapper<SysWarnLog> {
                                            @Param("dateEnd")Timestamp dateEnd,@Param("flag") String flag);
     List<Map<String,Object>> queryAppPie(@Param("companyIds")List<String> companyIds);
     Integer queryAppColumn(@Param("companyIds")List<String> companyIds, DateTime startTime, DateTime endTime);
+
+    List<Map<String,Object>> queryAlarmInfo(@Param("companyIds")List<String> companyIds);
 }

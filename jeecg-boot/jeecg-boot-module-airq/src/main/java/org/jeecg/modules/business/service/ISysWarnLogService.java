@@ -27,4 +27,6 @@ public interface ISysWarnLogService extends IService<SysWarnLog> {
     List<Map<String, Object>> queryAppPie(List<String> companyIds);
 
     Integer queryAppColumn(List<String> companyIds, DateTime startTime, DateTime endTime);
+
+    List<Map<String, Object>> queryAlarmInfo(List<String> companyIds);
 }

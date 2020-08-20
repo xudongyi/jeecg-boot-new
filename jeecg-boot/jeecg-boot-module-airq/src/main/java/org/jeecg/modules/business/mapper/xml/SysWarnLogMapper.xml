@@ -107,4 +107,18 @@
         a.warn_time &lt;= (#{endTime})
     </select>
 
+    <select id="queryAlarmInfo" resultType="Map">
+        select b.site_name siteName,
+        a.flag flag,
+        a.content content,
+        a.warn_time warnTime
+        from sys_warn_log a left join site_monitor_point b on a.monitor_id = b.id
+        WHERE b.company_id in
+        <foreach collection="companyIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        order by a.warn_time desc
+        limit 4
+    </select>
+
 </mapper>
