@@ -1,14 +1,44 @@
 <template>
     <div id="app">
-        <dashboard></dashboard>
+        <router-view/>
     </div>
 </template>
 <script>
-    import Dashboard from './views/Dashboard';
+
+    import {debounce} from "lodash";
 
     export default {
         name: 'App',
-        components: {Dashboard},
+        created(){
+            this.listenResize();
+        },
+        methods:{
+            initScale() {
+                console.log('scale')
+                //动态效果
+                let containerWidth = document.body.clientWidth || document.documentElement.clientWidth;
+                let containerHeight = document.body.clientHeight || document.documentElement.clientHeight;
+                console.log(containerWidth,containerHeight)
+                // sacle 缩放比例。
+                let scale1 = 1;
+                if (containerHeight < this.$original_height) {
+                    scale1 = containerHeight / this.$original_height;
+                }
+                let scale2 = 1;
+                if(containerWidth<this.$original_width){
+                    scale2 = containerWidth / this.$original_width;
+                }
+
+                this.$store.commit('SET_SCALE',Math.min(scale1,scale2));
+
+            },
+            listenResize() {
+                this.initScale();
+                window.addEventListener('resize', debounce(() => {
+                    this.initScale();
+                }, 300));
+            },
+        }
     }
 </script>
 

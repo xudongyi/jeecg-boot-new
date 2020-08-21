@@ -13,7 +13,7 @@
             <span class="icon-right font_family" :style="adaptiveIcon"  @click="fullScreen">&#xe612;</span>
             <a-button  ghost class="skew-button-right" :style="adaptiveButton" @click="risk"><span>风险监管</span></a-button>
             <a-button  ghost class="skew-button-right" :style="adaptiveButton" @click="waste"><span>危险废物</span></a-button>
-            <a-button  ghost class="skew-button-right" :style="adaptiveButton" @click="analysis"><span>综合分析</span></a-button>
+            <a-button  :ghost="currView!=='analysis'" class="skew-button-right" :style="analysisButton" @click="analysis"><span>综合分析</span></a-button>
 
         </div>
     </div>
@@ -27,10 +27,11 @@
     export default {
         name: "TopTitle",
         //暂时title用不上  图片自动处理
-        props: ['title'],
+        props: ['title','currView'],
         data(){
           return{
-              titleBg:titleBg
+              titleBg:titleBg,
+
           }
         },
         computed:{
@@ -39,17 +40,25 @@
                     fontSize:this.$original_height*this.$store.getters.scale/36+'px',
                 }
             },
-            adaptiveButton(){
-                return {
-                    height:this.$original_height*this.$store.getters.scale/36+'px',
-                    'font-size':this.$original_height*this.$store.getters.scale/78+'px',
 
-                }
+            analysisButton(){
+                let style = { height:this.height,'font-size':this.fontSize}
+                if(this.currView === 'analysis') style.background = 'linear-gradient(0deg,rgba(12,2,184,1) 10%,rgba(16,109,204,1) 90%)';
+                return style
+            },
+            height(){
+                return this.$original_height*this.$store.getters.scale/36+'px';
+            },
+            fontSize(){
+                return this.$original_height*this.$store.getters.scale/78+'px';
+            },
+            adaptiveButton(){
+                return {height:this.height,'font-size':this.fontSize}
             }
         },
         methods:{
             home(){
-                this.$message.success("home")
+                this.$router.push({path:'/dashboard'})
             },
             fullScreen(){
                 var el = document.documentElement;
@@ -72,7 +81,7 @@
                 this.$message.success("环境质量一张图")
             },
             analysis(){
-                this.$message.success("综合分析一张图")
+                this.$router.push({path:'/comprehensiveAnalysis'})
             },
             waste(){
                 this.$message.success("危险废物一张图")
