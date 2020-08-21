@@ -80,4 +80,9 @@ public class SysWarnLogServiceImpl extends ServiceImpl<SysWarnLogMapper, SysWarn
     public Integer queryAppColumn(List<String> companyIds, DateTime startTime, DateTime endTime) {
         return sysWarnLogMapper.queryAppColumn(companyIds,startTime,endTime);
     }
+
+    @Override
+    public List<Map<String, Object>> queryAlarmInfo(List<String> companyIds) {
+        return sysWarnLogMapper.queryAlarmInfo(companyIds);
+    }
 }

@@ -628,5 +628,64 @@
         a.data_time BETWEEN (#{startTime}) AND (#{endTime})
         GROUP BY a.data_time order by a.data_time asc
     </select>
+    <select id="queryMapSite"   resultType="Map">
+        select
+        b.site_name,
+        b.id,
+        b.device_status,
+        b.online_status,
+        b.site_longitude,
+        b.site_latitude,
+        a.level,
+        a.aqi AQI,
+        a.a3400401_iaqi A34004,
+        a.a3400201_iaqi A34002,
+        a.a21026_iaqi A21026,
+        a.a21004_iaqi A21004,
+        a.a21005_iaqi A21005,
+        a.a0502401_iaqi A05024
+         from airq_hour a
+        left join
+        site_monitor_point b
+        ON a.mn = b.mn
+        INNER  JOIN ( SELECT mn, max( data_time ) maxtime FROM airq_hour GROUP BY mn ) c ON b.mn = c.mn
+        AND c.maxtime = a.data_time
+        WHERE b.site_type='3'
+        AND
+        b.company_id IN
+        <foreach collection="companyIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+    <select id="querySiteDetail"   resultType="Map">
+        select
+        b.site_name,
+        b.location,
+        b.site_level,
+        a.data_time,
+        a.level,
+        a.aqi AQI,
+        a.a3400401_iaqi A34004,
+        a.a3400201_iaqi A34002,
+        a.a21026_iaqi A21026,
+        a.a21004_iaqi A21004,
+        a.a21005_iaqi A21005,
+        a.a0502401_iaqi A05024
+        from airq_hour a
+        left join
+        site_monitor_point b
+        ON a.mn = b.mn
+        INNER  JOIN ( SELECT mn, max( data_time ) maxtime FROM airq_hour GROUP BY mn ) c ON b.mn = c.mn
+        AND c.maxtime = a.data_time
+        WHERE b.site_type='3'
+        AND
+        b.company_id IN
+        <foreach collection="companyIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        <if test="siteId != null">
+            AND  b.id=(#{siteId})
+        </if>
+    </select>
 
 </mapper>

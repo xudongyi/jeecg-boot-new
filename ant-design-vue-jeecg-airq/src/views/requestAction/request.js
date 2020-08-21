@@ -20,6 +20,8 @@ const querySameCompare = (params)=>getAction("/statistic/querySameCompare",param
 const queryCalendarAirQuality = (params)=>getAction("/day/airqDay/queryCalendarAirQuality",params);
 const queryChainCompare = (params)=>getAction("/statistic/queryChainCompare",params);
 const querySiteNameAndId = (params)=>getAction("/warn/sysWarnLog/querySiteNameAndId",params);
+
+const queryAlarmInfo = (params)=>getAction("/warn/sysWarnLog/queryAlarmInfo", params);
 export {
   queryCompanyName,
   querySiteName,
@@ -36,5 +38,6 @@ export {
   querySameCompare,
   queryCalendarAirQuality,
   queryChainCompare,
-  querySiteNameAndId
+  querySiteNameAndId,
+  queryAlarmInfo
 }

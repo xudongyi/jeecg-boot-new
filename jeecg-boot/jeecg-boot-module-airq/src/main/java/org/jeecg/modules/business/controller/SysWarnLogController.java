@@ -270,4 +270,24 @@ public class SysWarnLogController extends JeecgController<SysWarnLog, ISysWarnLo
 		 return Result.ok(result);
 	 }
 
+	 /**
+	  * 大气首页 报警信息
+	  *
+	  * @return
+	  */
+	 @AutoLog(value = "报警信息")
+	 @ApiOperation(value="报警信息", notes="报警信息")
+	 @GetMapping(value = "/queryAlarmInfo")
+	 public Result<?> queryAlarmInfo(@RequestParam(name="companyIds",required=true) String companyIds) {
+		 List<Map<String,Object>>  alarmInfoList =
+				 sysWarnLogService.queryAlarmInfo(Arrays.asList(companyIds.split(",")));
+		 Map<String,Object> result = new HashMap<>();
+		 for(Map<String,Object> param:alarmInfoList){
+			 String value =  sysDictService.queryDictTextByKey("flagName", param.get("flag").toString());
+			 param.put("flagName",value);
+
+		 }
+		 result.put("dataList",alarmInfoList);
+		 return Result.ok(result);
+	 }
 }

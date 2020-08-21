@@ -147,6 +147,16 @@ public class AirqHourServiceImpl extends ServiceImpl<AirqHourMapper, AirqHour> i
     }
 
     @Override
+    public  List<Map<String,Object>> queryMapSite(List<String> companyIds) {
+        return airqHourMapper.queryMapSite(companyIds);
+    }
+
+    @Override
+    public Map<String, Object> querySiteDetail(List<String> companyIds, String siteId) {
+        return airqHourMapper.querySiteDetail(companyIds,siteId);
+    }
+
+    @Override
     public List<Map<String, Object>> queryAirMoreInfo(String mn, String timeBegin) {
         Date begin = DateUtil.parse(timeBegin,"yyyy-MM-dd HH:mm");
         Timestamp dateBegin = DateUtil.parse(timeBegin,"yyyy-MM-dd HH:mm").toTimestamp();

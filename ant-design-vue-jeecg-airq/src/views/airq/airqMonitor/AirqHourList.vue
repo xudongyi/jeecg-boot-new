@@ -104,7 +104,7 @@
         description: 'airq_hour管理页面',
         tagColors:{
           1:'#00E400',
-          2:'#EFD600',
+          2:'#ffe400',
           3:'#FF7E00',
           4:'#FF0000',
           5:'#99004C',
