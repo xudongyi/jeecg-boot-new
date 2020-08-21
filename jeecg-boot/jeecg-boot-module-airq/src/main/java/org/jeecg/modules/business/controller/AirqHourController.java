@@ -761,7 +761,7 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
                 } else {
                     codeList.add(-1.0);
                 }
-                String time = param.get("dataTime").toString().substring(0, 10);
+                String time = param.get("dataTime").toString().substring(0, 11)+"  ";
                 timeList.add(time);
             }
             result.put("series", codeList);
