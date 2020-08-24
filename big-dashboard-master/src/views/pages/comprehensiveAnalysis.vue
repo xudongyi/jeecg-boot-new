@@ -4,7 +4,7 @@
             <div style="position: relative;">
                 <div class="container" :style="transformStyle">
                     <top-title :title.sync="title" currView="analysis"></top-title>
-                    <left-module></left-module>
+                    <analysis-left></analysis-left>
                     <content-module></content-module>
                     <right-module></right-module>
                 </div>
@@ -17,7 +17,7 @@
 <script>
     import TopTitle from '@/views/layouts/TopTitle';
     import ContentModule from "@/views/layouts/ContentModule";
-    import LeftModule from "@/views/layouts/LeftModule";
+    import AnalysisLeft from "./Analysis/AnalysisLeft";
     import RightModule from "@/views/layouts/RightModule";
 
     export default {
@@ -29,7 +29,7 @@
         },
         components: {
             TopTitle,
-            LeftModule,
+            AnalysisLeft,
             ContentModule,
             RightModule,
         },

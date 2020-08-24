@@ -20,11 +20,5 @@
 
 <style scoped>
 
-    .left-module{
-        position: absolute;
-        top: 10%;
-        width: 25%;
-        height: 90%;
 
-    }
 </style>

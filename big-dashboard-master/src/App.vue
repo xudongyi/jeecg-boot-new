@@ -14,7 +14,7 @@
         },
         methods:{
             initScale() {
-                console.log('scale')
+
                 //动态效果
                 let containerWidth = document.body.clientWidth || document.documentElement.clientWidth;
                 let containerHeight = document.body.clientHeight || document.documentElement.clientHeight;
@@ -30,6 +30,13 @@
                 }
 
                 this.$store.commit('SET_SCALE',Math.min(scale1,scale2));
+                console.log('scale',this.$store.getters.scale)
+                this.$store.commit('SET_TITLEFONT',{
+                    'line-height':this.$original_height*this.$store.getters.scale/22+'px',
+                    'font-size':this.$original_height*this.$store.getters.scale/45+'px',
+                });
+
+
 
             },
             listenResize() {
