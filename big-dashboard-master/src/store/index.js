@@ -10,6 +10,7 @@ export default new Vuex.Store({
 
         //这里放全局参数
         scale:1,
+        titleFont:{}
     },
 
     mutations: {
@@ -17,13 +18,15 @@ export default new Vuex.Store({
         //这里是set方法
         SET_SCALE: (state, value) => {
             state.scale = value
-
+        },
+        SET_TITLEFONT: (state, titleFont) => {
+            state.titleFont = titleFont
         },
     },
     //这里是get方法
     getters: {
-        scale:state =>state.scale
-
+        scale:state =>state.scale,
+        titleFont:state =>state.titleFont
     },
 
     actions: {

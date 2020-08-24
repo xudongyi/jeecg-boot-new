@@ -241,25 +241,29 @@
                 }
             },
             titleLineHeight() {
+                 return this.$store.getters.titleFont
+            },
+            iconFontSize(){
                 if( this.airDial){
                     this.airDial.resize()
                     //样式
+
+                    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                     this.option.series[0].axisLine.lineStyle.width=18*this.$store.getters.scale;//宽度
+                    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                     this.option.series[0].axisLabel.fontSize=12*this.$store.getters.scale;//刻度
+                    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                     this.option.series[0].axisLabel.distance=-10/this.$store.getters.scale;//刻度与表盘距离
+                    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                     this.option.series[0].detail.textStyle.fontSize = 40*this.$store.getters.scale;//aqi的值
+                    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                     this.option.series[0].detail.offsetCenter[1] = 15*this.$store.getters.scale;//aqi的偏移
+                    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                     this.option.series[0].title.fontSize = 20*this.$store.getters.scale;//aqi的值
+                    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                     this.option.series[0].title.offsetCenter[1] = 60*this.$store.getters.scale;//aqi的偏移
                     this.drawAirDial()
                 }
-
-                return {
-                    'line-height': this.$original_height * this.$store.getters.scale / 22 + 'px',
-                    'font-size': this.$original_height * this.$store.getters.scale / 45 + 'px',
-                }
-            },
-            iconFontSize(){
                 return{
                     'font-size':this.$original_height*this.$store.getters.scale/25+'px',
                 }

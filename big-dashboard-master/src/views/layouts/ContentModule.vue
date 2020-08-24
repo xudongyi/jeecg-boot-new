@@ -304,6 +304,7 @@
                         }
                     },
                     zoom: 1.1,
+                    // eslint-disable-next-line no-dupe-keys
                     roam: false,
                     map: 'nantong' //使用
                     // data: this.difficultData //热力图数据   不同区域 不同的底色

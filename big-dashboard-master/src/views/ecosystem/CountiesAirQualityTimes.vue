@@ -36,11 +36,7 @@
         },
         computed:{
             titleLineHeight(){
-
-                return{
-                    'line-height':this.$original_height*this.$store.getters.scale/22+'px',
-                    'font-size':this.$original_height*this.$store.getters.scale/45+'px',
-                }
+                return this.$store.getters.titleFont
             },
         }
     }

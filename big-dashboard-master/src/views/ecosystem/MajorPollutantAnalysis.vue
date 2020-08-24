@@ -17,8 +17,6 @@
 </template>
 
 <script>
-    import {debounce} from "lodash";
-
     export default {
         name: "MajorPollutantAnalysis",
         data(){
@@ -66,7 +64,13 @@
         computed:{
             //样式
             radio_check(){
-
+                if(this.analysis){
+                    this.analysis.resize();
+                    //字体大小
+                    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+                    this.option.yAxis.axisLabel.fontSize=this.$original_height*this.$store.getters.scale/78;
+                    this.analysis.setOption(this.option, true);
+                }
 
                 return {
                     background:'linear-gradient(12deg,rgba(0,43,142,1) 0%,rgba(0,85,120,1) 100%)',
@@ -85,16 +89,7 @@
                 }
             },
             titleLineHeight(){
-                if(this.analysis){
-                    this.analysis.resize();
-                    //字体大小
-                    this.option.yAxis.axisLabel.fontSize=this.$original_height*this.$store.getters.scale/78;
-                    this.analysis.setOption(this.option, true);
-                }
-                return{
-                    'line-height':this.$original_height*this.$store.getters.scale/22+'px',
-                    'font-size':this.$original_height*this.$store.getters.scale/45+'px',
-                }
+                return this.$store.getters.titleFont
             },
         },
         methods:{
