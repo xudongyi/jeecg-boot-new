@@ -33,7 +33,6 @@ public class ViewCompanyBase implements Serializable {
 
 	/**id*/
     /**企业id*/
-    @TableId(value = "id",type = IdType.AUTO)//在自增主键的变量加上即可
     @Excel(name = "企业id", width = 15)
     @ApiModelProperty(value = "企业id")
     private String companyId;
