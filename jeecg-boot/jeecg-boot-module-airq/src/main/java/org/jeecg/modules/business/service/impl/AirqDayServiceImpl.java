@@ -64,6 +64,14 @@ public class AirqDayServiceImpl extends ServiceImpl<AirqDayMapper, AirqDay> impl
     }
 
     @Override
+    public List<Map<String, Object>> queryAirHomeCalendar(String datatime, String datatime2) {
+        Timestamp ts = DateUtil.parse(datatime, "yyyy-MM-dd").toTimestamp();
+        Timestamp ts2 = DateUtil.parse(datatime2, "yyyy-MM-dd").toTimestamp();
+        List<Map<String,Object>>  airHomeCalendar = airqDayMapper.queryAirHomeCalendar(ts,ts2);
+        return airHomeCalendar;
+    }
+
+    @Override
     public List<AirqDayQualityVo> queryDayAirQuality(List<String> companyIds, String datatime, String datatime2, String area, String mn) {
         Timestamp ts = DateUtil.parse(datatime, "yyyy-MM-dd").toTimestamp();
         Timestamp ts2 = DateUtil.parse(datatime2, "yyyy-MM-dd").toTimestamp();

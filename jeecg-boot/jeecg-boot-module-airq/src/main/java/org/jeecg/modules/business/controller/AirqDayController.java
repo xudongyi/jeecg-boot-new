@@ -211,6 +211,55 @@ public class AirqDayController extends JeecgController<AirqDay, IAirqDayService>
 		result.put("dataList",airqList);
 		return Result.ok(result);
 	 }
+
+	 /**
+	  * 空气质量 首页蓝天日历
+	  *
+	  * @return
+	  */
+	 @AutoLog(value = "蓝天白云日历")
+	 @ApiOperation(value="airq_Day-蓝天白云日历", notes="airq_Day-蓝天白云日历")
+	 @GetMapping(value = "/queryAirHomeCalendar")
+	 public Result<?> queryAirHomeCalendar(@RequestParam(name="queryTime",required=true) String queryTime
+			 ) {
+		 String datatime = queryTime + "-01";
+		 String datatime2 = queryTime + "-31";
+		 //根据日起查询
+		 List<Map<String,Object>>  airHomeCalendarList =  airqDayService.queryAirHomeCalendar(datatime,datatime2);
+		 Map<String,Object> result = new HashMap<>();
+		 for(Map<String,Object> param:airHomeCalendarList){
+		 	 Map<String,Double> code = new HashMap<>();
+		 	 code.put("A34004", Double.valueOf(param.get("A34004").toString()));
+		 	 code.put("A34002", Double.valueOf(param.get("A34002").toString()));
+		 	 code.put("A21026", Double.valueOf(param.get("A21026").toString()));
+			 code.put("A21005", Double.valueOf(param.get("A21005").toString()));
+			 code.put("A21004", Double.valueOf(param.get("A21004").toString()));
+			 code.put("A05024", Double.valueOf(param.get("A05024").toString()));
+			 List<Map.Entry<String,Double>> list = new ArrayList(code.entrySet());
+			 Collections.sort(list, (o1, o2) -> {
+				 if ((o2.getValue() - o1.getValue()) > 0)
+					 return 1;
+				 else if ((o2.getValue() - o1.getValue()) == 0)
+					 return 0;
+				 else
+					 return -1;
+			 });
+			 Double maxValue = list.get(0).getValue();
+			 String firstCode = list.get(0).getKey();
+			 for (int i = 1; i < list.size(); i++) {
+				 if (Double.toString(list.get(i).getValue()).equals(Double.toString(maxValue))) {
+					 firstCode = firstCode + "," + list.get(i).getKey();
+				 } else {
+					 break;
+				 }
+			 }
+			 param.put("firstCode", firstCode);
+		 }
+		 result.put("dataList",airHomeCalendarList);
+		 return Result.ok(result);
+
+	 }
+
 	 /**
 	  * 导出excel
 	  *

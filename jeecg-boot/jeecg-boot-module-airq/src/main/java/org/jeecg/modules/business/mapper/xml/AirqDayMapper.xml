@@ -131,6 +131,25 @@
         </foreach>
         order by dataTime
     </select>
+
+    <select id="queryAirHomeCalendar"    resultType="Map">
+        select
+        data_Time dataTime,
+        AVG(AQI) AQI,
+        avg(A3400424_IAQI) A34004,
+        avg(A3400224_IAQI) A34002,
+        avg(A21026_IAQI) A21026,
+        avg(A21005_IAQI) A21005,
+        avg(A21004_IAQI) A21004,
+        avg(A0502408_IAQI) A05024
+        from site_monitor_point a left join airq_day b on a.mn = b.MN
+        where site_type = '3' and
+        b.data_time <![CDATA[ >= ]]> #{datatime}
+        and b.data_time <![CDATA[ <= ]]> #{datatime2}
+        GROUP BY DATA_TIME
+        order by dataTime
+    </select>
+
     <resultMap id="SiteQualityRankDayVO" type="org.jeecg.modules.business.vo.SiteQualityRankDayVO" >
         <result column="mn" property="mn" jdbcType="VARCHAR"/>
         <result column="area" property="area" jdbcType="VARCHAR"/>
