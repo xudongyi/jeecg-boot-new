@@ -91,19 +91,19 @@
             {
               orient: 'vertical',
               left: 'center',
-              top:18,
+              top:20,
               yearLabel:{
                 show:false
               },
               dayLabel: {
                 firstDay: 7,
-                nameMap: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
+                nameMap: ['日', '一', '二', '三', '四', '五', '六'],
                 margin: 0
               },
               monthLabel: {
                 show:false
               },
-              cellSize: 50,
+              cellSize: [70,50],
               range: this.queryParam.queryTime,
             }
           );
