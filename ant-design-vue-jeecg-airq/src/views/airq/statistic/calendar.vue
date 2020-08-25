@@ -189,6 +189,7 @@
         let echarts = require('echarts');
         let year = this.timeValue
         this.queryResult.months=[]
+        //设置月份
         for(let a =1 ;a<=12;a++){
           this.queryResult.months.push(year+'-'+(a<10?'0':'')+a)
         }
@@ -223,8 +224,9 @@
           let tmp = echarts.format.formatTime('yyyy-MM-dd', time);
             dataArr.push([tmp,'','']);
         }
-
+        //循环月份
         for (let i = 0;i<this.queryResult.months.length; i++) {
+          //日期
           calendar.push(
             {
               orient: 'vertical',
@@ -242,10 +244,12 @@
               },
               cellSize: 50,
                 range: this.queryResult.months[i],
+              //偏移的位置
               left: 50+450*(i%3),
               top:100+360*parseInt(i/3)
             }
           )
+          //日期
           series.push({
             type: 'scatter',
             coordinateSystem: 'calendar',
@@ -262,6 +266,7 @@
             },
             data: dataArr
           });
+          //AQI
           series.push({
               type: 'scatter',
               coordinateSystem: 'calendar',
@@ -316,6 +321,7 @@
               },
               data: heatmapData
             });
+          //首要污染物
           if(this.pollutionType==="AQI") {
             series.push({
                 type: 'scatter',
@@ -333,6 +339,7 @@
                 },
                 data: heatmapData
               })}
+          //白色背景
           series.push({
               type: 'heatmap',
               coordinateSystem: 'calendar',
@@ -350,9 +357,9 @@
           tooltip: {
             formatter: function (params) {
               if(that.pollutionType==="AQI")
-                return [params.value[0]+":","空气质量等级:"+that.getLvl(params.value[1]),"AQI指数:"+params.value[1],"首要污染物:"+params.value[2]].join('<br />');
+                return [params.value[0].substring(0,11),"空气质量等级:"+that.getLvl(params.value[1]),"AQI指数:"+params.value[1],"首要污染物:"+params.value[2]].join('<br />');
               else
-                return [params.value[0]+":",that.radioObj[that.pollutionType]+"（IAQI指数）:"+params.value[1]].join('<br />');
+                return [params.value[0].substring(0,11),that.radioObj[that.pollutionType]+"（IAQI指数）:"+params.value[1]].join('<br />');
             }
           },
           visualMap: {

@@ -16,10 +16,12 @@ import org.jeecg.common.util.DateUtils;
 import org.jeecg.common.util.RedisUtil;
 import org.jeecg.modules.business.constant.SelfExcelConstants;
 import org.jeecg.modules.business.entity.AirqDay;
+import org.jeecg.modules.business.entity.AirqLevel;
 import org.jeecg.modules.business.service.IAirqDayService;
 import org.jeecg.modules.business.service.IAirqMonthService;
 import org.jeecg.modules.business.service.IAirqYearService;
 import org.jeecg.modules.business.service.ISysDictService;
+import org.jeecg.modules.business.utils.RedisCacheUtil;
 import org.jeecg.modules.business.view.SelfEntityExcelView;
 import org.jeecg.modules.business.vo.AirqDayQualityVo;
 import org.jeecg.modules.business.vo.SiteQualityRankDayVO;
@@ -28,6 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.Time;
@@ -56,6 +59,8 @@ public class AirqDayController extends JeecgController<AirqDay, IAirqDayService>
 	private ISysDictService sysDictService;
 	@Autowired
 	private RedisUtil redisUtil;
+	 @Resource
+	 private RedisCacheUtil<AirqLevel> redisCacheUtil;
 	/**
 	 * 分页列表查询
 	 *
@@ -255,7 +260,10 @@ public class AirqDayController extends JeecgController<AirqDay, IAirqDayService>
 						 break;
 					 }
 				 }
-				 param.put("firstCode", firstCode);
+				 String firstCodeName = redisCacheUtil.transformCode(firstCode);
+				 param.put("firstCode", firstCodeName);
+			 }else {
+		 	 	param.put("firstCode", "无");
 			 }
 
 		 }

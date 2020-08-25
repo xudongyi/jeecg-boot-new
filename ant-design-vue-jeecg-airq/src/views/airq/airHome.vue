@@ -75,7 +75,7 @@
   export default {
     name: "airHome",
     mixins: [mixinDevice],
-    components: {FineDays, siteState},
+    components: {FineDays, siteState,HomeCalendar},
     data() {
       return {
         airDialStyle: {},
@@ -290,9 +290,8 @@
       selectWarnInfo(){
         let that = this;
         queryAlarmInfo({companyIds:this.$store.getters.userInfo.companyIds.join(',')}).then(res=>{
-          console.log("bj",res.result);
+          //console.log("bj",res.result);
           that.warnData = res.result.dataList;
-          console.log(that.warnData)
         })
       },
 
