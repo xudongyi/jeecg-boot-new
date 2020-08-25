@@ -65,19 +65,16 @@
 <script>
   import {mixinDevice} from '@/utils/mixin'
   import siteState from "./homeComponent/siteState";
-  import {JeecgListMixin} from '@/mixins/JeecgListMixin'
-  import {getAction} from '@/api/manage'
   import moment from 'moment'
   import FineDays from "./homeComponent/fineDays";
-  import {queryAlarmInfo} from "../requestAction/request";
-  import HomeCalendar from "./HomeCalendar";
-
+  import {queryAirQuality, queryAlarmInfo} from "../requestAction/request";
   export default {
     name: "airHome",
     mixins: [mixinDevice],
-    components: {FineDays, siteState,HomeCalendar},
+    components: {FineDays, siteState},
     data() {
       return {
+        airDial:{},
         airDialStyle: {},
         fineDaysStyle: {},
         height: {},
@@ -98,14 +95,14 @@
           3: '#FFA736',
         },
         offset: [],
-        airLevelName: "重度污染",
-        airLevelColor: "#F80000",
+        airLevelName: "",
+        airLevelColor: "",
         airLevelWidth: "",
         airLevelHeight: "",
         buttonWidth: "",
         buttonHeight: "",
         polluteDetailStyle: {},
-        updateTime: "2020-06-20 18",
+        updateTime: moment().subtract(1, "hours").format('YYYY-MM-DD HH'),
         polluteDetails: [{key: "PM2.5", value: "320", isFirstCode: "首", color: "#F80000"}, {
           key: "PM10",
           value: "35",
@@ -206,7 +203,7 @@
                 fontFamily: "Adobe Heiti Std"
               },
               data: [{
-                value: 78,
+                value: 0,
                 name: '\n\n空气质量指数AQI'
               }]
             }
@@ -266,24 +263,23 @@
       this.buttonWidth = width * 0.3 + "px";
       this.buttonHeight = height * 0.17 + "px";
       this.offset = [-width * 0.3, 0];
-      let airQualityHeight = document.getElementsByClassName("airQuality")[0].clientHeight;
-      this.polluteDetailStyle = {height: airQualityHeight - 35 + "px"}
-      // let airDialHeight = document.getElementsByClassName("airDial")[0].clientHeight;
-      // let airDialWidth = document.getElementsByClassName("airDial")[0].clientWidth;
-      this.airDial = this.$echarts.init(document.getElementById("airDial"));
-      this.option.series[0].axisLine.lineStyle.width = 18 * this.scale;//宽度
-      this.option.series[0].axisLabel.fontSize = 12 * this.scale;//刻度
-      this.option.series[0].axisLabel.distance = -10 / this.scale;//刻度与表盘距离
-      this.option.series[0].detail.textStyle.fontSize = 40 * this.scale;//aqi的值
-      this.option.series[0].detail.offsetCenter[1] = 15 * this.scale;//aqi的偏移
-      this.option.series[0].title.fontSize = 20 * this.scale;//aqi的值
-      this.option.series[0].title.offsetCenter[1] = 60 * this.scale;//aqi的偏移
-      this.drawAirDial();
+      this.selectAirQuality();
     },
     watch: {},
     methods: {
       drawAirDial() {
-        this.option.series[0].data.value = this.aqi
+        let airQualityHeight = document.getElementsByClassName("airQuality")[0].clientHeight;
+        this.polluteDetailStyle = {height: airQualityHeight - 35 + "px"}
+        // let airDialHeight = document.getElementsByClassName("airDial")[0].clientHeight;
+        // let airDialWidth = document.getElementsByClassName("airDial")[0].clientWidth;
+        this.airDial = this.$echarts.init(document.getElementById("airDial"));
+        this.option.series[0].axisLine.lineStyle.width = 18 * this.scale;//宽度
+        this.option.series[0].axisLabel.fontSize = 12 * this.scale;//刻度
+        this.option.series[0].axisLabel.distance = -10 / this.scale;//刻度与表盘距离
+        this.option.series[0].detail.textStyle.fontSize = 40 * this.scale;//aqi的值
+        this.option.series[0].detail.offsetCenter[1] = 15 * this.scale;//aqi的偏移
+        this.option.series[0].title.fontSize = 20 * this.scale;//aqi的值
+        this.option.series[0].title.offsetCenter[1] = 60 * this.scale;//aqi的偏移
         this.airDial.setOption(this.option, true);
       },
       //查询报警信息
@@ -294,7 +290,19 @@
           that.warnData = res.result.dataList;
         })
       },
-
+      //查询实时空气质量
+      selectAirQuality(){
+        let that = this;
+        queryAirQuality({companyIds:this.$store.getters.userInfo.companyIds.join(','),dateTime:this.updateTime}).then(res=>{
+          debugger
+          that.option.series[0].data[0].value = res.result.aqi;
+          that.option.series[0].detail.textStyle.color=res.result.levelRgb;
+          that.polluteDetails = res.result.polluteDetails;
+          that.airLevelName = res.result.levelGrade;
+          that.airLevelColor = res.result.levelRgb;
+          that.drawAirDial();
+        })
+      }
     }
   }
 

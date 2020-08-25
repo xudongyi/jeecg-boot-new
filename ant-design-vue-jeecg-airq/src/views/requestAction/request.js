@@ -23,6 +23,8 @@ const querySiteNameAndId = (params)=>getAction("/warn/sysWarnLog/querySiteNameAn
 
 const queryAlarmInfo = (params)=>getAction("/warn/sysWarnLog/queryAlarmInfo", params);
 const queryAirHomeCalendar = (params)=>getAction("/day/airqDay/queryAirHomeCalendar",params);
+//空气首页
+const queryAirQuality =  (params)=>getAction("/hour/airqHour/queryAirQuality",params);
 export {
   queryCompanyName,
   querySiteName,
@@ -41,5 +43,6 @@ export {
   queryChainCompare,
   querySiteNameAndId,
   queryAlarmInfo,
-  queryAirHomeCalendar
+  queryAirHomeCalendar,
+  queryAirQuality
 }
