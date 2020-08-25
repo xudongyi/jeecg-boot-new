@@ -68,10 +68,11 @@
   import moment from 'moment'
   import FineDays from "./homeComponent/fineDays";
   import {queryAirQuality, queryAlarmInfo} from "../requestAction/request";
+  import homeCalendar from './HomeCalendar'
   export default {
     name: "airHome",
     mixins: [mixinDevice],
-    components: {FineDays, siteState},
+    components: {FineDays, siteState,homeCalendar},
     data() {
       return {
         airDial:{},
