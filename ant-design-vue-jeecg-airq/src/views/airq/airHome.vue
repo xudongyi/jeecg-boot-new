@@ -19,7 +19,7 @@
             <a-badge v-for="polluteDetail in polluteDetails" :count="polluteDetail.isFirstCode" id="badge"
                      :offset="offset">
               <a-button class="button"
-                        :style="{width: buttonWidth,height:buttonHeight, background:polluteDetail.color}">
+                        :style="{width: buttonWidth,height:buttonHeight, background:polluteDetail.color,fontSize:buttonFontSize}">
                 {{polluteDetail.value}} ug/m³<br>{{polluteDetail.key}}
               </a-button>
             </a-badge>
@@ -27,7 +27,7 @@
         </div>
       </div>
       <div class="siteState">
-        <site-state></site-state>
+        <site-state :scale="scale"></site-state>
       </div>
       <div class="alarm">
         <div class="headLine">
@@ -82,6 +82,7 @@
         height: {},
         warnData:[],
         companyIds:'',
+        buttonFontSize:"",
         //背景图
         bgImgs: {
           0: require('@/assets/icon_Over-standardalarm.png'),
@@ -269,6 +270,7 @@
       this.buttonWidth = width * 0.3 + "px";
       this.buttonHeight = height * 0.17 + "px";
       this.offset = [-width * 0.3, 0];
+      this.buttonFontSize = 20*this.scale +"px";
       this.selectAirQuality();
     },
     watch: {},
