@@ -291,7 +291,7 @@
         this.option.series[0].axisLine.lineStyle.width = 18 * this.scale;//宽度
         this.option.series[0].axisLabel.fontSize = 12 * this.scale;//刻度
         this.option.series[0].axisLabel.distance = -10 / this.scale;//刻度与表盘距离
-        this.option.series[0].detail.textStyle.fontSize = 40 * this.scale;//aqi的值
+        this.option.series[0].detail.textStyle.fontSize = 60 * this.scale;//aqi的值
         this.option.series[0].detail.offsetCenter[1] = 15 * this.scale;//aqi的偏移
         this.option.series[0].title.fontSize = 20 * this.scale;//aqi的值
         this.option.series[0].title.offsetCenter[1] = 60 * this.scale;//aqi的偏移
