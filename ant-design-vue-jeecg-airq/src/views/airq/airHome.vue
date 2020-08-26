@@ -18,10 +18,12 @@
           <div class="wholePollute">
             <a-badge v-for="polluteDetail in polluteDetails" :count="polluteDetail.isFirstCode" id="badge"
                      :offset="offset">
-              <a-button class="button"
-                        :style="{width: buttonWidth,height:buttonHeight, background:polluteDetail.color,fontSize:buttonFontSize}">
-                {{polluteDetail.value}} ug/m³<br>{{polluteDetail.key}}
-              </a-button>
+              <div class="button"
+                   :style="{width: buttonWidth,height:buttonHeight, background:polluteDetail.color}">
+                <div :style="{fontWeight: 'bold',fontSize:buttonFontSize,height:'60%'}">{{polluteDetail.value}}<span
+                  :style="{fontWeight:'normal',fontSize:unitFontSize}">ug/m³</span></div>
+                <div :style="{fontWeight:'normal',fontSize:unitFontSize,height:'40%'}">{{polluteDetail.key}}</div>
+              </div>
             </a-badge>
           </div>
         </div>
@@ -71,22 +73,24 @@
   import FineDays from "./homeComponent/fineDays";
   import {queryAirQuality, queryAlarmInfo} from "../requestAction/request";
   import homeCalendar from './HomeCalendar'
+
   export default {
     name: "airHome",
     mixins: [mixinDevice],
     components: {FineDays, siteState,homeCalendar},
     data() {
       return {
-        infoFontSize:{},
-        LabelFontSize:{},
-        scale:1,
-        airDial:{},
+        infoFontSize: {},
+        LabelFontSize: {},
+        scale: 1,
+        airDial: {},
         airDialStyle: {},
         fineDaysStyle: {},
         height: {},
-        warnData:[],
-        companyIds:'',
-        buttonFontSize:"",
+        warnData: [],
+        companyIds: '',
+        buttonFontSize: "",
+        unitFontSize: "",
         //背景图
         bgImgs: {
           0: require('@/assets/icon_Over-standardalarm.png'),
@@ -258,7 +262,7 @@
       this.airLevelHeight = height * 0.4 * 0.1 + "px";
       //计算大气环境质量优良天数高度
       this.fineDaysStyle.height = height * 0.49 - 35 + "px";
-      this.fineDaysStyle.width = containerWidth * 0.4-12 + "px";
+      this.fineDaysStyle.width = containerWidth * 0.4 - 12 + "px";
       //获取报警信息
       this.selectWarnInfo();
     },
@@ -270,7 +274,8 @@
       this.buttonWidth = width * 0.3 + "px";
       this.buttonHeight = height * 0.17 + "px";
       this.offset = [-width * 0.3, 0];
-      this.buttonFontSize = 20*this.scale +"px";
+      this.buttonFontSize = 40 * this.scale + "px";
+      this.unitFontSize = 16 * this.scale + "px";
       this.selectAirQuality();
       this.infoFontSize.fontSize = 15*this.scale +"px";
       this.LabelFontSize.fontSize = 12*this.scale +"px";
@@ -293,19 +298,22 @@
         this.airDial.setOption(this.option, true);
       },
       //查询报警信息
-      selectWarnInfo(){
+      selectWarnInfo() {
         let that = this;
-        queryAlarmInfo({companyIds:this.$store.getters.userInfo.companyIds.join(',')}).then(res=>{
+        queryAlarmInfo({companyIds: this.$store.getters.userInfo.companyIds.join(',')}).then(res => {
           //console.log("bj",res.result);
           that.warnData = res.result.dataList;
         })
       },
       //查询实时空气质量
-      selectAirQuality(){
+      selectAirQuality() {
         let that = this;
-        queryAirQuality({companyIds:this.$store.getters.userInfo.companyIds.join(','),dateTime:this.updateTime}).then(res=>{
+        queryAirQuality({
+          companyIds: this.$store.getters.userInfo.companyIds.join(','),
+          dateTime: this.updateTime
+        }).then(res => {
           that.option.series[0].data[0].value = res.result.aqi;
-          that.option.series[0].detail.textStyle.color=res.result.levelRgb;
+          that.option.series[0].detail.textStyle.color = res.result.levelRgb;
           that.polluteDetails = res.result.polluteDetails;
           that.airLevelName = res.result.levelGrade;
           that.airLevelColor = res.result.levelRgb;
@@ -503,15 +511,17 @@
     height: 100%;
     float: left;
   }
-  .leftInfo ul{
-    padding:0;
-    list-style:none;
+
+  .leftInfo ul {
+    padding: 0;
+    list-style: none;
   }
-  .leftInfo li{
+
+  .leftInfo li {
     display: block;
-    padding:0;
-    margin:0;
-    list-style:none
+    padding: 0;
+    margin: 0;
+    list-style: none
   }
 
   .iconArea {
@@ -528,15 +538,16 @@
     font-family: Microsoft YaHei;
     font-weight: 400;
   }
+
   .rightInfo {
     width: 91%;
     height: 100%;
     float: right;
     padding-top: 1%;
     margin-right: 1%;
-    font-family:Microsoft YaHei;
-    font-weight:400;
-    color:rgba(0,0,0,1);
+    font-family: Microsoft YaHei;
+    font-weight: 400;
+    color: rgba(0, 0, 0, 1);
   }
 
 </style>

@@ -97,7 +97,7 @@
   }
 
   .caption {
-    width: 42%;
+    width: 80%;
     height: 20px;
     font-size: 16px;
     float: left;
@@ -105,6 +105,7 @@
     font-weight: bold;
     color: rgba(17, 17, 17, 1);
     line-height: 20px;
-    margin-left: 5px
+    margin-left: 5px;
+    text-align: left;
   }
 </style>
