@@ -104,7 +104,7 @@
               monthLabel: {
                 show:false
               },
-              cellSize: [55,50],
+              cellSize: [75,50],
               range: this.queryParam.queryTime,
             }
           );

@@ -38,7 +38,7 @@
         <div class="allInfo">
           <div class="oneInfo" v-for="item in warnData" :key="item.key">
             <div class="leftInfo">
-              <ul style="padding: 10%">
+              <ul style="padding-top: 10%">
                 <li class="iconArea" :style="'background:URL('+bgImgs[item.flag]+') no-repeat center'"></li>
                 <li class="level" :style="{color:warnColors[item.flag]}">{{item.flagName}}</li>
               </ul>
@@ -495,7 +495,7 @@
   }
 
   .leftInfo {
-    width: 10%;
+    width: 8%;
     height: 85%;
     float: left;
   }
@@ -524,7 +524,7 @@
     font-weight: 400;
   }
   .rightInfo {
-    width: 84%;
+    width: 91%;
     height: 100%;
     float: right;
     padding-top: 1%;
