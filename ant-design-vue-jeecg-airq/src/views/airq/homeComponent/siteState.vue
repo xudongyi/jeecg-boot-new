@@ -150,24 +150,29 @@
     font-family:Microsoft YaHei;
     font-weight:bold;
     color:rgba(255,255,255,1);
-    text-align: right;
+    text-align: center;
+    height: 40%;
+    display: flex;
+    align-items: center;
   }
   .siteNum{
     font-size:26px;
     font-family:Microsoft YaHei;
     font-weight:bold;
     color:rgba(255,255,255,1);
-    text-align: right;
+    text-align: center;
+    height:60%;
+    display: flex;
+    align-items: center;
   }
   .backImg{
-    width: 20%;
-    height: 68%;
+    width: 50%;
+    height: 70%;
     background: url("../../../assets/home/home_alarmbell.png") no-repeat center;
-    background-size: cover;
-    margin-left: 10%;
+    background-size: contain;
   }
   .siteRight{
-    width:65%;
-    height: 75%;
+    width:50%;
+    height: 100%;
   }
 </style>
