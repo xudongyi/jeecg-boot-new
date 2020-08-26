@@ -38,7 +38,7 @@
         <div class="allInfo">
           <div class="oneInfo" v-for="item in warnData" :key="item.key">
             <div class="leftInfo">
-              <ul style="height: 100%;width: 100%">
+              <ul style="height: 100%;width: 100%;padding-top: 5%">
                 <li class="iconArea" :style="'background:URL('+bgImgs[item.flag]+') no-repeat center'"></li>
                 <li class="level" :style="{color:warnColors[item.flag]}"><span :style="LabelFontSize">{{item.flagName}}</span></li>
               </ul>
@@ -272,8 +272,8 @@
       this.offset = [-width * 0.3, 0];
       this.buttonFontSize = 20*this.scale +"px";
       this.selectAirQuality();
-      this.infoFontSize.fontSize = 16*this.scale +"px";
-      this.LabelFontSize.fontSize = 14*this.scale +"px";
+      this.infoFontSize.fontSize = 15*this.scale +"px";
+      this.LabelFontSize.fontSize = 12*this.scale +"px";
     },
     watch: {},
     methods: {
@@ -516,13 +516,13 @@
 
   .iconArea {
     width: 100%;
-    height: 60%;
+    height: 55%;
     background-size: contain !important;
   }
 
   .level {
     width: 100%;
-    height: 40%;
+    height: 35%;
     font-size: 8px;
     text-align: center;
     font-family: Microsoft YaHei;

@@ -104,7 +104,7 @@
               monthLabel: {
                 show:false
               },
-              cellSize: [100*this.scale,60*this.scale],
+              cellSize: [90*this.scale,51*this.scale],
               range: this.queryParam.queryTime,
             }
           );
@@ -194,7 +194,7 @@
             label: {
               show: true,
               formatter: function (params) {
-                return '\n\n\n\n' + params.value[2].split(',')[0];
+                return '\n\n\n' + params.value[2].split(',')[0];
               },
               color: '#000000',
               fontSize: 12*this.scale
