@@ -1,5 +1,6 @@
 package org.jeecg.modules.business.controller;
 
+import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -392,4 +393,40 @@ public class AirqDayController extends JeecgController<AirqDay, IAirqDayService>
 			 return mvYear;
 		 }
 	 }
+
+	 /**
+	  * 大气首页优良天数分析
+	  *
+	  * @return
+	  */
+	 @AutoLog(value = "优良天数分析（近6个月）")
+	 @ApiOperation(value = "优良天数分析（近6个月）", notes = "优良天数分析（近6个月）")
+	 @GetMapping(value = "/queryFineDays")
+	 public Result<?> queryFineDays(@RequestParam(name = "companyIds", required = true) String companyIds) {
+	 	List<String> months = new ArrayList<>();
+	 	List<Integer> excellentDays = new ArrayList<>();
+		 List<Integer> fineDays = new ArrayList<>();
+	 	Map<String,Object> result = new HashMap<>();
+		 for(int i=5;i>=0;i--){
+			 DateTime start = DateUtil.offsetMonth(DateUtil.beginOfMonth(DateUtil.date()),-i) ;
+			 DateTime end = DateUtil.offsetMonth(DateUtil.endOfMonth(DateUtil.date()),-i) ;
+			 //本月
+			 String currMonth = DateUtil.format(start,"yyyy-MM");
+			 months.add(currMonth);
+			 //计算好时间
+			 String startTime = DateUtil.format(start,"yyyy-MM-dd");
+			 String endTime = DateUtil.format(end,"yyyy-MM-dd");
+			 //查询出一个月的优天数
+			 Integer excellentDay = airqDayService.querDays(Arrays.asList(companyIds.split(",")),1,startTime,endTime);
+			 //查询出一个月的良天数
+			 Integer fineDay = airqDayService.querDays(Arrays.asList(companyIds.split(",")),2,startTime,endTime);
+			 excellentDays.add(excellentDay);
+			 fineDays.add(fineDay);
+		 }
+		 result.put("months",months);
+		 result.put("excellentDays",excellentDays);
+		 result.put("fineDays",fineDays);
+		 return Result.ok(result);
+	 }
+
 }

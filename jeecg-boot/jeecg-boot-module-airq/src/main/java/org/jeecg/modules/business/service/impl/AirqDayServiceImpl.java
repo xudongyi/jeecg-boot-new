@@ -125,4 +125,9 @@ public class AirqDayServiceImpl extends ServiceImpl<AirqDayMapper, AirqDay> impl
         Timestamp dateEnd = DateUtil.offsetDay(begin, 1).toTimestamp();
         return airqDayMapper.queryAirDayMoreInfo(mn,dateBegin,dateEnd);
     }
+
+    @Override
+    public Integer querDays(List<String> companyIds, int level,String startTime, String endTime) {
+        return airqDayMapper.querDays(companyIds,level,startTime,endTime);
+    }
 }

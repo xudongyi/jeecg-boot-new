@@ -321,5 +321,20 @@
         order by b.data_time desc
 
     </select>
+    <select id="querDays" resultType="int">
+        SELECT
+        COUNT( 1 )
+        FROM
+        airq_day a
+        LEFT JOIN site_monitor_point b ON a.MN = b.mn
+        WHERE
+        b.company_id IN
+        <foreach collection="companyIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        AND DATA_TIME BETWEEN (#{startTime})
+        AND (#{endTime})
+        AND a.`LEVEL` &lt;= (#{level})
+    </select>
 
 </mapper>

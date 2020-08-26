@@ -9,51 +9,20 @@
 </template>
 
 <script>
+  import {queryFineDays, querySiteState} from "../../requestAction/request";
+  import moment from "moment";
+
   export default {
     name: "fineDays",
     data() {
       return {
         option: {
           tooltip: {
-            trigger: 'axis',
-            formatter: function (params) {
-              var htmlStr = '';
-              for(var i=0;i<params.length;i++){
-                var param = params[i];
-                var xName = param.name;//x轴的名称
-                var seriesName = param.seriesName;//图例名称
-                var value = param.value;//y轴值
-                var color = param.color;//图例颜色
-                var componentSubType = param.componentSubType;//类型
-                if(i===0){
-                  htmlStr += xName + '<br/>';//x轴的名称
-                }
-                htmlStr +='<div>';
-                //为了保证和原来的效果一样，这里自己实现了一个点的效果
-                if(value!="-"){
-                  htmlStr += '<span style="margin-right:5px;display:inline-block;width:10px;height:10px;border-radius:5px;background-color:'+color+';"></span>';
-                }
-                // 文本颜色设置--2020-07-23(需要设置,请解注释下面一行)
-                //htmlStr += '<span style="color:'+color+'">';
-
-                //圆点后面显示的文本
-                if(componentSubType==="bar"){
-                  htmlStr += seriesName + '：' + value;
-                }else if(componentSubType==="line"){
-                  if(value!="-"){
-                    htmlStr += seriesName + '：' + value+'%';
-                  }
-                }
-                // 文本颜色设置--2020-07-23(需要设置,请解注释下面一行)
-                //htmlStr += '</span>';
-                htmlStr += '</div>';
-              }
-              return htmlStr;
-            }
+            trigger: 'axis'
           },
-          color: ['#23CFCF', '#5A88D6', '#FFC000'],
+          color: ['#00E400', '#FFFF00'],
           legend: {
-            data: ['2019', '2020', '同比增长率'],
+            data: ['优', '良'],
             top: 10,
             left: 'center'
           },
@@ -64,32 +33,17 @@
           yAxis: [{
             type: 'value',
             name: "优良天数"
-          }, {
-            type: 'value',
-            name: '同比增长率%',
-            min: 0,
-            max: 100,
-            position: 'right',
-            axisLabel: {
-              formatter: '{value}%'
-            }
           }],
           series: [{
-            name: '2019',
+            name: '优',
             type: 'bar',
-            barGap:0,
-           // barWidth: '60%',
-            data: [10, 52, 200, 334, 390, 330, 220]
+            barGap: 0,
+            data: [0, 0, 0, 0, 0, 0, 0]
           }, {
-            name: '2020',
-            barGap:0,
+            name: '良',
+            barGap: 0,
             type: 'bar',
-            //barWidth: '60%',
-            data: [10, 52, 200, 334, 390, 330, 220]
-          }, , {
-            name: '同比增长率',
-            type: 'line',
-            data: [1, 5, 2, 34, 30, 30, 20]
+            data: [0, 0, 0, 0, 0, 0, 0]
           }]
         }
       }
@@ -99,17 +53,25 @@
         var echarts = require('echarts');
         var myChart = echarts.init(document.getElementById('charts'));
         myChart.setOption(this.option);
+      },
+      selectFineDays() {
+        queryFineDays({companyIds: this.$store.getters.userInfo.companyIds.join(',')}).then(res => {
+          this.option.series[0].data = res.result.excellentDays;
+          this.option.series[1].data = res.result.fineDays;
+          this.option.xAxis.data = res.result.months;
+          this.showCharts();
+        })
       }
     },
     created() {
 
     },
     mounted() {
-      this.showCharts();
+      this.selectFineDays();
     },
     props: {
       fineDaysStyle: {
-        type:Object
+        type: Object
       }
     }
   }

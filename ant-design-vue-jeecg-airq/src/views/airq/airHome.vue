@@ -27,7 +27,7 @@
         </div>
       </div>
       <div class="siteState">
-        <site-state :siteStates="[25,9,2,5,9]"></site-state>
+        <site-state></site-state>
       </div>
       <div class="alarm">
         <div class="headLine">

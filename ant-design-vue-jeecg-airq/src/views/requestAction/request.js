@@ -25,6 +25,10 @@ const queryAlarmInfo = (params)=>getAction("/warn/sysWarnLog/queryAlarmInfo", pa
 const queryAirHomeCalendar = (params)=>getAction("/day/airqDay/queryAirHomeCalendar",params);
 //空气首页
 const queryAirQuality =  (params)=>getAction("/hour/airqHour/queryAirQuality",params);
+//报警天数
+const querySiteState = (params)=>getAction("/warn/sysWarnLog/querySiteState",params);
+//6个月优良天数
+const queryFineDays = (params)=>getAction("/day/airqDay/queryFineDays",params);
 export {
   queryCompanyName,
   querySiteName,
@@ -44,5 +48,7 @@ export {
   querySiteNameAndId,
   queryAlarmInfo,
   queryAirHomeCalendar,
-  queryAirQuality
+  queryAirQuality,
+  querySiteState,
+  queryFineDays
 }

@@ -30,16 +30,27 @@
 </template>
 
 <script>
+  import {querySiteState} from "../../requestAction/request";
+  import moment from "moment";
   export default {
     name: "siteState",
     data() {
       return {
+        startTime:moment().subtract(1, "hours").format('YYYY-MM-DD HH'),
+        endTime:moment().format('YYYY-MM-DD HH'),
+        siteStates:[]
       }
     },
-    props:{
-      siteStates:{
-        type: Array
+    created() {
+      this.selectSiteState();
+    },
+    methods:{
+      selectSiteState(){
+        querySiteState({companyIds:this.$store.getters.userInfo.companyIds.join(','),startTime:this.startTime,endTime:this.endTime}).then(res=>{
+          this.siteStates = res.result;
+        })
       }
+
     }
   }
 </script>
