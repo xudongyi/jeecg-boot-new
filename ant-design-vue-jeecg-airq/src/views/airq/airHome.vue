@@ -56,7 +56,7 @@
         <fine-days :fineDaysStyle="fineDaysStyle"></fine-days>
       </div>
       <div class="calendar">
-        <home-calendar></home-calendar>
+        <home-calendar :fineDaysStyle="fineDaysStyle" :cellSize="cellSize"></home-calendar>
       </div>
     </div>
   </div>
@@ -75,6 +75,7 @@
     components: {FineDays, siteState,homeCalendar},
     data() {
       return {
+        cellSize:[],
         airDial:{},
         airDialStyle: {},
         fineDaysStyle: {},
@@ -252,7 +253,11 @@
       this.airLevelHeight = height * 0.4 * 0.1 + "px";
       //计算大气环境质量优良天数高度
       this.fineDaysStyle.height = height * 0.49 - 35 + "px";
-      this.fineDaysStyle.width = containerWidth * 0.4 + "px";
+      this.fineDaysStyle.width = containerWidth * 0.4-12 + "px";
+      //计算蓝天日历没格宽高
+      this.cellSize[0] = (containerWidth * 0.4-12)*0.11;
+      this.cellSize[1] = (containerWidth * 0.4-12)*0.11/70*50;
+      console.log(this.cellSize);
       //获取报警信息
       this.selectWarnInfo();
     },
@@ -362,8 +367,6 @@
 
   /*辖区实时空气质量样式开始*/
   .aqiIndex {
-    height: 100%;
-    width: 30%;
     float: left;
   }
 

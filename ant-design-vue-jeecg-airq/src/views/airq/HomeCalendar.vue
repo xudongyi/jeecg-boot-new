@@ -1,11 +1,12 @@
 <template>
   <div>
     <div class="titleRow">
-      <div class="block"></div>
-      <div class="smallTitle">蓝天日历</div>
-      <a-month-picker placeholder="Select month" :value="queryParam.queryTime" format="YYYY-MM"  valueFormat="YYYY-MM"  @change="monthChange" class="ant-calendar-picker"/>
+      <div class="top">
+        <span class="mark"></span>
+        <span class="caption">蓝天日历</span>
+        <span class="updateTime"><a-month-picker placeholder="Select month" :value="queryParam.queryTime" format="YYYY-MM"  valueFormat="YYYY-MM"  @change="monthChange" /></span>
+      </div>
     </div>
-    <div class="border"></div>
     <div id="calendar" style="width:100%;height:500px;z-index:19;"></div>
   </div>
 
@@ -253,14 +254,15 @@
       },
       mounted(){
         this.searchQuery();
-      }
+      },
+
   }
 </script>
 
 <style scoped>
   .titleRow {
     width: 100%;
-    height: 50px;
+    height: 35px;
   }
   .titleRow .block {
     width: 8px;
@@ -278,13 +280,43 @@
     font-weight: bold;
     color: rgba(17, 17, 17, 1);
   }
-  .border {
-    width:100%;
-    height:1px;
-    background:rgba(0,0,0,0.09);
+
+  .top {
+    height: 35px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    position: relative;
   }
-  .ant-calendar-picker {
+
+  .mark {
+    width: 8px;
+    height: 20px;
+    background: rgba(1, 142, 237, 1);
+    float: left;
+    line-height: 35px;
+    margin-left: 1%;
+  }
+
+  .caption {
+    width: 65px;
+    height: 20px;
+    font-size: 16px;
+    float: left;
+    font-family: Microsoft YaHei;
+    font-weight: bold;
+    color: rgba(17, 17, 17, 1);
+    line-height: 20px;
+    margin-left: 5px
+  }
+
+  .updateTime {
+    width: 200px;
+    height: 35px;
     float: right;
-    margin: -8px 10px 0 0;
+    position: absolute;
+    top:1.5px;
+    right: 1%;
   }
 </style>
