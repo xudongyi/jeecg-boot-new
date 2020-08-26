@@ -595,8 +595,8 @@
         select AVG(aqi) aqi,
         AVG(a21026_Iaqi) a21026_Iaqi,
         AVG(a21004_Iaqi) a21004_Iaqi,
-        AVG(a3400201_Iaqi) a3400201_Iaqi,
-        AVG(a3400401_Iaqi) a3400401_Iaqi,
+        AVG(a3400224_Iaqi) a3400201_Iaqi,
+        AVG(a3400424_Iaqi) a3400401_Iaqi,
         AVG(a21005_Iaqi) a21005_Iaqi,
         AVG(a0502401_Iaqi) a0502401_Iaqi
         from airq_hour a LEFT JOIN site_monitor_point b ON a.mn = b.mn WHERE b.site_type='3' AND b.company_id IN
