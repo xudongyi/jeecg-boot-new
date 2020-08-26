@@ -38,13 +38,15 @@
         <div class="allInfo">
           <div class="oneInfo" v-for="item in warnData" :key="item.key">
             <div class="leftInfo">
-              <ul style="padding-top: 10%">
+              <ul style="height: 100%;width: 100%">
                 <li class="iconArea" :style="'background:URL('+bgImgs[item.flag]+') no-repeat center'"></li>
-                <li class="level" :style="{color:warnColors[item.flag]}">{{item.flagName}}</li>
+                <li class="level" :style="{color:warnColors[item.flag]}"><span :style="LabelFontSize">{{item.flagName}}</span></li>
               </ul>
             </div>
             <div class="rightInfo">
+              <span :style="infoFontSize">
               {{item.content}}
+              </span>
             </div>
           </div>
 
@@ -56,7 +58,7 @@
         <fine-days :fineDaysStyle="fineDaysStyle"></fine-days>
       </div>
       <div class="calendar">
-        <home-calendar :fineDaysStyle="fineDaysStyle" :cellSize="cellSize"></home-calendar>
+        <home-calendar :fineDaysStyle="fineDaysStyle" :scale="scale"></home-calendar>
       </div>
     </div>
   </div>
@@ -75,7 +77,9 @@
     components: {FineDays, siteState,homeCalendar},
     data() {
       return {
-        cellSize:[],
+        infoFontSize:{},
+        LabelFontSize:{},
+        scale:1,
         airDial:{},
         airDialStyle: {},
         fineDaysStyle: {},
@@ -255,10 +259,6 @@
       //计算大气环境质量优良天数高度
       this.fineDaysStyle.height = height * 0.49 - 35 + "px";
       this.fineDaysStyle.width = containerWidth * 0.4-12 + "px";
-      //计算蓝天日历没格宽高
-      this.cellSize[0] = (containerWidth * 0.4-12)*0.11;
-      this.cellSize[1] = (containerWidth * 0.4-12)*0.11/70*50;
-      console.log(this.cellSize);
       //获取报警信息
       this.selectWarnInfo();
     },
@@ -272,6 +272,8 @@
       this.offset = [-width * 0.3, 0];
       this.buttonFontSize = 20*this.scale +"px";
       this.selectAirQuality();
+      this.infoFontSize.fontSize = 16*this.scale +"px";
+      this.LabelFontSize.fontSize = 14*this.scale +"px";
     },
     watch: {},
     methods: {
@@ -498,7 +500,7 @@
 
   .leftInfo {
     width: 8%;
-    height: 85%;
+    height: 100%;
     float: left;
   }
   .leftInfo ul{
@@ -514,12 +516,13 @@
 
   .iconArea {
     width: 100%;
-    height: 24px;
+    height: 60%;
+    background-size: contain !important;
   }
 
   .level {
     width: 100%;
-    height: 30%;
+    height: 40%;
     font-size: 8px;
     text-align: center;
     font-family: Microsoft YaHei;
@@ -531,8 +534,6 @@
     float: right;
     padding-top: 1%;
     margin-right: 1%;
-    text-indent: 2em;
-    font-size:13px;
     font-family:Microsoft YaHei;
     font-weight:400;
     color:rgba(0,0,0,1);

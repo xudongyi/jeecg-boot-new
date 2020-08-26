@@ -104,7 +104,7 @@
               monthLabel: {
                 show:false
               },
-              cellSize: [75,50],
+              cellSize: [100*this.scale,60*this.scale],
               range: this.queryParam.queryTime,
             }
           );
@@ -121,7 +121,7 @@
                 return d.getDate()+"\n\n" ;
               },
               color: '#000000',
-              fontSize:12
+              fontSize:12*this.scale
             },
             data: dateArr
           });
@@ -149,31 +149,37 @@
                   backgroundColor: 'rgba(0,228,0,1)',//优
                   color: '#fff',
                   padding: [1,10,1,10],
-
+                  fontSize:12*this.scale
                 },
                 fragment2: {
                   backgroundColor: 'rgb(249,217,0)',
                   color: '#fff',
                   padding: [1,10,1,10],
+                  fontSize:12*this.scale
                 },
                 fragment3: {
                   backgroundColor: 'rgba(255,126,0,1)',
                   color: '#fff',
                   padding: [1,10,1,10],
+                  fontSize:12*this.scale
                 },
                 fragment4: {
                   backgroundColor: 'rgba(255,0,0,1)',
                   color: '#fff',
                   padding: [1,10,1,10],
+                  fontSize:12*this.scale
                 },
                 fragment5: {
                   backgroundColor: 'rgba(153,0,76,1)',
                   color: '#fff',
                   padding: [1,10,1,10],
+                  fontSize:12*this.scale
                 },
                 fragment6: {
                   backgroundColor: 'rgba(126,0,35,1)',
                   color: '#fff',
+                  padding: [1,10,1,10],
+                  fontSize:12*this.scale
                 }
               }
             },
@@ -191,7 +197,7 @@
                 return '\n\n\n\n' + params.value[2].split(',')[0];
               },
               color: '#000000',
-              fontSize: 8
+              fontSize: 12*this.scale
             },
             data: heatmapData
           });
@@ -255,6 +261,14 @@
       mounted(){
         this.searchQuery();
       },
+    props: {
+      fineDaysStyle: {
+        type: Object
+      },
+      scale: {
+        type: Number
+      }
+    }
 
   }
 </script>
