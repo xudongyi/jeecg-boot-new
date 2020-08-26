@@ -31,14 +31,14 @@
       </div>
       <div class="alarm">
         <div class="headLine">
-          <div class="block"></div>
-          <div class="warn">实时报警</div>
+          <span class="block"></span>
+          <span class="warn">实时报警</span>
         </div>
 
         <div class="allInfo">
           <div class="oneInfo" v-for="item in warnData" :key="item.key">
             <div class="leftInfo">
-              <ul style="padding: 10px">
+              <ul style="padding: 10%">
                 <li class="iconArea" :style="'background:URL('+bgImgs[item.flag]+') no-repeat center'"></li>
                 <li class="level" :style="{color:warnColors[item.flag]}">{{item.flagName}}</li>
               </ul>
@@ -295,7 +295,6 @@
       selectAirQuality(){
         let that = this;
         queryAirQuality({companyIds:this.$store.getters.userInfo.companyIds.join(','),dateTime:this.updateTime}).then(res=>{
-          debugger
           that.option.series[0].data[0].value = res.result.aqi;
           that.option.series[0].detail.textStyle.color=res.result.levelRgb;
           that.polluteDetails = res.result.polluteDetails;
@@ -456,20 +455,25 @@
   .headLine {
     width: 100%;
     height: 12%;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    position: relative;
   }
 
   .headLine .block {
     width: 8px;
-    height: 18px;
+    height: 20px;
     background: rgba(1, 142, 237, 1);
     float: left;
-    margin: 13px 0 0 10px;
+    margin: 0 0 0 1%;
   }
 
   .headLine .warn {
-    width: 30%;
+    width: 65px;
     height: 18px;
-    padding: 10px 0 0 27px;
+    line-height: 20px;
+    margin-left: 5px;
     font-size: 16px;
     font-family: Microsoft YaHei;
     font-weight: bold;
@@ -489,7 +493,7 @@
 
   .leftInfo {
     width: 10%;
-    height: 90%;
+    height: 85%;
     float: left;
   }
   .leftInfo ul{
@@ -511,16 +515,17 @@
   .level {
     width: 100%;
     height: 30%;
-    font-size: 10px;
+    font-size: 8px;
     text-align: center;
     font-family: Microsoft YaHei;
     font-weight: 400;
   }
   .rightInfo {
-    width: 90%;
+    width: 84%;
     height: 100%;
     float: right;
-    padding-top: 15px;
+    padding-top: 1%;
+    margin-right: 1%;
     text-indent: 2em;
     font-size:13px;
     font-family:Microsoft YaHei;

@@ -235,6 +235,10 @@ public class AirqDayController extends JeecgController<AirqDay, IAirqDayService>
 		 for(Map<String,Object> param:airHomeCalendarList){
 		 	 Map<String,Double> code = new HashMap<>();
 		 	 String aqi = param.get("AQI").toString();
+		 	 if(aqi.length()>5){
+		 	 	aqi = aqi.substring(0,5);
+		 	 	param.put("AQI", aqi);
+			 }
 		 	 if(!("0.0".equals(aqi)) && StrUtil.isNotEmpty(aqi)) {
 				 code.put("A34004", Double.valueOf(param.get("A34004").toString()));
 				 code.put("A34002", Double.valueOf(param.get("A34002").toString()));
