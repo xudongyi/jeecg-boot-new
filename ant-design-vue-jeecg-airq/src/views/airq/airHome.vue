@@ -47,7 +47,13 @@
             </div>
             <div class="rightInfo">
               <span :style="infoFontSize">
-              {{item.content}}
+                <a-tooltip>
+                  <template slot="title">
+                    {{item.content}}
+                  </template>
+                  {{item.content.substring(0,60)}}
+                </a-tooltip>
+
               </span>
             </div>
           </div>
@@ -277,7 +283,7 @@
       this.buttonFontSize = 40 * this.scale + "px";
       this.unitFontSize = 16 * this.scale + "px";
       this.selectAirQuality();
-      this.infoFontSize.fontSize = 15*this.scale +"px";
+      this.infoFontSize.fontSize = 20*this.scale +"px";
       this.LabelFontSize.fontSize = 12*this.scale +"px";
     },
     watch: {},
