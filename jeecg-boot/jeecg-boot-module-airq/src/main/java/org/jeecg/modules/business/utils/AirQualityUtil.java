@@ -74,7 +74,7 @@ public class AirQualityUtil {
 
             while(e.hasNext()) {
                 String key = (String)e.next();
-                this.redisUtil.hset("airq_aqi_map", key,  CommonsUtil.toJsonStr(result.get(key)));
+                this.redisUtil.hset("web_airq_aqi_map", key,  CommonsUtil.toJsonStr(result.get(key)));
             }
         } else {
             this.log.info("初始化空气质量分指数计算标准失败:未取到值");
@@ -88,7 +88,7 @@ public class AirQualityUtil {
         if (data != null && data.size() > 0) {
             for(int i = 0; i < data.size(); ++i) {
                 try {
-                    this.redisUtil.hset("airq_level_map",data.get(i).get("level")+"",  CommonsUtil.toJsonStr(data.get(i)));
+                    this.redisUtil.hset("web_airq_level_map",data.get(i).get("level")+"",  CommonsUtil.toJsonStr(data.get(i)));
                 } catch (Exception e) {
                     this.log.debug("Redis提示[初始化空气质量等级]出错:" + e.getMessage());
                 }
@@ -108,7 +108,7 @@ public class AirQualityUtil {
      */
     public double getAQI(String factorCode, int type, double avg) {
         double aqi = -1.0D;
-        Object result = this.redisUtil.hget("airq_aqi_map", factorCode + "-" + type);
+        Object result = this.redisUtil.hget("web_airq_aqi_map", factorCode + "-" + type);
         if (result!=null && StringUtils.isNotEmpty(result.toString())) {
             List<AirqAQIBean> list = (List) CommonsUtil.toJsonObject(result.toString(), AirqAQIBean.class);
             if (list != null) {
@@ -139,7 +139,7 @@ public class AirQualityUtil {
     public String getLevel(double aqi) {
         aqi = CommonsUtil.numberFormat(aqi, 0);
         String result = "7";
-        Map<Object, Object> map = this.redisUtil.hmget("airq_level_map");
+        Map<Object, Object> map = this.redisUtil.hmget("web_airq_level_map");
         if (map != null && !map.isEmpty()) {
             Iterator iterator = map.keySet().iterator();
 
