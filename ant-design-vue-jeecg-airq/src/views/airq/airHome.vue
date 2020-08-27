@@ -51,7 +51,7 @@
                   <template slot="title">
                     {{item.content}}
                   </template>
-                  {{item.content.substring(0,55) + "......"}}
+                  {{item.content.substring(0,60) + "......"}}
                 </a-tooltip>
 
               </span>
