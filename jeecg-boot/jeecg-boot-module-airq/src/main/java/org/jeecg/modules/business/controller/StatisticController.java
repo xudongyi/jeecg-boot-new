@@ -924,8 +924,14 @@ public class StatisticController {
                 if (siteSum - newestWarn.size() > 0) {
                     Map<String, Object> seriesMap = new HashMap<>();
                     seriesMap.put("name", "正常");
-                    seriesMap.put("color", "#FF9710");
+                    seriesMap.put("color", "#00D65F");
                     seriesMap.put("data", siteSum - newestWarn.size());
+                    pieSeries.add(seriesMap);
+                }else{
+                    Map<String, Object> seriesMap = new HashMap<>();
+                    seriesMap.put("name", "正常");
+                    seriesMap.put("color", "#00D65F");
+                    seriesMap.put("data", 0);
                     pieSeries.add(seriesMap);
                 }
                 mapResult.put("pieSeries", pieSeries);

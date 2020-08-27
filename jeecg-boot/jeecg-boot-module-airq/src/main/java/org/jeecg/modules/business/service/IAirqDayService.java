@@ -33,4 +33,7 @@ public interface IAirqDayService extends IService<AirqDay> {
     List<Map<String,Object>> queryDayChartInfo(String mn);
 
     List<Map<String,Object>> queryAirDayMoreInfo(String mn,String dateTime);
+
+    Integer querDays(List<String> asList,int level, String startTime, String endTime);
+
 }

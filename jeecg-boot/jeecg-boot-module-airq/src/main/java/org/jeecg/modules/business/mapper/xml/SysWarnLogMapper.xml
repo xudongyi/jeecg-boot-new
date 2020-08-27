@@ -121,4 +121,64 @@
         limit 4
     </select>
 
+    <select id="querySiteState" resultType="Map">
+        SELECT
+        COUNT( 1 ) AS siteNum,a.flag
+        FROM
+        sys_warn_log a
+        LEFT JOIN site_monitor_point b ON a.monitor_id = b.id
+        WHERE
+        b.company_id IN
+        <foreach collection="companyIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        AND warn_time >= (#{startTime})
+        AND warn_time &lt; (#{endTime})
+        GROUP BY
+        flag UNION ALL
+        (
+        SELECT
+        0 AS num,
+        flag
+        FROM
+        sys_warn_log
+        WHERE
+        flag NOT IN (
+        SELECT
+        a.flag
+        FROM
+        sys_warn_log a
+        LEFT JOIN site_monitor_point b ON a.monitor_id = b.id
+        WHERE
+        b.company_id IN
+        <foreach collection="companyIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        AND warn_time >= (#{startTime})
+        AND warn_time &lt; (#{endTime})
+        GROUP BY
+        flag
+        )
+        GROUP BY
+        flag
+        )
+        ORDER BY
+        flag
+    </select>
+    <select id="querySiteNum" resultType="Map">
+        SELECT
+        a.monitor_id
+        FROM
+        sys_warn_log a
+        LEFT JOIN site_monitor_point b ON a.monitor_id = b.id
+        WHERE
+        b.company_id IN
+        <foreach collection="companyIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        AND warn_time >= (#{startTime})
+        AND warn_time &lt; (#{endTime})
+        GROUP BY a.monitor_id
+    </select>
+
 </mapper>

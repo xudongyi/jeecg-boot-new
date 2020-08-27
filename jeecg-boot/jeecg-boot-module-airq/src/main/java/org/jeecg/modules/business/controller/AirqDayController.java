@@ -1,5 +1,6 @@
 package org.jeecg.modules.business.controller;
 
+import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -16,10 +17,12 @@ import org.jeecg.common.util.DateUtils;
 import org.jeecg.common.util.RedisUtil;
 import org.jeecg.modules.business.constant.SelfExcelConstants;
 import org.jeecg.modules.business.entity.AirqDay;
+import org.jeecg.modules.business.entity.AirqLevel;
 import org.jeecg.modules.business.service.IAirqDayService;
 import org.jeecg.modules.business.service.IAirqMonthService;
 import org.jeecg.modules.business.service.IAirqYearService;
 import org.jeecg.modules.business.service.ISysDictService;
+import org.jeecg.modules.business.utils.RedisCacheUtil;
 import org.jeecg.modules.business.view.SelfEntityExcelView;
 import org.jeecg.modules.business.vo.AirqDayQualityVo;
 import org.jeecg.modules.business.vo.SiteQualityRankDayVO;
@@ -28,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.Time;
@@ -56,6 +60,8 @@ public class AirqDayController extends JeecgController<AirqDay, IAirqDayService>
 	private ISysDictService sysDictService;
 	@Autowired
 	private RedisUtil redisUtil;
+	 @Resource
+	 private RedisCacheUtil<AirqLevel> redisCacheUtil;
 	/**
 	 * 分页列表查询
 	 *
@@ -229,31 +235,42 @@ public class AirqDayController extends JeecgController<AirqDay, IAirqDayService>
 		 Map<String,Object> result = new HashMap<>();
 		 for(Map<String,Object> param:airHomeCalendarList){
 		 	 Map<String,Double> code = new HashMap<>();
-		 	 code.put("A34004", Double.valueOf(param.get("A34004").toString()));
-		 	 code.put("A34002", Double.valueOf(param.get("A34002").toString()));
-		 	 code.put("A21026", Double.valueOf(param.get("A21026").toString()));
-			 code.put("A21005", Double.valueOf(param.get("A21005").toString()));
-			 code.put("A21004", Double.valueOf(param.get("A21004").toString()));
-			 code.put("A05024", Double.valueOf(param.get("A05024").toString()));
-			 List<Map.Entry<String,Double>> list = new ArrayList(code.entrySet());
-			 Collections.sort(list, (o1, o2) -> {
-				 if ((o2.getValue() - o1.getValue()) > 0)
-					 return 1;
-				 else if ((o2.getValue() - o1.getValue()) == 0)
-					 return 0;
-				 else
-					 return -1;
-			 });
-			 Double maxValue = list.get(0).getValue();
-			 String firstCode = list.get(0).getKey();
-			 for (int i = 1; i < list.size(); i++) {
-				 if (Double.toString(list.get(i).getValue()).equals(Double.toString(maxValue))) {
-					 firstCode = firstCode + "," + list.get(i).getKey();
-				 } else {
-					 break;
-				 }
+		 	 String aqi = param.get("AQI").toString();
+		 	 if(aqi.length()>5){
+		 	 	aqi = aqi.substring(0,5);
+		 	 	param.put("AQI", aqi);
 			 }
-			 param.put("firstCode", firstCode);
+		 	 if(!("0.0".equals(aqi)) && StrUtil.isNotEmpty(aqi)) {
+				 code.put("A34004", Double.valueOf(param.get("A34004").toString()));
+				 code.put("A34002", Double.valueOf(param.get("A34002").toString()));
+				 code.put("A21026", Double.valueOf(param.get("A21026").toString()));
+				 code.put("A21005", Double.valueOf(param.get("A21005").toString()));
+				 code.put("A21004", Double.valueOf(param.get("A21004").toString()));
+				 code.put("A05024", Double.valueOf(param.get("A05024").toString()));
+				 List<Map.Entry<String,Double>> list = new ArrayList(code.entrySet());
+				 Collections.sort(list, (o1, o2) -> {
+					 if ((o2.getValue() - o1.getValue()) > 0)
+						 return 1;
+					 else if ((o2.getValue() - o1.getValue()) == 0)
+						 return 0;
+					 else
+						 return -1;
+				 });
+				 Double maxValue = list.get(0).getValue();
+				 String firstCode = list.get(0).getKey();
+				 for (int i = 1; i < list.size(); i++) {
+					 if (Double.toString(list.get(i).getValue()).equals(Double.toString(maxValue))) {
+						 firstCode = firstCode + "," + list.get(i).getKey();
+					 } else {
+						 break;
+					 }
+				 }
+				 String firstCodeName = redisCacheUtil.transformCode(firstCode);
+				 param.put("firstCode", firstCodeName);
+			 }else {
+		 	 	param.put("firstCode", "无");
+			 }
+
 		 }
 		 result.put("dataList",airHomeCalendarList);
 		 return Result.ok(result);
@@ -376,4 +393,40 @@ public class AirqDayController extends JeecgController<AirqDay, IAirqDayService>
 			 return mvYear;
 		 }
 	 }
+
+	 /**
+	  * 大气首页优良天数分析
+	  *
+	  * @return
+	  */
+	 @AutoLog(value = "优良天数分析（近6个月）")
+	 @ApiOperation(value = "优良天数分析（近6个月）", notes = "优良天数分析（近6个月）")
+	 @GetMapping(value = "/queryFineDays")
+	 public Result<?> queryFineDays(@RequestParam(name = "companyIds", required = true) String companyIds) {
+	 	List<String> months = new ArrayList<>();
+	 	List<Integer> excellentDays = new ArrayList<>();
+		 List<Integer> fineDays = new ArrayList<>();
+	 	Map<String,Object> result = new HashMap<>();
+		 for(int i=5;i>=0;i--){
+			 DateTime start = DateUtil.offsetMonth(DateUtil.beginOfMonth(DateUtil.date()),-i) ;
+			 DateTime end = DateUtil.offsetMonth(DateUtil.endOfMonth(DateUtil.date()),-i) ;
+			 //本月
+			 String currMonth = DateUtil.format(start,"yyyy-MM");
+			 months.add(currMonth);
+			 //计算好时间
+			 String startTime = DateUtil.format(start,"yyyy-MM-dd");
+			 String endTime = DateUtil.format(end,"yyyy-MM-dd");
+			 //查询出一个月的优天数
+			 Integer excellentDay = airqDayService.querDays(Arrays.asList(companyIds.split(",")),1,startTime,endTime);
+			 //查询出一个月的良天数
+			 Integer fineDay = airqDayService.querDays(Arrays.asList(companyIds.split(",")),2,startTime,endTime);
+			 excellentDays.add(excellentDay);
+			 fineDays.add(fineDay);
+		 }
+		 result.put("months",months);
+		 result.put("excellentDays",excellentDays);
+		 result.put("fineDays",fineDays);
+		 return Result.ok(result);
+	 }
+
 }

@@ -85,4 +85,14 @@ public class SysWarnLogServiceImpl extends ServiceImpl<SysWarnLogMapper, SysWarn
     public List<Map<String, Object>> queryAlarmInfo(List<String> companyIds) {
         return sysWarnLogMapper.queryAlarmInfo(companyIds);
     }
+
+    @Override
+    public List<Map<String, Object>> querySiteState(List<String> companyIds, String startTime, String endTime) {
+        return sysWarnLogMapper.querySiteState(companyIds,startTime,endTime);
+    }
+
+    @Override
+    public List<Map<String, Object>> querySiteNum(List<String> companyIds, String startTime, String endTime) {
+        return sysWarnLogMapper.querySiteNum(companyIds,startTime,endTime);
+    }
 }

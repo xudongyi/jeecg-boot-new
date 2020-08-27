@@ -370,7 +370,7 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
             Map<String, String> param = new HashMap<>();
             param.put("key", siteMonitorPoint.getMn());
             param.put("value", siteMonitorPoint.getSiteName());
-            param.put("siteId",siteMonitorPoint.getId());
+            param.put("siteId", siteMonitorPoint.getId());
             param.put("area", siteMonitorPoint.getArea());
             param.put("lng", siteMonitorPoint.getSiteLongitude());
             param.put("lat", siteMonitorPoint.getSiteLatitude());
@@ -673,44 +673,152 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
         return mv;
     }
 
+    @AutoLog(value = "首页空气质量")
+    @ApiOperation(value = "首页空气质量", notes = "首页空气质量")
+    @GetMapping(value = "/queryAirQuality")
+    public Result<?> queryAirQuality(@RequestParam(name = "companyIds", required = true) String companyIds
+            , @RequestParam(name = "dateTime", required = true) String dateTime) {
+        Map<String, Object> result = new HashMap<>();
+        List<AirHourPlayVo> airHourPlayVos = airqHourService.queryAirAvgInfo(Arrays.asList(companyIds.split(",")), DateUtil.parse(dateTime, "yyyy-MM-dd HH"));
+        if (CollectionUtil.isNotEmpty(airHourPlayVos)) {
+            List<Double> iaqi = new ArrayList<>();
+            List<PolluteDetail> polluteDetails = new ArrayList<>();
+            AirHourPlayVo airHourPlayVo = airHourPlayVos.get(0);
+            Double aqi = airHourPlayVo.getAqi();
+            result.put("aqi", Math.round(aqi));
+            //获取级别
+            AirqLevel airqLevel = this.getAirqLevel(aqi);
+            result.put("levelRgb", airqLevel.getLevelRgb());
+            result.put("levelGrade", airqLevel.getLevelGrade());
+            iaqi.add(airHourPlayVo.getA3400401Iaqi());
+            iaqi.add(airHourPlayVo.getA3400201Iaqi());
+            iaqi.add(airHourPlayVo.getA21026Iaqi());
+            iaqi.add(airHourPlayVo.getA21004Iaqi());
+            iaqi.add(airHourPlayVo.getA21005Iaqi());
+            iaqi.add(airHourPlayVo.getA0502401Iaqi());
+            //最大值
+            Double max = Collections.max(iaqi);
+            //pm2.5
+            PolluteDetail a34004 = new PolluteDetail();
+            Double a3400401Iaqi = airHourPlayVo.getA3400401Iaqi();
+            a34004.setKey("PM2.5");
+            a34004.setValue(Math.round(a3400401Iaqi));
+            AirqLevel a34004Level = this.getAirqLevel(a3400401Iaqi);
+            a34004.setColor(a34004Level.getLevelRgb());
+            if (max != null && max != 0 && max == a3400401Iaqi) {
+                a34004.setIsFirstCode("首");
+            }else{
+                a34004.setIsFirstCode("0");
+            }
+            polluteDetails.add(a34004);
+            //PM10
+            PolluteDetail a34002 = new PolluteDetail();
+            Double a3400201Iaqi = airHourPlayVo.getA3400201Iaqi();
+            a34002.setKey("PM10");
+            a34002.setValue(Math.round(a3400201Iaqi));
+            AirqLevel a34002Level = this.getAirqLevel(a3400201Iaqi);
+            a34002.setColor(a34002Level.getLevelRgb());
+            if (max != null && max != 0 && max == a3400201Iaqi) {
+                a34002.setIsFirstCode("首");
+            }else{
+                a34002.setIsFirstCode("0");
+            }
+            polluteDetails.add(a34002);
+            //SO2
+            PolluteDetail a21026 = new PolluteDetail();
+            Double a21026Iaqi = airHourPlayVo.getA21026Iaqi();
+            a21026.setKey("SO₂");
+            a21026.setValue(Math.round(a21026Iaqi));
+            AirqLevel a21026Level = this.getAirqLevel(a21026Iaqi);
+            a21026.setColor(a21026Level.getLevelRgb());
+            if (max != null && max != 0 && max == a21026Iaqi) {
+                a21026.setIsFirstCode("首");
+            }else{
+                a21026.setIsFirstCode("0");
+            }
+            polluteDetails.add(a21026);
+            //NO2
+            PolluteDetail a21004 = new PolluteDetail();
+            Double a21004Iaqi = airHourPlayVo.getA21004Iaqi();
+            a21004.setKey("NO₂");
+            a21004.setValue(Math.round(a21004Iaqi));
+            AirqLevel a21004Level = this.getAirqLevel(a21004Iaqi);
+            a21004.setColor(a21004Level.getLevelRgb());
+            if (max != null && max != 0 && max == a21004Iaqi) {
+                a21004.setIsFirstCode("首");
+            }else{
+                a21004.setIsFirstCode("0");
+            }
+            polluteDetails.add(a21004);
+            //co
+            PolluteDetail a21005 = new PolluteDetail();
+            Double a21005Iaqi = airHourPlayVo.getA21005Iaqi();
+            a21005.setKey("CO");
+            a21005.setValue(Math.round(a21005Iaqi));
+            AirqLevel a21005Level = this.getAirqLevel(a21005Iaqi);
+            a21005.setColor(a21005Level.getLevelRgb());
+            if (max != null && max != 0 && max == a21005Iaqi) {
+                a21005.setIsFirstCode("首");
+            }else{
+                a21005.setIsFirstCode("0");
+            }
+            polluteDetails.add(a21005);
+            //o3
+            PolluteDetail a05024 = new PolluteDetail();
+            Double a0502401Iaqi = airHourPlayVo.getA0502401Iaqi();
+            a05024.setKey("O₃");
+            a05024.setValue(Math.round(a0502401Iaqi));
+            AirqLevel a05024Level = this.getAirqLevel(a0502401Iaqi);
+            a05024.setColor(a05024Level.getLevelRgb());
+            if (max != null && max != 0 && max == a0502401Iaqi) {
+                a05024.setIsFirstCode("首");
+            }else{
+                a05024.setIsFirstCode("0");
+            }
+            polluteDetails.add(a05024);
+            result.put("polluteDetails",polluteDetails);
+        }
+        return Result.ok(result);
+    }
 
-	 /**
-	  * 空气质量app 监测站点
-	  *
-	  * @return
-	  */
-	 @AutoLog(value = "监测站点")
-	 @ApiOperation(value="监测站点", notes="监测站点")
-	 @GetMapping(value = "/queryAirSiteInfo")
-	 public Result<?> queryAirSiteInfo(@RequestParam(name="companyIds",required=true) String companyIds
-			 ,@RequestParam(name="mn",required=false) String mn) {
-		 List<Map<String,Object>>  airSiteList =  airqHourService.queryAirSiteInfo(Arrays.asList(companyIds.split(",")),mn);
-		 Map<String,Object> result = new HashMap<>();
-		 for(Map<String,Object> param:airSiteList){
-			 String value =  sysDictService.queryDictTextByKey("siteLevel", param.get("siteLevel").toString());
-			 param.put("siteLevelName",value);
-			 String levelValue = sysDictService.queryDictTextByKey("level",param.get("level").toString());
-			 if(levelValue.length()>1) {
-			 	levelValue = levelValue.substring(0, 2);
-			 }
-			 param.put("levelName", levelValue);
-			 if(param.get("firstCode") != null) {
-				 String firstCode = param.get("firstCode").toString();
-				 List<String> arr = Arrays.asList(firstCode.split(","));
-				 List<String> codeArr = new ArrayList<>();
-				 for (int i=0;i<arr.size();i++) {
-					 codeArr.add(arr.get(i).substring(0, 6));
-				 }
-				 String code = StringUtils.join(codeArr, ",");
-				 param.put("code", code);
-			 }else {
-			 	param.put("code", "");
-			 }
 
-		 }
-		 result.put("dataList",airSiteList);
-		 return Result.ok(result);
-	 }
+    /**
+     * 空气质量app 监测站点
+     *
+     * @return
+     */
+    @AutoLog(value = "监测站点")
+    @ApiOperation(value = "监测站点", notes = "监测站点")
+    @GetMapping(value = "/queryAirSiteInfo")
+    public Result<?> queryAirSiteInfo(@RequestParam(name = "companyIds", required = true) String companyIds
+            , @RequestParam(name = "mn", required = false) String mn) {
+        List<Map<String, Object>> airSiteList = airqHourService.queryAirSiteInfo(Arrays.asList(companyIds.split(",")), mn);
+        Map<String, Object> result = new HashMap<>();
+        for (Map<String, Object> param : airSiteList) {
+            String value = sysDictService.queryDictTextByKey("siteLevel", param.get("siteLevel").toString());
+            param.put("siteLevelName", value);
+            String levelValue = sysDictService.queryDictTextByKey("level", param.get("level").toString());
+            if (levelValue.length() > 1) {
+                levelValue = levelValue.substring(0, 2);
+            }
+            param.put("levelName", levelValue);
+            if (param.get("firstCode") != null) {
+                String firstCode = param.get("firstCode").toString();
+                List<String> arr = Arrays.asList(firstCode.split(","));
+                List<String> codeArr = new ArrayList<>();
+                for (int i = 0; i < arr.size(); i++) {
+                    codeArr.add(arr.get(i).substring(0, 6));
+                }
+                String code = StringUtils.join(codeArr, ",");
+                param.put("code", code);
+            } else {
+                param.put("code", "");
+            }
+
+        }
+        result.put("dataList", airSiteList);
+        return Result.ok(result);
+    }
 
     /**
      * 空气质量app 监测站点折线图数据
@@ -761,7 +869,7 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
                 } else {
                     codeList.add(-1.0);
                 }
-                String time = param.get("dataTime").toString().substring(0, 11)+"  ";
+                String time = param.get("dataTime").toString().substring(0, 11) + "  ";
                 timeList.add(time);
             }
             result.put("series", codeList);
@@ -790,52 +898,52 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
         return Result.ok(result);
     }
 
-	 /**
-	  * 空气质量app 监测站点详情
-	  *
-	  * @return
-	  */
-	 @AutoLog(value = "监测站点详情")
-	 @ApiOperation(value="监测站点详情", notes="监测站点详情")
-	 @GetMapping(value = "/queryAirMoreInfo")
-	 public Result<?> queryAirMoreInfo(@RequestParam(name="mn",required=true) String mn
-			 ,@RequestParam(name="dateBegin",required=false) String dateBegin
-			 ,@RequestParam(name="time",required=true) String time) {
-		 List<Map<String,Object>>  airMoreList =  null;
-		 Map<String,Object> result = new HashMap<>();
-		 if("0".equals(time)) {
-			 airMoreList =  airqHourService.queryAirMoreInfo(mn,dateBegin);
-		 }else if("1".equals(time)) {
-			 airMoreList = airqDayService.queryAirDayMoreInfo(mn, dateBegin);
-		 }
-		 for(Map<String,Object> param:airMoreList){
-			 if(param.get("level") != null) {
-				 String levelValue = sysDictService.queryDictTextByKey("level",param.get("level").toString());
-				 param.put("levelName", levelValue);
-			 }
-			 if(param.get("A01008") != null) {
-				 String windDirection = sysDictService.queryDictTextByKey("wind",param.get("A01008").toString());
-				 param.put("windDirection", windDirection);
-			 }else {
-				 param.put("windDirection", "");
-			 }
-			 if(param.get("firstCode") != null) {
-				 String firstCode = param.get("firstCode").toString();
-				 List<String> arr = Arrays.asList(firstCode.split(","));
-				 List<String> codeArr = new ArrayList<>();
-				 for (int i=0;i<arr.size();i++) {
-					 codeArr.add(arr.get(i).substring(0, 6));
-				 }
-				 String code = StringUtils.join(codeArr, ",");
-				 param.put("code", code);
-			 }else {
-				 param.put("code", "");
-			 }
+    /**
+     * 空气质量app 监测站点详情
+     *
+     * @return
+     */
+    @AutoLog(value = "监测站点详情")
+    @ApiOperation(value = "监测站点详情", notes = "监测站点详情")
+    @GetMapping(value = "/queryAirMoreInfo")
+    public Result<?> queryAirMoreInfo(@RequestParam(name = "mn", required = true) String mn
+            , @RequestParam(name = "dateBegin", required = false) String dateBegin
+            , @RequestParam(name = "time", required = true) String time) {
+        List<Map<String, Object>> airMoreList = null;
+        Map<String, Object> result = new HashMap<>();
+        if ("0".equals(time)) {
+            airMoreList = airqHourService.queryAirMoreInfo(mn, dateBegin);
+        } else if ("1".equals(time)) {
+            airMoreList = airqDayService.queryAirDayMoreInfo(mn, dateBegin);
+        }
+        for (Map<String, Object> param : airMoreList) {
+            if (param.get("level") != null) {
+                String levelValue = sysDictService.queryDictTextByKey("level", param.get("level").toString());
+                param.put("levelName", levelValue);
+            }
+            if (param.get("A01008") != null) {
+                String windDirection = sysDictService.queryDictTextByKey("wind", param.get("A01008").toString());
+                param.put("windDirection", windDirection);
+            } else {
+                param.put("windDirection", "");
+            }
+            if (param.get("firstCode") != null) {
+                String firstCode = param.get("firstCode").toString();
+                List<String> arr = Arrays.asList(firstCode.split(","));
+                List<String> codeArr = new ArrayList<>();
+                for (int i = 0; i < arr.size(); i++) {
+                    codeArr.add(arr.get(i).substring(0, 6));
+                }
+                String code = StringUtils.join(codeArr, ",");
+                param.put("code", code);
+            } else {
+                param.put("code", "");
+            }
 
-		 }
-		 result.put("dataList",airMoreList);
-		 return Result.ok(result);
-	 }
+        }
+        result.put("dataList", airMoreList);
+        return Result.ok(result);
+    }
 
     /**
      * @return
@@ -915,7 +1023,7 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
             resultMap.put("location", map.get("location").toString());
             map.remove("location");
             String data_time = map.get("data_time").toString();
-            resultMap.put("dataTime", data_time.substring(0,data_time.length()-2));
+            resultMap.put("dataTime", data_time.substring(0, data_time.length() - 2));
             map.remove("data_time");
             String level = map.get("level").toString();
             map.remove("level");
@@ -923,7 +1031,7 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
             Map<String, Object> siteDetail = new HashMap<>();
             Map<String, String> style = new HashMap<>();
             String aqi = map.get("AQI").toString();
-            resultMap.put("aqiValue", aqi.substring(0,aqi.length()-2));
+            resultMap.put("aqiValue", aqi.substring(0, aqi.length() - 2));
             AirqLevel airqLevel = airqLevelService.getOne(new QueryWrapper<AirqLevel>().lambda().eq(AirqLevel::getLevel, level));
             resultMap.put("levelGrade", airqLevel.getLevelGrade());
             style.put("color", airqLevel.getLevelRgb());
@@ -940,14 +1048,19 @@ public class AirqHourController extends JeecgController<AirqHour, IAirqHourServi
                 siteDetail.put("key", entry.getKey());
                 siteDetail.put("value", entry.getValue().toString());
                 siteDetail.put("unit", "ug/m³");
-                if(entry.getValue().toString().equals(maxAqi)){
+                if (entry.getValue().toString().equals(maxAqi)) {
                     style.put("color", "#FF0000");
-                    siteDetail.put("style",style);
+                    siteDetail.put("style", style);
                 }
                 siteDetails.add(siteDetail);
             }
-            resultMap.put("siteDetails",siteDetails);
+            resultMap.put("siteDetails", siteDetails);
         }
         return Result.ok(resultMap);
+    }
+
+    private AirqLevel getAirqLevel(double aqi) {
+        String level = airQualityUtil.getLevel(aqi);
+        return airqLevelService.getOne(new QueryWrapper<AirqLevel>().lambda().eq(AirqLevel::getLevel, level));
     }
 }
