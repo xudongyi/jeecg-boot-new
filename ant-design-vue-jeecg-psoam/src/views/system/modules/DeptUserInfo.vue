@@ -108,7 +108,6 @@
   import {JeecgListMixin} from '@/mixins/JeecgListMixin'
   import {getAction, postAction, deleteAction} from '@/api/manage'
   import SelectUserModal from './SelectUserModal'
-  import UserModal from './UserModal'
   import DeptRoleUserModal from './DeptRoleUserModal'
 
   export default {
@@ -117,7 +116,6 @@
     components: {
       DeptRoleUserModal,
       SelectUserModal,
-      UserModal
     },
     data() {
       return {
