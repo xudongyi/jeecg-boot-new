@@ -410,6 +410,11 @@
 				<artifactId>jeecg-boot-module-airq</artifactId>
 				<version>${jeecgboot.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.jeecgframework.boot</groupId>
+				<artifactId>jeecg-boot-module-psoam</artifactId>
+				<version>${jeecgboot.version}</version>
+			</dependency>
 	    	<!-- 七牛云SDK -->
 			<dependency>
 				<groupId>com.qiniu</groupId>
