@@ -20,9 +20,10 @@
                      :offset="offset">
               <div class="button"
                    :style="{width: buttonWidth,height:buttonHeight, background:polluteDetail.color}">
-                <div :style="{fontWeight: 'bold',fontSize:buttonFontSize,height:'60%'}">{{polluteDetail.value}}<span
-                  :style="{fontWeight:'normal',fontSize:unitFontSize}">ug/m³</span></div>
-                <div :style="{fontWeight:'normal',fontSize:unitFontSize,height:'40%'}">{{polluteDetail.key}}</div>
+                <div :style="{fontWeight: 'bold',fontSize:buttonFontSize,height:'60%'}">{{polluteDetail.value}}</div>
+                <div :style="{fontWeight:'normal',fontSize:unitFontSize,height:'40%',float:'left',marginLeft:'10px'}">{{polluteDetail.key}}</div>
+                <span
+                  :style="{fontWeight:'normal',fontSize:unitFontSize,float:'right',marginRight:'10px'}">ug/m³</span>
               </div>
             </a-badge>
           </div>
@@ -313,6 +314,7 @@
       },
       //查询实时空气质量
       selectAirQuality() {
+        debugger
         let that = this;
         queryAirQuality({
           companyIds: this.$store.getters.userInfo.companyIds.join(','),
