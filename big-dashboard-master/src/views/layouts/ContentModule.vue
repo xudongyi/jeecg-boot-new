@@ -32,7 +32,7 @@
 
     </div>
 </template>
-
+[动画表情]
 <script>
     import nantong from '../../assets/json/nantong'
     export default {

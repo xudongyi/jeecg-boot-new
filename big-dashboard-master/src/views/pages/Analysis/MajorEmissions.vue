@@ -200,7 +200,7 @@
         height: 35%;
     }
     #emissionsBar{
-        height: 80%;
+        height: 70%;
         width: 50%;
         float: left;
     }
@@ -213,10 +213,10 @@
         border-color: #147be0;
     }
     .bar-comment{
-        height: 70%;
+        height: 60%;
         width: 50%;
         float: right;
-        margin-top: 10%;
+        margin-top: 9%;
     }
     .ant-badge-status-dot{
         width: 10px;

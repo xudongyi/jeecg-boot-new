@@ -4,7 +4,7 @@
   <artifactId>jeecg-boot-parent</artifactId>
   <version>2.2.0</version>
   <packaging>pom</packaging>
-  
+
   	<parent>
 	    <groupId>org.springframework.boot</groupId>
 	    <artifactId>spring-boot-starter-parent</artifactId>
@@ -19,6 +19,7 @@
 		<module>jeecg-boot-module-system</module>
 		<module>jeecg-boot-module-site</module>
 		<module>jeecg-boot-module-airq</module>
+		<module>jeecg-boot-module-psoam</module>
 	</modules>
 
 	<distributionManagement>
@@ -33,7 +34,7 @@
             <url>http://maven.jeecg.com:8090/nexus/content/repositories/snapshots/</url>
 	    </snapshotRepository>
 	</distributionManagement>
-	
+
 	<repositories>
 		<repository>
             <id>aliyun</id>
@@ -52,7 +53,7 @@
 			</snapshots>
         </repository>
 	</repositories>
-	
+
     <properties>
         <jeecgboot.version>2.2.0</jeecgboot.version>
         <java.version>1.8</java.version>
@@ -67,7 +68,7 @@
 		<aliyun.oss.version>3.6.0</aliyun.oss.version>
 		<guava.version>26.0-jre</guava.version>
     </properties>
-    
+
 	<dependencies>
 		<!--集成springmvc框架并实现自动配置 -->
 		<dependency>
@@ -113,41 +114,41 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-freemarker</artifactId>
 		</dependency>
-		
+
 		<!-- Lombok -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 		</dependency>
-		
+
 		<!-- mybatis-plus -->
 		 <dependency>
 	        <groupId>com.baomidou</groupId>
 	        <artifactId>mybatis-plus-boot-starter</artifactId>
 	        <version>${mybatis-plus.version}</version>
 	    </dependency>
-		
+
 		<!-- druid -->
        <dependency>
 		   <groupId>com.alibaba</groupId>
 		   <artifactId>druid-spring-boot-starter</artifactId>
 		   <version>${druid.version}</version>
 		</dependency>
-		
+
 		<!-- 动态数据源 -->
 		<dependency>
 		  <groupId>com.baomidou</groupId>
 		  <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
 		  <version>2.5.4</version>
 		</dependency>
-				
+
 		<!-- json -->
 		<dependency>
          	<groupId>com.alibaba</groupId>
          	<artifactId>fastjson</artifactId>
          	<version>1.2.60</version>
         </dependency>
-      
+
 		<!--mysql-->
 		<dependency>
 			<groupId>mysql</groupId>
@@ -191,20 +192,20 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		
+
 		 <!-- Quartz定时任务 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-quartz</artifactId>
         </dependency>
-        
+
 		<!--JWT-->
 		<dependency>
 			<groupId>com.auth0</groupId>
 			<artifactId>java-jwt</artifactId>
 			<version>3.7.0</version>
 		</dependency>
-		
+
 		<!--shiro-->
 		<dependency>
 		    <groupId>org.apache.shiro</groupId>
@@ -280,8 +281,8 @@
             <artifactId>swagger-models</artifactId>
             <version>1.5.22</version>
         </dependency>
-		
-		
+
+
 		<!-- Redis -->
 		<dependency>
 			 <groupId>org.springframework.boot</groupId>
@@ -291,7 +292,7 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-pool2</artifactId>
         </dependency>
-        
+
 		<!-- 代码生成器 -->
 		<!-- 如果下载失败，看这个链接http://jeecg-boot.mydoc.io/?t=345672 -->
 		<dependency>
@@ -299,7 +300,7 @@
 			<artifactId>codegenerate</artifactId>
 			<version>1.2.0</version>
 		</dependency>
-		
+
         <!-- AutoPoi Excel工具类-->
 		<dependency>
 			<groupId>org.jeecgframework</groupId>
@@ -312,7 +313,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		
+
 		<dependency>
 		    <groupId>cn.hutool</groupId>
 		    <artifactId>hutool-all</artifactId>
@@ -347,7 +348,7 @@
 			<artifactId>aliyun-java-sdk-dysmsapi</artifactId>
 			<version>${aliyun-java-sdk-dysmsapi.version}</version>
 		</dependency>
-		
+
 		<!-- websocket -->
 		<dependency>
 		   <groupId>org.springframework.boot</groupId>
@@ -407,6 +408,11 @@
 			<dependency>
 				<groupId>org.jeecgframework.boot</groupId>
 				<artifactId>jeecg-boot-module-airq</artifactId>
+				<version>${jeecgboot.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jeecgframework.boot</groupId>
+				<artifactId>jeecg-boot-module-psoam</artifactId>
 				<version>${jeecgboot.version}</version>
 			</dependency>
 	    	<!-- 七牛云SDK -->
