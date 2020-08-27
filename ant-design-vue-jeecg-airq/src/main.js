@@ -18,6 +18,7 @@ import preview from 'vue-photo-preview'
 import 'vue-photo-preview/dist/skin.css'
 import {getAction} from '@/api/manage'
 
+console.log('main.js开始加载')
 
 require('@jeecg/antd-online-beta220')
 require('@jeecg/antd-online-beta220/dist/OnlineForm.css')
@@ -59,6 +60,7 @@ Vue.use(preview)
 Vue.use(vueBus);
 Vue.use(JeecgComponents);
 Vue.use(VueAreaLinkage);
+console.log('main.js加载完成')
 
 SSO.init(() => {
   main();
@@ -68,6 +70,7 @@ function main() {
     router,
     store,
     mounted () {
+      console.log('项目初始化开始')
       store.commit('SET_SIDEBAR_TYPE', Vue.ls.get(SIDEBAR_TYPE, true))
       store.commit('TOGGLE_THEME', Vue.ls.get(DEFAULT_THEME, config.navTheme))
       store.commit('TOGGLE_LAYOUT_MODE', Vue.ls.get(DEFAULT_LAYOUT_MODE, config.layout))

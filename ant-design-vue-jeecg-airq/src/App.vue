@@ -16,6 +16,7 @@
       }
     },
     created () {
+      console.log('项目初始化')
       let that = this
       enquireScreen(deviceType => {
         // tablet
