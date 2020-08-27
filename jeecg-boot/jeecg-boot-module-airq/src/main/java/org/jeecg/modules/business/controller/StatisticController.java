@@ -773,7 +773,7 @@ public class StatisticController {
     public Result<?> queryExponent(@RequestParam(name = "companyIds", required = true) String companyIds) {
         Map<String, Object> mapResult = null;
         //获取当前时间
-        String curr = DateUtil.format(DateUtil.date(), "yyyy-MM-dd HH");
+        String curr = DateUtil.format(DateUtil.offsetHour(DateUtil.date(),-1), "yyyy-MM-dd HH");
         DateTime nowDate = DateUtil.parse(curr, "yyyy-MM-dd HH");
         //获取所属站点当前数据的平均值
         List<AirHourPlayVo> airHourPlayVos = airqHourService.queryAirAvgInfo(Arrays.asList(companyIds.split(",")), nowDate);
