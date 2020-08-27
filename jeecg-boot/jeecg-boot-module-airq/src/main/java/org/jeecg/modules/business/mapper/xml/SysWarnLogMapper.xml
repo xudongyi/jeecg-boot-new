@@ -86,13 +86,22 @@
     </select>
 
     <select id="queryAppPie" resultType="Map">
-        SELECT COUNT(1) siteNum,c.flag FROM (select flag,MAX(a.warn_time)
-        from sys_warn_log  a left join site_monitor_point b on a.monitor_id = b.id
-        WHERE b.company_id in
+
+        SELECT
+        count(1 ) siteNum,flag
+        FROM
+        sys_warn_log a
+        LEFT JOIN site_monitor_point b ON a.monitor_id = b.id
+        INNER JOIN ( SELECT MAX( warn_time ) maxtime, monitor_id FROM sys_warn_log GROUP BY monitor_id ) c ON a.monitor_id = c.monitor_id
+        AND c.maxtime = a.warn_time
+
+        WHERE
+        b.site_type = '3'
+        AND b.company_id IN
         <foreach collection="companyIds" item="id" index="index" open="(" close=")" separator=",">
             #{id}
         </foreach>
-         GROUP BY a.monitor_id) c GROUP BY c.flag
+        GROUP BY FLAG
     </select>
 
     <select id="queryAppColumn" resultType="integer">

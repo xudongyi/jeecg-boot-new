@@ -779,7 +779,7 @@ public class StatisticController {
         List<AirHourPlayVo> airHourPlayVos = airqHourService.queryAirAvgInfo(Arrays.asList(companyIds.split(",")), nowDate);
         //获取小时AQI趋势
 
-        List<Double> iaqis = new ArrayList<>();
+        List<Long> iaqis = new ArrayList<>();
         List<Object> exponents = new ArrayList<>();
         List<Map<String, String>> factors = (List<Map<String, String>>) JSONObject.parse(factorJson);
         //
@@ -797,21 +797,21 @@ public class StatisticController {
             //计算各污染因子aqi
             //pm10 pm2.5 so2 no2 co 03
             double a3400201Iaqi = airHourPlayVo.getA3400201Iaqi() == null ? -1 : airHourPlayVo.getA3400201Iaqi();
-            iaqis.add(a3400201Iaqi);
+            iaqis.add(Math.round(a3400201Iaqi));
             double a3400401Iaqi = airHourPlayVo.getA3400401Iaqi() == null ? -1 : airHourPlayVo.getA3400401Iaqi();
-            iaqis.add(a3400401Iaqi);
+            iaqis.add(Math.round(a3400401Iaqi));
             double a21026Iaqi = airHourPlayVo.getA21026Iaqi() == null ? -1 : airHourPlayVo.getA21026Iaqi();
-            iaqis.add(a21026Iaqi);
+            iaqis.add(Math.round(a21026Iaqi));
             double a21004Iaqi = airHourPlayVo.getA21004Iaqi() == null ? -1 : airHourPlayVo.getA21004Iaqi();
-            iaqis.add(a21004Iaqi);
+            iaqis.add(Math.round(a21004Iaqi));
             double a21005Iaqi = airHourPlayVo.getA21005Iaqi() == null ? -1 : airHourPlayVo.getA21005Iaqi();
-            iaqis.add(a21005Iaqi);
+            iaqis.add(Math.round(a21005Iaqi));
             double a0502401Iaqi = airHourPlayVo.getA0502401Iaqi() == null ? -1 : airHourPlayVo.getA0502401Iaqi();
-            iaqis.add(a0502401Iaqi);
-            Double maxAqi = Collections.max(iaqis);
+            iaqis.add(Math.round(a0502401Iaqi));
+            Long maxAqi = Collections.max(iaqis);
             for (int i = 0; i < iaqis.size(); i++) {
                 Map<String, Object> exponentMap = new HashMap<>();
-                Double pollutionIaqi = iaqis.get(i);
+                Long pollutionIaqi = iaqis.get(i);
                 //获取level
                 String pollutionLevel = airQualityUtil.getLevel(pollutionIaqi);
                 AirqLevel airqPollutionLevel = airqLevelService.getOne(new QueryWrapper<AirqLevel>().lambda().eq(AirqLevel::getLevel, pollutionLevel));
