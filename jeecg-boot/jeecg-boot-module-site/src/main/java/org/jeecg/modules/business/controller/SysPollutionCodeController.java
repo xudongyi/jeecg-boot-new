@@ -90,14 +90,10 @@ public class SysPollutionCodeController extends JeecgController<SysPollutionCode
 	@ApiOperation(value="污染因子表-编辑", notes="污染因子表-编辑")
 	@PutMapping(value = "/edit")
 	public Result<?> edit(@RequestBody SysPollutionCode sysPollutionCode) {
-		String code = sysPollutionCode.getCode();
-		String type = sysPollutionCode.getType();
-		List<SysPollutionCode> list = sysPollutionCodeService.list(new QueryWrapper<SysPollutionCode>().lambda().eq(SysPollutionCode::getCode,code).eq(SysPollutionCode::getType,type));
-		if(!list.isEmpty()) {
-			return Result.error("该污染因子已存在");
-		}else {
-			sysPollutionCodeService.updateById(sysPollutionCode);
+		if(sysPollutionCodeService.updateById(sysPollutionCode)) {
 			return Result.ok("编辑成功!");
+		}else {
+			return Result.error("编辑失败");
 		}
 	}
 	
