@@ -773,7 +773,7 @@ public class StatisticController {
     public Result<?> queryExponent(@RequestParam(name = "companyIds", required = true) String companyIds) {
         Map<String, Object> mapResult = null;
         //获取当前时间
-        String curr = DateUtil.format(DateUtil.offsetHour(DateUtil.date(),-1), "yyyy-MM-dd HH");
+        String curr = DateUtil.format(DateUtil.offsetHour(DateUtil.date(), -1), "yyyy-MM-dd HH");
         DateTime nowDate = DateUtil.parse(curr, "yyyy-MM-dd HH");
         //获取所属站点当前数据的平均值
         List<AirHourPlayVo> airHourPlayVos = airqHourService.queryAirAvgInfo(Arrays.asList(companyIds.split(",")), nowDate);
@@ -896,44 +896,42 @@ public class StatisticController {
             //站点数量
             mapResult.put("siteSum", siteSum);
             List<Map<String, Object>> newestWarn = sysWarnLogService.queryAppPie(Arrays.asList(companyIds.split(",")));
+            int normal = 0;
             if (CollectionUtil.isNotEmpty(newestWarn)) {
                 for (int i = 0; i < newestWarn.size(); i++) {
                     Map<String, Object> seriesMap = new HashMap<>();
                     Map<String, Object> map = newestWarn.get(i);
                     String flag = StrUtil.toString(map.get("flag"));
+                    Long siteNum = (Long) map.get("siteNum");
                     if ("0".equals(flag)) {
                         seriesMap.put("name", "超标报警");
                         seriesMap.put("color", "#FF2323");
-                        seriesMap.put("data", map.get("siteNum"));
+                        seriesMap.put("data", siteNum);
+                        normal = normal + siteNum.intValue();
                     } else if ("1".equals(flag)) {
                         seriesMap.put("name", "离线");
                         seriesMap.put("color", "#A1A1A1");
-                        seriesMap.put("data", map.get("siteNum"));
+                        seriesMap.put("data", siteNum);
+                        normal = normal + siteNum.intValue();
                     } else if ("2".equals(flag)) {
                         seriesMap.put("name", "设备故障");
                         seriesMap.put("color", "#CD66C2");
-                        seriesMap.put("data", map.get("siteNum"));
+                        seriesMap.put("data", siteNum);
+                        normal = normal + siteNum.intValue();
                     } else if ("3".equals(flag)) {
                         seriesMap.put("name", "超标预警");
                         seriesMap.put("color", "#FF9710");
-                        seriesMap.put("data", map.get("siteNum"));
+                        seriesMap.put("data", siteNum);
+                        normal = normal + siteNum.intValue();
                     }
                     pieSeries.add(seriesMap);
                 }
                 //正常的
-                if (siteSum - newestWarn.size() > 0) {
-                    Map<String, Object> seriesMap = new HashMap<>();
-                    seriesMap.put("name", "正常");
-                    seriesMap.put("color", "#00D65F");
-                    seriesMap.put("data", siteSum - newestWarn.size());
-                    pieSeries.add(seriesMap);
-                }else{
-                    Map<String, Object> seriesMap = new HashMap<>();
-                    seriesMap.put("name", "正常");
-                    seriesMap.put("color", "#00D65F");
-                    seriesMap.put("data", 0);
-                    pieSeries.add(seriesMap);
-                }
+                Map<String, Object> seriesMap = new HashMap<>();
+                seriesMap.put("name", "正常");
+                seriesMap.put("color", "#00D65F");
+                seriesMap.put("data", siteSum-normal);
+                pieSeries.add(seriesMap);
                 mapResult.put("pieSeries", pieSeries);
             }
         }
@@ -946,7 +944,8 @@ public class StatisticController {
     public Result<?> queryColumn(HttpServletRequest req) {
         Map<String, Object> mapResult = new HashMap<>();
         String companyIds = req.getParameter("companyIds");
-        List<Integer> siteNums =  new ArrayList<>();;
+        List<Integer> siteNums = new ArrayList<>();
+        ;
         List<String> xTimes = new ArrayList<>();
         Integer alertType = Integer.parseInt(req.getParameter("alertType") == null ? "0" : req.getParameter("alertType"));
         if (alertType == null) {
@@ -954,33 +953,33 @@ public class StatisticController {
         }
         //近24小时
         if (alertType == 0) {
-            for(int i=24;i>=1;i--){
+            for (int i = 24; i >= 1; i--) {
                 DateTime startTime = DateUtil.parse(DateUtil.format(DateUtil.offsetHour(DateUtil.date(), -i), "yyyy-MM-dd HH"), "yyyy-MM-dd HH");
-                DateTime endTime = DateUtil.parse(DateUtil.format(DateUtil.offsetHour(DateUtil.date(), -i+1), "yyyy-MM-dd HH"), "yyyy-MM-dd HH");
-                Integer warn =  sysWarnLogService.queryAppColumn(Arrays.asList(companyIds.split(",")),startTime,endTime);
-                siteNums.add(warn==null?0:warn);
+                DateTime endTime = DateUtil.parse(DateUtil.format(DateUtil.offsetHour(DateUtil.date(), -i + 1), "yyyy-MM-dd HH"), "yyyy-MM-dd HH");
+                Integer warn = sysWarnLogService.queryAppColumn(Arrays.asList(companyIds.split(",")), startTime, endTime);
+                siteNums.add(warn == null ? 0 : warn);
                 xTimes.add(DateUtil.format(startTime, "HH:mm"));
             }
-            mapResult.put("siteNums",siteNums);
-            mapResult.put("xTimes",xTimes);
+            mapResult.put("siteNums", siteNums);
+            mapResult.put("xTimes", xTimes);
             //最大值
             Integer max = Collections.max(siteNums);
-            max = (max/10+1)*10;
-            mapResult.put("max",max);
-        }else{
-            for(int i=30;i>=1;i--){
+            max = (max / 10 + 1) * 10;
+            mapResult.put("max", max);
+        } else {
+            for (int i = 30; i >= 1; i--) {
                 DateTime startTime = DateUtil.parse(DateUtil.format(DateUtil.offsetDay(DateUtil.date(), -i), "yyyy-MM-dd"), "yyyy-MM-dd");
-                DateTime endTime = DateUtil.parse(DateUtil.format(DateUtil.offsetDay(DateUtil.date(), -i+1), "yyyy-MM-dd"), "yyyy-MM-dd");
-                Integer warn =  sysWarnLogService.queryAppColumn(Arrays.asList(companyIds.split(",")),startTime,endTime);
-                siteNums.add(warn==null?0:warn);
+                DateTime endTime = DateUtil.parse(DateUtil.format(DateUtil.offsetDay(DateUtil.date(), -i + 1), "yyyy-MM-dd"), "yyyy-MM-dd");
+                Integer warn = sysWarnLogService.queryAppColumn(Arrays.asList(companyIds.split(",")), startTime, endTime);
+                siteNums.add(warn == null ? 0 : warn);
                 xTimes.add(DateUtil.format(startTime, "yyyy-MM-dd"));
             }
-            mapResult.put("siteNums",siteNums);
-            mapResult.put("xTimes",xTimes);
+            mapResult.put("siteNums", siteNums);
+            mapResult.put("xTimes", xTimes);
             //最大值
             Integer max = Collections.max(siteNums);
-            max = (max/10+1)*10;
-            mapResult.put("max",max);
+            max = (max / 10 + 1) * 10;
+            mapResult.put("max", max);
         }
         return Result.ok(mapResult);
     }
