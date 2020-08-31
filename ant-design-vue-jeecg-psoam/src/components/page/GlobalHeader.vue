@@ -17,8 +17,8 @@
         :type="collapsed ? 'menu-unfold' : 'menu-fold'"
         @click="toggle"/>
 
-      <span v-if="device === 'desktop'">欢迎进入 大气环境质量监管平台</span>
-      <span v-else>大气环境质量监管平台</span>
+      <span v-if="device === 'desktop'">欢迎进入 污染源排放在线自动监控系统</span>
+      <span v-else>污染源排放在线自动监控系统</span>
 
       <user-menu :theme="theme"/>
     </div>

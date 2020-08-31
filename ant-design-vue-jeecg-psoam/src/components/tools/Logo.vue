@@ -19,7 +19,7 @@
     props: {
       title: {
         type: String,
-        default: '空气质量',
+        default: '污染源监控',
         required: false
       },
       showTitle: {
