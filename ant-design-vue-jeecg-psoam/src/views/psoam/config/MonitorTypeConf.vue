@@ -4,31 +4,31 @@
     <div class="top">
       <div class="title">监测类型配置</div>
       <div class="save">
-        <a-button style="background-color: #0098A1;color: #FEFEFE">保存</a-button>
+        <a-button style="background-color: #0098A1;color: #FEFEFE" @click="save">保存</a-button>
       </div>
     </div>
     <div class="content">
       <div class="detail">
         <div class="water">
-          <div class="hover-mask"></div>
+          <div class="hover-mask" :style="waterHover"></div>
           <div class="mask" @click="waterCheck"></div>
-          <a-icon v-show="waterChecked" type="check" class="check"/>
+          <a-icon v-show="waterChecked" type="check" class="check" @click="waterCheck"/>
         </div>
         <div class="label">废水监测</div>
       </div>
       <div class="detail">
         <div class="gas">
-          <div class="hover-mask"></div>
+          <div class="hover-mask" :style="gasHover"></div>
           <div class="mask" @click="gasCheck"></div>
-          <a-icon v-show="gasChecked" type="check" class="check"/>
+          <a-icon v-show="gasChecked" type="check" class="check" @click="gasCheck"/>
         </div>
         <div class="label">废气监测</div>
       </div>
       <div class="detail">
         <div class="vocs">
-          <div class="hover-mask"></div>
+          <div class="hover-mask" :style="vocsHover"></div>
           <div class="mask" @click="vocsCheck"></div>
-          <a-icon v-show="vocsChecked" type="check" class="check"/>
+          <a-icon v-show="vocsChecked" type="check" class="check" @click="vocsCheck"/>
         </div>
         <div class="label">VOCs监测</div>
       </div>
@@ -39,6 +39,7 @@
 
 <script>
   import {mixinDevice} from '@/utils/mixin'
+  import {queryConfig,saveConfig} from '../../requestAction/request'
 
   export default {
     name: "MonitorTypeConf",
@@ -46,19 +47,57 @@
     data() {
       return {
         containerHeight: "",
-        waterChecked:true,
-        gasChecked:true,
-        vocsChecked:true
+        waterChecked: false,
+        gasChecked: false,
+        vocsChecked: false,
+        waterHover: {},
+        gasHover: {},
+        vocsHover: {},
+        model: {},
       }
     },
-    methods:{
-      waterCheck(){
+    methods: {
+      waterCheck() {
+        if (this.waterChecked) {
+          this.waterChecked = false;
+          this.waterHover.opacity = "0.5";
+          this.waterHover.background = "#fff";
+        } else {
+          this.waterChecked = true;
+          this.waterHover.opacity = "1";
+          this.waterHover.background = "";
+        }
       },
-      gasCheck(){
-
+      gasCheck() {
+        if (this.gasChecked) {
+          this.gasChecked = false;
+          this.gasHover.opacity = "0.5";
+          this.gasHover.background = "#fff";
+        } else {
+          this.gasChecked = true;
+          this.gasHover.opacity = "1";
+          this.gasHover.background = "";
+        }
       },
-      vocsCheck(){
-
+      vocsCheck() {
+        if (this.vocsChecked) {
+          this.vocsChecked = false;
+          this.vocsHover.opacity = "0.5";
+          this.vocsHover.background = "#fff";
+        } else {
+          this.vocsChecked = true;
+          this.vocsHover.opacity = "1";
+          this.vocsHover.background = "";
+        }
+      },
+      save(){
+        saveConfig({waterChecked:this.waterChecked,gasChecked:this.gasChecked,vocsChecked:this.vocsChecked}).then(res =>{
+          if(res.result){
+            this.$message.success('保存成功！');
+          }else{
+            this.$message.error('保存失败');
+          }
+        })
       }
     },
     created() {
@@ -69,7 +108,35 @@
         containerHeight = containerHeight - 59 - 93;
       }
       this.containerHeight = containerHeight + "px";
-    }
+      //查询类别
+      let that = this;
+      queryConfig().then(res => {
+        that.waterChecked = res.result.waterChecked;
+        that.gasChecked = res.result.gasChecked;
+        that.vocsChecked = res.result.vocsChecked;
+        if(that.waterChecked){
+          that.waterHover.opacity = "1";
+          that.waterHover.background = "";
+        }else {
+          that.waterHover.opacity = "0.5";
+          that.waterHover.background = "#fff";
+        }
+        if(that.gasChecked){
+          that.gasHover.opacity = "1";
+          that.gasHover.background = "";
+        }else{
+          this.gasHover.opacity = "0.5";
+          this.gasHover.background = "#fff";
+        }
+        if(that.vocsChecked){
+          that.vocsHover.opacity = "1";
+          that.vocsHover.background = "";
+        }else{
+          this.vocsHover.opacity = "0.5";
+          this.vocsHover.background = "#fff";
+        }
+      })
+    },
   }
 </script>
 
@@ -166,11 +233,6 @@
     width: 350px;
     height: 300px;
     position: absolute;
-  }
-
-  .hover-mask:hover {
-    background-color: #fff;
-    opacity: 0.5;
   }
 
   .mask {
