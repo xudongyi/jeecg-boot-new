@@ -56,8 +56,6 @@ public class VocDayController extends JeecgController<VocDay, IVocDayService> {
 	 @Autowired
 	 private ISiteMonitorPointService siteMonitorPointService;
 
-	 @Autowired
-	 private ICompanyBaseinfoService companyBaseinfoService;
 	
 	/**
 	 * 分页列表查询
