@@ -266,33 +266,7 @@
     },
     methods:{
 
-      initColumns(){
-        //权限过滤（列权限控制时打开，修改第二个参数为授权码前缀）
-        //this.defColumns = colAuthFilter(this.defColumns,'testdemo:');
 
-        var key = this.$route.name+":colsettings";
-        let colSettings= Vue.ls.get(key);
-        if(colSettings==null||colSettings==undefined){
-          let allSettingColumns = [];
-          this.defColumns.forEach(function (item,i,array ) {
-            allSettingColumns.push(item.dataIndex);
-          })
-          this.settingColumns = allSettingColumns;
-          this.columns = this.defColumns;
-        }else{
-          this.settingColumns = colSettings;
-          const cols = this.defColumns.filter(item => {
-            if(item.key =='rowIndex'|| item.dataIndex=='action'){
-              return true;
-            }
-            if (colSettings.includes(item.dataIndex)) {
-              return true;
-            }
-            return false;
-          })
-          this.columns =  cols;
-        }
-      },
       searchQuery(){
 
       },
@@ -304,6 +278,10 @@
 
       }
     },
+    mounted(){
+      this.initColumns();
+
+    }
 
   }
 </script>

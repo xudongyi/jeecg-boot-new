@@ -136,26 +136,53 @@ export const tableMixin = {
         _this.showDate = false;
       }
     },
+    queryCompanyAndSite(){
+      let that = this;
+      querySiteNameAndMn({companyIds:this.$store.getters.userInfo.companyIds.join(','),siteType:this.siteType}).then((res)=>{
+        if(res.success){
+          //console.log("!!",res.result);
+          that.siteOriginal = res.result;
+          that.items = res.result;
+        }
+      });
+      //查询企业名称
+      queryCompanyName({companyIds:this.$store.getters.userInfo.companyIds.join(',')}).then((res) => {
+        if(res.success){
+          that.companyNameOriginal = res.result.companyNames;
+          that.companyNames = res.result.companyNames;
+          console.log("!!",that.companyNames);
+        }
+      });
+    },
+    initColumns(){
+      //权限过滤（列权限控制时打开，修改第二个参数为授权码前缀）
+      //this.defColumns = colAuthFilter(this.defColumns,'testdemo:');
+
+      var key = this.$route.name+":colsettings";
+      let colSettings= Vue.ls.get(key);
+      if(colSettings==null||colSettings==undefined){
+        let allSettingColumns = [];
+        this.defColumns.forEach(function (item,i,array ) {
+          allSettingColumns.push(item.dataIndex);
+        })
+        this.settingColumns = allSettingColumns;
+        this.columns = this.defColumns;
+      }else{
+        this.settingColumns = colSettings;
+        const cols = this.defColumns.filter(item => {
+          if(item.key =='rowIndex'|| item.dataIndex=='action'){
+            return true;
+          }
+          if (colSettings.includes(item.dataIndex)) {
+            return true;
+          }
+          return false;
+        })
+        this.columns =  cols;
+      }
+    },
   },
-  mounted(){
-    this.initColumns();
-    let that = this;
-    querySiteNameAndMn({companyIds:this.$store.getters.userInfo.companyIds.join(','),siteType:this.siteType}).then((res)=>{
-      if(res.success){
-        //console.log("!!",res.result);
-        that.siteOriginal = res.result;
-        that.items = res.result;
-      }
-    });
-    //查询企业名称
-    queryCompanyName({companyIds:this.$store.getters.userInfo.companyIds.join(',')}).then((res) => {
-      if(res.success){
-        that.companyNameOriginal = res.result.companyNames;
-        that.companyNames = res.result.companyNames;
-        console.log("!!",that.companyNames);
-      }
-    });
-  }
+
 
 
 
