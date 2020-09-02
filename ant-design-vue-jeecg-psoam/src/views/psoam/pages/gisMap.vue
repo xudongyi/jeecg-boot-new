@@ -34,7 +34,7 @@
   import { mixinDevice } from '@/utils/mixin';
   import {mapMixin} from "../mixin/mapMixin";
   import {mapButton} from "../constants/colorConstant";
-  import AutoSelect from "../components/AutoSelect";
+  import AutoSelect from "../component/AutoSelect";
   import {queryGisInfos} from "../../requestAction/request";
   import {mapIcons} from "../constants/picConstant";
   import companyModal from "./modal/companyModal";
