@@ -260,6 +260,7 @@
             dataIndex: 'a01006Avg',
           }
         ],
+        siteType:0,
 
       }
     },

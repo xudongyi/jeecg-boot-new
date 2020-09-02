@@ -140,7 +140,7 @@ export const tableMixin = {
   mounted(){
     this.initColumns();
     let that = this;
-    querySiteNameAndMn({companyIds:this.$store.getters.userInfo.companyIds.join(','),siteType:0}).then((res)=>{
+    querySiteNameAndMn({companyIds:this.$store.getters.userInfo.companyIds.join(','),siteType:this.siteType}).then((res)=>{
       if(res.success){
         //console.log("!!",res.result);
         that.siteOriginal = res.result;

@@ -16,11 +16,7 @@ export const mapMixin = {
     }
   },
   computed:{
-    leftFixed(){
-      return {
-        left:this.isMobile()?'30px':'230px',
-      }
-    },
+
     mapStyle(){
       return {
         backgroundImage:'url(' + require('@/assets/map/map.png') + ')',
@@ -69,28 +65,28 @@ export const mapMixin = {
 
 
       // 事件监听   获取点击点坐标 地图点击事件
-      vue.map.addEventListener("click", (e) => {
-        var center = vue.map.getCenter();
-        if (vue.clickadd) {
-          this.addOneOverlay(e.point);
-        }
-        vue.$emit("mapClick", center);
-      });
+      // vue.map.addEventListener("click", (e) => {
+      //   var center = vue.map.getCenter();
+      //   if (vue.clickadd) {
+      //     this.addOneOverlay(e.point);
+      //   }
+      //   vue.$emit("mapClick", center);
+      // });
       // 设置地图风格样式  可自定义
       vue.map.setMapStyleV2({
         styleId: '5e050d02262308dbfabc96e19ddc0482'
       });
       /**  tilesloaded 地图加载完成事件 */
-      vue.map.addEventListener("tilesloaded", () => {
-        let area = vue.map.getBounds();
-        this.$emit("visibleArea", area);
-        if (this.vevisibleFalg) {
-          this.visibleAreaPonit();
-        }
-      });
+      // vue.map.addEventListener("tilesloaded", () => {
+      //   let area = vue.map.getBounds();
+      //   this.$emit("visibleArea", area);
+      //   if (this.vevisibleFalg) {
+      //     this.visibleAreaPonit();
+      //   }
+      // });
     },
     getBoundary(){
-      var bdary = new BMap.Boundary();
+      let bdary = new BMap.Boundary();
       let vue  = this
       bdary.get(this.cityName, function(rs){       //获取行政区域
         //vue.map.clearOverlays();        //清除地图覆盖物
@@ -102,6 +98,7 @@ export const mapMixin = {
         var pointArray = [];
         for (var i = 0; i < count; i++) {
           var ply = new BMap.Polygon(rs.boundaries[i], {strokeWeight: 2, strokeColor: "#ff0000",fillColor:""}); //建立多边形覆盖物
+          ply.disableMassClear();
           vue.map.addOverlay(ply);  //添加覆盖物
           pointArray = pointArray.concat(ply.getPath());
         }
@@ -112,7 +109,7 @@ export const mapMixin = {
     hideBaiduLogo(){
       let that = this;
       this.interval = setInterval(function(){
-        console.log( document.getElementsByClassName("anchorBL"))
+        // console.log( document.getElementsByClassName("anchorBL"))
         let dom = document.getElementsByClassName("anchorBL");
         if(dom&&dom.length>1){
 
