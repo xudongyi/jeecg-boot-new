@@ -136,6 +136,7 @@
         companyNameOriginal:[],
         companyIds:this.companyId,
         siteArea:'',
+        allowClear:true,
         name:'',
         //表头
         columns:[],
@@ -312,7 +313,8 @@
       },
       getColumns(){
         let that = this;
-        queryColumns({type:0}).then(res => {
+        that.queryParam.type = 0;
+        queryColumns(that.queryParam).then(res => {
           if(res.result){
             that.scroll={x:250*res.result.length};
             for(var i=0;i<res.result.length;i++){
@@ -321,12 +323,17 @@
           }
           that.initColumns();
         })
-      }
+      },
+      searchQuery() {
+        this.getColumns();
+        this.loadData(1);
+      },
     },
-    mounted() {
-      this.getColumns();let that = this;
-
+    created() {
+      this.getColumns();
+      let that = this;
       querySiteNameAndMn({companyIds:this.$store.getters.userInfo.companyIds.join(',')}).then((res)=>{
+        debugger
         if(res.success){
           //console.log("!!",res.result);
           that.siteOriginal = res.result;
