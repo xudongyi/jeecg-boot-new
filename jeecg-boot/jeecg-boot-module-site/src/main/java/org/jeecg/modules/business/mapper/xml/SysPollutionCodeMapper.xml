@@ -1,5 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.jeecg.modules.business.mapper.SysPollutionCodeMapper">
+    <select id="queryCode"    resultType="org.jeecg.modules.business.entity.SysPollutionCode">
+        select * from  sys_pollution_code where code in(
+        select pollution_code from site_monitor_device  where monitor_id in (
+        select id from site_monitor_point where 1=1
+        <if test="area != null and  area !=''">
+            and area = #{area}
+        </if>
 
+        <if test="companyId != null and  companyId !=''">
+            and company_id = #{companyId}
+        </if>
+
+        <if test="mn != null and  mn !=''">
+            and  mn =  #{mn}u
+        </if>
+        ) and type= #{type} and is_use = 'Y' group by  pollution_code)
+    </select>
 </mapper>

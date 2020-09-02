@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import cn.hutool.core.collection.CollectionUtil;
 import org.jeecg.common.api.vo.Result;
@@ -24,7 +23,6 @@ import org.jeecg.common.system.base.controller.JeecgController;
 import org.jeecg.modules.business.vo.Column;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.jeecg.common.aspect.annotation.AutoLog;
@@ -50,8 +48,12 @@ public class WaterCurrentTrController extends JeecgController<WaterCurrentTr, IW
 	 @AutoLog(value = "查询表头")
 	 @ApiOperation(value="查询表头", notes="查询表头")
 	 @GetMapping(value = "/queryColumns")
-	 public Result<?> queryColumns(@RequestParam(name="type") Integer type) {
-		 List<SysPollutionCode> sysPollutionCodes = sysPollutionCodeService.list(new QueryWrapper<SysPollutionCode>().lambda().eq(SysPollutionCode::getType, type).eq(SysPollutionCode::getIsUse, "Y"));
+	 public Result<?> queryColumns( HttpServletRequest req) {
+		 String area = req.getParameter("area");
+		 String companyId = req.getParameter("companyId");
+		 String mn = req.getParameter("mn");
+		 String type = req.getParameter("type");
+		 List<SysPollutionCode> sysPollutionCodes = sysPollutionCodeService.queryCode(area,companyId,mn,type);
 		 List<Column> columns =null;
 		 if(CollectionUtil.isNotEmpty(sysPollutionCodes)){
 			 columns = new ArrayList<>();
