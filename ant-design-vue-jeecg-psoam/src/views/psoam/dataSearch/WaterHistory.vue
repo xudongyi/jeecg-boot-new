@@ -280,7 +280,7 @@
     },
     mounted(){
       this.initColumns();
-
+      this.queryCompanyAndSite();
     }
 
   }
