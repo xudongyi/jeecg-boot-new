@@ -8,17 +8,11 @@ select * from  sys_pollution_code where code in(
             <if test="area != null and  area !=''">
                 and area = #{area}
             </if>
-            <choose>
-                <when test="companyId != null and  companyId !=''">
-                    and company_id = #{companyId}
-                </when>
-                <otherwise>
-                    and company_id in
-                    <foreach collection="companyIds" item="id" index="index" open="(" close=")" separator=",">
-                        #{id}
-                    </foreach>)
-                </otherwise>
-            </choose>
+
+            <if test="companyId != null and  companyId !=''">
+                and company_id = #{companyId}
+            </if>
+
             <if test="mn != null and  mn !=''">
                 and  mn =  #{mn}
             </if>
