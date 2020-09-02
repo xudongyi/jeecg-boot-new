@@ -79,22 +79,6 @@ export const tableMixin = {
     areaChange(val){
       let _this = this;
       _this.items=[];
-      if(this.queryParam.companyId != null){
-        _this.name=this.queryParam.companyId;
-        _this.siteOriginal.forEach(e=>{
-          if(e.area === val && e.companyId === _this.name){
-            _this.items.push(e);
-          }
-        })
-      }else if(this.queryParam.area != null){
-        _this.siteOriginal.forEach(e=>{
-          if(e.area === val){
-            _this.items.push(e);
-          }
-        })
-      }else {
-        _this.items = _this.siteOriginal;
-      }
       //选择地区筛选公司名称
       _this.companyNames=[];
       if(this.queryParam.area != null){
@@ -112,23 +96,11 @@ export const tableMixin = {
       console.log(this.queryParam.companyId)
       let _this = this;
       _this.items=[];
-      if(this.queryParam.area != null){
-        _this.siteArea=this.queryParam.area;
-        _this.siteOriginal.forEach(e=>{
-          if(e.companyId === val && e.area === _this.siteArea){
-            _this.items.push(e)
-          }
-        })
-      }else if(this.queryParam.companyId != null){
-
-        _this.siteOriginal.forEach(e=>{
-          if(e.companyId === val){
-            _this.items.push(e)
-          }
-        })
-      }else {
-        _this.items = _this.siteOriginal;
-      }
+      _this.siteOriginal.forEach(e=>{
+        if(e.companyId === val){
+          _this.items.push(e)
+        }
+      });
 
       if(this.queryParam.companyId != null){
         _this.showDate = true;
@@ -142,9 +114,14 @@ export const tableMixin = {
         if(res.success){
           //console.log("!!",res.result);
           that.siteOriginal = res.result;
-          that.items = res.result;
+          that.siteitems = res.result;
         }
       });
+      if(this.queryParam.area != null){
+        this.items = that.siteitems;
+      }else {
+        this.items = '';
+      }
       //查询企业名称
       queryCompanyName({companyIds:this.$store.getters.userInfo.companyIds.join(',')}).then((res) => {
         if(res.success){

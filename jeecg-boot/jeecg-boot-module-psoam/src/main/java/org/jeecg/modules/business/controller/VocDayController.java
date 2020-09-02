@@ -10,12 +10,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.util.oConvertUtils;
-import org.jeecg.modules.business.entity.CompanyBase;
-import org.jeecg.modules.business.entity.CompanyBaseinfo;
-import org.jeecg.modules.business.entity.SiteMonitorPoint;
-import org.jeecg.modules.business.entity.VocDay;
+import org.jeecg.modules.business.entity.*;
 import org.jeecg.modules.business.service.ISiteMonitorPointService;
 import org.jeecg.modules.business.service.ICompanyBaseinfoService;
+import org.jeecg.modules.business.service.ISysPollutionCodeService;
 import org.jeecg.modules.business.service.IVocDayService;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -56,6 +54,8 @@ public class VocDayController extends JeecgController<VocDay, IVocDayService> {
 	 @Autowired
 	 private ISiteMonitorPointService siteMonitorPointService;
 
+	 @Autowired
+	 private ISysPollutionCodeService sysPollutionCodeService;
 	
 	/**
 	 * 分页列表查询
@@ -176,11 +176,11 @@ public class VocDayController extends JeecgController<VocDay, IVocDayService> {
     }
 
 	 /**
-	  * 查询VOC站点名称和mn号
+	  * 查询站点名称和mn号
 	  * @param companyIds
 	  * @return
 	  */
-	 @AutoLog(value = "查询VOC站点名称")
+	 @AutoLog(value = "查询站点名称")
 	 @ApiOperation(value = "voc_day-分页列表查询", notes = "voc_day-分页列表查询")
 	 @GetMapping(value = "/querySiteNameAndMn")
 	 public Result<?> querySiteNameAndMn(@RequestParam(name = "companyIds", required = true) String companyIds,@RequestParam(name = "siteType", required = true) String siteType) {
@@ -216,6 +216,25 @@ public class VocDayController extends JeecgController<VocDay, IVocDayService> {
 		 	param.put("value", companyName);
 		 }
 		 result.put("companyNames", companyNames);
+		 return Result.ok(result);
+	 }
+
+	 /**
+	  * 查询站点名称和mn号
+	  * @param siteType
+	  * @return
+	  */
+	 @AutoLog(value = "查询站点名称")
+	 @ApiOperation(value = "voc_day-分页列表查询", notes = "voc_day-分页列表查询")
+	 @GetMapping(value = "/queryPollutionCode")
+	 public Result<?> queryPollutionCode(@RequestParam(name = "siteType", required = true) String siteType) {
+		 List<Map<String, String>> result = new ArrayList<>();
+		 sysPollutionCodeService.list(new QueryWrapper<SysPollutionCode>().lambda().eq(SysPollutionCode::getType,siteType).eq(SysPollutionCode::getIsUse,"Y")).forEach(sysPollutionCode -> {
+			 Map<String, String> param = new HashMap<>();
+			 param.put("key", sysPollutionCode.getCode());
+			 param.put("value",sysPollutionCode.getMeaning());
+			 result.add(param);
+		 });
 		 return Result.ok(result);
 	 }
 
