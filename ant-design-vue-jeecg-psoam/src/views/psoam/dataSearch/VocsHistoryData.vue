@@ -20,7 +20,7 @@
             </a-form-item>
           </a-col>
           <a-col :xl="7" :lg="7" :md="8" :sm="24">
-            <a-form-item label="监测点位名称">
+            <a-form-item label="监测点名称">
               <a-select v-model="queryParam.mn" :allowClear="allowClear" placeholder="请选择" show-search style="width: 100%" optionFilterProp="children">
 <!--                <a-select-option :value="companyIds">请选择</a-select-option>-->
                 <a-select-option v-for="item in items" :key="item.value" :value="item.key">
@@ -53,7 +53,7 @@
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;margin-left: 20px" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
-              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
+<!--              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>-->
               <a-button type="primary" icon="download" style="margin-left: 8px" @click="handleExportXls('报')">导出</a-button>
             </span>
           </a-col>
@@ -72,6 +72,7 @@
     <div>
 
       <a-table
+        style="margin-top: 10px"
         ref="table"
         size="middle"
         bordered
@@ -99,11 +100,6 @@
         </div>
         <a-icon slot="filterIcon" type='setting' :style="{ fontSize:'16px',color:  '#108ee9',width:'100%' }" />
 
-        <span slot="airLevel" slot-scope="text,record">
-          <a-tag :color="tagColors[record.level]" style="width: 90%">
-            {{ text}}
-          </a-tag>
-         </span>
       </a-table>
     </div>
 
@@ -148,10 +144,128 @@
           },
           checkedList:[],
           plainOptions:['最大值', '最小值', '平均值'],
-          disabled:{0:true,1:false,2:false,3:false}
+          disabled:{0:true,1:false,2:false,3:false},
+          //表头
+          columns:[],
+          //列设置
+          settingColumns:[],
+          //列定义
+          defColumns: [
+            {
+              title: '',
+              dataIndex: '',
+              key:'rowIndex',
+              width:60,
+              align:"center",
+              customRender:this.calcIndex,
+              scopedSlots: {
+                filterDropdown: 'filterDropdown',
+                filterIcon: 'filterIcon'},
+              fixed:'left'
+            },
+            {
+              title:'企业名称',
+              align:"center",
+              dataIndex: 'companyName',
+              fixed:'left',
+              width:160
+            },
+            {
+              title:'监测点名称',
+              align:"center",
+              dataIndex: 'siteName',
+              fixed:'left',
+              width:160
+            },
+            {
+              title:'日期',
+              align:"center",
+              dataIndex: 'dataTime',
+              fixed:'left',
+              width:160
+            },
+            {
+              title:'空气质量指数类别',
+              align:"center",
+              dataIndex: 'level_dictText',
+            },
+            {
+              title:'SO2 μg/m3',
+              align:"center",
+              dataIndex: 'a21026Avg',
+            },
+            {
+              title:'NO2 μg/m3',
+              align:"center",
+              dataIndex: 'a21004Avg',
+            },
+            {
+              title:'PM10(1h)μg/m3',
+              align:"center",
+              dataIndex: 'a3400201Avg',
+            },
+            {
+              title:'PM10(24h)μg/m3',
+              align:"center",
+              dataIndex: 'a3400224Avg',
+            },
+            {
+              title:'COμg/m3',
+              align:"center",
+              dataIndex: 'a21005Avg',
+            },
+            {
+              title:'O3(1h)μg/m3',
+              align:"center",
+              dataIndex: 'a0502401Avg',
+            },
+            {
+              title:'O3(8h)μg/m3',
+              align:"center",
+              dataIndex: 'a0502408Avg',
+            },
+            {
+              title:'PM2.5(1h)μg/m3',
+              align:"center",
+              dataIndex: 'a3400401Avg',
+            },
+            {
+              title:'PM2.5(24h)μg/m3',
+              align:"center",
+              dataIndex: 'a3400424Avg',
+            },
+            {
+              title:'温度(°C)',
+              align:"center",
+              dataIndex: 'a01001Avg',
+            },
+            {
+              title:'湿度(%)',
+              align:"center",
+              dataIndex: 'a01002Avg',
+            },
+            {
+              title:'风速(m/s)',
+              align:"center",
+              dataIndex: 'a01007Avg',
+            },
+            {
+              title:'风向',
+              align:"center",
+              dataIndex: 'a01008Avg_dictText',
+            },
+            {
+              title:'气压(kPa)',
+              align:"center",
+              dataIndex: 'a01006Avg',
+            }
+          ]
         }
       },
       methods:{
+        initDictConfig(){
+          loadAreaDate()
+        },
         initArea(){
           this.areaHandler = new AreaHandler()
         },
@@ -226,8 +340,48 @@
             _this.showDate = false;
           }
         },
-        handleToggleSearch(){
-          this.toggleSearchStatus = !this.toggleSearchStatus;
+        //列设置更改事件
+        onColSettingsChange (checkedValues) {
+          var key = this.$route.name+":colsettings";
+          Vue.ls.set(key, checkedValues, 7 * 24 * 60 * 60 * 1000)
+          this.settingColumns = checkedValues;
+          const cols = this.defColumns.filter(item => {
+            if(item.key =='rowIndex'|| item.dataIndex=='action'){
+              return true
+            }
+            if (this.settingColumns.includes(item.dataIndex)) {
+              return true
+            }
+            return false
+          })
+          this.columns =  cols;
+        },
+        initColumns(){
+          //权限过滤（列权限控制时打开，修改第二个参数为授权码前缀）
+          //this.defColumns = colAuthFilter(this.defColumns,'testdemo:');
+
+          var key = this.$route.name+":colsettings";
+          let colSettings= Vue.ls.get(key);
+          if(colSettings==null||colSettings==undefined){
+            let allSettingColumns = [];
+            this.defColumns.forEach(function (item,i,array ) {
+              allSettingColumns.push(item.dataIndex);
+            })
+            this.settingColumns = allSettingColumns;
+            this.columns = this.defColumns;
+          }else{
+            this.settingColumns = colSettings;
+            const cols = this.defColumns.filter(item => {
+              if(item.key =='rowIndex'|| item.dataIndex=='action'){
+                return true;
+              }
+              if (colSettings.includes(item.dataIndex)) {
+                return true;
+              }
+              return false;
+            })
+            this.columns =  cols;
+          }
         },
         searchQuery(){
 
@@ -241,7 +395,7 @@
         }
       },
       mounted(){
-        //this.initColumns();
+        this.initColumns();
         let that = this;
         querySiteNameAndMn({companyIds:this.$store.getters.userInfo.companyIds.join(',')}).then((res)=>{
           if(res.success){
@@ -264,4 +418,9 @@
 
 <style scoped>
 
+</style>
+<style>
+  .ant-table-filter-dropdown {
+    width: 30%  ;
+    margin-left: 10%  ;}
 </style>
