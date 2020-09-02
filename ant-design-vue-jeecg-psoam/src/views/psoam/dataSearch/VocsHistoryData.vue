@@ -259,10 +259,31 @@
               align:"center",
               dataIndex: 'a01006Avg',
             }
-          ]
+          ],
+          dataSource:[],
+          /* 分页参数 */
+          ipagination:{
+            current: 1,
+            pageSize: 10,
+            pageSizeOptions: ['10', '20', '30'],
+            showTotal: (total, range) => {
+              return range[0] + "-" + range[1] + " 共" + total + "条"
+            },
+            showQuickJumper: true,
+            showSizeChanger: true,
+            total: 0
+          },
+          /* table加载状态 */
+          loading:false,
         }
       },
       methods:{
+        handleTableChange(pagination, filters, sorter) {
+          //分页、排序、筛选变化时触发
+          //TODO 筛选
+          this.ipagination = pagination;
+
+        },
         initDictConfig(){
           loadAreaDate()
         },
@@ -397,7 +418,7 @@
       mounted(){
         this.initColumns();
         let that = this;
-        querySiteNameAndMn({companyIds:this.$store.getters.userInfo.companyIds.join(',')}).then((res)=>{
+        querySiteNameAndMn({companyIds:this.$store.getters.userInfo.companyIds.join(','),siteType:2}).then((res)=>{
           if(res.success){
             //console.log("!!",res.result);
             that.siteOriginal = res.result;

@@ -183,10 +183,10 @@ public class VocDayController extends JeecgController<VocDay, IVocDayService> {
 	 @AutoLog(value = "查询VOC站点名称")
 	 @ApiOperation(value = "voc_day-分页列表查询", notes = "voc_day-分页列表查询")
 	 @GetMapping(value = "/querySiteNameAndMn")
-	 public Result<?> querySiteNameAndMn(@RequestParam(name = "companyIds", required = true) String companyIds) {
+	 public Result<?> querySiteNameAndMn(@RequestParam(name = "companyIds", required = true) String companyIds,@RequestParam(name = "siteType", required = true) String siteType) {
 		 List<String> idList = Arrays.asList(companyIds.split(","));
 		 List<Map<String, String>> result = new ArrayList<>();
-		 siteMonitorPointService.list(new QueryWrapper<SiteMonitorPoint>().lambda().eq(SiteMonitorPoint::getSiteType, 2).in(SiteMonitorPoint::getCompanyId, idList)).forEach(siteMonitorPoint -> {
+		 siteMonitorPointService.list(new QueryWrapper<SiteMonitorPoint>().lambda().eq(SiteMonitorPoint::getSiteType, siteType).in(SiteMonitorPoint::getCompanyId, idList)).forEach(siteMonitorPoint -> {
 			 Map<String, String> param = new HashMap<>();
 			 param.put("key", siteMonitorPoint.getMn());
 			 param.put("value", siteMonitorPoint.getSiteName());
