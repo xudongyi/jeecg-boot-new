@@ -6,28 +6,23 @@
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="行政区域">
-              <a-select v-model="queryParam.companyId" show-search style="width: 100%" optionFilterProp="children">
-                <a-select-option value="">请选择</a-select-option>
-                <a-select-option v-for="item in items" :key="item.value" :value="item.key">
-                  {{item.value}}
-                </a-select-option>
-              </a-select>
+              <area-link-select @change="areaChange" type="cascader" v-model="queryParam.area" show-search style="width: 100%" optionFilterProp="children"/>
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="企业名称">
-              <a-select v-model="queryParam.companyId" show-search style="width: 100%" optionFilterProp="children">
-                <a-select-option value="">请选择</a-select-option>
-                <a-select-option v-for="item in items" :key="item.value" :value="item.key">
+              <a-select v-model="queryParam.companyId" @change="companyNameChange" :allowClear="allowClear" placeholder="请选择" show-search style="width: 100%" optionFilterProp="children">
+                <!--                <a-select-option value="">请选择</a-select-option>-->
+                <a-select-option v-for="item in companyNames" :key="item.value" :value="item.key">
                   {{item.value}}
                 </a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="站点名称">
-              <a-select v-model="queryParam.companyId" show-search style="width: 100%" optionFilterProp="children">
-                <a-select-option value="">请选择</a-select-option>
+            <a-form-item label="监测点名称">
+              <a-select v-model="queryParam.mn" :allowClear="allowClear" placeholder="请选择" show-search style="width: 100%" optionFilterProp="children">
+                <!--                <a-select-option :value="companyIds">请选择</a-select-option>-->
                 <a-select-option v-for="item in items" :key="item.value" :value="item.key">
                   {{item.value}}
                 </a-select-option>
@@ -71,8 +66,10 @@
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
+        :scroll="scroll"
         class="j-table-force-nowrap"
         @change="handleTableChange">
+
         <div slot="filterDropdown">
           <a-card title="自定义列">
             <a-checkbox-group @change="onColSettingsChange" v-model="settingColumns" :defaultValue="settingColumns">
@@ -86,8 +83,9 @@
             </a-checkbox-group>
           </a-card>
         </div>
+
         <a-icon slot="filterIcon" type='setting' :style="{ fontSize:'16px',color:  '#108ee9',width:'100%' }" />
-        <!--<template slot="htmlSlot" slot-scope="text">
+        <template slot="htmlSlot" slot-scope="text">
           <div v-html="text"></div>
         </template>
         <template slot="imgSlot" slot-scope="text">
@@ -105,7 +103,7 @@
             @click="uploadFile(text)">
             下载
           </a-button>
-        </template>-->
+        </template>
       </a-table>
     </div>
 
@@ -113,20 +111,32 @@
 </template>
 
 <script>
-
+  import {loadAreaDate} from '../component/areaUtil'
   import '@/assets/less/TableExpand.less'
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import {queryColumns} from "../../requestAction/request";
+  import {queryColumns, queryCompanyName, querySiteNameAndMn} from "../../requestAction/request";
   import Vue from 'vue'
+  import AreaHandler from "../component/AreaHandler";
+  import AreaLinkSelect from '../component/AreaLinkSelect'
   export default {
     name: "WaterCurrentTrList",
     mixins:[JeecgListMixin, mixinDevice],
     components: {
+      AreaLinkSelect
     },
     data () {
       return {
+        scroll:{},
         description: '实时监控（废水）',
+        items:[],
+        siteOriginal:[],
+        areaHandler:'',
+        companyNames:[],
+        companyNameOriginal:[],
+        companyIds:this.companyId,
+        siteArea:'',
+        name:'',
         //表头
         columns:[],
         //列设置
@@ -148,17 +158,23 @@
           {
             title:'企业名称',
             align:"center",
-            dataIndex: 'companyName'
+            dataIndex: 'companyName',
+            fixed:'left',
+            width:300,
           },
           {
             title:'监测点名称',
             align:"center",
-            dataIndex: 'monName'
+            dataIndex: 'monName',
+            fixed:'left',
+            width:300,
           },
           {
             title:'时间',
             align:"center",
             dataIndex: 'dataTime',
+            fixed:'left',
+            width:200,
             customRender:function (text) {
               return !text?"":(text.length>10?text.substr(0,10):text)
             }
@@ -177,6 +193,80 @@
     },
     methods: {
       initDictConfig(){
+      },
+      initArea(){
+        this.areaHandler = new AreaHandler()
+      },
+      getAreaByCode(text){
+        if(!text)
+          return '';
+        //初始化
+        if(this.areaHandler==='')
+        {
+          this.initArea()
+        }
+        let arr = [];
+        this.areaHandler.getAreaBycode(text,arr);
+        return arr[0]+arr[1]+arr[2]
+      },
+      areaChange(val){
+        let _this = this;
+        _this.items=[];
+        if(this.queryParam.companyId != null){
+          _this.name=this.queryParam.companyId;
+          _this.siteOriginal.forEach(e=>{
+            if(e.area === val && e.companyId === _this.name){
+              _this.items.push(e);
+            }
+          })
+        }else if(this.queryParam.area != null){
+          _this.siteOriginal.forEach(e=>{
+            if(e.area === val){
+              _this.items.push(e);
+            }
+          })
+        }else {
+          _this.items = _this.siteOriginal;
+        }
+        //选择地区筛选公司名称
+        _this.companyNames=[];
+        if(this.queryParam.area != null){
+          _this.companyNameOriginal.forEach(b=>{
+            if(b.area === val){
+              _this.companyNames.push(b);
+            }
+          })
+        }else {
+          _this.companyNames =_this.companyNameOriginal;
+        }
+      },
+      companyNameChange(val){
+        console.log(this.queryParam.companyId)
+        let _this = this;
+        _this.items=[];
+        if(this.queryParam.area != null){
+          _this.siteArea=this.queryParam.area;
+          _this.siteOriginal.forEach(e=>{
+            if(e.companyId === val && e.area === _this.siteArea){
+              _this.items.push(e)
+            }
+          })
+        }else if(this.queryParam.companyId != null){
+
+          _this.siteOriginal.forEach(e=>{
+            if(e.companyId === val){
+              _this.items.push(e)
+            }
+          })
+        }else {
+          _this.items = _this.siteOriginal;
+        }
+
+        if(this.queryParam.companyId != null){
+          _this.showDate = true;
+        }else {
+          _this.showDate = false;
+        }
       },
       //列设置更改事件
       onColSettingsChange (checkedValues) {
@@ -224,6 +314,7 @@
         let that = this;
         queryColumns({type:0}).then(res => {
           if(res.result){
+            that.scroll={x:250*res.result.length};
             for(var i=0;i<res.result.length;i++){
               that.defColumns.push(res.result[i]);
             }
@@ -233,7 +324,23 @@
       }
     },
     mounted() {
-      this.getColumns();
+      this.getColumns();let that = this;
+
+      querySiteNameAndMn({companyIds:this.$store.getters.userInfo.companyIds.join(',')}).then((res)=>{
+        if(res.success){
+          //console.log("!!",res.result);
+          that.siteOriginal = res.result;
+          that.items = res.result;
+        }
+      });
+      //查询企业名称
+      queryCompanyName({companyIds:this.$store.getters.userInfo.companyIds.join(',')}).then((res) => {
+        if(res.success){
+          that.companyNameOriginal = res.result.companyNames;
+          that.companyNames = res.result.companyNames;
+          console.log("!!",that.companyNames);
+        }
+      });
     }
   }
 </script>
