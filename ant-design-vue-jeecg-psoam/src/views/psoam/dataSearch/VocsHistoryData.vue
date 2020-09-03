@@ -33,8 +33,8 @@
             <a-form-item label="数据类型">
               <a-select v-model="queryParam.typeIndex" :allowClear="allowClear" placeholder="请选择" show-search style="width: 100%" optionFilterProp="children">
 <!--                <a-select-option :value="companyIds">请选择</a-select-option>-->
-                <a-select-option v-for="(item,index) in dataTypes" :key="item" :value="index">
-                  {{item}}
+                <a-select-option v-for="(item,index) in dataTypes" :key="item.value" :value="item.key">
+                  {{item.value}}
                 </a-select-option>
               </a-select>
             </a-form-item>
@@ -111,6 +111,7 @@
   import AreaLinkSelect from '../component/AreaLinkSelect'
   import JDate from '@/components/jeecg/JDate.vue'
   import {tableMixin} from "../mixin/tableMixin";
+  import {queryVocsColumns} from "../../requestAction/request";
 
   export default {
       name: "VocsHistoryData",
@@ -129,10 +130,8 @@
           areaHandler:'',
           companyNames:[],
           companyNameOriginal:[],
-          companyIds:this.companyId,
           siteArea:'',
           name:'',
-          dataTypes:["实时", "分钟", "小时", "日"],
           allowClear:true,
           showDate:false,
           dateFormat:{
@@ -182,81 +181,6 @@
               dataIndex: 'dataTime',
               fixed:'left',
               width:160
-            },
-            {
-              title:'空气质量指数类别',
-              align:"center",
-              dataIndex: 'level_dictText',
-            },
-            {
-              title:'SO2 μg/m3',
-              align:"center",
-              dataIndex: 'a21026Avg',
-            },
-            {
-              title:'NO2 μg/m3',
-              align:"center",
-              dataIndex: 'a21004Avg',
-            },
-            {
-              title:'PM10(1h)μg/m3',
-              align:"center",
-              dataIndex: 'a3400201Avg',
-            },
-            {
-              title:'PM10(24h)μg/m3',
-              align:"center",
-              dataIndex: 'a3400224Avg',
-            },
-            {
-              title:'COμg/m3',
-              align:"center",
-              dataIndex: 'a21005Avg',
-            },
-            {
-              title:'O3(1h)μg/m3',
-              align:"center",
-              dataIndex: 'a0502401Avg',
-            },
-            {
-              title:'O3(8h)μg/m3',
-              align:"center",
-              dataIndex: 'a0502408Avg',
-            },
-            {
-              title:'PM2.5(1h)μg/m3',
-              align:"center",
-              dataIndex: 'a3400401Avg',
-            },
-            {
-              title:'PM2.5(24h)μg/m3',
-              align:"center",
-              dataIndex: 'a3400424Avg',
-            },
-            {
-              title:'温度(°C)',
-              align:"center",
-              dataIndex: 'a01001Avg',
-            },
-            {
-              title:'湿度(%)',
-              align:"center",
-              dataIndex: 'a01002Avg',
-            },
-            {
-              title:'风速(m/s)',
-              align:"center",
-              dataIndex: 'a01007Avg',
-            },
-            {
-              title:'风向',
-              align:"center",
-              dataIndex: 'a01008Avg_dictText',
-            },
-            {
-              title:'气压(kPa)',
-              align:"center",
-              dataIndex: 'a01006Avg',
             }
           ],
           siteType:2,
@@ -274,9 +198,23 @@
 
         },
 
+        getColumns(){
+          let _this = this;
+          _this.queryParam.type = 2;
+          queryVocsColumns(_this.queryParam).then(res => {
+            //console.log(res)
+            if(res.result){
+              _this.scroll={x:250*res.result.length};
+              for(var i=0;i<res.result.length;i++){
+                _this.defColumns.push(res.result[i]);
+              }
+            }
+            _this.initColumns();
+          })
+        },
       },
       mounted(){
-        this.initColumns();
+        this.getColumns();
         this.queryCompanyAndSite();
       }
     }
