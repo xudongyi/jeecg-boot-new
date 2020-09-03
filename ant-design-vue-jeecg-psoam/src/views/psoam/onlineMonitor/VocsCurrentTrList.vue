@@ -115,13 +115,13 @@
   import '@/assets/less/TableExpand.less'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import { mixinDevice } from '@/utils/mixin'
-  import {queryWaterColumns, queryCompanyName, querySiteNameAndMn} from "../../requestAction/request";
+  import {queryAirColumns, queryCompanyName, querySiteNameAndMn} from "../../requestAction/request";
   import Vue from 'vue'
   import AreaHandler from "../component/AreaHandler";
   import AreaLinkSelect from '../component/AreaLinkSelect'
   import {tableMixin} from "../mixin/tableMixin";
   export default {
-    name: "WaterCurrentTrList",
+    name: "VocsCurrentTrList",
     mixins:[mixinDevice,tableMixin,JeecgListMixin],
     components: {
       AreaLinkSelect
@@ -129,7 +129,7 @@
     data () {
       return {
         scroll:{},
-        description: '实时监控（废水）',
+        description: '实时监控（废气）',
         items:[],
         siteOriginal:[],
         areaHandler:'',
@@ -142,7 +142,7 @@
         queryParam: {
           companyIds:this.$store.getters.userInfo.companyIds.join(',')
         },
-        siteType:0,
+        siteType:1,
         //表头
         columns:[],
         //列设置
@@ -187,7 +187,7 @@
           }
         ],
         url: {
-          list: "/onlineMonitor/waterCurrentTr/list",
+          list: "/onlineMonitor/vocsCurrentTr/list",
         },
         dictOptions:{},
       }
@@ -206,7 +206,7 @@
       getColumns(){
         let that = this;
         that.queryParam.type = that.siteType;
-        queryWaterColumns(that.queryParam).then(res => {
+        queryAirColumns(that.queryParam).then(res => {
           if(res.result){
             that.scroll={x:250*res.result.length};
             for(var i=0;i<res.result.length;i++){

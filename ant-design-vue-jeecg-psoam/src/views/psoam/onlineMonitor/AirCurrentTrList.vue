@@ -113,22 +113,23 @@
 <script>
   import {loadAreaDate} from '../component/areaUtil'
   import '@/assets/less/TableExpand.less'
-  import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import {queryColumns, queryCompanyName, querySiteNameAndMn} from "../../requestAction/request";
+  import { mixinDevice } from '@/utils/mixin'
+  import {queryAirColumns, queryCompanyName, querySiteNameAndMn} from "../../requestAction/request";
   import Vue from 'vue'
   import AreaHandler from "../component/AreaHandler";
   import AreaLinkSelect from '../component/AreaLinkSelect'
+  import {tableMixin} from "../mixin/tableMixin";
   export default {
     name: "AirCurrentTrList",
-    mixins:[JeecgListMixin, mixinDevice],
+    mixins:[mixinDevice,tableMixin,JeecgListMixin],
     components: {
       AreaLinkSelect
     },
     data () {
       return {
         scroll:{},
-        description: '实时监控（废水）',
+        description: '实时监控（废气）',
         items:[],
         siteOriginal:[],
         areaHandler:'',
@@ -138,6 +139,10 @@
         siteArea:'',
         allowClear:true,
         name:'',
+        queryParam: {
+          companyIds:this.$store.getters.userInfo.companyIds.join(',')
+        },
+        siteType:1,
         //表头
         columns:[],
         //列设置
@@ -182,7 +187,7 @@
           }
         ],
         url: {
-          list: "/onlineMonitor/airCurrentTr/list",
+          list: "/onlineMonitor/waterCurrentTr/list",
         },
         dictOptions:{},
       }
@@ -193,128 +198,15 @@
       },
     },
     methods: {
-      initDictConfig(){
-      },
-      initArea(){
-        this.areaHandler = new AreaHandler()
-      },
-      getAreaByCode(text){
-        if(!text)
-          return '';
-        //初始化
-        if(this.areaHandler==='')
-        {
-          this.initArea()
-        }
-        let arr = [];
-        this.areaHandler.getAreaBycode(text,arr);
-        return arr[0]+arr[1]+arr[2]
-      },
-      areaChange(val){
-        let _this = this;
-        _this.items=[];
-        if(this.queryParam.companyId != null){
-          _this.name=this.queryParam.companyId;
-          _this.siteOriginal.forEach(e=>{
-            if(e.area === val && e.companyId === _this.name){
-              _this.items.push(e);
-            }
-          })
-        }else if(this.queryParam.area != null){
-          _this.siteOriginal.forEach(e=>{
-            if(e.area === val){
-              _this.items.push(e);
-            }
-          })
-        }else {
-          _this.items = _this.siteOriginal;
-        }
-        //选择地区筛选公司名称
-        _this.companyNames=[];
-        if(this.queryParam.area != null){
-          _this.companyNameOriginal.forEach(b=>{
-            if(b.area === val){
-              _this.companyNames.push(b);
-            }
-          })
-        }else {
-          _this.companyNames =_this.companyNameOriginal;
-        }
-      },
-      companyNameChange(val){
-        console.log(this.queryParam.companyId)
-        let _this = this;
-        _this.items=[];
-        if(this.queryParam.area != null){
-          _this.siteArea=this.queryParam.area;
-          _this.siteOriginal.forEach(e=>{
-            if(e.companyId === val && e.area === _this.siteArea){
-              _this.items.push(e)
-            }
-          })
-        }else if(this.queryParam.companyId != null){
-
-          _this.siteOriginal.forEach(e=>{
-            if(e.companyId === val){
-              _this.items.push(e)
-            }
-          })
-        }else {
-          _this.items = _this.siteOriginal;
-        }
-
-        if(this.queryParam.companyId != null){
-          _this.showDate = true;
-        }else {
-          _this.showDate = false;
-        }
-      },
-      //列设置更改事件
-      onColSettingsChange (checkedValues) {
-        var key = this.$route.name+":colsettings";
-        Vue.ls.set(key, checkedValues, 7 * 24 * 60 * 60 * 1000)
-        this.settingColumns = checkedValues;
-        const cols = this.defColumns.filter(item => {
-          if(item.key =='rowIndex'|| item.dataIndex=='action'){
-            return true
-          }
-          if (this.settingColumns.includes(item.dataIndex)) {
-            return true
-          }
-          return false
-        })
-        this.columns =  cols;
-      },
-      initColumns(){
-        //权限过滤（列权限控制时打开，修改第二个参数为授权码前缀）
-        //this.defColumns = colAuthFilter(this.defColumns,'testdemo:');
-        var key = this.$route.name+":colsettings";
-        let colSettings= Vue.ls.get(key);
-        if(colSettings==null||colSettings==undefined){
-          let allSettingColumns = [];
-          this.defColumns.forEach(function (item,i,array ) {
-            allSettingColumns.push(item.dataIndex);
-          })
-          this.settingColumns = allSettingColumns;
-          this.columns = this.defColumns;
-        }else{
-          this.settingColumns = colSettings;
-          const cols = this.defColumns.filter(item => {
-            if(item.key =='rowIndex'|| item.dataIndex=='action'){
-              return true;
-            }
-            if (colSettings.includes(item.dataIndex)) {
-              return true;
-            }
-            return false;
-          })
-          this.columns =  cols;
-        }
+      renderEmpty(val){
+        if(val==null||val==='')
+          return 'NA'
+        return val
       },
       getColumns(){
         let that = this;
-        that.queryParam.type = 1;
-        queryColumns(that.queryParam).then(res => {
+        that.queryParam.type = that.siteType;
+        queryAirColumns(that.queryParam).then(res => {
           if(res.result){
             that.scroll={x:250*res.result.length};
             for(var i=0;i<res.result.length;i++){

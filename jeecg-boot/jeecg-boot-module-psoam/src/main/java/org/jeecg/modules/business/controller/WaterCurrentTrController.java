@@ -108,7 +108,7 @@ public class WaterCurrentTrController extends JeecgController<WaterCurrentTr, IW
                     childColumnZs.setDataIndex(sysPollutionCode.getCode() + "zsrtd");
                     childColumns.add(childColumnZs);
                 }
-                column.setChildrenColumn(childColumns);
+                column.setChildren(childColumns);
                 columns.add(column);
             }
         }
@@ -144,7 +144,7 @@ public class WaterCurrentTrController extends JeecgController<WaterCurrentTr, IW
                     childColumnZs.setDataIndex(sysPollutionCode.getCode() + "zsrtd");
                     childColumns.add(childColumnZs);
                 }
-                column.setChildrenColumn(childColumns);
+                column.setChildren(childColumns);
                 columns.add(column);
             }
         }
