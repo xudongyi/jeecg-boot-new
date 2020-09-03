@@ -26,6 +26,8 @@ export const tableMixin = {
       },
       /* table加载状态 */
       loading:false,
+      dataTypes:[{key:"realTime",value:"实时"},{key:"minute",value:"分钟"},{key:"hour",value:"小时"} ,{key:"day",value:"日"} ],
+
     }
   },
   computed:{
@@ -35,6 +37,9 @@ export const tableMixin = {
   created() {
   },
   methods:{
+    calcIndex: function (t,r,index) {
+      return parseInt(index)+1+(this.ipagination.current-1)*this.ipagination.pageSize;
+    },
     //列设置更改事件
     onColSettingsChange (checkedValues) {
       var key = this.$route.name+":colsettings";

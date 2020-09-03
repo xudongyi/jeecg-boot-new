@@ -273,9 +273,7 @@
         handleExportXls(){
 
         },
-        calcIndex: function (t,r,index) {
-          return parseInt(index)+1+(this.ipagination.current-1)*this.ipagination.pageSize;
-        },
+
       },
       mounted(){
         this.initColumns();

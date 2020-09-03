@@ -33,8 +33,8 @@
             <a-form-item label="数据类型">
               <a-select v-model="queryParam.typeIndex" :allowClear="allowClear" placeholder="请选择" show-search style="width: 100%" optionFilterProp="children">
                 <!--                <a-select-option :value="companyIds">请选择</a-select-option>-->
-                <a-select-option v-for="(item,index) in dataTypes" :key="item" :value="index">
-                  {{item}}
+                <a-select-option v-for="(item,index) in dataTypes" :key="item.value" :value="item.key">
+                  {{item.value}}
                 </a-select-option>
               </a-select>
             </a-form-item>
@@ -133,7 +133,6 @@
         companyNameOriginal:[],
         siteArea:'',
         name:'',
-        dataTypes:["实时", "分钟", "小时", "日"],
         allowClear:true,
         showDate:false,
         dateFormat:{
@@ -222,6 +221,7 @@
     created(){
       //先查询表头
       this.getColumns();
+      //级联的行政区域
       this.queryCompanyAndSite();
     }
 
