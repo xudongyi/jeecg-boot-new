@@ -112,6 +112,7 @@
   import AreaLinkSelect from '../component/AreaLinkSelect'
   import JDate from '@/components/jeecg/JDate.vue'
   import {tableMixin} from "../mixin/tableMixin";
+  import {queryWaterColumns} from "../../requestAction/request";
 
   export default {
     name: "WaterHistory",
@@ -123,14 +124,13 @@
     data(){
       return {
         queryParam: {
-          companyIds:this.$store.getters.userInfo.companyIds.join(',')
+
         },
         items:[],
         siteOriginal:[],
         areaHandler:'',
         companyNames:[],
         companyNameOriginal:[],
-        companyIds:this.companyId,
         siteArea:'',
         name:'',
         dataTypes:["实时", "分钟", "小时", "日"],
@@ -168,96 +168,24 @@
             align:"center",
             dataIndex: 'companyName',
             fixed:'left',
-            width:160
+            width:300,
           },
           {
             title:'监测点名称',
             align:"center",
-            dataIndex: 'siteName',
+            dataIndex: 'monName',
             fixed:'left',
-            width:160
+            width:300,
           },
           {
-            title:'日期',
+            title:'时间',
             align:"center",
             dataIndex: 'dataTime',
             fixed:'left',
-            width:160
-          },
-          {
-            title:'空气质量指数类别',
-            align:"center",
-            dataIndex: 'level_dictText',
-          },
-          {
-            title:'SO2 μg/m3',
-            align:"center",
-            dataIndex: 'a21026Avg',
-          },
-          {
-            title:'NO2 μg/m3',
-            align:"center",
-            dataIndex: 'a21004Avg',
-          },
-          {
-            title:'PM10(1h)μg/m3',
-            align:"center",
-            dataIndex: 'a3400201Avg',
-          },
-          {
-            title:'PM10(24h)μg/m3',
-            align:"center",
-            dataIndex: 'a3400224Avg',
-          },
-          {
-            title:'COμg/m3',
-            align:"center",
-            dataIndex: 'a21005Avg',
-          },
-          {
-            title:'O3(1h)μg/m3',
-            align:"center",
-            dataIndex: 'a0502401Avg',
-          },
-          {
-            title:'O3(8h)μg/m3',
-            align:"center",
-            dataIndex: 'a0502408Avg',
-          },
-          {
-            title:'PM2.5(1h)μg/m3',
-            align:"center",
-            dataIndex: 'a3400401Avg',
-          },
-          {
-            title:'PM2.5(24h)μg/m3',
-            align:"center",
-            dataIndex: 'a3400424Avg',
-          },
-          {
-            title:'温度(°C)',
-            align:"center",
-            dataIndex: 'a01001Avg',
-          },
-          {
-            title:'湿度(%)',
-            align:"center",
-            dataIndex: 'a01002Avg',
-          },
-          {
-            title:'风速(m/s)',
-            align:"center",
-            dataIndex: 'a01007Avg',
-          },
-          {
-            title:'风向',
-            align:"center",
-            dataIndex: 'a01008Avg_dictText',
-          },
-          {
-            title:'气压(kPa)',
-            align:"center",
-            dataIndex: 'a01006Avg',
+            width:200,
+            customRender:function (text) {
+              return !text?"":(text.length>10?text.substr(0,10):text)
+            }
           }
         ],
         siteType:0,
@@ -271,15 +199,29 @@
 
       },
       searchReset(){
-        this.queryParam = {companyIds:this.$store.getters.userInfo.companyIds.join(',')};
         this.loadData(1);
       },
       handleExportXls(){
 
-      }
+      },
+      getColumns(){
+        let _this = this;
+        _this.queryParam.type = 0;
+        queryWaterColumns(_this.queryParam).then(res => {
+          console.log(res)
+          if(res.result){
+            _this.scroll={x:250*res.result.length};
+            for(var i=0;i<res.result.length;i++){
+              _this.defColumns.push(res.result[i]);
+            }
+          }
+          _this.initColumns();
+        })
+      },
     },
-    mounted(){
-      this.initColumns();
+    created(){
+      //先查询表头
+      this.getColumns();
       this.queryCompanyAndSite();
     }
 

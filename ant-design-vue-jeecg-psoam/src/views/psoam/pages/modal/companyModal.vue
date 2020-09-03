@@ -13,10 +13,10 @@
             <div class="info-item"><span>企业地址:</span> <span>{{companyInfo.address}}</span></div>
             <div class="info-item" >
               <div class="float_left"><span>企业简称:</span><span>{{companyInfo.short_name}}</span></div>
-              <div class="float_left"><span>所属行业:</span><span>{{companyInfo.industry}}</span></div>
+              <div class="float_left"><span>所属行业:</span><span>{{dictVal('industry',companyInfo.industry)}}</span></div>
             </div>
             <div class="info-item">
-              <div class="float_left"><span>行政区域:</span><span>{{companyInfo.area}}</span> </div>
+              <div class="float_left"><span>行政区域:</span><span>{{getAreaByCode(companyInfo.administrative_region)}}</span> </div>
               <div class="float_left"><span>环保联系人:</span><span>{{companyInfo.env_protect_contact}}</span> </div>
             </div>
 
@@ -57,9 +57,11 @@
 
 <script>
 
+  import {dataDictMixin} from "../../mixin/dataDictMixin";
 
   export default {
     name: "companyModal",
+    mixins:[dataDictMixin],
     components: {
     },
     props: {

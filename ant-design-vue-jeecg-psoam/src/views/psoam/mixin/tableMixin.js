@@ -127,7 +127,7 @@ export const tableMixin = {
         if(res.success){
           that.companyNameOriginal = res.result.companyNames;
           that.companyNames = res.result.companyNames;
-          console.log("!!",that.companyNames);
+          // console.log("!!",that.companyNames);
         }
       });
     },

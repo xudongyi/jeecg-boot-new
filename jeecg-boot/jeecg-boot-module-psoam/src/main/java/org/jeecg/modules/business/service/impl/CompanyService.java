@@ -30,6 +30,7 @@ public class CompanyService implements ICompanyService {
                company.put("address",map.get("address"));
                company.put("industry",map.get("industry"));
                company.put("env_protect_contact",map.get("env_protect_contact"));
+               company.put("administrative_region",map.get("administrative_region"));
                company.put("contact_phone",map.get("contact_phone"));
                company.put("points",new JSONArray());
                json.put(map.get("company_id").toString(),company);

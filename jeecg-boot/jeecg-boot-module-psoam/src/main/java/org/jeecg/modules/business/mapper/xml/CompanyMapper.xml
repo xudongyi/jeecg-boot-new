@@ -4,7 +4,7 @@
     <select id="queryCompanyInfos"  resultType="Map">
             select M.*,N.site_name,N.site_type,N.site_level,N.location,N.imorex,N.direction,data_status,
         device_status,online_status from (
-                select company_id,company_name,short_name,longitude,dimension,address,industry,env_protect_contact,
+                select company_id,company_name,short_name,longitude,dimension,administrative_region,address,industry,env_protect_contact,
                        contact_phone from company_base A inner join company_baseinfo B
                                                                     on A.id = B.company_id AND B.status ='2'
                                                                     where A.id in
