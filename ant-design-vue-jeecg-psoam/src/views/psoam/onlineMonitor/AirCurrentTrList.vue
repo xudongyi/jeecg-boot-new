@@ -115,12 +115,12 @@
   import '@/assets/less/TableExpand.less'
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import {queryWaterColumns, queryCompanyName, querySiteNameAndMn} from "../../requestAction/request";
+  import {queryColumns, queryCompanyName, querySiteNameAndMn} from "../../requestAction/request";
   import Vue from 'vue'
   import AreaHandler from "../component/AreaHandler";
   import AreaLinkSelect from '../component/AreaLinkSelect'
   export default {
-    name: "WaterCurrentTrList",
+    name: "AirCurrentTrList",
     mixins:[JeecgListMixin, mixinDevice],
     components: {
       AreaLinkSelect
@@ -182,7 +182,7 @@
           }
         ],
         url: {
-          list: "/onlineMonitor/waterCurrentTr/list",
+          list: "/onlineMonitor/airCurrentTr/list",
         },
         dictOptions:{},
       }
@@ -194,11 +194,6 @@
     },
     methods: {
       initDictConfig(){
-      },
-      renderEmpty(val){
-        if(val==null||val==='')
-          return 'NA'
-        return val
       },
       initArea(){
         this.areaHandler = new AreaHandler()
@@ -318,8 +313,8 @@
       },
       getColumns(){
         let that = this;
-        that.queryParam.type = 0;
-        queryWaterColumns(that.queryParam).then(res => {
+        that.queryParam.type = 1;
+        queryColumns(that.queryParam).then(res => {
           if(res.result){
             that.scroll={x:250*res.result.length};
             for(var i=0;i<res.result.length;i++){

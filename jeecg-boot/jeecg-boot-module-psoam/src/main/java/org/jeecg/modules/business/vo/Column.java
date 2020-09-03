@@ -2,6 +2,8 @@ package org.jeecg.modules.business.vo;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class Column {
 
@@ -10,4 +12,6 @@ public class Column {
     private String align="center";
 
     private String dataIndex;
+
+    private List<Column> childrenColumn;
 }
