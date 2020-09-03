@@ -7,6 +7,8 @@ import Vue from 'vue'
 import {queryCompanyName, querySiteNameAndMn} from "../../requestAction/request";
 import {loadAreaDate} from "../component/areaUtil";
 import AreaHandler from "../component/AreaHandler";
+import { filterObj } from '@/utils/util';//过滤为空的对象
+import { deleteAction, getAction,downFile,getFileAccessHttpUrl } from '@/api/manage'
 
 export const tableMixin = {
   data(){
@@ -60,7 +62,37 @@ export const tableMixin = {
       //分页、排序、筛选变化时触发
       //TODO 筛选
       this.ipagination = pagination;
-
+      this.loadData();
+    },
+    getQueryParams() {
+      //获取查询条件
+      var param = this.queryParam;
+      param.field = this.getQueryField();
+      param.pageNo = this.ipagination.current;
+      param.pageSize = this.ipagination.pageSize;
+      return filterObj(param);
+    },
+    loadData(arg) {
+      if(!this.url.list){
+        this.$message.error("请设置url.list属性!")
+        return
+      }
+      //加载数据 若传入参数1则加载第一页的内容
+      if (arg === 1) {
+        this.ipagination.current = 1;
+      }
+      var params = this.getQueryParams();//查询条件
+      this.loading = true;
+      getAction(this.url.list, params).then((res) => {
+        if (res.success) {
+          this.dataSource = res.result.records;
+          this.ipagination.total = res.result.total;
+        }
+        if(res.code===510){
+          this.$message.warning(res.message)
+        }
+        this.loading = false;
+      })
     },
     initDictConfig(){
       loadAreaDate()
