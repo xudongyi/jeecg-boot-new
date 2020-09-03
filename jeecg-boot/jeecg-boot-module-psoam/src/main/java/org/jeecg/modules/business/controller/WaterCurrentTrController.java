@@ -132,7 +132,7 @@ public class WaterCurrentTrController extends JeecgController<WaterCurrentTr, IW
                 Column column = new Column();
                 String chromaUnit = sysDictService.queryDictTextByKey("allUnit", sysPollutionCode.getChromaUnit());
                 column.setTitle(sysPollutionCode.getMeaning() + "(" + chromaUnit + ")");
-                if (!"a01011".equalsIgnoreCase(sysPollutionCode.getCode()) && !"a01012".equalsIgnoreCase(sysPollutionCode.getCode()) && !"a01013".equalsIgnoreCase(sysPollutionCode.getCode()) && !"a01014".equalsIgnoreCase(sysPollutionCode.getCode())) {
+                if (!"a01011".equalsIgnoreCase(sysPollutionCode.getCode()) && !"a01012".equalsIgnoreCase(sysPollutionCode.getCode()) && !"a01013".equalsIgnoreCase(sysPollutionCode.getCode()) && !"a01014".equalsIgnoreCase(sysPollutionCode.getCode())&&!"a01017".equalsIgnoreCase(sysPollutionCode.getCode())) {
                     Column childColumn = new Column();
                     childColumn.setTitle("浓度");
                     childColumn.setDataIndex(sysPollutionCode.getCode() + "rtd");
@@ -144,7 +144,9 @@ public class WaterCurrentTrController extends JeecgController<WaterCurrentTr, IW
                     childColumnZs.setDataIndex(sysPollutionCode.getCode() + "zsrtd");
                     childColumns.add(childColumnZs);
                 }
-                column.setChildren(childColumns);
+                if(CollectionUtil.isNotEmpty(childColumns)){
+                    column.setChildren(childColumns);
+                }
                 columns.add(column);
             }
         }

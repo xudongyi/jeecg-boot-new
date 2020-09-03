@@ -115,13 +115,13 @@
   import '@/assets/less/TableExpand.less'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import { mixinDevice } from '@/utils/mixin'
-  import {queryAirColumns, queryCompanyName, querySiteNameAndMn} from "../../requestAction/request";
+  import {queryVOCsColumns, queryCompanyName, querySiteNameAndMn} from "../../requestAction/request";
   import Vue from 'vue'
   import AreaHandler from "../component/AreaHandler";
   import AreaLinkSelect from '../component/AreaLinkSelect'
   import {tableMixin} from "../mixin/tableMixin";
   export default {
-    name: "VocsCurrentTrList",
+    name: "VOCsCurrentTrList",
     mixins:[mixinDevice,tableMixin,JeecgListMixin],
     components: {
       AreaLinkSelect
@@ -142,7 +142,7 @@
         queryParam: {
           companyIds:this.$store.getters.userInfo.companyIds.join(',')
         },
-        siteType:1,
+        siteType:2,
         //表头
         columns:[],
         //列设置
@@ -187,7 +187,7 @@
           }
         ],
         url: {
-          list: "/onlineMonitor/vocsCurrentTr/list",
+          list: "/onlineMonitor/waterCurrentTr/list",
         },
         dictOptions:{},
       }
@@ -206,7 +206,7 @@
       getColumns(){
         let that = this;
         that.queryParam.type = that.siteType;
-        queryAirColumns(that.queryParam).then(res => {
+        queryVOCsColumns(that.queryParam).then(res => {
           if(res.result){
             that.scroll={x:250*res.result.length};
             for(var i=0;i<res.result.length;i++){
