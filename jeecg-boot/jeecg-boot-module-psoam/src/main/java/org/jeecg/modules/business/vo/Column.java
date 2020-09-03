@@ -13,5 +13,5 @@ public class Column {
 
     private String dataIndex;
 
-    private List<Column> childrenColumn;
+    private List<Column> children;
 }
