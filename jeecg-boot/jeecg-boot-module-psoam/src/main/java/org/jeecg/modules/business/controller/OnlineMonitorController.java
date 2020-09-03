@@ -37,7 +37,7 @@ import org.jeecg.common.aspect.annotation.AutoLog;
 @RestController
 @RequestMapping("/onlineMonitor")
 @Slf4j
-public class WaterCurrentTrController extends JeecgController<WaterCurrentTr, IWaterCurrentTrService> {
+public class OnlineMonitorController extends JeecgController<WaterCurrentTr, IWaterCurrentTrService> {
     @Autowired
     private IWaterCurrentTrService waterCurrentTrService;
     @Autowired
