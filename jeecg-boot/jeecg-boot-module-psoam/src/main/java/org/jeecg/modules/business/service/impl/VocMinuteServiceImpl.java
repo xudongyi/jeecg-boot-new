@@ -14,6 +14,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
  * @Version: V1.0
  */
 @Service
-public class VocMinute_2009ServiceImpl extends ServiceImpl<VocMinute_2009Mapper, VocMinute_2009> implements IVocMinute_2009Service {
+public class VocMinuteServiceImpl extends ServiceImpl<VocMinute_2009Mapper, VocMinute_2009> implements IVocMinute_2009Service {
 
 }

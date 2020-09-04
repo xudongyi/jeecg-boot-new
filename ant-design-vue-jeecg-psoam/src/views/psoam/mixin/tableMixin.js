@@ -64,6 +64,15 @@ export const tableMixin = {
       this.ipagination = pagination;
       this.loadData();
     },
+    getQueryField() {
+      //TODO 字段权限控制
+      var str = "id,";
+      this.columns.forEach(function (value) {
+        str += "," + value.dataIndex;
+      });
+      return str;
+    },
+
     getQueryParams() {
       //获取查询条件
       var param = this.queryParam;
@@ -86,14 +95,32 @@ export const tableMixin = {
       this.loading = true;
       getAction(this.url.list, params).then((res) => {
         if (res.success) {
+          this.dealColumns(res.result.columns);
           this.dataSource = res.result.records;
           this.ipagination.total = res.result.total;
+          console.log(this.dataSource)
         }
         if(res.code===510){
           this.$message.warning(res.message)
         }
         this.loading = false;
       })
+    },
+
+    dealColumns(columns){
+      //初始化
+      this.defColumns=[];
+
+      // this.scroll={x:250*columns.length};
+      for(var i=0;i<this.fixedColumns.length;i++){
+        this.defColumns.push(this.fixedColumns[i]);
+      }
+      for(var i=0;i<columns.length;i++){
+        this.defColumns.push(columns[i]);
+      }
+      this.initColumns();
+      if(this.dealScroll)
+        this.dealScroll()
     },
     initDictConfig(){
       loadAreaDate()
@@ -174,7 +201,7 @@ export const tableMixin = {
       //this.defColumns = colAuthFilter(this.defColumns,'testdemo:');
 
       var key = this.$route.name+":colsettings";
-      let colSettings= Vue.ls.get(key);
+      let colSettings=null;
       if(colSettings==null||colSettings==undefined){
         let allSettingColumns = [];
         this.defColumns.forEach(function (item,i,array ) {
@@ -195,6 +222,74 @@ export const tableMixin = {
         })
         this.columns =  cols;
       }
+      console.log(this.columns)
+    },
+    plainChange(val){
+      // console.log(val)
+      let list  = val;
+      list.push('cou');
+      console.log(this.checkedList)
+      if(this.queryParam.dataType!=='realTime'){
+        //筛选表格
+        this.initColumns();
+        console.log(this.columns)
+        if(this.checkedList.length<4){
+          let newColumns=[];
+          for(let i = 0 ; i < this.columns.length ; i++)
+          {
+            //深度克隆
+            let newColumn = {};
+            Object.keys(this.columns[i]).forEach(e=>{
+              newColumn[e] = this.columns[i][e];
+            })
+            newColumns.push(newColumn);
+
+            if(this.columns[i].children){
+              newColumns[i].children = this.columns[i].children.filter(e=>{
+                for(let j=0 ; j < list.length ; j++){
+
+                  console.log(e.dataIndex,list[j],e.dataIndex.indexOf(list[j]))
+                  if(e.dataIndex.indexOf(list[j])>=0){
+                    return true;
+                  }
+                }
+                return false;
+              })
+            }
+          }
+          this.columns = newColumns
+          this.dealScroll();
+          console.log(this.defColumns)
+        }
+      }
+      // queryParam
+    },
+    handleExportXls(fileName){
+      if(!fileName || typeof fileName != "string"){
+        fileName = "导出文件"
+      }
+      let param = {...this.queryParam};
+
+      console.log("导出参数",param)
+      downFile(this.url.exportXlsUrl,param).then((data)=>{
+        if (!data) {
+          this.$message.warning("文件下载失败")
+          return
+        }
+        if (typeof window.navigator.msSaveBlob !== 'undefined') {
+          window.navigator.msSaveBlob(new Blob([data],{type: 'application/vnd.ms-excel'}), fileName+'.xls')
+        }else{
+          let url = window.URL.createObjectURL(new Blob([data],{type: 'application/vnd.ms-excel'}))
+          let link = document.createElement('a')
+          link.style.display = 'none'
+          link.href = url
+          link.setAttribute('download', fileName+'.xls')
+          document.body.appendChild(link)
+          link.click()
+          document.body.removeChild(link); //下载完成移除元素
+          window.URL.revokeObjectURL(url); //释放掉blob对象
+        }
+      })
     },
   },
 

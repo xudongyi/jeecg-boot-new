@@ -31,7 +31,8 @@
           </a-col>
           <a-col :xl="4" :lg="7" :md="8" :sm="24">
             <a-form-item label="数据类型">
-              <a-select v-model="queryParam.typeIndex" :allowClear="allowClear" placeholder="请选择" show-search style="width: 100%" optionFilterProp="children">
+              <a-select v-model="queryParam.dataType" :allowClear="allowClear" placeholder="请选择"
+                        show-search style="width: 100%" optionFilterProp="children"  @change="dataTypeChange">
                 <!--                <a-select-option :value="companyIds">请选择</a-select-option>-->
                 <a-select-option v-for="(item,index) in dataTypes" :key="item.value" :value="item.key">
                   {{item.value}}
@@ -44,9 +45,11 @@
         <a-row>
           <a-col :xl="10" :lg="11" :md="12" :sm="24" v-show="showDate">
             <a-form-item label="日期">
-              <j-date :show-time="true" :date-format="dateFormat[queryParam.typeIndex]" placeholder="请选择开始时间" class="query-group-cust" v-model="queryParam.dataTime_begin"></j-date>
+              <a-date-picker :show-time="dateFormat[queryParam.dataType].showTime" :format="dateFormat[queryParam.dataType].value" placeholder="请选择开始时间" :valueFormat="dateFormat[queryParam.dataType].value"
+                      class="query-group-cust"  v-model="queryParam.dataTime_begin"   />
               <span class="query-group-split-cust"></span>
-              <j-date :show-time="true" :date-format="dateFormat[queryParam.typeIndex]" placeholder="请选择结束时间" class="query-group-cust" v-model="queryParam.dataTime_end" ></j-date>
+              <a-date-picker :show-time="dateFormat[queryParam.dataType].showTime" :format="dateFormat[queryParam.dataType].value" placeholder="请选择结束时间" :valueFormat="dateFormat[queryParam.dataType].value"
+                      class="query-group-cust"  v-model="queryParam.dataTime_end"  />
             </a-form-item>
           </a-col>
 
@@ -61,7 +64,7 @@
         </a-row>
         <a-row>
           <a-col :xl="12" :lg="7" :md="8" :sm="24">
-            <a-checkbox-group v-model="checkedList" :options="plainOptions" :disabled="disabled[queryParam.typeIndex]" style="margin-left: 20px"/>
+            <a-checkbox-group v-model="checkedList" :options="plainOptions" :disabled="disabled[queryParam.dataType]"  @change="plainChange" style="margin-left: 20px"/>
           </a-col>
         </a-row>
       </a-form>
@@ -108,12 +111,11 @@
 
 <script>
 
-  import Vue from 'vue'
   import AreaLinkSelect from '../component/AreaLinkSelect'
   import JDate from '@/components/jeecg/JDate.vue'
   import {tableMixin} from "../mixin/tableMixin";
   import {queryWaterColumns} from "../../requestAction/request";
-
+  import moment from 'moment'
   export default {
     name: "WaterHistory",
     mixins:[tableMixin],
@@ -124,7 +126,10 @@
     data(){
       return {
         queryParam: {
-
+          dataTime_begin:'',
+          dataTime_end:'',
+          companyIds:this.$store.getters.userInfo.companyIds.join(','),
+          dataType:'day',
         },
         items:[],
         siteOriginal:[],
@@ -133,23 +138,23 @@
         companyNameOriginal:[],
         siteArea:'',
         name:'',
-        allowClear:true,
+        allowClear:false,
         showDate:false,
         dateFormat:{
-          0:"YYYY-MM-DD HH:mm:ss",
-          1:"YYYY-MM-DD HH:mm",
-          2:"YYYY-MM-DD HH",
-          3:"YYYY-MM-DD"
+          'realTime':{value:"YYYY-MM-DD HH:mm:ss",showTime:{ format: 'HH:mm:ss' }},
+          'minute':{value:"YYYY-MM-DD HH:mm",showTime:{ format: 'HH:mm' }},
+          'hour':{value:"YYYY-MM-DD HH",showTime:{ format: 'HH' }},
+          'day':{value:"YYYY-MM-DD",showTime:false},
         },
         checkedList:[],
-        plainOptions:['最大值', '最小值', '平均值'],
-        disabled:{0:true,1:false,2:false,3:false},
+        plainOptions:[{label:'最大值',value:'max'}, {label:'最小值',value:'min'}, {label:'平均值',value:'avg'}],
+        disabled:{'realTime':true,'minute':false,'hour':false,'day':false},
         //表头
         columns:[],
         //列设置
         settingColumns:[],
-        //列定义
-        defColumns: [
+
+        fixedColumns: [
           {
             title: '',
             dataIndex: '',
@@ -165,37 +170,56 @@
           {
             title:'企业名称',
             align:"center",
-            dataIndex: 'companyName',
+            dataIndex: 'company_name',
             fixed:'left',
             width:300,
           },
           {
             title:'监测点名称',
             align:"center",
-            dataIndex: 'monName',
+            dataIndex: 'site_name',
             fixed:'left',
             width:300,
           },
           {
             title:'时间',
             align:"center",
-            dataIndex: 'dataTime',
+            dataIndex: 'data_time',
             fixed:'left',
             width:200,
-            customRender:function (text) {
-              return !text?"":(text.length>10?text.substr(0,10):text)
-            }
+            customRender:this.dataTimeRender
           }
         ],
+        //列定义
+        defColumns: [],
         siteType:0,
+        url:{
+           list:'/psoam/Water/queryWaterColumns',
+           exportXlsUrl:'/psoam/Water/exportXlsWaterHistory',
+        }
 
       }
     },
     methods:{
+      dataTimeRender (text) {
+        return  moment(text).format(this.dateFormat[this.queryParam.dataType].value)
+      },
+      handleDateChange(mom,dateStr){
+        console.log(mom,dateStr)
+        console.log(this.dateFormat[this.queryParam.dataType].value,this.queryParam.dataTime_begin)
+      },
+      handleDateChange2(mom,dateStr){
+        console.log(mom,dateStr)
+        this.queryParam.dataTime_end=dateStr
+      },
 
-
+      dataTypeChange(){
+        this.checkedList = ['max', 'min', 'avg',];
+        this.loadData(1);
+      },
+      //查询数据
       searchQuery(){
-
+        this.loadData()
       },
       searchReset(){
         this.loadData(1);
@@ -203,26 +227,25 @@
       handleExportXls(){
 
       },
-      getColumns(){
-        let _this = this;
-        _this.queryParam.type = 0;
-        queryWaterColumns(_this.queryParam).then(res => {
-          console.log(res)
-          if(res.result){
-            _this.scroll={x:250*res.result.length};
-            for(var i=0;i<res.result.length;i++){
-              _this.defColumns.push(res.result[i]);
-            }
-          }
-          _this.initColumns();
-        })
-      },
+
+
+      //处理一下scroll
+      dealScroll(){
+        if(this.queryParam.dataType!=='realTime'){
+
+          this.scroll={x:100*(this.columns.length-4)};
+
+        }else{
+          this.scroll={x:100*(this.checkedList.length+1)*(this.columns.length-4)}
+        }
+      }
     },
     created(){
       //先查询表头
-      this.getColumns();
+      // this.getColumns();
       //级联的行政区域
       this.queryCompanyAndSite();
+      this.loadData(1);
     }
 
   }

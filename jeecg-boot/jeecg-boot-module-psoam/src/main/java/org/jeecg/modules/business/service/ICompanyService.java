@@ -9,5 +9,7 @@ public interface ICompanyService {
 
     JSONObject queryCompanyInfos(List<String> companyIds);
 
+    Map<String,Object> queryRealTime(String mn,String tableName,String field);
+    List<Map<String, Object>> queryCodeAndStatus( String mn);
 
 }

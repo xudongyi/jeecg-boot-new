@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.jeecg.modules.business.mapper.CompanyMapper">
     <select id="queryCompanyInfos"  resultType="Map">
-            select M.*,N.site_name,N.site_type,N.site_level,N.location,N.imorex,N.direction,data_status,
+            select M.*,N.mn,N.site_name,N.site_type,N.site_level,N.location,N.imorex,N.direction,data_status,
         device_status,online_status from (
                 select company_id,company_name,short_name,longitude,dimension,administrative_region,address,industry,env_protect_contact,
                        contact_phone from company_base A inner join company_baseinfo B
@@ -14,5 +14,16 @@
                 INNER JOIN site_monitor_point N
                            ON M.company_id = N.company_id  ORDER BY company_id
 
+    </select>
+    <select id="queryCodeAndStatus"  resultType="Map">
+        select *,B.device_state from  sys_pollution_code A inner join(
+        select pollution_code,device_state from site_monitor_device  where monitor_id in (
+        select id from site_monitor_point where  mn =#{mn})) B
+        on  A.code = B.pollution_code
+    </select>
+    <select id="queryMaxRealTime"  resultType="Map">
+        select C.data_time,${field} from ${tableName}  A
+        inner join (select max(DATA_TIME) DATA_TIME,mn from ${tableName} where mn = #{mn} group by mn) C
+        ON A.MN = C.MN and A.DATA_TIME = C.DATA_TIME
     </select>
 </mapper>

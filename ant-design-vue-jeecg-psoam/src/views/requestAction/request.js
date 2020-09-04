@@ -8,7 +8,8 @@ const queryPollutionCode = (params)=>getAction("/vocDay/vocDay/queryPollutionCod
 
 const queryWaterColumns = (params)=>getAction("/onlineMonitor/queryWaterColumns",params);
 const queryAirColumns = (params)=>getAction("/onlineMonitor/queryAirColumns",params);
-const queryVOCsColumns = (params)=>getAction("/onlineMonitor/queryVocsColumns",params);
+const queryVocsColumns = (params)=>getAction("/onlineMonitor/queryVocsColumns",params);
+const querySiteInfos = (params)=>getAction("/psoam/companyInfo/querySiteInfos",params);
 export {
   queryGisInfos,
   querySiteNameAndMn,
@@ -18,5 +19,6 @@ export {
   queryPollutionCode,
   queryWaterColumns,
   queryAirColumns,
-  queryVOCsColumns
+  queryVocsColumns,
+  querySiteInfos
 }

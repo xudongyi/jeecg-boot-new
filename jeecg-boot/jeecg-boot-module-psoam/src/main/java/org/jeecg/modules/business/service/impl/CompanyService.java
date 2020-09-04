@@ -37,6 +37,7 @@ public class CompanyService implements ICompanyService {
            }
 
            JSONObject point = new JSONObject();
+           point.put("mn",map.get("mn"));
            point.put("site_type",map.get("site_type"));
            point.put("site_level",map.get("site_level"));
            point.put("location",map.get("location"));
@@ -51,6 +52,16 @@ public class CompanyService implements ICompanyService {
        }
 
        return json;
+    }
+
+    @Override
+    public Map<String, Object> queryRealTime(String mn,String tableName,String field) {
+        return companyMapper.queryMaxRealTime(mn,tableName,field);
+    }
+
+    @Override
+    public List<Map<String, Object>> queryCodeAndStatus(String mn) {
+        return companyMapper.queryCodeAndStatus(mn);
     }
 
 }

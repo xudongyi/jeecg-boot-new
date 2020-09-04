@@ -23,25 +23,23 @@
         </div>
 
         <div class="points-radio">
-          <a-button  v-for="(item,index) in companyInfo.points"
-            :ghost="checkedRadio!==index" @click="check(index)" :style="{width:(item.site_name.length+1)*15+'px', color: checkedRadio!==index?'#0098A2':'white',background: '#0098A2'}"
-                    class="radio-column-point">{{item.site_name}}</a-button>
+          <button-tabs :tabList="companyInfo.points" @change = "querydetail"></button-tabs>
         </div>
       <div class="points-info">
         <div class="info-item">
-          <div class="point_left"><span>站点级别:</span><span>{{companyInfo.short_name}}</span></div>
-          <div class="point_left"><span>站点类型:</span><span>{{companyInfo.industry}}</span></div>
-          <div class="point_left"><span>进出口:</span><span>{{companyInfo.industry}}</span></div>
+          <div class="point_left"><span>站点级别:</span><span>{{dictVal('siteLevel',companyInfo.points[showPointInex].site_level)}}</span></div>
+          <div class="point_left"><span>站点类型:</span><span>{{dictVal('siteType',companyInfo.points[showPointInex].site_type)}}</span></div>
+          <div class="point_left"><span>进出口:</span><span>{{dictVal('imorex',companyInfo.points[showPointInex].imorex)}}</span></div>
 
         </div>
         <div class="info-item" >
-          <div class="point_left"><span>站点位置:</span><span>{{companyInfo.short_name}}</span></div>
-          <div class="float_left_67"><span>排放去向:</span><span>{{companyInfo.industry}}</span></div>
+          <div class="point_left"><span>站点位置:</span><span>{{companyInfo.points[showPointInex].location}}</span></div>
+          <div class="float_left_67"><span>排放去向:</span><span>{{dictVal('direction',companyInfo.points[showPointInex].direction)}}</span></div>
         </div>
         <div class="info-item-min"> <span>数据时间:</span><span>{{companyInfo.short_name}}</span></div>
 
       </div>
-      <a-table :columns="columns">
+      <a-table :columns="columns" :dataSource="dataSource"  bordered>
 
       </a-table>
     </a-spin>
@@ -58,11 +56,13 @@
 <script>
 
   import {dataDictMixin} from "../../mixin/dataDictMixin";
-
+  import {querySiteInfos} from "../../../requestAction/request"
+  import ButtonTabs from "../../component/ButtonTabs";
   export default {
     name: "companyModal",
     mixins:[dataDictMixin],
     components: {
+      ButtonTabs
     },
     props: {
     },
@@ -78,34 +78,73 @@
           color: 'white',
           background: '#0098A2',
         },
-        columns:[
+        showPointInex:0,
+        columns:[],
+        ocolumns:[
           {
             align:'center',
-            key:'',
-            title:'污染物名'
+            dataIndex:'pollutionName',
+            title:'污染物名',
           },
           {
             align:'center',
-            key:'',
-            title:'污染物名'
+            dataIndex:'value',
+            title:'监测值'
           },
           {
             align:'center',
-            key:'',
+            dataIndex:'unit',
             title:'单位'
           },
           {
             align:'center',
-            key:'',
+            dataIndex:'dataStatus',
             title:'数据状态'
           },
           {
             align:'center',
-            key:'',
+            dataIndex:'deviceStatus',
             title:'设备状态'
           }
 
-        ]
+        ],
+        zscolumns:[
+          {
+            align:'center',
+            dataIndex:'pollutionName',
+            title:'污染物名',
+          },
+          {
+            align:'center',
+            dataIndex:'value',
+            title:'监测值'
+          },
+          {
+            align:'center',
+            dataIndex:'zsValue',
+            title:'监测值'
+          },
+          {
+            align:'center',
+            dataIndex:'unit',
+            title:'单位'
+          },
+          {
+            align:'center',
+            dataIndex:'dataStatus',
+            title:'数据状态'
+          },
+          {
+            align:'center',
+            dataIndex:'deviceStatus',
+            title:'设备状态',
+            customRender:function (text) {
+                return text;
+            }
+          }
+
+        ],
+        dataSource:[]
       }
     },
     created () {
@@ -124,8 +163,25 @@
       handleCancel(){
         this.visible=false;
       },
-      check(index){
-        this.checkedRadio = index
+      querydetail(index){
+        console.log(this.companyInfo.points[index])
+        this.showPointInex = index;
+        let _this = this;
+        debugger
+        querySiteInfos({mn:this.companyInfo.points[index].mn,siteType:this.companyInfo.points[index].site_type})
+          .then(res=>{
+            console.log(res)
+            if(res.success){
+              if(res.result.hasZs)
+                _this.columns=_this.zscolumns
+              else{
+                _this.columns=_this.ocolumns
+              }
+              _this.dataSource = res.result.dataList;
+            }else{
+              this.$message.error(res.message);
+            }
+        })
       }
     }
   }
@@ -154,18 +210,7 @@
     opacity: 0.9;
     height: 25px;
   }
-  .radio-column-point{
-    font-size:13px;
-    border-width: 1px ;
-    width: 100px;
-    height: 30px;
-    border-radius: 4px;
-    margin-left: 10px;
-    padding: 0;
-    text-align: center;
-    color: #0098A2;
-    border-color:#0098A2;
-  }
+
   .company-info{
     background: #ebf8f8;
     padding-top:10px ;
