@@ -52,16 +52,16 @@
 
     <!-- table区域-begin -->
     <div>
-      <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">
-        <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a style="font-weight: 600">{{ selectedRowKeys.length }}</a>项
-        <a style="margin-left: 24px" @click="onClearSelected">清空</a>
-      </div>
+<!--      <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">-->
+<!--        <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a style="font-weight: 600">{{ selectedRowKeys.length }}</a>项-->
+<!--        <a style="margin-left: 24px" @click="onClearSelected">清空</a>-->
+<!--      </div>-->
 
       <a-table
         ref="table"
         size="middle"
         bordered
-        rowKey="id"
+        rowKey="ID"
         :columns="columns"
         :dataSource="dataSource"
         :pagination="ipagination"
@@ -122,7 +122,7 @@
   import {tableMixin} from "../mixin/tableMixin";
   export default {
     name: "WaterCurrentTrList",
-    mixins:[mixinDevice,tableMixin,JeecgListMixin],
+    mixins:[mixinDevice,tableMixin],
     components: {
       AreaLinkSelect
     },
@@ -140,15 +140,17 @@
         allowClear:true,
         name:'',
         queryParam: {
-          companyIds:this.$store.getters.userInfo.companyIds.join(',')
+          companyIds:this.$store.getters.userInfo.companyIds.join(','),
+          tableName:"water_current_tr_"
         },
         siteType:0,
         //表头
         columns:[],
         //列设置
         settingColumns:[],
+        defColumns:[],
         //列定义
-        defColumns: [
+        flexColumns: [
           {
             title: '',
             dataIndex: '',
@@ -164,30 +166,31 @@
           {
             title:'企业名称',
             align:"center",
-            dataIndex: 'companyName',
+            dataIndex: 'company_name',
             fixed:'left',
             width:300,
           },
           {
             title:'监测点名称',
             align:"center",
-            dataIndex: 'monName',
+            dataIndex: 'site_name',
             fixed:'left',
             width:300,
           },
           {
             title:'时间',
             align:"center",
-            dataIndex: 'dataTime',
+            dataIndex: 'DATA_TIME',
             fixed:'left',
             width:200,
             customRender:function (text) {
-              return !text?"":(text.length>10?text.substr(0,10):text)
+              return text;
+              // return !text?"":(text.length>10?text.substr(0,10):text)
             }
           }
         ],
         url: {
-          list: "/onlineMonitor/waterCurrentTr/list",
+          list: "/onlineMonitor/list",
         },
         dictOptions:{},
       }
@@ -198,6 +201,12 @@
       },
     },
     methods: {
+      searchReset(){
+
+      },
+      handleAdd(){
+
+      },
       renderEmpty(val){
         if(val==null||val==='')
           return 'NA'
@@ -207,7 +216,12 @@
         let that = this;
         that.queryParam.type = that.siteType;
         queryWaterColumns(that.queryParam).then(res => {
+          console.log(res.result)
           if(res.result){
+            that.defColumns=[];
+            for(var i=0;i<this.flexColumns.length;i++){
+              that.defColumns.push(this.flexColumns[i]);
+            }
             that.scroll={x:250*res.result.length};
             for(var i=0;i<res.result.length;i++){
               that.defColumns.push(res.result[i]);
@@ -223,23 +237,8 @@
     },
     created() {
       this.getColumns();
-      let that = this;
-      querySiteNameAndMn({companyIds:this.$store.getters.userInfo.companyIds.join(',')}).then((res)=>{
-        debugger
-        if(res.success){
-          //console.log("!!",res.result);
-          that.siteOriginal = res.result;
-          that.items = res.result;
-        }
-      });
-      //查询企业名称
-      queryCompanyName({companyIds:this.$store.getters.userInfo.companyIds.join(',')}).then((res) => {
-        if(res.success){
-          that.companyNameOriginal = res.result.companyNames;
-          that.companyNames = res.result.companyNames;
-          console.log("!!",that.companyNames);
-        }
-      });
+      this.queryCompanyAndSite();
+      this.loadData(1);
     }
   }
 </script>

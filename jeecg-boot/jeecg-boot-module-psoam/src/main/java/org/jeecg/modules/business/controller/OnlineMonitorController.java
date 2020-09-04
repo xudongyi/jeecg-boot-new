@@ -67,16 +67,16 @@ public class OnlineMonitorController extends JeecgController<WaterCurrentTr, IWa
                     Column columnq = new Column();
                     String amountUnit = sysDictService.queryDictTextByKey("allUnit", sysPollutionCode.getAmountUnit());
                     columnq.setTitle("污水排放量(" + amountUnit + ")");
-                    columnq.setDataIndex("w00000Total");
+                    columnq.setDataIndex("W00000_TOTAL");
                     columns.add(columnq);
                     String chromaUnit = sysDictService.queryDictTextByKey("allUnit", sysPollutionCode.getChromaUnit());
                     column.setTitle(sysPollutionCode.getMeaning() + "(" + chromaUnit + ")");
-                    column.setDataIndex(sysPollutionCode.getCode() + "rtd");
+                    column.setDataIndex(sysPollutionCode.getCode() + "_RTD");
                     columns.add(column);
                 } else {
                     String chromaUnit = sysDictService.queryDictTextByKey("allUnit", sysPollutionCode.getChromaUnit());
                     column.setTitle(sysPollutionCode.getMeaning() + "(" + chromaUnit + ")");
-                    column.setDataIndex(sysPollutionCode.getCode() + "rtd");
+                    column.setDataIndex(sysPollutionCode.getCode() + "_RTD");
                     columns.add(column);
                 }
             }
@@ -104,12 +104,12 @@ public class OnlineMonitorController extends JeecgController<WaterCurrentTr, IWa
                 String chromaUnit = sysDictService.queryDictTextByKey("allUnit", sysPollutionCode.getChromaUnit());
                 column.setTitle(sysPollutionCode.getMeaning() + "(" + chromaUnit + ")");
                 childColumn.setTitle("浓度");
-                childColumn.setDataIndex(sysPollutionCode.getCode() + "_rtd");
+                childColumn.setDataIndex(sysPollutionCode.getCode() + "_RTD");
                 childColumns.add(childColumn);
                 if ("Y".equalsIgnoreCase(sysPollutionCode.getIsZs())) {
                     Column childColumnZs = new Column();
                     childColumnZs.setTitle("折算浓度");
-                    childColumnZs.setDataIndex(sysPollutionCode.getCode() + "zsrtd");
+                    childColumnZs.setDataIndex(sysPollutionCode.getCode() + "_ZSRTD");
                     childColumns.add(childColumnZs);
                 }
                 column.setChildren(childColumns);
@@ -139,13 +139,13 @@ public class OnlineMonitorController extends JeecgController<WaterCurrentTr, IWa
                 if (!"a01011".equalsIgnoreCase(sysPollutionCode.getCode()) && !"a01012".equalsIgnoreCase(sysPollutionCode.getCode()) && !"a01013".equalsIgnoreCase(sysPollutionCode.getCode()) && !"a01014".equalsIgnoreCase(sysPollutionCode.getCode())&&!"a01017".equalsIgnoreCase(sysPollutionCode.getCode())) {
                     Column childColumn = new Column();
                     childColumn.setTitle("浓度");
-                    childColumn.setDataIndex(sysPollutionCode.getCode() + "rtd");
+                    childColumn.setDataIndex(sysPollutionCode.getCode() + "_RTD");
                     childColumns.add(childColumn);
                 }
                 if ("Y".equalsIgnoreCase(sysPollutionCode.getIsZs())) {
                     Column childColumnZs = new Column();
                     childColumnZs.setTitle("折算浓度");
-                    childColumnZs.setDataIndex(sysPollutionCode.getCode() + "zsrtd");
+                    childColumnZs.setDataIndex(sysPollutionCode.getCode() + "_ZSRTD");
                     childColumns.add(childColumnZs);
                 }
                 if(CollectionUtil.isNotEmpty(childColumns)){
@@ -163,21 +163,20 @@ public class OnlineMonitorController extends JeecgController<WaterCurrentTr, IWa
      * @param req
      * @return
      */
-    @AutoLog(value = "废水实时监控列表查询")
-    @ApiOperation(value = "废水实时监控列表查询", notes = "废水实时监控列表查询")
-    @GetMapping(value = "/waterCurrentTr/list")
+    @AutoLog(value = "实时监控列表查询")
+    @ApiOperation(value = "实时监控列表查询", notes = "实时监控列表查询")
+    @GetMapping(value = "/list")
     public Result<?> queryPageList(@RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
                                    @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
                                    HttpServletRequest req) {
         String area = req.getParameter("area");
         String companyId = req.getParameter("companyId");
         String mn = req.getParameter("mn");
-        String type = req.getParameter("type");
         //表名
         String currTime = DateUtil.format(DateUtil.date(), "yyyyMM");
-        String tableName = "water_current_tr_"+currTime.substring(2);
+        String tableName = req.getParameter("tableName")+currTime.substring(2);
         Page<Map<String,Object>> page = new Page<>(pageNo, pageSize);
-        IPage<Map<String,Object>> pageList = waterCurrentTrService.getWaterCurrentTrList(page,area,companyId,mn,type,tableName);
+        IPage<Map<String,Object>> pageList = waterCurrentTrService.getWaterCurrentTrList(page,area,companyId,mn,tableName);
         return Result.ok(pageList);
     }
 

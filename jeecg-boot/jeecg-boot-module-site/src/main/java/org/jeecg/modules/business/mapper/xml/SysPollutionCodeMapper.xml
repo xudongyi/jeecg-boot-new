@@ -14,7 +14,7 @@
         </if>
 
         <if test="mn != null and  mn !=''">
-            and  mn =  #{mn}u
+            and  mn =  #{mn}
         </if>
         ) and type= #{type} and is_use = 'Y' group by  pollution_code)
     </select>

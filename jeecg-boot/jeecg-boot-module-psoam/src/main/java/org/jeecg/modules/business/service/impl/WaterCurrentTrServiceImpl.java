@@ -25,7 +25,7 @@ public class WaterCurrentTrServiceImpl extends ServiceImpl<WaterCurrentTrMapper,
     private WaterCurrentTrMapper waterCurrentTrMapper;
 
     @Override
-    public IPage<Map<String, Object>> getWaterCurrentTrList(Page<Map<String, Object>> page, String area, String companyId, String mn, String type,String tableName) {
-        return page.setRecords(waterCurrentTrMapper.getWaterCurrentTrList(page,area,companyId,mn,type,tableName));
+    public IPage<Map<String, Object>> getWaterCurrentTrList(Page<Map<String, Object>> page, String area, String companyId, String mn,String tableName) {
+        return page.setRecords(waterCurrentTrMapper.getWaterCurrentTrList(page,area,companyId,mn,tableName));
     }
 }

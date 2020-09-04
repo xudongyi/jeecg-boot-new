@@ -67,12 +67,13 @@ export const tableMixin = {
     getQueryParams() {
       //获取查询条件
       var param = this.queryParam;
-      param.field = this.getQueryField();
+      // param.field = this.getQueryField();
       param.pageNo = this.ipagination.current;
       param.pageSize = this.ipagination.pageSize;
       return filterObj(param);
     },
     loadData(arg) {
+      debugger
       if(!this.url.list){
         this.$message.error("请设置url.list属性!")
         return

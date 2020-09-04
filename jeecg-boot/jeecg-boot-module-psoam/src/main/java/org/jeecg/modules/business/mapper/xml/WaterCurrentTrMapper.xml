@@ -1,5 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.jeecg.modules.business.mapper.WaterCurrentTrMapper">
-
+    <select id="getWaterCurrentTrList" resultType="Map">
+        SELECT
+            a.*,
+            b.site_name,
+            d.company_name
+        FROM
+            ${tableName} a
+            LEFT JOIN site_monitor_point b ON a.mn = b.mn
+            INNER JOIN ( SELECT MAX( DATA_TIME ) time, mn FROM  ${tableName} GROUP BY MN ) c ON a.DATA_TIME = c.time
+            AND c.mn = b.mn LEFT JOIN company_base d ON b.company_id  = d.id
+            WHERE 1=1
+            <if test="area != null and  area !=''">
+                and b.area = #{area}
+            </if>
+            <if test="companyId != null and  companyId !=''">
+                and b.company_id = #{companyId}
+            </if>
+            <if test="mn != null and  mn !=''">
+                and  mn =  #{mn}
+            </if>
+    </select>
 </mapper>

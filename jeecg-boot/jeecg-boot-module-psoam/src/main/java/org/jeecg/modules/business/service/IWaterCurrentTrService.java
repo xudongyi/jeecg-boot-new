@@ -16,5 +16,5 @@ import java.util.Map;
  */
 public interface IWaterCurrentTrService extends IService<WaterCurrentTr> {
 
-    IPage<Map<String, Object>> getWaterCurrentTrList(Page<Map<String, Object>> page, String area, String companyId, String mn, String type,String tableName);
+    IPage<Map<String, Object>> getWaterCurrentTrList(Page<Map<String, Object>> page, String area, String companyId, String mn,String tableName);
 }
