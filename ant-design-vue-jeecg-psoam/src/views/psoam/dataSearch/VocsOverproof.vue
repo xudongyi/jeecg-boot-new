@@ -109,6 +109,7 @@
   import Vue from 'vue'
   import AreaLinkSelect from '../component/AreaLinkSelect'
   import JDate from '@/components/jeecg/JDate.vue'
+  import moment from 'moment'
 
     export default {
       name: "VocsOverproof",
@@ -120,8 +121,8 @@
         return {
           queryParam: {
             companyIds: this.$store.getters.userInfo.companyIds.join(','),
-            searchTimeBegin:'',
-            searchTimeEnd:''
+            searchTimeBegin:moment().days(moment().days()-7).format("YYYY-MM-DD"),
+            searchTimeEnd:moment().format("YYYY-MM-DD")
           },
           items: [],
           siteOriginal: [],
@@ -154,15 +155,11 @@
               title:'企业名称',
               align:"center",
               dataIndex: 'companyName',
-              fixed:'left',
-              width:160
             },
             {
               title:'监测点名称',
               align:"center",
               dataIndex: 'siteName',
-              fixed:'left',
-              width:160
             },
             {
               title:'数据时间',
@@ -196,21 +193,6 @@
               title:'超标倍数',
               align:"center",
               dataIndex: 'overTimes'
-            },
-            {
-              title:'sourceId',
-              align:"center",
-              dataIndex: 'sourceId'
-            },
-            {
-              title:'mn',
-              align:"center",
-              dataIndex: 'mn'
-            },
-            {
-              title:'status',
-              align:"center",
-              dataIndex: 'status'
             },
           ],
           dataSource:[],
@@ -395,13 +377,11 @@
           if(res.success){
             that.companyNameOriginal = res.result.companyNames;
             that.companyNames = res.result.companyNames;
-            console.log("!!",that.companyNames);
           }
         });
         //查询污染因子
         queryPollutionCode({siteType: 2}).then((res)=>{
           if(res.success){
-            //console.log("!!",res.result);
             that.pollutionCode = res.result;
           }
         })
