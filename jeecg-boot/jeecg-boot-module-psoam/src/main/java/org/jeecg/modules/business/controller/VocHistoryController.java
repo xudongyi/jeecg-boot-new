@@ -125,7 +125,8 @@ public class VocHistoryController {
 	 @GetMapping(value = "/queryPollutionCode")
 	 public Result<?> queryPollutionCode(@RequestParam(name = "siteType", required = true) String siteType) {
 		 List<Map<String, String>> result = new ArrayList<>();
-		 sysPollutionCodeService.list(new QueryWrapper<SysPollutionCode>().lambda().eq(SysPollutionCode::getType,siteType).eq(SysPollutionCode::getIsUse,"Y")).forEach(sysPollutionCode -> {
+		 sysPollutionCodeService.list(new QueryWrapper<SysPollutionCode>().lambda().eq(SysPollutionCode::getType,siteType).eq(SysPollutionCode::getIsUse,"Y").
+				 eq(SysPollutionCode::getIsImportant,'Y')).forEach(sysPollutionCode -> {
 			 Map<String, String> param = new HashMap<>();
 			 param.put("key", sysPollutionCode.getCode());
 			 param.put("value",sysPollutionCode.getMeaning());

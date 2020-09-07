@@ -4,7 +4,7 @@ const querySiteNameAndMn = (params)=>getAction("/psoam/voc/querySiteNameAndMn",p
 const queryCompanyName = (params)=>getAction("/psoam/voc/queryCompanyName",params);
 const queryConfig = (params)=>getAction("/psoamConfig/queryConfig",params);
 const saveConfig = (params)=>getAction("/psoamConfig/saveConfig",params);
-const queryPollutionCode = (params)=>getAction("/vocDay/vocDay/queryPollutionCode",params);
+const queryPollutionCode = (params)=>getAction("/psoam/voc/queryPollutionCode",params);
 
 const queryWaterColumns = (params)=>getAction("/onlineMonitor/queryWaterColumns",params);
 const queryAirColumns = (params)=>getAction("/onlineMonitor/queryAirColumns",params);
