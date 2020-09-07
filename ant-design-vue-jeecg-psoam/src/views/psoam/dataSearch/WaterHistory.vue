@@ -195,7 +195,7 @@
         siteType:0,
         url:{
            list:'/psoam/Water/queryWaterColumns',
-           exportXlsUrl:'/psoam/Water/exportXlsWaterHistory',
+           exportXlsUrl:'/psoam/Water/exportWaterHistory',
         }
 
       }
@@ -223,9 +223,6 @@
       },
       searchReset(){
         this.loadData(1);
-      },
-      handleExportXls(){
-
       },
 
 

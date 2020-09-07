@@ -26,7 +26,7 @@ public class WaterDayServiceImpl extends ServiceImpl<WaterDayMapper, WaterDay> i
     @Resource
     WaterDayMapper waterDayMapper;
     @Override
-    public Page<List<Map<String, Object>>> queryDay(Page<List<Map<String, Object>>> page, String field, List<String> companyIds,
+    public Page<Map<String, Object>> queryDay(Page<Map<String, Object>> page, String field, List<String> companyIds,
                                                      String area, String mn, String dataTime_begin, String dataTime_end) {
         if(StrUtil.isEmpty(dataTime_begin))
         {
@@ -39,7 +39,20 @@ public class WaterDayServiceImpl extends ServiceImpl<WaterDayMapper, WaterDay> i
             Timestamp end = DateUtil.parse(dataTime_end, PollutionSource.DataFormat.DAY).toTimestamp();
             return page.setRecords(waterDayMapper.queryDay(page,field,companyIds,area,mn,begin,end));
         }
+    }
+    @Override
+    public List<Map<String, Object>> queryDay( String field, List<String> companyIds,
+                                              String area, String mn, String dataTime_begin, String dataTime_end) {
+        if(StrUtil.isEmpty(dataTime_begin))
+        {
+            return waterDayMapper.queryMaxDay(field,companyIds,area,mn);
 
-
+        }
+        else
+        {
+            Timestamp begin = DateUtil.parse(dataTime_begin, PollutionSource.DataFormat.DAY).toTimestamp();
+            Timestamp end = DateUtil.parse(dataTime_end, PollutionSource.DataFormat.DAY).toTimestamp();
+            return waterDayMapper.queryDay(field,companyIds,area,mn,begin,end);
+        }
     }
 }

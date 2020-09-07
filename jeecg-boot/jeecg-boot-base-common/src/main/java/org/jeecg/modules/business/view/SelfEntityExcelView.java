@@ -10,6 +10,7 @@ import org.jeecg.modules.business.annotation.ExcelSelf;
 import org.jeecg.modules.business.constant.SelfExcelConstants;
 import org.jeecg.modules.business.entity.MergeColumn;
 import org.jeecg.modules.business.service.ISysDictService;
+import org.jeecg.modules.business.utils.ExcelUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.view.MiniAbstractExcelView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,32 +72,19 @@ public class SelfEntityExcelView extends MiniAbstractExcelView {
         HSSFWorkbook workbook = new HSSFWorkbook();
         HSSFSheet sheet = workbook.createSheet(sheetName);//创建一个sheet-test1
         //设置单元格风格，居中对齐.  title的样式
-        HSSFCellStyle cs = workbook.createCellStyle();
-        cs.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+        HSSFCellStyle cs = ExcelUtil.getHssfCellStyle(workbook);
 
-        cs.setBorderBottom(HSSFCellStyle.BORDER_THIN); //下边框
-        cs.setBorderLeft(HSSFCellStyle.BORDER_THIN);//左边框
-        cs.setBorderTop(HSSFCellStyle.BORDER_THIN);//上边框
-        cs.setBorderRight(HSSFCellStyle.BORDER_THIN);//右边框
 
         //设置字体:
-        HSSFFont font = workbook.createFont();
-        font.setFontName("宋体");
-        font.setFontHeightInPoints((short) 16);//设置字体大小
-        font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);//粗体显示
-        cs.setFont(font);//要用到的字体格式
+        cs.setFont(  ExcelUtil.titleFont(workbook));//要用到的字体格式
 
 
         //当前列数
         int rowNum  = 0;
-        //标题
-        if(model.get(SelfExcelConstants.TITLE)!=null){
-            HSSFRow row = sheet.createRow(rowNum);
-            HSSFCell cell  = row.createCell(0);
-            cell.setCellValue(model.get(SelfExcelConstants.TITLE).toString());
-            cell.setCellStyle(cs);
-            sheet.addMergedRegion(new CellRangeAddress(0,0,0,excelSelves.size()-1));//横向：合并第一行
-            row.setHeight((short)800);
+
+        //-------标题---------------//
+        if(model.get(SelfExcelConstants.TITLE)!=null) {
+            ExcelUtil.writeTitle(model.get(SelfExcelConstants.TITLE).toString(), sheet, cs, excelSelves.size() - 1, rowNum);
             rowNum++;
         }
         //对  表头排序
@@ -109,13 +97,8 @@ public class SelfEntityExcelView extends MiniAbstractExcelView {
         });
 
         //设置单元格风格，居中对齐.  title的样式
-        HSSFCellStyle cscolumn = workbook.createCellStyle();
-        cscolumn.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+        HSSFCellStyle cscolumn = ExcelUtil.getHssfCellStyle(workbook);
 
-        cscolumn.setBorderBottom(HSSFCellStyle.BORDER_THIN); //下边框
-        cscolumn.setBorderLeft(HSSFCellStyle.BORDER_THIN);//左边框
-        cscolumn.setBorderTop(HSSFCellStyle.BORDER_THIN);//上边框
-        cscolumn.setBorderRight(HSSFCellStyle.BORDER_THIN);//右边框
         //设置字体:
         HSSFFont fontcolumn = workbook.createFont();
         cscolumn.setFont(fontcolumn);//要用到的字体格式
@@ -145,13 +128,13 @@ public class SelfEntityExcelView extends MiniAbstractExcelView {
                             //竖向合并
                             sheet.addMergedRegion(new CellRangeAddress(rowNum,rowNum+titleRows-1,j,j));
 
-                            mergeColumn(mergeColumn,excelSelf.name(),titleRows-1,rowNum,j,sheet);
+                            ExcelUtil.mergeColumn(mergeColumn,excelSelf.name(),titleRows-1,rowNum,j,sheet);
                         }else{
                             cell.setCellValue(excelSelf.father()[i]);
                             //竖向合并
                             sheet.addMergedRegion(new CellRangeAddress(rowNum,rowNum+titleRows-1-excelSelf.father().length,j,j));
 
-                            mergeColumn(mergeColumn,excelSelf.father()[i],rowNum+titleRows-1-excelSelf.father().length ,rowNum,j,sheet);
+                            ExcelUtil.mergeColumn(mergeColumn,excelSelf.father()[i],rowNum+titleRows-1-excelSelf.father().length ,rowNum,j,sheet);
 
                         }
 
@@ -161,11 +144,11 @@ public class SelfEntityExcelView extends MiniAbstractExcelView {
                         {
 
                             cell.setCellValue(excelSelf.name());
-                            mergeColumn(mergeColumn,excelSelf.name(),1 ,rowNum,j,sheet);
+                            ExcelUtil.mergeColumn(mergeColumn,excelSelf.name(),1 ,rowNum,j,sheet);
                         }else{
 
                             cell.setCellValue(excelSelf.father()[i]);
-                            mergeColumn(mergeColumn,excelSelf.father()[i],1 ,rowNum,j,sheet);
+                            ExcelUtil.mergeColumn(mergeColumn,excelSelf.father()[i],1 ,rowNum,j,sheet);
                         }
 
 
@@ -178,14 +161,14 @@ public class SelfEntityExcelView extends MiniAbstractExcelView {
                         {
                             //正常的则
                             cell.setCellValue(excelSelf.father()[i]);
-                            mergeColumn(mergeColumn,excelSelf.father()[i],1 ,rowNum,j,sheet);
+                            ExcelUtil.mergeColumn(mergeColumn,excelSelf.father()[i],1 ,rowNum,j,sheet);
 
                         }
                         else
                         {
                             //正常的则
                             cell.setCellValue(excelSelf.name());
-                            mergeColumn(mergeColumn,excelSelf.name(),1 ,rowNum,j,sheet);
+                            ExcelUtil.mergeColumn(mergeColumn,excelSelf.name(),1 ,rowNum,j,sheet);
 
                         }
 
@@ -324,19 +307,5 @@ public class SelfEntityExcelView extends MiniAbstractExcelView {
         return textValue.toString();
     }
 
-    private void mergeColumn(MergeColumn mergeColumn,String name, int rownum,int row,int column,HSSFSheet sheet){
 
-        //合并行
-        if(mergeColumn.needFirst()){
-            mergeColumn.firstColumn(name,rownum);
-        }else if(mergeColumn.isSame(name,rownum)){
-            mergeColumn.sameColumn();
-        }else if(mergeColumn.needMerge()){
-            sheet.addMergedRegion(new CellRangeAddress(row,row+rownum-1,column-mergeColumn.getSameNums(),column-1));
-            mergeColumn.init();
-            mergeColumn.firstColumn(name,rownum);
-        }else{
-            mergeColumn.init();
-        }
-    }
 }

@@ -21,11 +21,14 @@ import java.util.Map;
  */
 public interface WaterCurrentTrMapper extends BaseMapper<WaterCurrentTr> {
 
-    List<List<Map<String, Object>>> queryRealTime(Page<List<Map<String, Object>>> page, String field, String tableName,
+    List<Map<String, Object>> queryRealTime(Page<Map<String, Object>> page, String field, String tableName,
                                                   @Param("companyIds") List<String> companyIds, String area, String mn, Timestamp begin, Timestamp end);
-    List<List<Map<String, Object>>> queryMaxRealTime(Page<List<Map<String, Object>>> page, String field, String tableName,
+    List<Map<String, Object>> queryMaxRealTime(Page<Map<String, Object>> page, String field, String tableName,
                                                   @Param("companyIds") List<String> companyIds, String area, String mn);
-
+    List<Map<String, Object>> queryRealTime( String field, String tableName,
+                                                  @Param("companyIds") List<String> companyIds, String area, String mn, Timestamp begin, Timestamp end);
+    List<Map<String, Object>> queryMaxRealTime(String field, String tableName,
+                                                     @Param("companyIds") List<String> companyIds, String area, String mn);
 
 
     List<Map<String, Object>> getWaterCurrentTrList(Page<Map<String, Object>> page, String area, String companyId, String mn, String tableName);

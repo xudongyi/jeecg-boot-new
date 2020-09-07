@@ -21,8 +21,9 @@ import java.util.Map;
  */
 public interface IWaterCurrentTrService extends IService<WaterCurrentTr> {
 
-    Page<List<Map<String,Object>>> queryRealTime(Page<List<Map<String,Object>>> page,String field,String tableName, List<String> companyIds,
+    Page<Map<String,Object>> queryRealTime(Page<Map<String,Object>> page,String field,String tableName, List<String> companyIds,
                                                  String area,String mn,String dataTime_begin,String dataTime_end);
-
+    List<Map<String,Object>> queryRealTime(String field,String tableName, List<String> companyIds,
+                                                 String area,String mn,String dataTime_begin,String dataTime_end);
     IPage<Map<String, Object>> getWaterCurrentTrList(Page<Map<String, Object>> page, String area, String companyId, String mn,String tableName);
 }

@@ -14,6 +14,8 @@ import java.util.Map;
  * @Version: V1.0
  */
 public interface IWaterMinuteService extends IService<WaterMinute_2009> {
-    Page<List<Map<String,Object>>> queryMinute(Page<List<Map<String,Object>>> page, String field, String tableName, List<String> companyIds,
+    Page<Map<String,Object>> queryMinute(Page<Map<String,Object>> page, String field, String tableName, List<String> companyIds,
                                                  String area, String mn, String dataTime_begin, String dataTime_end);
+   List<Map<String,Object>> queryMinute( String field, String tableName, List<String> companyIds,
+                                               String area, String mn, String dataTime_begin, String dataTime_end);
 }
