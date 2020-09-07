@@ -25,5 +25,6 @@ public interface IWaterCurrentTrService extends IService<WaterCurrentTr> {
                                                  String area,String mn,String dataTime_begin,String dataTime_end);
     List<Map<String,Object>> queryRealTime(String field,String tableName, List<String> companyIds,
                                                  String area,String mn,String dataTime_begin,String dataTime_end);
-    IPage<Map<String, Object>> getWaterCurrentTrList(Page<Map<String, Object>> page, String area, String companyId, String mn,String tableName);
+
+    IPage<Map<String, Object>> getWaterCurrentTrList(Page<Map<String, Object>> page, String area, String companyId, String mn,String tableName,List<Integer> dataStatus,Integer offLine);
 }

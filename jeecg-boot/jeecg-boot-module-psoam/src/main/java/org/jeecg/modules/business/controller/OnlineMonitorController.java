@@ -1,17 +1,15 @@
 package org.jeecg.modules.business.controller;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateUtil;
 import org.jeecg.common.api.vo.Result;
-import org.jeecg.common.system.query.QueryGenerator;
+import org.jeecg.modules.business.entity.SiteMonitorPoint;
 import org.jeecg.modules.business.entity.SysPollutionCode;
 import org.jeecg.modules.business.entity.WaterCurrentTr;
+import org.jeecg.modules.business.service.ISiteMonitorPointService;
 import org.jeecg.modules.business.service.ISysDictService;
 import org.jeecg.modules.business.service.ISysPollutionCodeService;
 import org.jeecg.modules.business.service.IWaterCurrentTrService;
@@ -23,7 +21,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.jeecg.common.system.base.controller.JeecgController;
 import org.jeecg.modules.business.vo.Column;
-import org.jeecg.modules.business.vo.SiteMonitorPointVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.annotations.Api;
@@ -47,6 +44,17 @@ public class OnlineMonitorController extends JeecgController<WaterCurrentTr, IWa
     private ISysPollutionCodeService sysPollutionCodeService;
     @Autowired
     private ISysDictService sysDictService;
+    @Autowired
+    private ISiteMonitorPointService siteMonitorPointService;
+
+    //预警
+    List<Integer> warns = Arrays.asList(-2, -3, -4, -5, 5, 4, 3, 2);
+    //超标
+    List<Integer> standards = Arrays.asList(-1, 1);
+    //异常
+    List<Integer> abNormals = Arrays.asList(-6, 6,9);
+    //正常
+    List<Integer> normals = Arrays.asList(0);
 
     @AutoLog(value = "查询废水表头")
     @ApiOperation(value = "查询废水表头", notes = "查询废水表头")
@@ -136,7 +144,7 @@ public class OnlineMonitorController extends JeecgController<WaterCurrentTr, IWa
                 Column column = new Column();
                 String chromaUnit = sysDictService.queryDictTextByKey("allUnit", sysPollutionCode.getChromaUnit());
                 column.setTitle(sysPollutionCode.getMeaning() + "(" + chromaUnit + ")");
-                if (!"a01011".equalsIgnoreCase(sysPollutionCode.getCode()) && !"a01012".equalsIgnoreCase(sysPollutionCode.getCode()) && !"a01013".equalsIgnoreCase(sysPollutionCode.getCode()) && !"a01014".equalsIgnoreCase(sysPollutionCode.getCode())&&!"a01017".equalsIgnoreCase(sysPollutionCode.getCode())) {
+                if (!"a01011".equalsIgnoreCase(sysPollutionCode.getCode()) && !"a01012".equalsIgnoreCase(sysPollutionCode.getCode()) && !"a01013".equalsIgnoreCase(sysPollutionCode.getCode()) && !"a01014".equalsIgnoreCase(sysPollutionCode.getCode()) && !"a01017".equalsIgnoreCase(sysPollutionCode.getCode())) {
                     Column childColumn = new Column();
                     childColumn.setTitle("浓度");
                     childColumn.setDataIndex(sysPollutionCode.getCode() + "_RTD");
@@ -148,7 +156,7 @@ public class OnlineMonitorController extends JeecgController<WaterCurrentTr, IWa
                     childColumnZs.setDataIndex(sysPollutionCode.getCode() + "_ZSRTD");
                     childColumns.add(childColumnZs);
                 }
-                if(CollectionUtil.isNotEmpty(childColumns)){
+                if (CollectionUtil.isNotEmpty(childColumns)) {
                     column.setChildren(childColumns);
                 }
                 columns.add(column);
@@ -172,13 +180,87 @@ public class OnlineMonitorController extends JeecgController<WaterCurrentTr, IWa
         String area = req.getParameter("area");
         String companyId = req.getParameter("companyId");
         String mn = req.getParameter("mn");
+        String dataStatus = req.getParameter("dataStatus");
         //表名
         String currTime = DateUtil.format(DateUtil.date(), "yyyyMM");
-        String tableName = req.getParameter("tableName")+currTime.substring(2);
-        Page<Map<String,Object>> page = new Page<>(pageNo, pageSize);
-        IPage<Map<String,Object>> pageList = waterCurrentTrService.getWaterCurrentTrList(page,area,companyId,mn,tableName);
+        String tableName = req.getParameter("tableName") + currTime.substring(2);
+        Page<Map<String, Object>> page = new Page<>(pageNo, pageSize);
+        IPage<Map<String, Object>> pageList = null;
+        switch(dataStatus){
+            case "total" :
+                pageList = waterCurrentTrService.getWaterCurrentTrList(page, area, companyId, mn, tableName,null,null);
+                break;
+            case "normal" ://正常
+                pageList = waterCurrentTrService.getWaterCurrentTrList(page, area, companyId, mn, tableName,normals,null);
+                break;
+            case "warn" ://预警
+                pageList = waterCurrentTrService.getWaterCurrentTrList(page, area, companyId, mn, tableName,warns,null);
+                break;
+            case "standard" ://超标
+                pageList = waterCurrentTrService.getWaterCurrentTrList(page, area, companyId, mn, tableName,standards,null);
+                break;
+            case "abnormal" ://异常
+                pageList = waterCurrentTrService.getWaterCurrentTrList(page, area, companyId, mn, tableName,abNormals,null);
+                break;
+            case "offline" ://离线
+                pageList = waterCurrentTrService.getWaterCurrentTrList(page, area, companyId, mn, tableName,null,0);
+                break;
+            default : //可选
+                //语句
+        }
         return Result.ok(pageList);
     }
 
+
+    /*
+    1：超过超标上限值 -1：超过超标下限值
+    2：超过一级预警上限值 -2：超过一级预警下限值
+    3：超过二级预警上限值 -3：超过二级预警下限值
+    4：超过三级预警上限值 -4：超过三级预警下限值
+    5：超过四级预警上限值 -5：超过四级预警下限值
+    6：超过异常上限值 -6：超过异常下限值
+    7：数据超量程
+    8：超过量程上限值 -8：超过量程下限值
+    9：数据异常
+    */
+    @AutoLog(value = "查询站点各状态数量")
+    @ApiOperation(value = "查询站点数量", notes = "查询站点数量")
+    @GetMapping(value = "/queryCompanyFlagNum")
+    public Result<?> queryCompanyFlagNum(HttpServletRequest req) {
+        String area = req.getParameter("area");
+        String companyId = req.getParameter("companyId");
+        String mn = req.getParameter("mn");
+        String type = req.getParameter("type");
+        String currTime = DateUtil.format(DateUtil.date(), "yyyyMM");
+        String tableName = req.getParameter("tableName") + currTime.substring(2);
+        //查询到全部数量
+        int total = siteMonitorPointService.queryCompanyFlagNum(area, companyId, mn, type, null,tableName,null);
+        int normal = 0;
+        int warn = 0;
+        int standard = 0;
+        int abnormal = 0;
+        int offline = 0;
+        if (total > 0) {
+            //查询预警数量
+            warn = siteMonitorPointService.queryCompanyFlagNum(area, companyId, mn, type, warns,tableName,1);
+            //查询超标数量
+            standard = siteMonitorPointService.queryCompanyFlagNum(area, companyId, mn, type, standards,tableName,1);
+            //查询异常数量
+            abnormal = siteMonitorPointService.queryCompanyFlagNum(area, companyId, mn, type, abNormals,tableName,1);
+            //离线
+            offline = siteMonitorPointService.queryCompanyFlagNum(area, companyId, mn, type, null,tableName,0);
+            //查询正常
+            normal = siteMonitorPointService.queryCompanyFlagNum(area,companyId,mn,type,normals,tableName,1);
+        }
+        //组织返回值
+        Map<String, Integer> resultMap = new HashMap<>();
+        resultMap.put("total", total);
+        resultMap.put("normal", normal);
+        resultMap.put("warn", warn);
+        resultMap.put("standard", standard);
+        resultMap.put("abnormal", abnormal);
+        resultMap.put("offline", offline);
+        return Result.ok(resultMap);
+    }
 
 }

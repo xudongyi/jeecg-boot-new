@@ -36,7 +36,7 @@ public class WaterCurrentTrServiceImpl extends ServiceImpl<WaterCurrentTrMapper,
 
     @Override
     public Page<Map<String, Object>> queryRealTime(Page<Map<String, Object>> page,String field,String tableName, List<String> companyIds,
-                                                         String area,String mn,String dataTime_begin,String dataTime_end) {
+                                                   String area,String mn,String dataTime_begin,String dataTime_end) {
         if(StrUtil.isEmpty(dataTime_begin))
         {
             return page.setRecords(waterCurrentTrMapper.queryMaxRealTime(page,field,tableName,companyIds,area,mn));
@@ -69,7 +69,7 @@ public class WaterCurrentTrServiceImpl extends ServiceImpl<WaterCurrentTrMapper,
 
     }
     @Override
-    public IPage<Map<String, Object>> getWaterCurrentTrList(Page<Map<String, Object>> page, String area, String companyId, String mn,String tableName) {
-        return page.setRecords(waterCurrentTrMapper.getWaterCurrentTrList(page,area,companyId,mn,tableName));
+    public IPage<Map<String, Object>> getWaterCurrentTrList(Page<Map<String, Object>> page, String area, String companyId, String mn,String tableName,List<Integer> dataStatus,Integer offLine) {
+        return page.setRecords(waterCurrentTrMapper.getWaterCurrentTrList(page,area,companyId,mn,tableName,dataStatus,offLine));
     }
 }
