@@ -106,7 +106,6 @@
             dataIndex:'deviceStatus',
             title:'设备状态'
           }
-
         ],
         zscolumns:[
           {

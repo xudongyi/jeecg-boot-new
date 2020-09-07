@@ -33,8 +33,6 @@ public class WaterCurrentTrServiceImpl extends ServiceImpl<WaterCurrentTrMapper,
     @Resource
     private WaterCurrentTrMapper waterCurrentTrMapper;
 
-    @Resource
-    WaterCurrentTrMapper waterCurrentTrMapper;
 
     @Override
     public Page<List<Map<String, Object>>> queryRealTime(Page<List<Map<String, Object>>> page,String field,String tableName, List<String> companyIds,
