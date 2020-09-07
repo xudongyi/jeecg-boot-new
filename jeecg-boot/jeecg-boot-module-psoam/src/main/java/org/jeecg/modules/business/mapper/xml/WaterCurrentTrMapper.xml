@@ -66,7 +66,16 @@
                 and b.company_id = #{companyId}
             </if>
             <if test="mn != null and  mn !=''">
-                and  mn =  #{mn}
+                and  a.mn =  #{mn}
+            </if>
+            <if test="dataStatus!=null">
+                and b.data_status IN
+                <foreach collection="dataStatus" item="status" index="index" open="(" close=")" separator=",">
+                    #{status}
+                </foreach>
+            </if>
+            <if test="offLine !=null">
+                and b.online_status =  #{offLine}
             </if>
     </select>
 </mapper>

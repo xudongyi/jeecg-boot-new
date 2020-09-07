@@ -39,15 +39,21 @@
       </a-form>
     </div>
     <!-- 查询区域-END -->
-    
+
     <!-- 操作按钮区域 -->
     <div class="table-operator">
-      <a-button @click="handleAdd" type="primary" >总数</a-button>
-      <a-button @click="handleAdd" type="primary" >正常</a-button>
-      <a-button @click="handleAdd" type="primary" >预警</a-button>
-      <a-button @click="handleAdd" type="primary" >超标</a-button>
-      <a-button @click="handleAdd" type="primary" >异常</a-button>
-      <a-button @click="handleAdd" type="primary" >离线</a-button>
+      <a-button :ghost="checkedRadio!=='total'" @click="check('total')" :style="checkedRadio==='total'?radio_check:{}"
+                class="radio-column total">总数&#12288;{{companyFlagNum.total}}</a-button>
+      <a-button :ghost="checkedRadio!=='normal'" @click="check('normal')" :style="checkedRadio==='normal'?radio_check:{}"
+                class="radio-column normal">正常&#12288;{{companyFlagNum.normal}}</a-button>
+      <a-button :ghost="checkedRadio!=='warn'" @click="check('warn')" :style="checkedRadio==='warn'?radio_check:{}"
+                class="radio-column warn">预警&#12288;{{companyFlagNum.warn}}</a-button>
+      <a-button :ghost="checkedRadio!=='standard'" @click="check('standard')" :style="checkedRadio==='standard'?radio_check:{}"
+                class="radio-column standard">超标&#12288;{{companyFlagNum.standard}}</a-button>
+      <a-button :ghost="checkedRadio!=='abnormal'" @click="check('abnormal')" :style="checkedRadio==='abnormal'?radio_check:{}"
+                class="radio-column abnormal">异常&#12288;{{companyFlagNum.abnormal}}</a-button>
+      <a-button :ghost="checkedRadio!=='offline'" @click="check('offline')" :style="checkedRadio==='offline'?radio_check:{}"
+                class="radio-column offline">离线&#32;{{companyFlagNum.offline}}</a-button>
     </div>
 
     <!-- table区域-begin -->
@@ -111,15 +117,13 @@
 </template>
 
 <script>
-  import {loadAreaDate} from '../component/areaUtil'
   import '@/assets/less/TableExpand.less'
-  import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import { mixinDevice } from '@/utils/mixin'
-  import {queryWaterColumns, queryCompanyName, querySiteNameAndMn} from "../../requestAction/request";
-  import Vue from 'vue'
-  import AreaHandler from "../component/AreaHandler";
+  import {mixinDevice} from '@/utils/mixin'
+  import {queryCompanyFlagNum, queryWaterColumns} from "../../requestAction/request";
   import AreaLinkSelect from '../component/AreaLinkSelect'
   import {tableMixin} from "../mixin/tableMixin";
+  import {mapButton} from "../constants/colorConstant";
+
   export default {
     name: "WaterCurrentTrList",
     mixins:[mixinDevice,tableMixin],
@@ -131,6 +135,7 @@
         scroll:{},
         description: '实时监控（废水）',
         items:[],
+        companyFlagNum:{},
         siteOriginal:[],
         areaHandler:'',
         companyNames:[],
@@ -139,9 +144,11 @@
         siteArea:'',
         allowClear:true,
         name:'',
+        checkedRadio:"total",
         queryParam: {
           companyIds:this.$store.getters.userInfo.companyIds.join(','),
-          tableName:"water_current_tr_"
+          tableName:"water_current_tr_",
+          dataStatus:"total"
         },
         siteType:0,
         //表头
@@ -204,7 +211,15 @@
       searchReset(){
 
       },
-      handleAdd(){
+      searchCompanyFlagNum(){
+        debugger
+        let that = this;
+        that.queryParam.type = that.siteType;
+        queryCompanyFlagNum(that.queryParam).then(res => {
+          if(res.result){
+            that.companyFlagNum = res.result;
+          }
+        })
 
       },
       renderEmpty(val){
@@ -216,7 +231,6 @@
         let that = this;
         that.queryParam.type = that.siteType;
         queryWaterColumns(that.queryParam).then(res => {
-          console.log(res.result)
           if(res.result){
             that.defColumns=[];
             for(var i=0;i<this.flexColumns.length;i++){
@@ -232,16 +246,77 @@
       },
       searchQuery() {
         this.getColumns();
+        this.searchCompanyFlagNum();
+        this.loadData(1);
+      },
+      check(val){
+        let _this = this;
+        this.checkedRadio = val;
+        this.queryParam.dataStatus = val;
         this.loadData(1);
       },
     },
     created() {
       this.getColumns();
       this.queryCompanyAndSite();
+      this.searchCompanyFlagNum();
       this.loadData(1);
-    }
+    },
+    computed:{
+      radio_check(){
+        return {
+          color:'white',
+          background: mapButton[this.checkedRadio],
+          'border-color': mapButton[this.checkedRadio],
+        }
+      },
+    },
   }
 </script>
 <style scoped>
   @import '~@assets/less/common.less';
+  .radio-column{
+    font-size:13px;
+    border-width: 1px ;
+    width: 80px;
+    height: 30px;
+    border-radius: 4px;
+    margin-left: 10px;
+    padding: 0;
+    text-align: center;
+  }
+  .total{
+    color: #0098A1;
+    background: #0098A1;
+    border-color:#0098A1;
+  }
+  .normal{
+    color: #00D660;;
+    background: #00D660;
+    border-color:#00D660;
+
+  }
+  .warn{
+    color: #FF9810;
+    background: #FF9810;
+    border-color:#FF9810;
+
+  }
+  .standard{
+    color: #FF1212;
+    background: #FF1212;
+    border-color:#FF1212;
+  }
+  .abnormal{
+    color: #FF40FF;
+    background: #FF40FF;
+    border-color:#FF40FF;
+
+  }
+  .offline{
+    color: #D2D2D2;
+    background: #D2D2D2;
+    border-color:#D2D2D2;
+
+  }
 </style>

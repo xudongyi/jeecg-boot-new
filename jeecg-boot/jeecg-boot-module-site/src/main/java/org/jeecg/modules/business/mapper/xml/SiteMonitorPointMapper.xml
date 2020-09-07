@@ -68,4 +68,32 @@
         where warn_userid = (#{warnUserid}) )
     </select>
 
+    <select id="queryCompanyFlagNum" resultType="int">
+        SELECT
+            count( 1 )
+        FROM
+            site_monitor_point a
+        WHERE
+        a.site_state = '1'  AND a.site_type = #{type}
+        and a.mn in (select mn from ${tableName})
+        <if test="area != null and  area !=''">
+            and a.area = #{area}
+        </if>
+        <if test="companyId != null and  companyId !=''">
+            and a.company_id = #{companyId}
+        </if>
+        <if test="mn != null and  mn !=''">
+            and  a.mn =  #{mn}
+        </if>
+        <if test="dataStatus!=null">
+            and a.data_status IN
+            <foreach collection="dataStatus" item="status" index="index" open="(" close=")" separator=",">
+                #{status}
+            </foreach>
+        </if>
+        <if test="offline!=null">
+           and a.online_status=#{offline}
+        </if>
+    </select>
+
 </mapper>

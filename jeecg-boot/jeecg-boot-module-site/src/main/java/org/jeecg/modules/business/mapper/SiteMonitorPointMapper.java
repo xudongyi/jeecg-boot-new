@@ -17,4 +17,6 @@ public interface SiteMonitorPointMapper extends BaseMapper<SiteMonitorPoint> {
 
     List<SiteMonitorPointVO> getSiteMonitorPointList(Page<SiteMonitorPointVO> page,String siteType,String siteState,String siteName,String companyId,String siteLevel,String area,String mn);
     List<SiteMonitorPoint> getSiteMonitorPoint(String warnUserid);
+
+    Integer queryCompanyFlagNum(String area, String companyId, String mn, String type, List<Integer> dataStatus,String tableName,Integer offline);
 }

@@ -51,6 +51,11 @@ public class SiteMonitorPointServiceImpl extends ServiceImpl<SiteMonitorPointMap
         return page.setRecords(siteMonitorPointMapper.getSiteMonitorPointList(page,siteType,siteState,siteName,companyId,siteLevel,area,mn));
     }
 
+    @Override
+    public Integer queryCompanyFlagNum(String area, String companyId, String mn, String type, List<Integer> dataStatus,String tableName,Integer offline) {
+        return siteMonitorPointMapper.queryCompanyFlagNum(area,companyId,mn,type,dataStatus,tableName,offline);
+    }
+
     private void addElements(String key,String value,Integer counts,List<Map<String,String>> basicInfoMenus){
         Map<String,String> param = new HashMap<>(2);
         param.put("key",key);

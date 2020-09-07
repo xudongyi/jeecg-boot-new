@@ -28,5 +28,5 @@ public interface WaterCurrentTrMapper extends BaseMapper<WaterCurrentTr> {
 
 
 
-    List<Map<String, Object>> getWaterCurrentTrList(Page<Map<String, Object>> page, String area, String companyId, String mn, String tableName);
+    List<Map<String, Object>> getWaterCurrentTrList(Page<Map<String, Object>> page, String area, String companyId, String mn, String tableName,List<Integer> dataStatus,Integer offLine);
 }

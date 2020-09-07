@@ -164,4 +164,7 @@ public class SiteMonitorPoint implements Serializable {
 	@Excel(name = "数采仪MN号", width = 15)
     @ApiModelProperty(value = "数采仪MN号")
     private java.lang.String mn;
+
+	@ApiModelProperty(value = "在线状态")
+	private java.lang.Integer onlineStatus;
 }

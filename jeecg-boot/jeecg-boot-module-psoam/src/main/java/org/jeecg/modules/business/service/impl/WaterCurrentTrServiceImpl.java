@@ -52,7 +52,7 @@ public class WaterCurrentTrServiceImpl extends ServiceImpl<WaterCurrentTrMapper,
 
     }
     @Override
-    public IPage<Map<String, Object>> getWaterCurrentTrList(Page<Map<String, Object>> page, String area, String companyId, String mn,String tableName) {
-        return page.setRecords(waterCurrentTrMapper.getWaterCurrentTrList(page,area,companyId,mn,tableName));
+    public IPage<Map<String, Object>> getWaterCurrentTrList(Page<Map<String, Object>> page, String area, String companyId, String mn,String tableName,List<Integer> dataStatus,Integer offLine) {
+        return page.setRecords(waterCurrentTrMapper.getWaterCurrentTrList(page,area,companyId,mn,tableName,dataStatus,offLine));
     }
 }
