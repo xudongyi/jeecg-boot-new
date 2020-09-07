@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.jeecg.modules.business.mapper.VocHourMapper">
+<mapper namespace="org.jeecg.modules.business.mapper.VocCurrentTrMapper">
 
-    <select id="queryHour"  resultType="Map">
-        select A.id,company_name,data_time,B.mn,B.site_name,${field} from voc_hour  A
+    <select id="queryRealTime"  resultType="Map">
+        select A.id,company_name,data_time,B.mn,B.site_name,${field} from ${tableName}  A
         inner join (select M.*,N.MN,N.site_name from (
         select company_id,company_name from company_base A inner join company_baseinfo B
         on A.id = B.company_id AND B.status ='2' where company_id in
@@ -25,8 +25,8 @@
         )B ON A.MN = B.MN
         where A.data_time <![CDATA[ <= ]]> #{end} and A.data_time <![CDATA[ >= ]]> #{begin}
     </select>
-    <select id="queryMaxHour"  resultType="Map">
-        select A.id,company_name,C.data_time,B.mn,B.site_name,${field} from voc_hour  A
+    <select id="queryMaxRealTime"  resultType="Map">
+        select A.id,company_name,C.data_time,B.mn,B.site_name,${field} from ${tableName}  A
         inner join (select M.*,N.MN,N.site_name from (
         select company_id,company_name from company_base A inner join company_baseinfo B
         on A.id = B.company_id AND B.status ='2' where company_id in
@@ -45,7 +45,7 @@
         </if>
         ORDER BY company_id
         )B ON A.MN = B.MN
-        inner join (select max(DATA_TIME) DATA_TIME,mn from voc_hour group by mn) C
+        inner join (select max(DATA_TIME) DATA_TIME,mn from ${tableName} group by mn) C
         ON A.MN = C.MN and A.DATA_TIME = C.DATA_TIME
     </select>
 
