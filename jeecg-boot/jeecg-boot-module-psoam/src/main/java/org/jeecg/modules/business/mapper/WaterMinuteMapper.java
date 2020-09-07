@@ -16,10 +16,13 @@ import java.util.Map;
  * @Version: V1.0
  */
 public interface WaterMinuteMapper extends BaseMapper<WaterMinute_2009> {
-    List<List<Map<String, Object>>> queryMinute(Page<List<Map<String, Object>>> page, String field, String tableName,
+    List<Map<String, Object>> queryMinute(Page<Map<String, Object>> page, String field, String tableName,
                                                   @Param("companyIds") List<String> companyIds, String area, String mn, Timestamp begin, Timestamp end);
-    List<List<Map<String, Object>>> queryMaxMinute(Page<List<Map<String, Object>>> page, String field, String tableName,
+    List<Map<String, Object>> queryMaxMinute(Page<Map<String, Object>> page, String field, String tableName,
                                                      @Param("companyIds") List<String> companyIds, String area, String mn);
 
-
+    List<Map<String, Object>> queryMinute(String field, String tableName,
+                                                @Param("companyIds") List<String> companyIds, String area, String mn, Timestamp begin, Timestamp end);
+    List<Map<String, Object>> queryMaxMinute(String field, String tableName,
+                                                   @Param("companyIds") List<String> companyIds, String area, String mn);
 }

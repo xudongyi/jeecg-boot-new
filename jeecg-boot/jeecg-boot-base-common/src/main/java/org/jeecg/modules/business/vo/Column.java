@@ -14,4 +14,13 @@ public class Column {
     private String dataIndex;
 
     private List<Column> children;
+
+    public boolean hasChildren(){
+        return children!=null&&!children.isEmpty();
+    }
+    public Column(){}
+    public Column(String title,String dataIndex){
+        this.title = title;
+        this.dataIndex = dataIndex;
+    }
 }

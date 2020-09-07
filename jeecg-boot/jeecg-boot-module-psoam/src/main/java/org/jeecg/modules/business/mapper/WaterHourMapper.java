@@ -16,9 +16,12 @@ import java.util.Map;
  * @Version: V1.0
  */
 public interface WaterHourMapper extends BaseMapper<WaterHour> {
-    List<List<Map<String, Object>>> queryHour(Page<List<Map<String, Object>>> page, String field,
+    List<Map<String, Object>> queryHour(Page<Map<String, Object>> page, String field,
                                                 @Param("companyIds") List<String> companyIds, String area, String mn, Timestamp begin, Timestamp end);
-    List<List<Map<String, Object>>> queryMaxHour(Page<List<Map<String, Object>>> page, String field,
+    List<Map<String, Object>> queryMaxHour(Page<Map<String, Object>> page, String field,
                                                    @Param("companyIds") List<String> companyIds, String area, String mn);
-
+    List<Map<String, Object>> queryHour(String field,
+                                              @Param("companyIds") List<String> companyIds, String area, String mn, Timestamp begin, Timestamp end);
+    List<Map<String, Object>> queryMaxHour( String field,
+                                                 @Param("companyIds") List<String> companyIds, String area, String mn);
 }

@@ -29,7 +29,7 @@ public class WaterMinuteServiceImpl extends ServiceImpl<WaterMinuteMapper, Water
     WaterMinuteMapper waterMinuteMapper;
 
     @Override
-    public Page<List<Map<String, Object>>> queryMinute(Page<List<Map<String, Object>>> page, String field, String tableName, List<String> companyIds,
+    public Page<Map<String, Object>> queryMinute(Page<Map<String, Object>> page, String field, String tableName, List<String> companyIds,
                                                          String area, String mn, String dataTime_begin, String dataTime_end) {
         if(StrUtil.isEmpty(dataTime_begin))
         {
@@ -42,7 +42,20 @@ public class WaterMinuteServiceImpl extends ServiceImpl<WaterMinuteMapper, Water
             Timestamp end = DateUtil.parse(dataTime_end, PollutionSource.DataFormat.MINUTE).toTimestamp();
             return page.setRecords(waterMinuteMapper.queryMinute(page,field,tableName,companyIds,area,mn,begin,end));
         }
+    }
+    @Override
+    public List<Map<String, Object>> queryMinute(String field, String tableName, List<String> companyIds,
+                                                 String area, String mn, String dataTime_begin, String dataTime_end) {
+        if(StrUtil.isEmpty(dataTime_begin))
+        {
+            return waterMinuteMapper.queryMaxMinute(field,tableName,companyIds,area,mn);
 
-
+        }
+        else
+        {
+            Timestamp begin = DateUtil.parse(dataTime_begin, PollutionSource.DataFormat.MINUTE).toTimestamp();
+            Timestamp end = DateUtil.parse(dataTime_end, PollutionSource.DataFormat.MINUTE).toTimestamp();
+            return waterMinuteMapper.queryMinute(field,tableName,companyIds,area,mn,begin,end);
+        }
     }
 }

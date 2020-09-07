@@ -14,6 +14,8 @@ import java.util.Map;
  * @Version: V1.0
  */
 public interface IWaterDayService extends IService<WaterDay> {
-    Page<List<Map<String,Object>>> queryDay(Page<List<Map<String,Object>>> page, String field, List<String> companyIds,
+    Page<Map<String,Object>> queryDay(Page<Map<String,Object>> page, String field, List<String> companyIds,
                                              String area, String mn, String dataTime_begin, String dataTime_end);
+   List<Map<String,Object>> queryDay( String field, List<String> companyIds,
+                                            String area, String mn, String dataTime_begin, String dataTime_end);
 }

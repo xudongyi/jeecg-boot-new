@@ -35,8 +35,8 @@ public class WaterCurrentTrServiceImpl extends ServiceImpl<WaterCurrentTrMapper,
 
 
     @Override
-    public Page<List<Map<String, Object>>> queryRealTime(Page<List<Map<String, Object>>> page,String field,String tableName, List<String> companyIds,
-                                                         String area,String mn,String dataTime_begin,String dataTime_end) {
+    public Page<Map<String, Object>> queryRealTime(Page<Map<String, Object>> page,String field,String tableName, List<String> companyIds,
+                                                   String area,String mn,String dataTime_begin,String dataTime_end) {
         if(StrUtil.isEmpty(dataTime_begin))
         {
             return page.setRecords(waterCurrentTrMapper.queryMaxRealTime(page,field,tableName,companyIds,area,mn));
@@ -47,6 +47,23 @@ public class WaterCurrentTrServiceImpl extends ServiceImpl<WaterCurrentTrMapper,
             Timestamp begin = DateUtil.parse(dataTime_begin, PollutionSource.DataFormat.REALTIME).toTimestamp();
             Timestamp end = DateUtil.parse(dataTime_end, PollutionSource.DataFormat.REALTIME).toTimestamp();
             return page.setRecords(waterCurrentTrMapper.queryRealTime(page,field,tableName,companyIds,area,mn,begin,end));
+        }
+
+
+    }
+    @Override
+    public List<Map<String, Object>> queryRealTime(String field,String tableName, List<String> companyIds,
+                                                         String area,String mn,String dataTime_begin,String dataTime_end) {
+        if(StrUtil.isEmpty(dataTime_begin))
+        {
+            return waterCurrentTrMapper.queryMaxRealTime(field,tableName,companyIds,area,mn);
+
+        }
+        else
+        {
+            Timestamp begin = DateUtil.parse(dataTime_begin, PollutionSource.DataFormat.REALTIME).toTimestamp();
+            Timestamp end = DateUtil.parse(dataTime_end, PollutionSource.DataFormat.REALTIME).toTimestamp();
+            return waterCurrentTrMapper.queryRealTime(field,tableName,companyIds,area,mn,begin,end);
         }
 
 

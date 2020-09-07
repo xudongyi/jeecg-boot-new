@@ -28,7 +28,7 @@ public class WaterHourServiceImpl extends ServiceImpl<WaterHourMapper, WaterHour
     WaterHourMapper waterHourMapper;
 
     @Override
-    public Page<List<Map<String, Object>>> queryHour(Page<List<Map<String, Object>>> page, String field, List<String> companyIds,
+    public Page<Map<String, Object>> queryHour(Page<Map<String, Object>> page, String field, List<String> companyIds,
                                                        String area, String mn, String dataTime_begin, String dataTime_end) {
         if(StrUtil.isEmpty(dataTime_begin))
         {
@@ -41,7 +41,20 @@ public class WaterHourServiceImpl extends ServiceImpl<WaterHourMapper, WaterHour
             Timestamp end = DateUtil.parse(dataTime_end, PollutionSource.DataFormat.HOUR).toTimestamp();
             return page.setRecords(waterHourMapper.queryHour(page,field,companyIds,area,mn,begin,end));
         }
+    }
+    @Override
+    public List<Map<String, Object>> queryHour( String field, List<String> companyIds,
+                                               String area, String mn, String dataTime_begin, String dataTime_end) {
+        if(StrUtil.isEmpty(dataTime_begin))
+        {
+            return waterHourMapper.queryMaxHour(field,companyIds,area,mn);
 
-
+        }
+        else
+        {
+            Timestamp begin = DateUtil.parse(dataTime_begin, PollutionSource.DataFormat.HOUR).toTimestamp();
+            Timestamp end = DateUtil.parse(dataTime_end, PollutionSource.DataFormat.HOUR).toTimestamp();
+            return waterHourMapper.queryHour(field,companyIds,area,mn,begin,end);
+        }
     }
 }
