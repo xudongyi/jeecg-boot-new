@@ -16,4 +16,6 @@ import java.util.Map;
 public interface IVocHourService extends IService<VocHour> {
     Page<List<Map<String,Object>>> queryHour(Page<List<Map<String,Object>>> page, String field, List<String> companyIds,
                                              String area, String mn, String dataTime_begin, String dataTime_end);
+    List<Map<String,Object>> queryHour(String field, List<String> companyIds,
+                                       String area, String mn, String dataTime_begin, String dataTime_end);
 }

@@ -57,7 +57,7 @@
             <span style="float: left;overflow: hidden;margin-left: 20px" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
 <!--              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>-->
-              <a-button type="primary" icon="download" style="margin-left: 8px" @click="handleExportXls('报')">导出</a-button>
+              <a-button type="primary" icon="download" style="margin-left: 8px" @click="handleExportXls('历史数据(VOCs)')">导出</a-button>
             </span>
           </a-col>
 
@@ -195,7 +195,7 @@
           defColumns: [],
           url:{
             list:'/psoam/voc/queryVocColumns',
-            exportXlsUrl:'/psoam/Water/exportXlsWaterHistory',
+            exportXlsUrl:'/psoam/voc/exportVocHistory',
           }
         }
       },
@@ -225,9 +225,6 @@
         },
         searchReset(){
           this.loadData(1);
-        },
-        handleExportXls(){
-
         },
         //处理一下scroll
         dealScroll(){

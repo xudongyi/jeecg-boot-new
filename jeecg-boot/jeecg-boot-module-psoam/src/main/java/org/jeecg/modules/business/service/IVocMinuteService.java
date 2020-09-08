@@ -16,4 +16,6 @@ import java.util.Map;
 public interface IVocMinuteService extends IService<VocMinute_2009> {
     Page<List<Map<String,Object>>> queryMinute(Page<List<Map<String,Object>>> page, String field, String tableName, List<String> companyIds,
                                                String area, String mn, String dataTime_begin, String dataTime_end);
+    List<Map<String,Object>> queryMinute( String field, String tableName, List<String> companyIds,
+                                          String area, String mn, String dataTime_begin, String dataTime_end);
 }

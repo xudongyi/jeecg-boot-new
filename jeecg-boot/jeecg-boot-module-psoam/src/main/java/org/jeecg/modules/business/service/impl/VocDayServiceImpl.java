@@ -47,4 +47,19 @@ public class VocDayServiceImpl extends ServiceImpl<VocDayMapper, VocDay> impleme
             return page.setRecords(vocDayMapper.queryDay(page,field,companyIds,area,mn,begin,end));
         }
     }
+
+    @Override
+    public List<Map<String, Object>> queryDay(String field, List<String> companyIds, String area, String mn, String dataTime_begin, String dataTime_end) {
+        if(StrUtil.isEmpty(dataTime_begin))
+        {
+            return vocDayMapper.queryMaxDay(field,companyIds,area,mn);
+
+        }
+        else
+        {
+            Timestamp begin = DateUtil.parse(dataTime_begin, PollutionSource.DataFormat.DAY).toTimestamp();
+            Timestamp end = DateUtil.parse(dataTime_end, PollutionSource.DataFormat.DAY).toTimestamp();
+            return vocDayMapper.queryDay(field,companyIds,area,mn,begin,end);
+        }
+    }
 }

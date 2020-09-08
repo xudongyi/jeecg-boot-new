@@ -42,4 +42,19 @@ public class VocHourServiceImpl extends ServiceImpl<VocHourMapper, VocHour> impl
             return page.setRecords(vocHourMapper.queryHour(page,field,companyIds,area,mn,begin,end));
         }
     }
+
+    @Override
+    public List<Map<String, Object>> queryHour(String field, List<String> companyIds, String area, String mn, String dataTime_begin, String dataTime_end) {
+        if(StrUtil.isEmpty(dataTime_begin))
+        {
+            return vocHourMapper.queryMaxHour(field,companyIds,area,mn);
+
+        }
+        else
+        {
+            Timestamp begin = DateUtil.parse(dataTime_begin, PollutionSource.DataFormat.HOUR).toTimestamp();
+            Timestamp end = DateUtil.parse(dataTime_end, PollutionSource.DataFormat.HOUR).toTimestamp();
+            return vocHourMapper.queryHour(field,companyIds,area,mn,begin,end);
+        }
+    }
 }

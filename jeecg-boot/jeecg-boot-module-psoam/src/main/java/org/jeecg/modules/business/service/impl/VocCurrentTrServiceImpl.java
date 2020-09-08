@@ -42,4 +42,19 @@ public class VocCurrentTrServiceImpl extends ServiceImpl<VocCurrentTrMapper, Voc
             return page.setRecords(vocCurrentTrMapper.queryRealTime(page,field,tableName,companyIds,area,mn,begin,end));
         }
     }
+
+    @Override
+    public List<Map<String, Object>> queryRealTime(String field, String tableName, List<String> companyIds, String area, String mn, String dataTime_begin, String dataTime_end) {
+        if(StrUtil.isEmpty(dataTime_begin))
+        {
+            return vocCurrentTrMapper.queryMaxRealTime(field,tableName,companyIds,area,mn);
+
+        }
+        else
+        {
+            Timestamp begin = DateUtil.parse(dataTime_begin, PollutionSource.DataFormat.REALTIME).toTimestamp();
+            Timestamp end = DateUtil.parse(dataTime_end, PollutionSource.DataFormat.REALTIME).toTimestamp();
+            return vocCurrentTrMapper.queryRealTime(field,tableName,companyIds,area,mn,begin,end);
+        }
+    }
 }

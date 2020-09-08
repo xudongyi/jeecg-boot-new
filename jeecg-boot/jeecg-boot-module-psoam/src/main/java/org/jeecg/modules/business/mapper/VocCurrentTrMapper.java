@@ -20,4 +20,8 @@ public interface VocCurrentTrMapper extends BaseMapper<VocCurrentTr_2009> {
                                                   @Param("companyIds") List<String> companyIds, String area, String mn, Timestamp begin, Timestamp end);
     List<List<Map<String, Object>>> queryMaxRealTime(Page<List<Map<String, Object>>> page, String field, String tableName,
                                                      @Param("companyIds") List<String> companyIds, String area, String mn);
+    List<Map<String, Object>> queryRealTime( String field, String tableName,
+                                             @Param("companyIds") List<String> companyIds, String area, String mn, Timestamp begin, Timestamp end);
+    List<Map<String, Object>> queryMaxRealTime(String field, String tableName,
+                                               @Param("companyIds") List<String> companyIds, String area, String mn);
 }
