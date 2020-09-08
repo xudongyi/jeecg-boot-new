@@ -165,19 +165,20 @@ public class VocHistoryController {
 			 List<Column> columns = queryRealTimeColumns(sysPollutionCodes);
 			 String field = "";
 			 for(Column column:columns){
-				 field+=column.getDataIndex()+","+column.getDataIndex()+"_state,";
+				 field+=column.getDataIndex()+","+column.getDataIndex()+"_STATE,";
 			 }
 			 field = field.substring(0,field.length()-1).replaceAll("rtd_","");
 			 String tableName = Util.getTableName("voc_current_tr_",dataTime_begin);
-			 Zpage<List<Map<String,Object>>> result= new Zpage(vocCurrentTrService.queryRealTime(page,field,tableName,companyIDs,area,mn,dataTime_begin,dataTime_end));
+			 Zpage<Map<String,Object>> result= new Zpage(vocCurrentTrService.queryRealTime(page,field,tableName,companyIDs,area,mn,dataTime_begin,dataTime_end));
 			 result.setColumns(columns);
+			 result.setRecords(keyToLowerCase(result.getRecords()));
 			 return Result.ok(result);
 		 }
 		 //拼接  查询字段  companyName monName dataTime  必查询的字段
 		 //根据启用污染因子拼接动态表头
 		 List<Column> columns = queryVocColumns(sysPollutionCodes);
 		 String field = getFields(columns);
-		 Zpage<List<Map<String,Object>>> result;
+		 Zpage<Map<String,Object>> result;
 		 if(PollutionSource.DataType.MINUTE.equals(dataType))
 		 {
 			 String tableName = Util.getTableName("voc_minute_",dataTime_begin);
@@ -191,7 +192,25 @@ public class VocHistoryController {
 			 result= new Zpage(vocDayService.queryDay(page,field,companyIDs,area,mn,dataTime_begin,dataTime_end));
 		 }
 		 result.setColumns(columns);
+		 result.setRecords(keyToLowerCase(result.getRecords()));
 		 return Result.ok(result);
+	 }
+
+	 private List<Map<String,Object>> keyToLowerCase(List<Map<String,Object>> oldList){
+		 List<Map<String,Object>> newList = new ArrayList<>();
+		 for(Map<String,Object> record:oldList) {
+			 Map<String,Object> resultMap = new HashMap<>();
+			 if (record == null || record.isEmpty()){
+				 resultMap = record;
+			 }
+			 Set<String> keySet = record.keySet();
+			 for (String key:keySet){
+				 String newKey = key.toLowerCase();
+				 resultMap.put(newKey, record.get(key));
+			 }
+			 newList.add(resultMap);
+		 }
+	 	return newList;
 	 }
 
 	 private String getFields(List<Column> columns) {
@@ -213,7 +232,12 @@ public class VocHistoryController {
 				 Column column = new Column();
 				 String chromaUnit = sysDictService.queryDictTextByKey("allUnit", sysPollutionCode.getChromaUnit());
 				 column.setTitle(sysPollutionCode.getMeaning() + "(" + chromaUnit + ")");
-				 column.setDataIndex(sysPollutionCode.getCode() + "_rtd");
+				 List<Column> childColumns = new ArrayList<>();
+				 Column realTime = new Column();
+				 realTime.setTitle("实时值");
+				 realTime.setDataIndex(sysPollutionCode.getCode().toLowerCase() + "_rtd");
+				 childColumns.add(realTime);
+				 column.setChildren(childColumns);
 				 columns.add(column);
 			 }
 		 }
@@ -229,19 +253,23 @@ public class VocHistoryController {
 				 List<Column> childColumns = new ArrayList<>();
 				 Column avg = new Column();
 				 avg.setTitle("平均值（L/s）");
-				 avg.setDataIndex(sysPollutionCode.getCode() + "_avg");
+				 avg.setDataIndex(sysPollutionCode.getCode().toLowerCase() + "_avg");
+				 avg.setWidth(100);
 				 childColumns.add(avg);
 				 Column max = new Column();
 				 max.setTitle("最大值（L/s）");
-				 max.setDataIndex(sysPollutionCode.getCode() + "_max");
+				 max.setDataIndex(sysPollutionCode.getCode().toLowerCase() + "_max");
+				 max.setWidth(100);
 				 childColumns.add(max);
 				 Column min = new Column();
 				 min.setTitle("最小值（L/s）");
-				 min.setDataIndex(sysPollutionCode.getCode() + "_min");
+				 min.setDataIndex(sysPollutionCode.getCode().toLowerCase() + "_min");
+				 min.setWidth(100);
 				 childColumns.add(min);
 				 Column cou = new Column();
 				 cou.setTitle("排放量（吨）");
-				 cou.setDataIndex(sysPollutionCode.getCode() + "_cou");
+				 cou.setDataIndex(sysPollutionCode.getCode().toLowerCase() + "_cou");
+				 cou.setWidth(100);
 				 childColumns.add(cou);
 				 column.setChildren(childColumns);
 				 columns.add(column);

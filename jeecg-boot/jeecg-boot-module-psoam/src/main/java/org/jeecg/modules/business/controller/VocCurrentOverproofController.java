@@ -73,62 +73,6 @@ public class VocCurrentOverproofController extends JeecgController<VocCurrentOve
 	}
 	
 	/**
-	 *   添加
-	 *
-	 * @param vocCurrentOverproof
-	 * @return
-	 */
-	@AutoLog(value = "voc_current_overproof-添加")
-	@ApiOperation(value="voc_current_overproof-添加", notes="voc_current_overproof-添加")
-	@PostMapping(value = "/add")
-	public Result<?> add(@RequestBody VocCurrentOverproof vocCurrentOverproof) {
-		vocCurrentOverproofService.save(vocCurrentOverproof);
-		return Result.ok("添加成功！");
-	}
-	
-	/**
-	 *  编辑
-	 *
-	 * @param vocCurrentOverproof
-	 * @return
-	 */
-	@AutoLog(value = "voc_current_overproof-编辑")
-	@ApiOperation(value="voc_current_overproof-编辑", notes="voc_current_overproof-编辑")
-	@PutMapping(value = "/edit")
-	public Result<?> edit(@RequestBody VocCurrentOverproof vocCurrentOverproof) {
-		vocCurrentOverproofService.updateById(vocCurrentOverproof);
-		return Result.ok("编辑成功!");
-	}
-	
-	/**
-	 *   通过id删除
-	 *
-	 * @param id
-	 * @return
-	 */
-	@AutoLog(value = "voc_current_overproof-通过id删除")
-	@ApiOperation(value="voc_current_overproof-通过id删除", notes="voc_current_overproof-通过id删除")
-	@DeleteMapping(value = "/delete")
-	public Result<?> delete(@RequestParam(name="id",required=true) String id) {
-		vocCurrentOverproofService.removeById(id);
-		return Result.ok("删除成功!");
-	}
-	
-	/**
-	 *  批量删除
-	 *
-	 * @param ids
-	 * @return
-	 */
-	@AutoLog(value = "voc_current_overproof-批量删除")
-	@ApiOperation(value="voc_current_overproof-批量删除", notes="voc_current_overproof-批量删除")
-	@DeleteMapping(value = "/deleteBatch")
-	public Result<?> deleteBatch(@RequestParam(name="ids",required=true) String ids) {
-		this.vocCurrentOverproofService.removeByIds(Arrays.asList(ids.split(",")));
-		return Result.ok("批量删除成功!");
-	}
-	
-	/**
 	 * 通过id查询
 	 *
 	 * @param id
