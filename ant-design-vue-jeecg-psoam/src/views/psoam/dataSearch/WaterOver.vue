@@ -4,12 +4,12 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+          <a-col :xl="6" :lg="6" :md="6" :sm="24">
             <a-form-item label="所属区域">
               <area-link-select @change="areaChange" type="cascader" v-model="queryParam.area" show-search style="width: 100%" optionFilterProp="children"/>
             </a-form-item>
           </a-col>
-          <a-col :xl="7" :lg="7" :md="8" :sm="24">
+          <a-col :xl="6" :lg="6" :md="6" :sm="24">
             <a-form-item label="企业名称">
               <a-select v-model="queryParam.companyId" @change="companyNameChange" :allowClear="allowClear" placeholder="请选择" show-search style="width: 100%" optionFilterProp="children">
                 <!--                <a-select-option value="">请选择</a-select-option>-->
@@ -19,7 +19,7 @@
               </a-select>
             </a-form-item>
           </a-col>
-          <a-col :xl="7" :lg="7" :md="8" :sm="24">
+          <a-col :xl="6" :lg="6" :md="6" :sm="24">
             <a-form-item label="监测点名称">
               <a-select v-model="queryParam.mn" :allowClear="allowClear" placeholder="请选择" show-search style="width: 100%" optionFilterProp="children">
                 <!--                <a-select-option :value="companyIds">请选择</a-select-option>-->
@@ -29,20 +29,32 @@
               </a-select>
             </a-form-item>
           </a-col>
-          <a-col :xl="4" :lg="7" :md="8" :sm="24">
-            <a-form-item label="数据类型">
-              <a-select v-model="queryParam.typeIndex" :allowClear="allowClear" placeholder="请选择" show-search style="width: 100%" optionFilterProp="children">
-                <!--                <a-select-option :value="companyIds">请选择</a-select-option>-->
-                <a-select-option v-for="(item,index) in dataTypes" :key="item" :value="index">
-                  {{item}}
-                </a-select-option>
-              </a-select>
+          <a-col :xl="6" :lg="6" :md="6" :sm="24">
+            <a-form-item label="主要污染物">
+              <main-pollution-select pollutionType="0" @change="mainPollutionChange"></main-pollution-select>
+
             </a-form-item>
           </a-col>
 
         </a-row>
         <a-row>
-          <a-col :xl="10" :lg="11" :md="12" :sm="24" v-show="showDate">
+
+          <a-col :xl="5" :lg="6" :md="7" :sm="24" >
+            <a-form-item label="数据类型">
+              <a-radio-group default-value="a" button-style="solid">
+                <a-radio-button value="year">
+                  年
+                </a-radio-button>
+                <a-radio-button value="month">
+                  月
+                </a-radio-button>
+                <a-radio-button value="day">
+                  日
+                </a-radio-button>
+              </a-radio-group>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="10" :lg="11" :md="12" :sm="24">
             <a-form-item label="日期">
               <j-date :show-time="true" :date-format="dateFormat[queryParam.typeIndex]" placeholder="请选择开始时间" class="query-group-cust" v-model="queryParam.dataTime_begin"></j-date>
               <span class="query-group-split-cust"></span>
@@ -59,11 +71,7 @@
           </a-col>
 
         </a-row>
-        <a-row>
-          <a-col :xl="12" :lg="7" :md="8" :sm="24">
-            <a-checkbox-group v-model="checkedList" :options="plainOptions" :disabled="disabled[queryParam.typeIndex]" style="margin-left: 20px"/>
-          </a-col>
-        </a-row>
+
       </a-form>
     </div>
     <!-- 查询区域-END -->
@@ -113,12 +121,13 @@
   import Vue from 'vue'
   import AreaLinkSelect from '../component/AreaLinkSelect'
   import JDate from '@/components/jeecg/JDate.vue'
-
+  import mainPollutionSelect from "../component/mainPollutionSelect";
   export default {
     name: "WaterOver",
     components: {
       AreaLinkSelect,
-      JDate
+      JDate,
+      mainPollutionSelect
     },
     data(){
       return {
@@ -135,7 +144,6 @@
         name:'',
         dataTypes:["实时", "分钟", "小时", "日"],
         allowClear:true,
-        showDate:false,
         dateFormat:{
           0:"YYYY-MM-DD HH:mm:ss",
           1:"YYYY-MM-DD HH:mm",
@@ -353,12 +361,6 @@
           })
         }else {
           _this.items = _this.siteOriginal;
-        }
-
-        if(this.queryParam.companyId != null){
-          _this.showDate = true;
-        }else {
-          _this.showDate = false;
         }
       },
       //列设置更改事件
