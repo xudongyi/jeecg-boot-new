@@ -64,7 +64,7 @@
         </a-row>
         <a-row>
           <a-col :xl="12" :lg="7" :md="8" :sm="24">
-            <a-checkbox-group v-model="checkedList" :options="plainOptions" :disabled="disabled[queryParam.dataType]"  @change="plainChange" style="margin-left: 20px"/>
+            <a-checkbox-group v-model="checkedList" :options="plainOptions" :disabled="disabled[queryParam.dataType]"  @change="checkChange" style="margin-left: 20px"/>
           </a-col>
         </a-row>
       </a-form>
@@ -114,10 +114,9 @@
   import AreaLinkSelect from '../component/AreaLinkSelect'
   import JDate from '@/components/jeecg/JDate.vue'
   import {tableMixin} from "../mixin/tableMixin";
-  import {queryWaterColumns} from "../../requestAction/request";
   import moment from 'moment'
   export default {
-    name: "WaterHistory",
+    name: "AirHistory",
     mixins:[tableMixin],
     components: {
       AreaLinkSelect,
@@ -146,8 +145,8 @@
           'hour':{value:"YYYY-MM-DD HH",showTime:{ format: 'HH' }},
           'day':{value:"YYYY-MM-DD",showTime:false},
         },
-        checkedList:['max', 'min', 'avg',],
-        plainOptions:[{label:'最大值',value:'max'}, {label:'最小值',value:'min'}, {label:'平均值',value:'avg'}],
+        checkedList:['MAX', 'MIN', 'AVG'],
+        plainOptions:[{label:'最大值',value:'MAX'}, {label:'最小值',value:'MIN'}, {label:'平均值',value:'AVG'}],
         disabled:{'realTime':true,'minute':false,'hour':false,'day':false},
         //表头
         columns:[],
@@ -194,8 +193,8 @@
         defColumns: [],
         siteType:0,
         url:{
-           list:'/psoam/Water/queryWaterColumns',
-           exportXlsUrl:'/psoam/Water/exportWaterHistory',
+           list:'/psoam/air/queryAirHistory',
+           exportXlsUrl:'/psoam/air/exportAirHistory',
         }
 
       }
@@ -214,7 +213,7 @@
       },
 
       dataTypeChange(){
-        this.checkedList = ['max', 'min', 'avg',];
+        this.checkedList = ['MAX', 'MIN', 'AVG'];
         this.loadData(1);
       },
       //查询数据
@@ -224,7 +223,44 @@
       searchReset(){
         this.loadData(1);
       },
+      checkChange(val){
+        // console.log(val)
+        let list  = val;
+        list.push('COU');
+        console.log(this.checkedList)
+        if(this.queryParam.dataType!=='realTime'){
+          //筛选表格
+          this.initColumns();
+          console.log(this.columns)
+          if(this.checkedList.length<4){
+            let newColumns=[];
+            for(let i = 0 ; i < this.columns.length ; i++)
+            {
+              //深度克隆
+              let newColumn = {};
+              Object.keys(this.columns[i]).forEach(e=>{
+                newColumn[e] = this.columns[i][e];
+              })
+              newColumns.push(newColumn);
 
+              if(this.columns[i].children){
+                newColumns[i].children = this.columns[i].children.filter(e=>{
+                  for(let j=0 ; j < list.length ; j++){
+                    if(e.dataIndex.indexOf(list[j])>=0){
+                      return true;
+                    }
+                  }
+                  return false;
+                })
+              }
+            }
+            this.columns = newColumns
+            this.dealScroll();
+            console.log(this.defColumns)
+          }
+        }
+        // queryParam
+      },
 
       //处理一下scroll
       dealScroll(){

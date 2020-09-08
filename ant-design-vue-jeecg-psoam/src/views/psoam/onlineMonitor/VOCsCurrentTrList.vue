@@ -247,20 +247,20 @@
       searchQuery() {
         this.getColumns();
         this.searchCompanyFlagNum();
-        this.loadData(1);
+        this.creatData(1);
       },
       check(val){
         let _this = this;
         this.checkedRadio = val;
         this.queryParam.dataStatus = val;
-        this.loadData(1);
+        this.creatData(1);
       },
     },
     created() {
       this.getColumns();
       this.queryCompanyAndSite();
       this.searchCompanyFlagNum();
-      this.loadData(1);
+      this.creatData(1);
     },
     computed:{
       radio_check(){
