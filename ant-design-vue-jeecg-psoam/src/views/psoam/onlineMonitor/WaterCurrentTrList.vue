@@ -157,7 +157,7 @@
         settingColumns:[],
         defColumns:[],
         //列定义
-        flexColumns: [
+        fixedColumns: [
           {
             title: '',
             dataIndex: '',
@@ -212,7 +212,6 @@
 
       },
       searchCompanyFlagNum(){
-        debugger
         let that = this;
         that.queryParam.type = that.siteType;
         queryCompanyFlagNum(that.queryParam).then(res => {
@@ -233,8 +232,8 @@
         queryWaterColumns(that.queryParam).then(res => {
           if(res.result){
             that.defColumns=[];
-            for(var i=0;i<this.flexColumns.length;i++){
-              that.defColumns.push(this.flexColumns[i]);
+            for(var i=0;i<that.fixedColumns.length;i++){
+              that.defColumns.push(that.fixedColumns[i]);
             }
             that.scroll={x:250*res.result.length};
             for(var i=0;i<res.result.length;i++){
@@ -247,20 +246,20 @@
       searchQuery() {
         this.getColumns();
         this.searchCompanyFlagNum();
-        this.loadData(1);
+        this.creatData(1);
       },
       check(val){
         let _this = this;
         this.checkedRadio = val;
         this.queryParam.dataStatus = val;
-        this.loadData(1);
+        this.creatData(1);
       },
     },
     created() {
       this.getColumns();
       this.queryCompanyAndSite();
       this.searchCompanyFlagNum();
-      this.loadData(1);
+      this.creatData(1);
     },
     computed:{
       radio_check(){

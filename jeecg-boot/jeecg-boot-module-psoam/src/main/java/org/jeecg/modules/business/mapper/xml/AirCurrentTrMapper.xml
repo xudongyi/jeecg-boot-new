@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.business.mapper.AirCurrentTrMapper">
+    <select id="queryRealTime"  resultType="Map">
+        select A.*,company_name,data_time,B.mn,B.site_name from ${tableName}  A
+        inner join (select M.*,N.MN,N.site_name from (
+        select company_id,company_name from company_base A inner join company_baseinfo B
+        on A.id = B.company_id AND B.status ='2' where company_id in
+        <foreach collection="companyIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        <if test="area != null and area!=''">
+            and area = #{area}
+        </if>
+
+        )  M
+        INNER JOIN site_monitor_point N
+        ON M.company_id = N.company_id
+        where 1=1
+        <if test="mn != null and mn!=''">
+            and mn = #{mn}
+        </if>
+        ORDER BY company_id
+        )B ON A.MN = B.MN
+        where A.data_time <![CDATA[ <= ]]> #{end} and A.data_time <![CDATA[ >= ]]> #{begin}
+    </select>
+    <select id="queryMaxRealTime"  resultType="Map">
+        select A.*,company_name,C.data_time,B.mn,B.site_name from ${tableName}  A
+        inner join (select M.*,N.MN,N.site_name from (
+        select company_id,company_name from company_base A inner join company_baseinfo B
+        on A.id = B.company_id AND B.status ='2' where company_id in
+        <foreach collection="companyIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        <if test="area != null and area!=''">
+            and area = #{area}
+        </if>
+        )  M
+        INNER JOIN site_monitor_point N
+        ON M.company_id = N.company_id
+        where 1=1
+        <if test="mn != null and mn!=''">
+            and mn = #{mn}
+        </if>
+        ORDER BY company_id
+        )B ON A.MN = B.MN
+        inner join (select max(DATA_TIME) DATA_TIME,mn from ${tableName} group by mn) C
+        ON A.MN = C.MN and A.DATA_TIME = C.DATA_TIME
+    </select>
+    <select id="getAirCurrentTrList" resultType="Map">
+        SELECT
+        a.*,
+        b.site_name,
+        d.company_name
+        FROM
+        ${tableName} a
+        LEFT JOIN site_monitor_point b ON a.mn = b.mn
+        INNER JOIN ( SELECT MAX( DATA_TIME ) time, mn FROM  ${tableName} GROUP BY MN ) c ON a.DATA_TIME = c.time
+        AND c.mn = b.mn LEFT JOIN company_base d ON b.company_id  = d.id
+        WHERE 1=1
+        <if test="area != null and  area !=''">
+            and b.area = #{area}
+        </if>
+        <if test="companyId != null and  companyId !=''">
+            and b.company_id = #{companyId}
+        </if>
+        <if test="mn != null and  mn !=''">
+            and  a.mn =  #{mn}
+        </if>
+        <if test="dataStatus!=null">
+            and b.data_status IN
+            <foreach collection="dataStatus" item="status" index="index" open="(" close=")" separator=",">
+                #{status}
+            </foreach>
+        </if>
+        <if test="offLine !=null">
+            and b.online_status =  #{offLine}
+        </if>
+    </select>
+</mapper>
