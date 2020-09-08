@@ -103,8 +103,6 @@
       },
       /** 通过地区code获取子级 */
       loadData() {
-
-
         let pcaa = Vue.ls.get('sys_areas');
         let arr = []
         const province = pcaa['86']

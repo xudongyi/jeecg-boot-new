@@ -11,7 +11,7 @@
       :value="value"
     >
       <template slot="dataSource">
-        <a-select-option v-for="item in dataSource" :key="item.key" :title="item.key">
+        <a-select-option v-for="item in dataSource" :key="item.key" :value="item.key">
           <span className="global-search-item-count">{{item.value}}</span>
         </a-select-option>
       </template>
