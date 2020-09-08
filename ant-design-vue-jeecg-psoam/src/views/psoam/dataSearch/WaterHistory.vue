@@ -146,7 +146,7 @@
           'hour':{value:"YYYY-MM-DD HH",showTime:{ format: 'HH' }},
           'day':{value:"YYYY-MM-DD",showTime:false},
         },
-        checkedList:[],
+        checkedList:['max', 'min', 'avg',],
         plainOptions:[{label:'最大值',value:'max'}, {label:'最小值',value:'min'}, {label:'平均值',value:'avg'}],
         disabled:{'realTime':true,'minute':false,'hour':false,'day':false},
         //表头
