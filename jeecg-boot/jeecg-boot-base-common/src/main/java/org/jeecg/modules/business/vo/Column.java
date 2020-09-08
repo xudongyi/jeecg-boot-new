@@ -13,6 +13,8 @@ public class Column {
 
     private String dataIndex;
 
+    private Integer width;
+
     private List<Column> children;
 
     public boolean hasChildren(){
