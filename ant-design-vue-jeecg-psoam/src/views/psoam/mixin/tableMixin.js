@@ -99,8 +99,10 @@ export const tableMixin = {
           this.ipagination.total = res.result.total;
           console.log(this.dataSource)
         }
-        if(res.code===510){
-          this.$message.warning(res.message)
+      else{
+          this.$message.warning(res.message);
+          this.dataSource = [];
+
         }
         this.loading = false;
       })
