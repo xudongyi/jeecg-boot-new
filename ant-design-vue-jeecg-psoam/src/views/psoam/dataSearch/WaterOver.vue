@@ -214,17 +214,17 @@
       }
     },
     methods: {
-      dataTimeRender(text) {
-        return moment(text).format(this.dateFormat[this.queryParam.dataType].value)
-      },
-      handleDateChange(mom, dateStr) {
-        console.log(mom, dateStr)
-        console.log(this.dateFormat[this.queryParam.dataType].value, this.queryParam.dataTime_begin)
-      },
-      handleDateChange2(mom, dateStr) {
-        console.log(mom, dateStr)
-        this.queryParam.dataTime_end = dateStr
-      },
+      // dataTimeRender(text) {
+      //   return moment(text).format(this.dateFormat[this.queryParam.dataType].value)
+      // },
+      // handleDateChange(mom, dateStr) {
+      //   console.log(mom, dateStr)
+      //   console.log(this.dateFormat[this.queryParam.dataType].value, this.queryParam.dataTime_begin)
+      // },
+      // handleDateChange2(mom, dateStr) {
+      //   console.log(mom, dateStr)
+      //   this.queryParam.dataTime_end = dateStr
+      // },
       mainPollutionChange(value) {
         console.log(value),
         this.queryParam.pollutionCode = value.target.value;
@@ -232,8 +232,8 @@
       dataTypeChange(value) {
         console.log(value)
         this.queryParam.dataType = value.target.value;
-        this.queryParam.dataTime_end = moment(this.queryParam.dataTime_end).format(this.dateFormat[queryParam.dataType].value)
-        this.queryParam.dataTime_begin = moment(this.queryParam.dataTime_begin).format(this.dateFormat[queryParam.dataType].value)
+        this.queryParam.dataTime_end = moment(this.queryParam.dataTime_end).format(this.dateFormat[this.queryParam.dataType].value)
+        this.queryParam.dataTime_begin = moment(this.queryParam.dataTime_begin).format(this.dateFormat[this.queryParam.dataType].value)
         // this.loadData(1);
       },
       //查询数据
