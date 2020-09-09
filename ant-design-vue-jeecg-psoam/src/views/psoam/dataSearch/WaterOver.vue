@@ -97,7 +97,6 @@
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
-        :scroll="{ x: 3100 }"
         class="j-table-force-nowrap"
         @change="handleTableChange">
 
@@ -174,13 +173,13 @@
             align:"center",
             dataIndex: 'dataTime',
             customRender:function (text) {
-              return !text?"":(text.length>10?text.substr(0,10):text)
+              return moment(text).format("YYYY-MM-DD HH:mm:ss")
             }
           },
           {
             title:'监测因子',
             align:"center",
-            dataIndex: 'code'
+            dataIndex: 'meaning'
           },
           {
             title:'监测值',
@@ -195,12 +194,12 @@
           {
             title:'单位',
             align:"center",
-            dataIndex: 'unit'
+            dataIndex: 'chromaUnit'
           },
           {
             title:'超标倍数',
             align:"center",
-            dataIndex: 'overTimes'
+            dataIndex: 'multiple'
           },
         ],
         //列定义

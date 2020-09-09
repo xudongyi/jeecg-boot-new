@@ -11,7 +11,7 @@
         <result column="meaning" property="meaning" jdbcType="VARCHAR"/>
         <result column="value" property="value" jdbcType="DOUBLE"/>
         <result column="STANDARD_VALUE" property="standardValue" jdbcType="DOUBLE"/>
-        <result column="amount_unit" property="amountUnit" jdbcType="VARCHAR"/>
+        <result column="chroma_unit" property="chromaUnit" jdbcType="VARCHAR"/>
         <result column="multiple" property="multiple" jdbcType="DOUBLE"/>
 
     </resultMap>
@@ -19,7 +19,7 @@
 
     <select id="queryOverWater"  resultMap="OverEntry">
 
-        select A.id,company_name,B.site_name,data_time,C.meaning,value,STANDARD_VALUE,amount_unit,
+        select A.id,company_name,B.site_name,data_time,C.meaning,value,STANDARD_VALUE,chroma_unit,
         round(value/STANDARD_VALUE,2) multiple from water_current_overproof  A
         inner join (select M.*,N.MN,N.site_name from (
         select company_id,company_name from company_base A inner join company_baseinfo B

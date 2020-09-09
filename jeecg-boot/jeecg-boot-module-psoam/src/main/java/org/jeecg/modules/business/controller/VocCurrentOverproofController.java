@@ -1,5 +1,6 @@
 package org.jeecg.modules.business.controller;
 
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -9,10 +10,15 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.StrUtil;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.util.oConvertUtils;
+import org.jeecg.modules.business.constant.SelfExcelConstants;
 import org.jeecg.modules.business.entity.VocCurrentOverproof;
+import org.jeecg.modules.business.service.ISysDictService;
 import org.jeecg.modules.business.service.IVocCurrentOverproofService;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -20,6 +26,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 
+import org.jeecg.modules.business.view.SelfEntityExcelView;
+import org.jeecg.modules.business.vo.OverEntry;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -49,28 +57,82 @@ import org.jeecg.common.aspect.annotation.AutoLog;
 public class VocCurrentOverproofController extends JeecgController<VocCurrentOverproof, IVocCurrentOverproofService> {
 	@Autowired
 	private IVocCurrentOverproofService vocCurrentOverproofService;
-	
-	/**
-	 * 分页列表查询
-	 *
-	 * @param vocCurrentOverproof
-	 * @param pageNo
-	 * @param pageSize
-	 * @param req
-	 * @return
-	 */
-	@AutoLog(value = "voc_current_overproof-分页列表查询")
-	@ApiOperation(value="voc_current_overproof-分页列表查询", notes="voc_current_overproof-分页列表查询")
-	@GetMapping(value = "/list")
-	public Result<?> queryPageList(VocCurrentOverproof vocCurrentOverproof,
-								   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
-								   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
-								   HttpServletRequest req) {
-		QueryWrapper<VocCurrentOverproof> queryWrapper = QueryGenerator.initQueryWrapper(vocCurrentOverproof, req.getParameterMap());
-		Page<VocCurrentOverproof> page = new Page<VocCurrentOverproof>(pageNo, pageSize);
-		IPage<VocCurrentOverproof> pageList = vocCurrentOverproofService.page(page, queryWrapper);
-		return Result.ok(pageList);
-	}
+
+	 @Autowired
+	 private ISysDictService sysDictService;
+
+	 /**
+	  * 分页列表查询
+	  *
+	  * @param pageNo
+	  * @param pageSize
+	  * @param req
+	  * @return
+	  */
+	 @AutoLog(value = "voc_current_overproof-分页列表查询")
+	 @ApiOperation(value="voc_current_overproof-分页列表查询", notes="voc_current_overproof-分页列表查询")
+	 @GetMapping(value = "/list")
+	 public Result<?> queryPageList(
+			 @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+			 @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
+			 HttpServletRequest req) {
+		 //查询
+		 String  area = req.getParameter("area");
+		 String  companyId = req.getParameter("companyId");
+		 String  companyIds = req.getParameter("companyIds");
+		 String  mn = req.getParameter("mn");
+		 String  dataTime_begin = req.getParameter("dataTime_begin");
+		 String  dataTime_end = req.getParameter("dataTime_end");
+		 String  pollutionCode = req.getParameter("pollutionCode");
+
+		 companyIds = StrUtil.isEmpty(companyId)?companyIds:companyId; //可以查询到的企业
+		 List<String> companyIdList = Arrays.asList(companyIds.split(","));
+		 Page<OverEntry> page = new Page<>(pageNo, pageSize);
+
+		 Timestamp end = DateUtil.parse(dataTime_end+" 23:59:59","yyyy-MM-dd HH:mm:ss").toTimestamp();
+		 Timestamp begin = DateUtil.parse(dataTime_begin,"yyyy-MM-dd").toTimestamp();
+		 IPage<OverEntry> pageList = vocCurrentOverproofService.queryOverVoc(page,companyIdList ,area ,pollutionCode ,mn ,end ,begin);
+		 for (OverEntry overEntry:pageList.getRecords()) {
+		 	String amountUnit = sysDictService.queryDictTextByKey("allUnit", overEntry.getChromaUnit());
+		 	overEntry.setChromaUnit(amountUnit);
+		 }
+		 return Result.ok(pageList);
+	 }
+	 /**
+	  * 导出excel
+	  *
+	  */
+	 @RequestMapping(value = "/exportXls")
+	 public ModelAndView exportXls(HttpServletRequest req) {
+		 String  area = req.getParameter("area");
+		 String  companyId = req.getParameter("companyId");
+		 String  companyIds = req.getParameter("companyIds");
+		 String  mn = req.getParameter("mn");
+		 String  dataTime_begin = req.getParameter("dataTime_begin");
+		 String  dataTime_end = req.getParameter("dataTime_end");
+		 String  pollutionCode = req.getParameter("pollutionCode");
+
+		 companyIds = StrUtil.isEmpty(companyId)?companyIds:companyId; //可以查询到的企业
+		 List<String> companyIdList = Arrays.asList(companyIds.split(","));
+
+
+		 Timestamp end = DateUtil.parse(dataTime_end+" 23:59:59","yyyy-MM-dd HH:mm:ss").toTimestamp();
+		 Timestamp begin = DateUtil.parse(dataTime_begin,"yyyy-MM-dd").toTimestamp();
+		 List<OverEntry> overEntries = vocCurrentOverproofService.queryOverVoc(companyIdList ,area ,pollutionCode ,mn ,end ,begin);
+		 for (OverEntry overEntry:overEntries) {
+			 String amountUnit = sysDictService.queryDictTextByKey("allUnit", overEntry.getChromaUnit());
+			 overEntry.setChromaUnit(amountUnit);
+		 }
+
+		 // Step.3 AutoPoi 导出Excel
+		 ModelAndView mv = new ModelAndView(new SelfEntityExcelView(null,null));
+		 mv.addObject(SelfExcelConstants.TITLE, "超标数据（VOCs）"); //此处设置的filename无效 ,前端会重更新设置一下
+		 mv.addObject(SelfExcelConstants.SHEET_NAME, "超标数据（VOCs）");
+		 mv.addObject(SelfExcelConstants.CLAZZ, OverEntry.class);
+		 mv.addObject(SelfExcelConstants.DATA_LIST, overEntries);
+		 mv.addObject(SelfExcelConstants.FOOTER, "注：缺测指标的浓度及分指数均使用NA标识。");
+		 return mv;
+	 }
 	
 	/**
 	 * 通过id查询
@@ -88,17 +150,6 @@ public class VocCurrentOverproofController extends JeecgController<VocCurrentOve
 		}
 		return Result.ok(vocCurrentOverproof);
 	}
-
-    /**
-    * 导出excel
-    *
-    * @param request
-    * @param vocCurrentOverproof
-    */
-    @RequestMapping(value = "/exportXls")
-    public ModelAndView exportXls(HttpServletRequest request, VocCurrentOverproof vocCurrentOverproof) {
-        return super.exportXls(request, vocCurrentOverproof, VocCurrentOverproof.class, "voc_current_overproof");
-    }
 
     /**
       * 通过excel导入数据

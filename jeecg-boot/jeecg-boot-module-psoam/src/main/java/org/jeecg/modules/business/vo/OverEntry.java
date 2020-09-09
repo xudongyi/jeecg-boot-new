@@ -24,7 +24,7 @@ public class OverEntry {
     @ExcelSelf(name = "标准值", width = 15,orderNum = 6)
     Double standardValue;
     @ExcelSelf(name = "单位", width = 15,orderNum = 7)
-    String amountUnit;
+    String chromaUnit;
     @ExcelSelf(name = "超标倍数", width = 15,orderNum = 8)
     Double multiple;
 }
