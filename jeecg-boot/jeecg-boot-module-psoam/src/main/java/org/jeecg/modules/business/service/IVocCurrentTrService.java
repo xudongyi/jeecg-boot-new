@@ -16,4 +16,6 @@ import java.util.Map;
 public interface IVocCurrentTrService extends IService<VocCurrentTr_2009> {
     Page<List<Map<String,Object>>> queryRealTime(Page<List<Map<String,Object>>> page, String field, String tableName, List<String> companyIds,
                                                  String area, String mn, String dataTime_begin, String dataTime_end);
+    List<Map<String,Object>> queryRealTime(String field,String tableName, List<String> companyIds,
+                                           String area,String mn,String dataTime_begin,String dataTime_end);
 }

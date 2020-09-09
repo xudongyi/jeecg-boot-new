@@ -22,4 +22,8 @@ public interface VocDayMapper extends BaseMapper<VocDay> {
                                              @Param("companyIds") List<String> companyIds, String area, String mn, Timestamp begin, Timestamp end);
     List<List<Map<String, Object>>> queryMaxDay(Page<List<Map<String, Object>>> page, String field,
                                                 @Param("companyIds") List<String> companyIds, String area, String mn);
+    List<Map<String, Object>> queryDay( String field,
+                                        @Param("companyIds") List<String> companyIds, String area, String mn, Timestamp begin, Timestamp end);
+    List<Map<String, Object>> queryMaxDay( String field,
+                                           @Param("companyIds") List<String> companyIds, String area, String mn);
 }

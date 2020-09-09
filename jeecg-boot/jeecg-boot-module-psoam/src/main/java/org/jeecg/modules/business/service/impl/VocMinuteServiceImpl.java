@@ -42,4 +42,19 @@ public class VocMinuteServiceImpl extends ServiceImpl<VocMinuteMapper, VocMinute
             return page.setRecords(vocMinuteMapper.queryMinute(page,field,tableName,companyIds,area,mn,begin,end));
         }
     }
+
+    @Override
+    public List<Map<String, Object>> queryMinute(String field, String tableName, List<String> companyIds, String area, String mn, String dataTime_begin, String dataTime_end) {
+        if(StrUtil.isEmpty(dataTime_begin))
+        {
+            return vocMinuteMapper.queryMaxMinute(field,tableName,companyIds,area,mn);
+
+        }
+        else
+        {
+            Timestamp begin = DateUtil.parse(dataTime_begin, PollutionSource.DataFormat.MINUTE).toTimestamp();
+            Timestamp end = DateUtil.parse(dataTime_end, PollutionSource.DataFormat.MINUTE).toTimestamp();
+            return vocMinuteMapper.queryMinute(field,tableName,companyIds,area,mn,begin,end);
+        }
+    }
 }

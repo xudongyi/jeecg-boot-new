@@ -33,7 +33,7 @@ import org.jeecg.common.aspect.annotation.AutoLog;
  * @Date: 2020-08-31
  * @Version: V1.0
  */
-@Api(tags = "water_current_tr")
+@Api(tags = "在线监测")
 @RestController
 @RequestMapping("/onlineMonitor")
 @Slf4j

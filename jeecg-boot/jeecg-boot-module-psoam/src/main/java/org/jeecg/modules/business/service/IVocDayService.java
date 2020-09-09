@@ -18,4 +18,6 @@ public interface IVocDayService extends IService<VocDay> {
 
     Page<List<Map<String,Object>>> queryDay(Page<List<Map<String,Object>>> page, String field, List<String> companyIds,
                                             String area, String mn, String dataTime_begin, String dataTime_end);
+    List<Map<String,Object>> queryDay( String field, List<String> companyIds,
+                                       String area, String mn, String dataTime_begin, String dataTime_end);
 }

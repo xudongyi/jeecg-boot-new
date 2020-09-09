@@ -3,7 +3,7 @@
 <mapper namespace="org.jeecg.modules.business.mapper.VocCurrentTrMapper">
 
     <select id="queryRealTime"  resultType="Map">
-        select A.id,company_name,data_time,B.mn,B.site_name,${field} from ${tableName}  A
+        select A.id,company_name,data_time,B.mn,B.site_name,A.* from ${tableName}  A
         inner join (select M.*,N.MN,N.site_name from (
         select company_id,company_name from company_base A inner join company_baseinfo B
         on A.id = B.company_id AND B.status ='2' where company_id in
@@ -26,7 +26,7 @@
         where A.data_time <![CDATA[ <= ]]> #{end} and A.data_time <![CDATA[ >= ]]> #{begin}
     </select>
     <select id="queryMaxRealTime"  resultType="Map">
-        select A.id,company_name,C.data_time,B.mn,B.site_name,${field} from ${tableName}  A
+        select A.id,company_name,C.data_time,B.mn,B.site_name,A.* from ${tableName}  A
         inner join (select M.*,N.MN,N.site_name from (
         select company_id,company_name from company_base A inner join company_baseinfo B
         on A.id = B.company_id AND B.status ='2' where company_id in
