@@ -13,10 +13,12 @@ import org.jeecg.common.aspect.annotation.AutoLog;
 import org.jeecg.common.system.base.controller.JeecgController;
 import org.jeecg.common.system.query.QueryGenerator;
 
+import org.jeecg.modules.business.constant.SelfExcelConstants;
 import org.jeecg.modules.business.entity.SysPollutionCode;
 import org.jeecg.modules.business.entity.WaterCurrentOverproof;
 import org.jeecg.modules.business.service.ISysPollutionCodeService;
 import org.jeecg.modules.business.service.IWaterCurrentOverproofService;
+import org.jeecg.modules.business.view.SelfEntityExcelView;
 import org.jeecg.modules.business.vo.OverEntry;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -101,13 +103,15 @@ public class WaterCurrentOverproofController extends JeecgController<WaterCurren
 		Timestamp end = DateUtil.parse(dataTime_end+" 23:59:59","yyyy-MM-dd HH:mm:ss").toTimestamp();
 		Timestamp begin = DateUtil.parse(dataTime_begin,"yyyy-MM-dd").toTimestamp();
 		List<OverEntry> overEntries = waterCurrentOverproofService.queryOverWater(companyIdList ,area ,pollutionCode ,mn ,end ,begin) ;
-// Step.3 AutoPoi 导出Excel
-		ModelAndView mv = new ModelAndView(new JeecgEntityExcelView());
-		mv.addObject(NormalExcelConstants.FILE_NAME, "超标数据（废水）"); //此处设置的filename无效 ,前端会重更新设置一下
-		mv.addObject(NormalExcelConstants.CLASS, OverEntry.class);
-		mv.addObject(NormalExcelConstants.DATA_LIST, overEntries);
-		return mv;
 
+		// Step.3 AutoPoi 导出Excel
+		ModelAndView mv = new ModelAndView(new SelfEntityExcelView(null,null));
+		mv.addObject(SelfExcelConstants.TITLE, "超标数据（废水）"); //此处设置的filename无效 ,前端会重更新设置一下
+		mv.addObject(SelfExcelConstants.SHEET_NAME, "超标数据（废水）");
+		mv.addObject(SelfExcelConstants.CLAZZ, OverEntry.class);
+		mv.addObject(SelfExcelConstants.DATA_LIST, overEntries);
+		mv.addObject(SelfExcelConstants.FOOTER, "注：缺测指标的浓度及分指数均使用NA标识。");
+		return mv;
 	}
 
 	/**
