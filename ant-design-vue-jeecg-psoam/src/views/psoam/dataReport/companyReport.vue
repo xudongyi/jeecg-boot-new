@@ -12,9 +12,11 @@
           </a-col>
           <a-col :xl="6" :lg="6" :md="6" :sm="24">
             <a-form-item label="企业名称">
-              <a-select v-model="queryParam.companyId"  :allowClear="true" placeholder="请选择" show-search style="width: 100%" optionFilterProp="children">
+              <a-select v-model="queryParam.companyId" :dropdownMatchSelectWidth="false"
+                        :dropdownRender="dropdownRender"
+                        @change="companyChange" :allowClear="true" placeholder="请选择" show-search style="width: 100%" optionFilterProp="children">
                 <!--                <a-select-option value="">请选择</a-select-option>-->
-                <a-select-option v-for="item in companyNames" :key="item.value" :value="item.key">
+                <a-select-option v-for="item in companyNames"  :key="item.value" :value="item.key">
                   {{item.value}}
                 </a-select-option>
               </a-select>
@@ -26,20 +28,17 @@
                              :format="dateFormat[key].value" placeholder="请选择开始时间"
                              :valueFormat="dateFormat[key].value"
                              :mode="dateFormat[key].mode"
-                             class="query-group-cust"  v-model="queryParam.dataTime"   />
+                               v-model="queryParam.dataTime" />
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="6" :md="6" :sm="24">
-            <a-form-item label="数据时间">
-              <a-date-picker :show-time="false"
-                             :format="dateFormat[key].value" placeholder="请选择开始时间"
-                             :valueFormat="dateFormat[key].value"
-                             :mode="dateFormat[key].mode"
-                             class="query-group-cust"  v-model="queryParam.dataTime"   />
-            </a-form-item>
+            <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
+            <!--              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>-->
+            <a-button type="primary" icon="download" style="margin-left: 8px" @click="handleExportXls('报')">导出</a-button>
           </a-col>
         </a-row>
       </a-form>
+      <span>{{companyName}}</span>
     </div>
   </a-card>
 
@@ -63,9 +62,27 @@
             areaHandler:'',
             companyNames:[],//显示数据  根据area筛选后的数据
             companyNameOriginal:[],//原始全量数据
+            companyName:''
           }
       },
       methods:{
+        searchQuery(){
+
+        },
+        handleExportXls(){
+
+        },
+        dropdownRender(vNode,props){
+          console.log(vNode,props)
+          return vNode;
+        },
+        companyChange(val){
+          if(val==null)
+            return '';
+          this.companyName = this.companyNames.filter(e=>
+            e.key ===val
+          )[0].value;
+        },
         callback(val){
           console.log(val)
         },
