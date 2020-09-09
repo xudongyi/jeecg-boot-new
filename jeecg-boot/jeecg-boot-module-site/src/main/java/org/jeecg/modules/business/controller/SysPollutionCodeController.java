@@ -152,7 +152,7 @@ public class SysPollutionCodeController extends JeecgController<SysPollutionCode
 	 @GetMapping(value = "/queryMainByType")
 	 public Result<?> queryMainByType(@RequestParam(name="type",required=true) String type) {
 		 List<SysPollutionCode> sysPollutionCodeList = sysPollutionCodeService.list(new QueryWrapper<SysPollutionCode>().lambda().eq(SysPollutionCode::getType,type)
-				 .eq(SysPollutionCode::getIsImportant,"Y").eq(SysPollutionCode::getIsUse,"Y"));
+				 /*.eq(SysPollutionCode::getIsImportant,"Y")*/.eq(SysPollutionCode::getIsUse,"Y"));
 		 return Result.ok(sysPollutionCodeList);
 	 }
     /**

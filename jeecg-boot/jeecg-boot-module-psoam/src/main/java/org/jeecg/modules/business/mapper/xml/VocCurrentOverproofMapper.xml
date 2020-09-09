@@ -39,7 +39,7 @@
         </if>
         ORDER BY company_id
         )B ON A.MN = B.MN
-        inner join  sys_pollution_code C on C.is_important = 'Y' and C.is_use = 'Y'
+        inner join  sys_pollution_code C on C.is_use = 'Y'
         and C.type = '2' and A.CODE = C.code
         <if test="code != null and code!=''">
             and A.CODE = = #{code}
