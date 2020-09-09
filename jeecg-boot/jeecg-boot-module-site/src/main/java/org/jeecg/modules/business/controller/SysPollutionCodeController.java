@@ -35,7 +35,7 @@ import org.jeecg.common.aspect.annotation.AutoLog;
 public class SysPollutionCodeController extends JeecgController<SysPollutionCode, ISysPollutionCodeService> {
 	@Autowired
 	private ISysPollutionCodeService sysPollutionCodeService;
-	
+
 	/**
 	 * 分页列表查询
 	 *
@@ -57,7 +57,7 @@ public class SysPollutionCodeController extends JeecgController<SysPollutionCode
 		IPage<SysPollutionCode> pageList = sysPollutionCodeService.page(page, queryWrapper);
 		return Result.ok(pageList);
 	}
-	
+
 	/**
 	 *   添加
 	 *
@@ -79,7 +79,7 @@ public class SysPollutionCodeController extends JeecgController<SysPollutionCode
 			return Result.ok("添加成功！");
 		}
 	}
-	
+
 	/**
 	 *  编辑
 	 *
@@ -96,7 +96,7 @@ public class SysPollutionCodeController extends JeecgController<SysPollutionCode
 			return Result.error("编辑失败");
 		}
 	}
-	
+
 	/**
 	 *   通过id删除
 	 *
@@ -110,7 +110,7 @@ public class SysPollutionCodeController extends JeecgController<SysPollutionCode
 		sysPollutionCodeService.removeById(id);
 		return Result.ok("删除成功!");
 	}
-	
+
 	/**
 	 *  批量删除
 	 *
@@ -124,7 +124,7 @@ public class SysPollutionCodeController extends JeecgController<SysPollutionCode
 		this.sysPollutionCodeService.removeByIds(Arrays.asList(ids.split(",")));
 		return Result.ok("批量删除成功!");
 	}
-	
+
 	/**
 	 * 通过id查询
 	 *
@@ -141,7 +141,20 @@ public class SysPollutionCodeController extends JeecgController<SysPollutionCode
 		}
 		return Result.ok(sysPollutionCode);
 	}
-
+	 /**
+	  * 通过污染类型类型查询主要污染因
+	  *
+	  * @param type
+	  * @return
+	  */
+	 @AutoLog(value = "污染因子表")
+	 @ApiOperation(value="污染因子表查询主要污染因子", notes="通过污染类型类型查询主要污染因")
+	 @GetMapping(value = "/queryMainByType")
+	 public Result<?> queryMainByType(@RequestParam(name="type",required=true) String type) {
+		 List<SysPollutionCode> sysPollutionCodeList = sysPollutionCodeService.list(new QueryWrapper<SysPollutionCode>().lambda().eq(SysPollutionCode::getType,type)
+				 .eq(SysPollutionCode::getIsImportant,"Y").eq(SysPollutionCode::getIsUse,"Y"));
+		 return Result.ok(sysPollutionCodeList);
+	 }
     /**
     * 导出excel
     *

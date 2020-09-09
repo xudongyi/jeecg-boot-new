@@ -17,7 +17,7 @@ import Print from 'vue-print-nb-jeecg'
 import preview from 'vue-photo-preview'
 import 'vue-photo-preview/dist/skin.css'
 import {getAction} from '@/api/manage'
-
+import {loadAreaDate} from './views/psoam/component/areaUtil'
 console.log('main.js开始加载')
 
 require('@jeecg/antd-online-beta220')
@@ -83,13 +83,8 @@ function main() {
       store.commit('SET_TOKEN', Vue.ls.get(ACCESS_TOKEN))
       store.commit('SET_MULTI_PAGE',Vue.ls.get(DEFAULT_MULTI_PAGE,true))
       //缓存问题
-      Vue.ls.remove('sys_areas')
-      getAction("/sys/sysArea/list",{active:'1'}).then((res) => {
-        if (res.success) {
-
-          Vue.ls.set('sys_areas', res.result, 24 * 60 * 60 * 1000)
-
-        }})
+      Vue.ls.remove('sys_areas');
+      loadAreaDate();
     },
     render: h => h(App)
   }).$mount('#app')

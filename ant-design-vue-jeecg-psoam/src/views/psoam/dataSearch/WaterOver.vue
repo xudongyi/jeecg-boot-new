@@ -42,7 +42,7 @@
           <a-col :xl="5" :lg="6" :md="7" :sm="24" >
             <a-form-item label="数据类型">
               <a-radio-group  button-style="solid" :value="queryParam.dataType" @change="dataTypeChange">
-                <a-radio-button value="day">
+                <a-radio-button value="date">
                   日
                 </a-radio-button>
                 <a-radio-button value="month">
@@ -59,11 +59,13 @@
               <a-date-picker :show-time="dateFormat[queryParam.dataType].showTime"
                              :format="dateFormat[queryParam.dataType].value" placeholder="请选择开始时间"
                              :valueFormat="dateFormat[queryParam.dataType].value"
+                             :mode="queryParam.dataType"
                              class="query-group-cust"  v-model="queryParam.dataTime_begin"   />
               <span class="query-group-split-cust"></span>
               <a-date-picker :show-time="dateFormat[queryParam.dataType].showTime"
                              :format="dateFormat[queryParam.dataType].value" placeholder="请选择结束时间"
                              :valueFormat="dateFormat[queryParam.dataType].value"
+                             :mode="queryParam.dataType"
                              class="query-group-cust"  v-model="queryParam.dataTime_end"  />
             </a-form-item>
           </a-col>
@@ -99,20 +101,8 @@
         class="j-table-force-nowrap"
         @change="handleTableChange">
 
-        <div slot="filterDropdown" >
-          <a-card title="自定义列">
-            <a-checkbox-group @change="onColSettingsChange" v-model="settingColumns" :defaultValue="settingColumns">
-              <a-row>
-                <template v-for="(item,index) in defColumns">
-                  <template v-if="item.key!='rowIndex'&& item.dataIndex!='action'">
-                    <a-col :span="12"><a-checkbox :value="item.dataIndex">{{ item.title }}</a-checkbox></a-col>
-                  </template>
-                </template>
-              </a-row>
-            </a-checkbox-group>
-          </a-card>
-        </div>
-        <a-icon slot="filterIcon" type='setting' :style="{ fontSize:'16px',color:  '#108ee9',width:'100%' }" />
+        <a-icon slot="filterIcon" type='setting'
+                :style="{ fontSize:'16px',color:  '#108ee9',width:'100%' }" />
 
       </a-table>
     </div>
@@ -127,6 +117,7 @@
   import {queryWaterColumns} from "../../requestAction/request";
   import moment from 'moment';
   import mainPollutionSelect from "../component/mainPollutionSelect";
+  import {getAction} from "../../../api/manage";
 
   export default {
     name: "WaterHistory",
@@ -138,14 +129,12 @@
     data(){
       return {
         queryParam: {
-          dataTime_begin:'',
-          dataTime_end:'',
+          dataTime_begin:moment().days(moment().days()-6).format("YYYY-MM-DD"),
+          dataTime_end:moment().format("YYYY-MM-DD"),
           companyIds:this.$store.getters.userInfo.companyIds.join(','),
-          dataType:'day',
+          dataType:'date',
         },
         items:[],
-        siteOriginal:[],
-        areaHandler:'',
         companyNames:[],
         companyNameOriginal:[],
         siteArea:'',
@@ -153,22 +142,14 @@
         allowClear:false,
         showDate:false,
         dateFormat:{
-
           'month':{value:"YYYY-MM",showTime:false},
           'year':{value:"YYYY",showTime:false},
-          'day':{value:"YYYY-MM-DD",showTime:false},
+          'date':{value:"YYYY-MM-DD",showTime:false},
         },
-        checkedList:[],
-        plainOptions:[{label:'最大值',value:'max'}, {label:'最小值',value:'min'}, {label:'平均值',value:'avg'}],
-        disabled:{'realTime':true,'minute':false,'hour':false,'day':false},
         //表头
-        columns:[],
-        //列设置
-        settingColumns:[],
-
-        fixedColumns: [
+        columns: [
           {
-            title: '',
+            title: '序号',
             dataIndex: '',
             key:'rowIndex',
             width:60,
@@ -177,87 +158,130 @@
             scopedSlots: {
               filterDropdown: 'filterDropdown',
               filterIcon: 'filterIcon'},
-            fixed:'left'
           },
           {
             title:'企业名称',
             align:"center",
-            dataIndex: 'company_name',
-            fixed:'left',
-            width:300,
+            dataIndex: 'companyName',
           },
           {
             title:'监测点名称',
             align:"center",
-            dataIndex: 'site_name',
-            fixed:'left',
-            width:300,
+            dataIndex: 'siteName',
           },
           {
-            title:'时间',
+            title:'数据时间',
             align:"center",
-            dataIndex: 'data_time',
-            fixed:'left',
-            width:200,
-            customRender:this.dataTimeRender
-          }
+            dataIndex: 'dataTime',
+            customRender:function (text) {
+              return !text?"":(text.length>10?text.substr(0,10):text)
+            }
+          },
+          {
+            title:'监测因子',
+            align:"center",
+            dataIndex: 'code'
+          },
+          {
+            title:'监测值',
+            align:"center",
+            dataIndex: 'value'
+          },
+          {
+            title:'标准值',
+            align:"center",
+            dataIndex: 'standardValue'
+          },
+          {
+            title:'单位',
+            align:"center",
+            dataIndex: 'unit'
+          },
+          {
+            title:'超标倍数',
+            align:"center",
+            dataIndex: 'overTimes'
+          },
         ],
         //列定义
-        defColumns: [],
+
         siteType:0,
         url:{
-          list:'/psoam/Water/queryWaterColumns',
-          exportXlsUrl:'/psoam/Water/exportWaterHistory',
+          list:'/psoam/waterCurrentOverproof/list',
+          exportXlsUrl:'/psoam/waterCurrentOverproof/exportXls',
         }
 
       }
     },
-    methods:{
-      dataTimeRender (text) {
-        return  moment(text).format(this.dateFormat[this.queryParam.dataType].value)
+    methods: {
+      dataTimeRender(text) {
+        return moment(text).format(this.dateFormat[this.queryParam.dataType].value)
       },
-      handleDateChange(mom,dateStr){
-        console.log(mom,dateStr)
-        console.log(this.dateFormat[this.queryParam.dataType].value,this.queryParam.dataTime_begin)
+      handleDateChange(mom, dateStr) {
+        console.log(mom, dateStr)
+        console.log(this.dateFormat[this.queryParam.dataType].value, this.queryParam.dataTime_begin)
       },
-      handleDateChange2(mom,dateStr){
-        console.log(mom,dateStr)
-        this.queryParam.dataTime_end=dateStr
+      handleDateChange2(mom, dateStr) {
+        console.log(mom, dateStr)
+        this.queryParam.dataTime_end = dateStr
       },
-      mainPollutionChange(value){
-        console.log(value)
+      mainPollutionChange(value) {
+        console.log(value),
+        this.queryParam.pollutionCode = value.target.value;
       },
-      dataTypeChange(value){
+      dataTypeChange(value) {
         console.log(value)
         this.queryParam.dataType = value.target.value;
         // this.loadData(1);
       },
       //查询数据
-      searchQuery(){
-        this.loadData()
+      searchQuery() {
+        this.queryData()
       },
-      searchReset(){
+      searchReset() {
         this.loadData(1);
       },
+      queryData(arg){
+        let param = this.getQueryParams();
 
-
-      //处理一下scroll
-      dealScroll(){
-        if(this.queryParam.dataType!=='realTime'){
-
-          this.scroll={x:100*(this.columns.length-4)};
-
-        }else{
-          this.scroll={x:100*(this.checkedList.length+1)*(this.columns.length-4)}
+      //加载数据 若传入参数1则加载第一页的内容
+      if (arg === 1) {
+          this.ipagination.current = 1;
         }
+        var params = this.getQueryParams();//查询条件
+        //如果
+        if(this.queryParam.dataType==='month'){
+          params.dataTime_begin =  params.dataTime_begin+"-01";
+          params.dataTime_end = moment( params.dataTime_end,'YYYY-MM').endOf('month').format("YYYY-MM-DD");
+        }
+        if(this.queryParam.dataType==='year'){
+          params.dataTime_begin =  params.dataTime_begin+"-01-01";
+          params.dataTime_end = moment( params.dataTime_end,'YYYY').endOf('year').format("YYYY-MM-DD");
+        }
+        this.loading = true;
+        getAction(this.url.list, params).then((res) => {
+          if (res.success) {
+            this.dealColumns(res.result.columns);
+            this.dataSource = res.result.records;
+            this.ipagination.total = res.result.total;
+            console.log(this.dataSource)
+          }
+          if(res.code===510){
+            this.$message.warning(res.message)
+          }
+          this.loading = false;
+        })
+        //对param
       }
+
     },
+
     created(){
       //先查询表头
       // this.getColumns();
       //级联的行政区域
       this.queryCompanyAndSite();
-      // this.loadData(1);
+      this.queryData(1);
     }
 
   }
