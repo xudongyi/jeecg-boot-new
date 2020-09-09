@@ -20,7 +20,7 @@
     <select id="queryOverWater"  resultMap="OverEntry">
 
         select A.id,company_name,B.site_name,data_time,C.meaning,value,STANDARD_VALUE,chroma_unit,
-        round(value/STANDARD_VALUE,2) multiple from water_current_overproof  A
+        round(value/STANDARD_VALUE-1,2) multiple from water_current_overproof  A
         inner join (select M.*,N.MN,N.site_name from (
         select company_id,company_name from company_base A inner join company_baseinfo B
         on A.id = B.company_id AND B.status ='2'
