@@ -16,6 +16,7 @@ import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.modules.business.constant.SelfExcelConstants;
 import org.jeecg.modules.business.entity.SysPollutionCode;
 import org.jeecg.modules.business.entity.WaterCurrentOverproof;
+import org.jeecg.modules.business.service.ISysDictService;
 import org.jeecg.modules.business.service.ISysPollutionCodeService;
 import org.jeecg.modules.business.service.IWaterCurrentOverproofService;
 import org.jeecg.modules.business.view.SelfEntityExcelView;
@@ -49,6 +50,8 @@ public class WaterCurrentOverproofController extends JeecgController<WaterCurren
 	private IWaterCurrentOverproofService waterCurrentOverproofService;
 	@Autowired
 	private ISysPollutionCodeService sysPollutionCodeService;
+	@Autowired
+	private ISysDictService sysDictService;
 	/**
 	 * 分页列表查询
 	 *
@@ -80,6 +83,10 @@ public class WaterCurrentOverproofController extends JeecgController<WaterCurren
 		Timestamp end = DateUtil.parse(dataTime_end+" 23:59:59","yyyy-MM-dd HH:mm:ss").toTimestamp();
 		Timestamp begin = DateUtil.parse(dataTime_begin,"yyyy-MM-dd").toTimestamp();
 		IPage<OverEntry> pageList = waterCurrentOverproofService.queryOverWater(page,companyIdList ,area ,pollutionCode ,mn ,end ,begin) ;
+		for (OverEntry overEntry:pageList.getRecords()) {
+			String amountUnit = sysDictService.queryDictTextByKey("allUnit", overEntry.getChromaUnit());
+			overEntry.setChromaUnit(amountUnit);
+		}
 		return Result.ok(pageList);
 	}
 	/**
@@ -103,7 +110,10 @@ public class WaterCurrentOverproofController extends JeecgController<WaterCurren
 		Timestamp end = DateUtil.parse(dataTime_end+" 23:59:59","yyyy-MM-dd HH:mm:ss").toTimestamp();
 		Timestamp begin = DateUtil.parse(dataTime_begin,"yyyy-MM-dd").toTimestamp();
 		List<OverEntry> overEntries = waterCurrentOverproofService.queryOverWater(companyIdList ,area ,pollutionCode ,mn ,end ,begin) ;
-
+		for (OverEntry overEntry:overEntries) {
+			String amountUnit = sysDictService.queryDictTextByKey("allUnit", overEntry.getChromaUnit());
+			overEntry.setChromaUnit(amountUnit);
+		}
 		// Step.3 AutoPoi 导出Excel
 		ModelAndView mv = new ModelAndView(new SelfEntityExcelView(null,null));
 		mv.addObject(SelfExcelConstants.TITLE, "超标数据（废水）"); //此处设置的filename无效 ,前端会重更新设置一下
