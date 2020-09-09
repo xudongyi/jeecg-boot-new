@@ -232,6 +232,8 @@
       dataTypeChange(value) {
         console.log(value)
         this.queryParam.dataType = value.target.value;
+        this.queryParam.dataTime_end = moment(this.queryParam.dataTime_end).format(this.dateFormat[queryParam.dataType].value)
+        this.queryParam.dataTime_begin = moment(this.queryParam.dataTime_begin).format(this.dateFormat[queryParam.dataType].value)
         // this.loadData(1);
       },
       //查询数据
@@ -261,10 +263,9 @@
         this.loading = true;
         getAction(this.url.list, params).then((res) => {
           if (res.success) {
-            this.dealColumns(res.result.columns);
             this.dataSource = res.result.records;
             this.ipagination.total = res.result.total;
-            console.log(this.dataSource)
+
           }
           if(res.code===510){
             this.$message.warning(res.message)

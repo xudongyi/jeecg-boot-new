@@ -17,7 +17,7 @@
     </resultMap>
 
 
-    <select id="queryOverWater"  resultType="OverEntry">
+    <select id="queryOverWater"  resultMap="OverEntry">
 
         select A.id,company_name,B.site_name,data_time,C.meaning,value,STANDARD_VALUE,amount_unit,
         round(value/STANDARD_VALUE,2) multiple from water_current_overproof  A
@@ -40,7 +40,7 @@
         </if>
         ORDER BY company_id
         )B ON A.MN = B.MN
-        inner join  sys_pollution_code C on C.is_important = 'Y' on C.is_use = 'Y'
+        inner join  sys_pollution_code C on C.is_important = 'Y' and C.is_use = 'Y'
         and C.type = '0' and A.CODE = C.code
         <if test="code != null and code!=''">
             and A.CODE = = #{code}
