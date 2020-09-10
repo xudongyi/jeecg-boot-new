@@ -1,11 +1,17 @@
 package org.jeecg.modules.business.controller;
 
+import java.sql.Timestamp;
 import java.util.Arrays;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.StrUtil;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.modules.business.entity.WarnLog;
+import org.jeecg.modules.business.service.ISysDictService;
 import org.jeecg.modules.business.service.IWarnLogService;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -14,6 +20,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 
 import org.jeecg.common.system.base.controller.JeecgController;
+import org.jeecg.modules.business.vo.OverEntry;
+import org.jeecg.modules.business.vo.RealTimeWarn;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -24,16 +32,19 @@ import org.jeecg.common.aspect.annotation.AutoLog;
  /**
  * @Description: warn_log
  * @Author: jeecg-boot
- * @Date:   2020-09-08
+ * @Date:   2020-09-10
  * @Version: V1.0
  */
 @Api(tags="warn_log")
 @RestController
-@RequestMapping("/warnInfo/warnLog")
+@RequestMapping("/warn/warnLog")
 @Slf4j
 public class WarnLogController extends JeecgController<WarnLog, IWarnLogService> {
 	@Autowired
 	private IWarnLogService warnLogService;
+
+	 @Autowired
+	 private ISysDictService sysDictService;
 	
 	/**
 	 * 分页列表查询
@@ -51,9 +62,29 @@ public class WarnLogController extends JeecgController<WarnLog, IWarnLogService>
 								   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
 								   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
 								   HttpServletRequest req) {
-		QueryWrapper<WarnLog> queryWrapper = QueryGenerator.initQueryWrapper(warnLog, req.getParameterMap());
-		Page<WarnLog> page = new Page<WarnLog>(pageNo, pageSize);
-		IPage<WarnLog> pageList = warnLogService.page(page, queryWrapper);
+		//查询
+		String  area = req.getParameter("area");
+		String  companyId = req.getParameter("companyId");
+		String  companyIds = req.getParameter("companyIds");
+		String  mn = req.getParameter("mn");
+		String  dataTime_begin = req.getParameter("dataTime_begin");
+		String  dataTime_end = req.getParameter("dataTime_end");
+		String  warnType = req.getParameter("warnType");
+		String  type = req.getParameter("type");
+
+		companyIds = StrUtil.isEmpty(companyId)?companyIds:companyId; //可以查询到的企业
+		List<String> companyIdList = Arrays.asList(companyIds.split(","));
+		Page<RealTimeWarn> page = new Page<>(pageNo, pageSize);
+
+		Timestamp end = DateUtil.parse(dataTime_end+" 23:59:59","yyyy-MM-dd HH:mm:ss").toTimestamp();
+		Timestamp begin = DateUtil.parse(dataTime_begin,"yyyy-MM-dd").toTimestamp();
+		IPage<RealTimeWarn> pageList = warnLogService.queryWarn(page,companyIdList,area,type,warnType,mn,end,begin);
+		for (RealTimeWarn realTimeWarn:pageList.getRecords()){
+			String warnTypeName = sysDictService.queryDictTextByKey("warnType", realTimeWarn.getWarnType());
+			String warnLevelName = sysDictService.queryDictTextByKey("warnLevel", realTimeWarn.getWarnLevel());
+			realTimeWarn.setWarnType(warnTypeName);
+			realTimeWarn.setWarnLevel(warnLevelName);
+		}
 		return Result.ok(pageList);
 	}
 	

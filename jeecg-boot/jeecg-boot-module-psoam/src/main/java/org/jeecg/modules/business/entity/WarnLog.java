@@ -20,7 +20,7 @@ import lombok.experimental.Accessors;
 /**
  * @Description: warn_log
  * @Author: jeecg-boot
- * @Date:   2020-09-08
+ * @Date:   2020-09-10
  * @Version: V1.0
  */
 @Data
@@ -48,7 +48,8 @@ public class WarnLog implements Serializable {
     @ApiModelProperty(value = "mn")
     private java.lang.String mn;
 	/**warnType*/
-	@Excel(name = "warnType", width = 15)
+	@Excel(name = "warnType", width = 15, dicCode = "warnType")
+	@Dict(dicCode = "warnType")
     @ApiModelProperty(value = "warnType")
     private java.lang.Integer warnType;
 	/**code*/
