@@ -18,4 +18,6 @@ import java.util.List;
 public interface IWarnLogService extends IService<WarnLog> {
     Page<RealTimeWarn> queryWarn(Page<RealTimeWarn> page, List<String> companyIds, String area, String type,String warnType,
                               String mn, Timestamp end, Timestamp begin);
+    List<RealTimeWarn> queryWarn(List<String> companyIds, String area, String type,String warnType,
+                                 String mn, Timestamp end, Timestamp begin);
 }

@@ -31,9 +31,9 @@
           </a-col>
           <a-col :xl="4" :lg="7" :md="8" :sm="24">
             <a-form-item label="报警类型">
-              <a-select v-model="queryParam.typeIndex" :allowClear="allowClear" placeholder="请选择" show-search style="width: 100%" optionFilterProp="children">
+              <a-select v-model="queryParam.warnType" :allowClear="allowClear" placeholder="请选择" show-search style="width: 100%" optionFilterProp="children">
                 <!--                <a-select-option :value="companyIds">请选择</a-select-option>-->
-                <a-select-option v-for="(item,index) in dataTypes" :key="item.value" :value="item.key">
+                <a-select-option v-for="(item,index) in warnType" :key="item.value" :value="item.key">
                   {{item.value}}
                 </a-select-option>
               </a-select>
@@ -54,7 +54,7 @@
             <span style="float: left;overflow: hidden;margin-left: 20px" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <!--              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>-->
-              <a-button type="primary" icon="download" style="margin-left: 8px" @click="handleExportXls('报')">导出</a-button>
+              <a-button type="primary" icon="download" style="margin-left: 8px" @click="handleExportXls('报警信息(VOCs)')">导出</a-button>
             </span>
           </a-col>
 
@@ -91,6 +91,7 @@
   import JDate from '@/components/jeecg/JDate.vue'
   import {tableMixin} from "../mixin/tableMixin";
   import moment from 'moment'
+  import {getAction} from "../../../api/manage";
 
     export default {
       name: "RealTimeWarnVoc",
@@ -104,7 +105,8 @@
           queryParam: {
             companyIds: this.$store.getters.userInfo.companyIds.join(','),
             dataTime_begin:moment().format("YYYY-MM-DD"),
-            dataTime_end:moment().format("YYYY-MM-DD")
+            dataTime_end:moment().format("YYYY-MM-DD"),
+            type:2
           },
           items: [],
           siteOriginal: [],
@@ -147,7 +149,7 @@
             {
               title:'污染因子',
               align:"center",
-              dataIndex: 'code'
+              dataIndex: 'meaning'
             },
             {
               title:'报警级别',
@@ -164,26 +166,47 @@
               align:"center",
               dataIndex: 'warnTime',
               customRender:function (text) {
-                return !text?"":(text.length>10?text.substr(0,10):text)
+                return moment(text).format("YYYY-MM-DD HH:mm:ss")
               }
             }
           ],
+          url:{
+            list:'/warn/warnLog/list',
+            exportXlsUrl:'/warn/warnLog/exportXls',
+          }
         }
       },
       methods:{
         searchQuery(){
-
+          this.queryData()
         },
         searchReset(){
-          this.queryParam = {companyIds:this.$store.getters.userInfo.companyIds.join(',')};
           this.loadData(1);
         },
-        handleExportXls(){
+        queryData(arg){
+          //加载数据 若传入参数1则加载第一页的内容
+          if (arg === 1) {
+            this.ipagination.current = 1;
+          }
+          var params = this.getQueryParams();//查询条件
+          this.loading = true;
+          getAction(this.url.list, params).then((res) => {
+            if (res.success) {
+              this.dataSource = res.result.records;
+              this.ipagination.total = res.result.total;
 
-        },
+            }
+            if(res.code===510){
+              this.$message.warning(res.message)
+            }
+            this.loading = false;
+          })
+          //对param
+        }
       },
-      mounted(){
+      created(){
         this.queryCompanyAndSite();
+        this.queryData(1);
       }
     }
 </script>

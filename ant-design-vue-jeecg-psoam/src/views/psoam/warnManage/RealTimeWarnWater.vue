@@ -54,7 +54,7 @@
             <span style="float: left;overflow: hidden;margin-left: 20px" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <!--              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>-->
-              <a-button type="primary" icon="download" style="margin-left: 8px" @click="handleExportXls('报')">导出</a-button>
+              <a-button type="primary" icon="download" style="margin-left: 8px" @click="handleExportXls('报警信息(废水)')">导出</a-button>
             </span>
           </a-col>
 
@@ -172,7 +172,7 @@
           ],
           url:{
             list:'/warn/warnLog/list',
-            exportXlsUrl:'/psoam/waterCurrentOverproof/exportXls',
+            exportXlsUrl:'/warn/warnLog/exportXls',
           }
         }
       },
@@ -202,14 +202,11 @@
             this.loading = false;
           })
           //对param
-        },
-        handleExportXls(){
-
-        },
+        }
       },
-      mounted(){
+      created(){
         this.queryCompanyAndSite();
-        this.searchQuery();
+        this.queryData(1);
       }
     }
 </script>

@@ -28,4 +28,9 @@ public class WarnLogServiceImpl extends ServiceImpl<WarnLogMapper, WarnLog> impl
     public Page<RealTimeWarn> queryWarn(Page<RealTimeWarn> page, List<String> companyIds, String area, String type, String warnType, String mn, Timestamp end, Timestamp begin) {
         return page.setRecords(warnLogMapper.queryWarn(page, companyIds, area, type, warnType, mn, end, begin));
     }
+
+    @Override
+    public List<RealTimeWarn> queryWarn(List<String> companyIds, String area, String type, String warnType, String mn, Timestamp end, Timestamp begin) {
+        return warnLogMapper.queryWarn(companyIds, area, type, warnType, mn, end, begin);
+    }
 }

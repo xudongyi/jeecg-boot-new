@@ -18,4 +18,7 @@ import java.util.List;
 public interface WarnLogMapper extends BaseMapper<WarnLog> {
     List<RealTimeWarn> queryWarn(Page<RealTimeWarn> page, @Param("companyIds") List<String>companyIds, String area, String type, String warnType,
                               String mn, Timestamp end, Timestamp begin);
+
+    List<RealTimeWarn> queryWarn(@Param("companyIds") List<String>companyIds, String area, String type, String warnType,
+                                 String mn, Timestamp end, Timestamp begin);
 }

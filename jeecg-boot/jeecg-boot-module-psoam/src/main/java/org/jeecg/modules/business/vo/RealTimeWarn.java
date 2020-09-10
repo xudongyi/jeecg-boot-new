@@ -1,51 +1,34 @@
 package org.jeecg.modules.business.vo;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import org.jeecg.common.aspect.annotation.Dict;
-import org.jeecgframework.poi.excel.annotation.Excel;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.jeecg.modules.business.annotation.ExcelSelf;
+
 
 import java.sql.Timestamp;
 
 @Data
 public class RealTimeWarn {
     /**id*/
-    @TableId(type = IdType.ID_WORKER_STR)
-    @ApiModelProperty(value = "id")
     private java.lang.String id;
     /**companyId*/
-    @Excel(name = "companyName", width = 15)
-    @ApiModelProperty(value = "companyName")
+    @ExcelSelf(name = "企业名称", width = 30,orderNum = 1)
     private java.lang.String companyName;
     /**mn*/
-    @Excel(name = "siteName", width = 15)
-    @ApiModelProperty(value = "siteName")
+    @ExcelSelf(name = "监控点名称", width = 15,orderNum = 2)
     private java.lang.String siteName;
     /**warnType*/
-    @Excel(name = "warnType", width = 15, dicCode = "warnType")
-    @Dict(dicCode = "warnType")
-    @ApiModelProperty(value = "warnType")
+    @ExcelSelf(name = "报警类型", width = 15,orderNum = 3)
     private java.lang.String warnType;
     /**code*/
-    @Excel(name = "meaning", width = 15)
-    @ApiModelProperty(value = "meaning")
+    @ExcelSelf(name = "污染因子", width = 15,orderNum = 4)
     private java.lang.String meaning;
     /**warnLevel*/
-    @Excel(name = "warnLevel", width = 15,dicCode = "warnLevel")
-    @ApiModelProperty(value = "warnLevel")
+    @ExcelSelf(name = "报警级别", width = 15,orderNum = 5)
     private java.lang.String warnLevel;
     /**content*/
-    @Excel(name = "content", width = 15)
-    @ApiModelProperty(value = "content")
+    @ExcelSelf(name = "报警内容", width = 15,orderNum = 6)
     private java.lang.String content;
     /**warnTime*/
-    @Excel(name = "warnTime", width = 15, format = "yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
-    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    @ApiModelProperty(value = "warnTime")
+    @ExcelSelf(name = "报警时间", width = 20, format = "yyyy-MM-dd HH:mm:ss",orderNum = 7)
     Timestamp warnTime;
 }
