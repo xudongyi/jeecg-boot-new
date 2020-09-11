@@ -92,7 +92,7 @@ public class WarnLogController extends JeecgController<WarnLog, IWarnLogService>
 	}
 
 	 /**
-	  * 导出excel
+	  * 导出报警信息excel
 	  *
 	  * @param req
 	  */
@@ -233,6 +233,111 @@ public class WarnLogController extends JeecgController<WarnLog, IWarnLogService>
 		 	warnCountList.add(warnCount);
 		 }
 		 return Result.ok(warnCountList);
+	 }
+
+	 /**
+	  * 导出报警统计excel
+	  *
+	  * @param req
+	  */
+	 @RequestMapping(value = "/exportWarnCount")
+	 public ModelAndView exportWarnCount(HttpServletRequest req) {
+		 //查询
+		 String  area = req.getParameter("area");
+		 String  companyId = req.getParameter("companyId");
+		 String  companyIds = req.getParameter("companyIds");
+		 String  mn = req.getParameter("mn");
+		 String  dataTime_begin = req.getParameter("dataTime_begin");
+		 String  dataTime_end = req.getParameter("dataTime_end");
+		 String  type = req.getParameter("type");
+		 String  dataType = req.getParameter("dataType");
+
+		 companyIds = StrUtil.isEmpty(companyId)?companyIds:companyId; //可以查询到的企业
+		 List<String> companyIdList = Arrays.asList(companyIds.split(","));
+
+		 Timestamp end;
+		 Timestamp begin;
+		 if("realTime".equals(dataType)){
+			 end = DateUtil.parse(dataTime_end, "yyyy-MM-dd HH:mm:ss").toTimestamp();
+			 begin = DateUtil.parse(dataTime_begin,"yyyy-MM-dd HH:mm:ss").toTimestamp();
+		 }else if("minute".equals(dataType)){
+			 end = DateUtil.parse(dataTime_end+":59", "yyyy-MM-dd HH:mm:ss").toTimestamp();
+			 begin = DateUtil.parse(dataTime_begin,"yyyy-MM-dd HH:mm").toTimestamp();
+		 }else if("hour".equals(dataType)){
+			 end = DateUtil.parse(dataTime_end+":59:59", "yyyy-MM-dd HH:mm:ss").toTimestamp();
+			 begin = DateUtil.parse(dataTime_begin,"yyyy-MM-dd HH").toTimestamp();
+		 }else{
+			 end = DateUtil.parse(dataTime_end+" 23:59:59", "yyyy-MM-dd HH:mm:ss").toTimestamp();
+			 begin = DateUtil.parse(dataTime_begin,"yyyy-MM-dd").toTimestamp();
+		 }
+		 List<WarnOldCount> warnOldCounts = warnLogService.queryWarnCount(companyIdList,area,type,mn,end,begin);
+		 Map<String,List<WarnOldCount>> newList = new HashMap<>();
+		 for(WarnOldCount warnOldCount:warnOldCounts){
+			 newList.putIfAbsent(warnOldCount.getMn(), new ArrayList<>());
+			 newList.get(warnOldCount.getMn()).add(warnOldCount);
+		 }
+		 List<WarnCount> warnCountList = new ArrayList<>();
+		 for(Map.Entry<String,List<WarnOldCount>> m:newList.entrySet()){
+			 List<WarnOldCount> singleList = m.getValue();
+			 //预警数量
+			 Integer earlyWarnCount = 0;
+			 //超标报警数量 0,1,2
+			 Integer overWarnCount = 0;
+			 //数据异常报警数量 7
+			 Integer abnormalCount = 0;
+			 //定值报警数量 6
+			 Integer constantCount = 0;
+			 String warnCompanyId = null;
+			 String warnCompanyName = null;
+			 String siteId = null;
+			 String siteName = null;
+			 for(WarnOldCount w:singleList){
+				 warnCompanyId = w.getCompanyId();
+				 warnCompanyName = w.getCompanyName();
+				 siteId = w.getMn();
+				 siteName =w.getSiteName();
+				 if("7".equals(w.getWarnType())){
+					 abnormalCount += w.getNum();
+				 }else if("6".equals(w.getWarnType())){
+					 constantCount += w.getNum();
+				 }else if("0".equals(w.getWarnType()) || "1".equals(w.getWarnType()) || "2".equals(w.getWarnType())){
+					 if("0".equals(w.getWarnLevel())){
+						 overWarnCount += w.getNum();
+					 }else {
+						 earlyWarnCount += w.getNum();
+					 }
+				 }
+			 }
+			 WarnCount warnCount = new WarnCount();
+			 warnCount.setEarlyWarnCount(earlyWarnCount);
+			 warnCount.setOverWarnCount(overWarnCount);
+			 warnCount.setAbnormalCount(abnormalCount);
+			 warnCount.setConstantCount(constantCount);
+			 warnCount.setId(m.getKey());
+			 warnCount.setMn(m.getKey());
+			 warnCount.setCompanyId(warnCompanyId);
+			 warnCount.setCompanyName(warnCompanyName);
+			 warnCount.setMn(siteId);
+			 warnCount.setSiteName(siteName);
+			 warnCountList.add(warnCount);
+		 }
+
+		 String sheetName;
+		 if("0".equals(type)){
+			 sheetName = "报警统计（废水）";
+		 }else if ("1".equals(type)){
+			 sheetName = "报警统计（废气）";
+		 }else {
+			 sheetName = "报警统计（VOCs）";
+		 }
+		 // Step.3 AutoPoi 导出Excel
+		 ModelAndView mv = new ModelAndView(new SelfEntityExcelView(null,null));
+		 mv.addObject(SelfExcelConstants.TITLE, sheetName); //此处设置的filename无效 ,前端会重更新设置一下
+		 mv.addObject(SelfExcelConstants.SHEET_NAME, sheetName);
+		 mv.addObject(SelfExcelConstants.CLAZZ, WarnCount.class);
+		 mv.addObject(SelfExcelConstants.DATA_LIST, warnCountList);
+		 mv.addObject(SelfExcelConstants.FOOTER, "注：缺测指标的浓度及分指数均使用NA标识。");
+		 return mv;
 	 }
 	
 	/**
