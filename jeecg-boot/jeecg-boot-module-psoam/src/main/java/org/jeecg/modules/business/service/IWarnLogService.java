@@ -5,6 +5,7 @@ import org.jeecg.modules.business.entity.WarnLog;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.jeecg.modules.business.vo.OverEntry;
 import org.jeecg.modules.business.vo.RealTimeWarn;
+import org.jeecg.modules.business.vo.WarnOldCount;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -20,4 +21,6 @@ public interface IWarnLogService extends IService<WarnLog> {
                               String mn, Timestamp end, Timestamp begin);
     List<RealTimeWarn> queryWarn(List<String> companyIds, String area, String type,String warnType,
                                  String mn, Timestamp end, Timestamp begin);
+    List<WarnOldCount> queryWarnCount(List<String> companyIds, String area, String type,
+                                      String mn, Timestamp end, Timestamp begin);
 }

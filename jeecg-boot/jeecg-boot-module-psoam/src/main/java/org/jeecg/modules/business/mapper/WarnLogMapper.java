@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Param;
 import org.jeecg.modules.business.entity.WarnLog;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.jeecg.modules.business.vo.RealTimeWarn;
+import org.jeecg.modules.business.vo.WarnOldCount;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -20,5 +21,8 @@ public interface WarnLogMapper extends BaseMapper<WarnLog> {
                               String mn, Timestamp end, Timestamp begin);
 
     List<RealTimeWarn> queryWarn(@Param("companyIds") List<String>companyIds, String area, String type, String warnType,
+                                 String mn, Timestamp end, Timestamp begin);
+
+    List<WarnOldCount> queryWarnCount(@Param("companyIds") List<String>companyIds, String area, String type,
                                  String mn, Timestamp end, Timestamp begin);
 }

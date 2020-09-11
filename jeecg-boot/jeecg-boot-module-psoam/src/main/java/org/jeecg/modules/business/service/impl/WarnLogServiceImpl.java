@@ -5,6 +5,7 @@ import org.jeecg.modules.business.entity.WarnLog;
 import org.jeecg.modules.business.mapper.WarnLogMapper;
 import org.jeecg.modules.business.service.IWarnLogService;
 import org.jeecg.modules.business.vo.RealTimeWarn;
+import org.jeecg.modules.business.vo.WarnOldCount;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -32,5 +33,10 @@ public class WarnLogServiceImpl extends ServiceImpl<WarnLogMapper, WarnLog> impl
     @Override
     public List<RealTimeWarn> queryWarn(List<String> companyIds, String area, String type, String warnType, String mn, Timestamp end, Timestamp begin) {
         return warnLogMapper.queryWarn(companyIds, area, type, warnType, mn, end, begin);
+    }
+
+    @Override
+    public List<WarnOldCount> queryWarnCount(List<String> companyIds, String area, String type, String mn, Timestamp end, Timestamp begin) {
+        return warnLogMapper.queryWarnCount(companyIds, area, type, mn, end, begin);
     }
 }

@@ -40,7 +40,41 @@
         <if test="begin != null and end != null">
             and a.warn_time <![CDATA[ <= ]]> #{end} and a.warn_time <![CDATA[ >= ]]> #{begin}
         </if>
+        order by a.warn_time desc
+    </select>
 
+    <resultMap id="WarnOldCount" type="org.jeecg.modules.business.vo.WarnOldCount" >
+        <result column="company_name" property="companyName" jdbcType="VARCHAR"/>
+        <result column="company_id" property="companyId" jdbcType="VARCHAR"/>
+        <result column="site_name" property="siteName" jdbcType="VARCHAR"/>
+        <result column="mn" property="mn" jdbcType="VARCHAR"/>
+        <result column="warn_type" property="warnType" jdbcType="VARCHAR"/>
+        <result column="warn_level" property="warnLevel" jdbcType="VARCHAR"/>
+        <result column="num" property="num" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <select id="queryWarnCount"  resultMap="WarnOldCount">
+
+        select b.company_name,c.site_name,a.COMPANY_ID,a.MN,a.WARN_TYPE,a.WARN_LEVEL, count(1) num
+        from warn_log a left join company_base b on a.COMPANY_ID=b.id
+        left join site_monitor_point c on a.MN=c.mn
+        where a.TYPE=#{type} and a.company_id in
+        <foreach collection="companyIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        <if test="area != null and area!='' and (companyId = null or companyId = '')">
+            and a.company_id in (select N.company_id from company_baseinfo N WHERE N.status='2' and N.administrative_region=#{area} and N.company_id in
+            <foreach collection="companyIds" item="id" index="index" open="(" close=")" separator=",">
+                #{id}
+            </foreach>)
+        </if>
+        <if test="mn != null and mn!=''">
+            and a.mn = #{mn}
+        </if>
+        <if test="begin != null and end != null">
+            and a.warn_time <![CDATA[ <= ]]> #{end} and a.warn_time <![CDATA[ >= ]]> #{begin}
+        </if>
+        GROUP BY a.WARN_TYPE,a.WARN_LEVEL,a.MN
     </select>
 
 </mapper>
