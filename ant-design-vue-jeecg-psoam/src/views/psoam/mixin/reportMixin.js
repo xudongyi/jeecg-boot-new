@@ -41,7 +41,12 @@ export const reportMixin = {
   created() {
   },
   methods:{
-
+    tabChange(key){
+        this.key = key
+    },
+    calcIndex: function (t,r,index) {
+      return parseInt(index)+1;
+    },
 
   },
 

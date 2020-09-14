@@ -9,6 +9,20 @@ public class PollutionSource {
         public final static String HOUR = "hour";
         public final static String DAY = "day";
 
+
+    }
+    //报表中的dateType
+    public static class ReportDateType{
+
+        public final static String YEAR = "year";
+        public final static String QUARTERLY =  "quarterly";
+        public final static String MONTH = "month";
+        public final static String DATE = "date";
+
+
+
+
+
     }
     public static class DataFormat{
 
