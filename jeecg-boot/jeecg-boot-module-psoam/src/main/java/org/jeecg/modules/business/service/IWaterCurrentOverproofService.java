@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import org.apache.ibatis.annotations.Param;
 import org.jeecg.modules.business.entity.WaterCurrentOverproof;
 import org.jeecg.modules.business.vo.OverEntry;
+import org.jeecg.modules.business.vo.OverEntryReport;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -21,5 +22,9 @@ public interface IWaterCurrentOverproofService extends IService<WaterCurrentOver
     List<OverEntry> queryOverWater(List<String>companyIds, String area, String code,
                                    String mn, Timestamp end, Timestamp begin);
     Page<OverEntry> queryOverWater(Page<OverEntry> page, List<String>companyIds, String area, String code,
+                                   String mn, Timestamp end, Timestamp begin);
+    List<OverEntryReport> queryOverWaterReport(List<String>companyIds, String area, String code,
+                                               String mn, Timestamp end, Timestamp begin);
+    Page<OverEntryReport> queryOverWaterReport(Page<OverEntryReport> page, List<String>companyIds, String area, String code,
                                    String mn, Timestamp end, Timestamp begin);
 }

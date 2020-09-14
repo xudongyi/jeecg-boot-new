@@ -21,6 +21,7 @@ import org.jeecg.modules.business.service.ISysPollutionCodeService;
 import org.jeecg.modules.business.service.IWaterCurrentOverproofService;
 import org.jeecg.modules.business.view.SelfEntityExcelView;
 import org.jeecg.modules.business.vo.OverEntry;
+import org.jeecg.modules.business.vo.OverEntryReport;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
 import org.jeecgframework.poi.excel.view.JeecgEntityExcelView;
@@ -122,6 +123,44 @@ public class WaterCurrentOverproofController extends JeecgController<WaterCurren
 		mv.addObject(SelfExcelConstants.DATA_LIST, overEntries);
 		mv.addObject(SelfExcelConstants.FOOTER, "注：缺测指标的浓度及分指数均使用NA标识。");
 		return mv;
+	}
+
+	/**
+	 * 分页列表查询
+	 *
+	 * @param pageNo
+	 * @param pageSize
+	 * @param req
+	 * @return
+	 */
+	@AutoLog(value = "water_current_overproof-分页列表查询")
+	@ApiOperation(value="water_current_overproof-分页列表查询", notes="water_current_overproof-分页列表查询")
+	@GetMapping(value = "/waterOverReport")
+	public Result<?> queryOverWaterReport(
+			@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+			@RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
+			HttpServletRequest req) {
+		//查询
+		String  area = req.getParameter("area");
+		String  companyId = req.getParameter("companyId");
+		String  companyIds = req.getParameter("companyIds");
+		String  mn = req.getParameter("mn");
+		String  dataTime_begin = req.getParameter("dataTime_begin");
+		String  dataTime_end = req.getParameter("dataTime_end");
+		String  pollutionCode = req.getParameter("pollutionCode");
+
+		companyIds = StrUtil.isEmpty(companyId)?companyIds:companyId; //可以查询到的企业
+		List<String> companyIdList = Arrays.asList(companyIds.split(","));
+		Page<OverEntryReport> page = new Page<>(pageNo, pageSize);
+
+		Timestamp end = DateUtil.parse(dataTime_end+" 23:59:59","yyyy-MM-dd HH:mm:ss").toTimestamp();
+		Timestamp begin = DateUtil.parse(dataTime_begin,"yyyy-MM-dd").toTimestamp();
+		IPage<OverEntryReport> pageList = waterCurrentOverproofService.queryOverWaterReport(page,companyIdList ,area ,pollutionCode ,mn ,end ,begin) ;
+		for (OverEntryReport overEntry:pageList.getRecords()) {
+			String amountUnit = sysDictService.queryDictTextByKey("allUnit", overEntry.getChromaUnit());
+			overEntry.setChromaUnit(amountUnit);
+		}
+		return Result.ok(pageList);
 	}
 
 	/**

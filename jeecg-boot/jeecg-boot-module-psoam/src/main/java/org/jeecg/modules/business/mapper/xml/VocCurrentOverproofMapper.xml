@@ -42,7 +42,7 @@
         inner join  sys_pollution_code C on C.is_use = 'Y'
         and C.type = '2' and A.CODE = C.code
         <if test="code != null and code!=''">
-            and A.CODE = = #{code}
+            and A.CODE = #{code}
         </if>
         and A.data_time <![CDATA[ <= ]]> #{end} and A.data_time <![CDATA[ >= ]]> #{begin}
     </select>

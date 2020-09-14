@@ -226,7 +226,7 @@
       // },
       mainPollutionChange(value) {
         console.log(value),
-        this.queryParam.pollutionCode = value.target.value;
+        this.queryParam.pollutionCode = value;
       },
       dataTypeChange(value) {
         console.log(value)
