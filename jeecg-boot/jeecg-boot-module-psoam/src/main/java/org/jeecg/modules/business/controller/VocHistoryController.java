@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.util.oConvertUtils;
@@ -81,10 +82,14 @@ public class VocHistoryController {
 	 @AutoLog(value = "查询站点名称")
 	 @ApiOperation(value = "voc_day-分页列表查询", notes = "voc_day-分页列表查询")
 	 @GetMapping(value = "/querySiteNameAndMn")
-	 public Result<?> querySiteNameAndMn(@RequestParam(name = "companyIds", required = true) String companyIds,@RequestParam(name = "siteType", required = true) String siteType) {
+	 public Result<?> querySiteNameAndMn(@RequestParam(name = "companyIds", required = true) String companyIds,@RequestParam(name = "siteType", required = false) String siteType) {
 		 List<String> idList = Arrays.asList(companyIds.split(","));
 		 List<Map<String, String>> result = new ArrayList<>();
-		 siteMonitorPointService.list(new QueryWrapper<SiteMonitorPoint>().lambda().eq(SiteMonitorPoint::getSiteType, siteType).in(SiteMonitorPoint::getCompanyId, idList)).forEach(siteMonitorPoint -> {
+		 LambdaQueryWrapper<SiteMonitorPoint> queryWrapper = new QueryWrapper<SiteMonitorPoint>().lambda();
+		 if(!StrUtil.isEmpty(siteType))
+			 queryWrapper.eq(SiteMonitorPoint::getSiteType, siteType);
+		 queryWrapper.in(SiteMonitorPoint::getCompanyId, idList);
+		 siteMonitorPointService.list(queryWrapper).forEach(siteMonitorPoint -> {
 			 Map<String, String> param = new HashMap<>();
 			 param.put("key", siteMonitorPoint.getMn());
 			 param.put("value", siteMonitorPoint.getSiteName());
