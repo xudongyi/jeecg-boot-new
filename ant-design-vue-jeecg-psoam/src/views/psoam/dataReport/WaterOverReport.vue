@@ -52,7 +52,7 @@
             <span style="float: left;overflow: hidden;margin-left: 20px" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <!--              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>-->
-              <a-button type="primary" icon="download" style="margin-left: 8px" @click="handleExportXls('报警信息(废水)')">导出</a-button>
+              <a-button type="primary" icon="download" style="margin-left: 8px" @click="handleExportXls('超标报表(废水)')">导出</a-button>
             </span>
           </a-col>
 
@@ -103,8 +103,8 @@
         return {
           queryParam: {
             companyIds: this.$store.getters.userInfo.companyIds.join(','),
-            dataTime_begin:moment().format("YYYY-MM-DD"),
-            dataTime_end:moment().format("YYYY-MM-DD"),
+            dataTime_begin:moment().days(moment().days()-1).format("YYYY-MM-DD"),
+            dataTime_end:moment().add(-1,"day").format("YYYY-MM-DD"),
             type:0
           },
           items: [],
@@ -163,7 +163,12 @@
             {
               title:'超标持续时间',
               align:"center",
-              dataIndex: 'content'
+              dataIndex: 'timeLength',
+              // customRender:function (text,record,index) {
+              //   var a = moment(record.beginTime);
+              //   var b = moment(record.endTime);
+              //   return moment.duration(b.diff(a)).toJSON().replace("PT","");
+              // }
             },
             {
               title:'最大超标值',
@@ -178,7 +183,7 @@
             {
               title:'单位',
               align:"center",
-              dataIndex: 'chromaUnit'
+              dataIndex: 'chromaUnitMath'
             },
             {
               title:'超标倍数',
@@ -188,7 +193,7 @@
           ],
           url:{
             list:'/psoam/waterCurrentOverproof/waterOverReport',
-            exportXlsUrl:'/warn/warnLog/exportXls',
+            exportXlsUrl:'/psoam/waterCurrentOverproof/exportWaterReport',
           }
         }
       },

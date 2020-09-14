@@ -17,12 +17,14 @@ public class OverEntryReport {
     Timestamp beginTime;
     @ExcelSelf(name = "超标结束时间", width = 20, format = "yyyy:MM:dd HH:mm:ss",orderNum = 5)
     Timestamp endTime;
-    @ExcelSelf(name = "最大超标值", width = 15,orderNum = 6)
+    @ExcelSelf(name = "持续时间", width = 15,orderNum = 6)
+    String timeLength;
+    @ExcelSelf(name = "最大超标值", width = 15,orderNum = 7)
     Double value;
-    @ExcelSelf(name = "标准值", width = 15,orderNum = 7)
+    @ExcelSelf(name = "标准值", width = 15,orderNum = 8)
     Double standardValue;
-    @ExcelSelf(name = "单位", width = 15,orderNum = 8)
-    String chromaUnit;
-    @ExcelSelf(name = "超标倍数", width = 15,orderNum = 9)
+    @ExcelSelf(name = "单位", width = 15,orderNum = 9)
+    String chromaUnitMath;
+    @ExcelSelf(name = "超标倍数", width = 15,orderNum = 10)
     Double multiple;
 }

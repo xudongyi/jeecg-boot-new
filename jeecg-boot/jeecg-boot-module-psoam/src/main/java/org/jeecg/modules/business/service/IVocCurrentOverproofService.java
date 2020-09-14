@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.jeecg.modules.business.entity.VocCurrentOverproof;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.jeecg.modules.business.vo.OverEntry;
+import org.jeecg.modules.business.vo.OverEntryReport;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -19,4 +20,8 @@ public interface IVocCurrentOverproofService extends IService<VocCurrentOverproo
                                    String mn, Timestamp end, Timestamp begin);
     Page<OverEntry> queryOverVoc(Page<OverEntry> page, List<String>companyIds, String area, String code,
                                    String mn, Timestamp end, Timestamp begin);
+    List<OverEntryReport> queryOverVocReport(List<String>companyIds, String area, String code,
+                                               String mn, Timestamp end, Timestamp begin);
+    Page<OverEntryReport> queryOverVocReport(Page<OverEntryReport> page, List<String>companyIds, String area, String code,
+                                               String mn, Timestamp end, Timestamp begin);
 }

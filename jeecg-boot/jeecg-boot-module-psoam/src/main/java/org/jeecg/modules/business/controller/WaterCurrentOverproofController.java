@@ -1,5 +1,6 @@
 package org.jeecg.modules.business.controller;
 
+import cn.hutool.core.date.BetweenFormater;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -31,6 +32,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
@@ -156,11 +158,54 @@ public class WaterCurrentOverproofController extends JeecgController<WaterCurren
 		Timestamp end = DateUtil.parse(dataTime_end+" 23:59:59","yyyy-MM-dd HH:mm:ss").toTimestamp();
 		Timestamp begin = DateUtil.parse(dataTime_begin,"yyyy-MM-dd").toTimestamp();
 		IPage<OverEntryReport> pageList = waterCurrentOverproofService.queryOverWaterReport(page,companyIdList ,area ,pollutionCode ,mn ,end ,begin) ;
-		for (OverEntryReport overEntry:pageList.getRecords()) {
-			String amountUnit = sysDictService.queryDictTextByKey("allUnit", overEntry.getChromaUnit());
-			overEntry.setChromaUnit(amountUnit);
+		for (OverEntryReport overEntryReport:pageList.getRecords()) {
+			String amountUnitMath = sysDictService.queryDictTextByKey("allUnit", overEntryReport.getChromaUnitMath());
+			Date beginTime = new Date(overEntryReport.getBeginTime().getTime());
+			Date endTime = new Date(overEntryReport.getEndTime().getTime());
+			String timeLength = DateUtil.formatBetween(beginTime, endTime, BetweenFormater.Level.SECOND);
+			overEntryReport.setTimeLength(timeLength);
+			overEntryReport.setChromaUnitMath(amountUnitMath);
 		}
 		return Result.ok(pageList);
+	}
+
+	/**
+	 * 导出excel
+	 *
+	 */
+	@RequestMapping(value = "/exportWaterReport")
+	public ModelAndView exportWaterReport(HttpServletRequest req) {
+		String  area = req.getParameter("area");
+		String  companyId = req.getParameter("companyId");
+		String  companyIds = req.getParameter("companyIds");
+		String  mn = req.getParameter("mn");
+		String  dataTime_begin = req.getParameter("dataTime_begin");
+		String  dataTime_end = req.getParameter("dataTime_end");
+		String  pollutionCode = req.getParameter("pollutionCode");
+
+		companyIds = StrUtil.isEmpty(companyId)?companyIds:companyId; //可以查询到的企业
+		List<String> companyIdList = Arrays.asList(companyIds.split(","));
+
+
+		Timestamp end = DateUtil.parse(dataTime_end+" 23:59:59","yyyy-MM-dd HH:mm:ss").toTimestamp();
+		Timestamp begin = DateUtil.parse(dataTime_begin,"yyyy-MM-dd").toTimestamp();
+		List<OverEntryReport> overEntries = waterCurrentOverproofService.queryOverWaterReport(companyIdList ,area ,pollutionCode ,mn ,end ,begin) ;
+		for (OverEntryReport overEntryReport:overEntries) {
+			String amountUnitMath = sysDictService.queryDictTextByKey("allUnit", overEntryReport.getChromaUnitMath());
+			Date beginTime = new Date(overEntryReport.getBeginTime().getTime());
+			Date endTime = new Date(overEntryReport.getEndTime().getTime());
+			String timeLength = DateUtil.formatBetween(beginTime, endTime, BetweenFormater.Level.SECOND);
+			overEntryReport.setTimeLength(timeLength);
+			overEntryReport.setChromaUnitMath(amountUnitMath);
+		}
+		// Step.3 AutoPoi 导出Excel
+		ModelAndView mv = new ModelAndView(new SelfEntityExcelView(null,null));
+		mv.addObject(SelfExcelConstants.TITLE, "超标报表（废水）"); //此处设置的filename无效 ,前端会重更新设置一下
+		mv.addObject(SelfExcelConstants.SHEET_NAME, "超标报表（废水）");
+		mv.addObject(SelfExcelConstants.CLAZZ, OverEntryReport.class);
+		mv.addObject(SelfExcelConstants.DATA_LIST, overEntries);
+		mv.addObject(SelfExcelConstants.FOOTER, "注：缺测指标的浓度及分指数均使用NA标识。");
+		return mv;
 	}
 
 	/**
