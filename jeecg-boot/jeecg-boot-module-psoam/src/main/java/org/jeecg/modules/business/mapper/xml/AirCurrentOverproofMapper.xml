@@ -45,4 +45,48 @@
         </if>
         and A.data_time <![CDATA[ <= ]]> #{end} and A.data_time <![CDATA[ >= ]]> #{begin}
     </select>
+
+    <resultMap id="OverEntryReport" type="org.jeecg.modules.business.vo.OverEntryReport" >
+        <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="company_name" property="companyName" jdbcType="VARCHAR"/>
+        <result column="site_name" property="siteName" jdbcType="VARCHAR"/>
+        <result column="begin_time" property="beginTime" jdbcType="TIMESTAMP"/>
+        <result column="end_time" property="endTime" jdbcType="TIMESTAMP"/>
+        <result column="meaning" property="meaning" jdbcType="VARCHAR"/>
+        <result column="value" property="value" jdbcType="DOUBLE"/>
+        <result column="STANDARD_VALUE" property="standardValue" jdbcType="DOUBLE"/>
+        <result column="chroma_unit_math" property="chromaUnitMath" jdbcType="VARCHAR"/>
+        <result column="multiple" property="multiple" jdbcType="DOUBLE"/>
+
+    </resultMap>
+    <select id="queryOverAirReport"  resultMap="OverEntryReport">
+
+        select A.id,company_name,B.site_name,begin_time,end_time,C.meaning,value,STANDARD_VALUE,chroma_unit_math,
+        round(value/STANDARD_VALUE-1,2) multiple from air_current_overproof  A
+        inner join (select M.*,N.MN,N.site_name from (
+        select company_id,company_name from company_base A inner join company_baseinfo B
+        on A.id = B.company_id AND B.status ='2'
+        where company_id in
+        <foreach collection="companyIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        <if test="area != null and area!=''">
+            and area = #{area}
+        </if>
+        )  M
+        INNER JOIN site_monitor_point N
+        ON M.company_id = N.company_id
+        where 1=1
+        <if test="mn != null and mn!=''">
+            and mn = #{mn}
+        </if>
+        ORDER BY company_id
+        )B ON A.MN = B.MN
+        inner join  sys_pollution_code C on  C.is_use = 'Y'
+        and C.type = '1' and A.CODE = C.code
+        <if test="code != null and code!=''">
+            and A.CODE = #{code}
+        </if>
+        and A.data_time <![CDATA[ <= ]]> #{end} and A.data_time <![CDATA[ >= ]]> #{begin}
+    </select>
 </mapper>

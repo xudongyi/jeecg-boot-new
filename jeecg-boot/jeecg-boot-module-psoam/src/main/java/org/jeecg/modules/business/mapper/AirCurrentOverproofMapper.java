@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Param;
 import org.jeecg.modules.business.entity.AirCurrentOverproof;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.jeecg.modules.business.vo.OverEntry;
+import org.jeecg.modules.business.vo.OverEntryReport;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -20,4 +21,9 @@ public interface AirCurrentOverproofMapper extends BaseMapper<AirCurrentOverproo
     List<OverEntry> queryOverAir(List<String> companyIds, String area, String code, String mn, Timestamp end, Timestamp begin);
     List<OverEntry> queryOverAir(Page<OverEntry> page, @Param("companyIds") List<String>companyIds, String area, String code,
                                    String mn, Timestamp end, Timestamp begin);
+
+    List<OverEntryReport>  queryOverAirReport(@Param("companyIds") List<String>companyIds, String area, String code,
+                                              String mn, Timestamp end, Timestamp begin);
+    List<OverEntryReport> queryOverAirReport(Page<OverEntryReport> page, @Param("companyIds") List<String>companyIds, String area, String code,
+                                             String mn, Timestamp end, Timestamp begin);
 }

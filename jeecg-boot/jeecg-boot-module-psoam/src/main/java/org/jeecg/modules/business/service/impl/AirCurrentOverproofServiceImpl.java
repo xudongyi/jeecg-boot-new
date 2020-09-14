@@ -5,6 +5,7 @@ import org.jeecg.modules.business.entity.AirCurrentOverproof;
 import org.jeecg.modules.business.mapper.AirCurrentOverproofMapper;
 import org.jeecg.modules.business.service.IAirCurrentOverproofService;
 import org.jeecg.modules.business.vo.OverEntry;
+import org.jeecg.modules.business.vo.OverEntryReport;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -32,5 +33,15 @@ public class AirCurrentOverproofServiceImpl extends ServiceImpl<AirCurrentOverpr
     @Override
     public Page<OverEntry> queryOverAir(Page<OverEntry> page, List<String> companyIds, String area, String code, String mn, Timestamp end, Timestamp begin) {
         return page.setRecords(airCurrentOverproofMapper.queryOverAir(page,companyIds ,area ,code ,mn ,end ,begin));
+    }
+
+    @Override
+    public List<OverEntryReport> queryOverAirReport(List<String> companyIds, String area, String code, String mn, Timestamp end, Timestamp begin) {
+        return airCurrentOverproofMapper.queryOverAirReport(companyIds, area, code, mn, end, begin);
+    }
+
+    @Override
+    public Page<OverEntryReport> queryOverAirReport(Page<OverEntryReport> page, List<String> companyIds, String area, String code, String mn, Timestamp end, Timestamp begin) {
+        return page.setRecords(airCurrentOverproofMapper.queryOverAirReport(page, companyIds, area, code, mn, end, begin));
     }
 }
