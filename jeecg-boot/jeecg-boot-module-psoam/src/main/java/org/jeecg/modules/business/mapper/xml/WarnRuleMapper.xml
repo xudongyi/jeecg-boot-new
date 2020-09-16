@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.business.mapper.WarnRuleMapper">
+
+    <select id="queryMnInfo" resultType="Map">
+        select
+        a.mn mn,
+        a.site_name siteName,
+        a.site_type siteType,
+        a.company_id companyId,
+        b.company_name companyName
+        from site_monitor_point a left join company_base b on a.company_id=b.id
+        where a.site_state='1' and a.site_type in ('0','1','2') and a.company_id in
+        <foreach collection="companyIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        <if test="area != null and area!=''">
+            and a.company_id in (select N.company_id from company_baseinfo N WHERE N.status='2' and N.administrative_region=#{area} and N.company_id in
+            <foreach collection="companyIds" item="id" index="index" open="(" close=")" separator=",">
+                #{id}
+            </foreach>)
+        </if>
+        <if test="siteType != null and siteType !=''">
+            and a.site_type=#{siteType}
+        </if>
+        order by a.company_id
+    </select>
+
+    <resultMap id="WarnRuleVO" type="org.jeecg.modules.business.vo.WarnRuleVO">
+        <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="mn" property="mn" jdbcType="VARCHAR"/>
+        <result column="rule_id" property="ruleId" jdbcType="VARCHAR"/>
+        <result column="is_used" property="isUsed" jdbcType="TIMESTAMP"/>
+        <result column="rule_type" property="ruleType" jdbcType="VARCHAR"/>
+        <result column="site_type" property="siteType" jdbcType="VARCHAR"/>
+        <result column="code" property="code" jdbcType="VARCHAR"/>
+        <result column="rule_level" property="ruleLevel" jdbcType="VARCHAR"/>
+        <result column="warn_value_up" property="warnValueUp" jdbcType="DOUBLE"/>
+        <result column="warn_value_down" property="warnValueDown" jdbcType="DOUBLE"/>
+        <result column="is_sample" property="isSample" jdbcType="VARCHAR"/>
+        <result column="is_close_tap" property="isCloseTap" jdbcType="VARCHAR"/>
+        <result column="is_send_msg" property="isSendMsg" jdbcType="VARCHAR"/>
+        <result column="is_synchronize" property="isSynchronize" jdbcType="VARCHAR"/>
+        <result column="msg_rate" property="msgRate" jdbcType="INTEGER"/>
+        <result column="msg_start_time" property="msgStartTime" jdbcType="TIME"/>
+        <result column="msg_end_time" property="msgEndTime" jdbcType="TIME"/>
+        <result column="repeat_data_count" property="repeatDataCount" jdbcType="INTEGER"/>
+        <result column="content" property="content" jdbcType="VARCHAR"/>
+    </resultMap>
+    <select id="queryWarnRuleVO" resultMap="WarnRuleVO">
+        select
+        a.id,a.mn,a.rule_id,a.is_used,
+        b.rule_type,b.site_type,b.code,b.rule_level,
+        b.warn_value_up,b.warn_value_down,b.is_sample,
+        b.is_close_tap,b.is_send_msg,b.is_synchronize,
+        b.msg_rate,b.msg_start_time,b.msg_end_time,b.content,b.repeat_data_count
+        from warn_point_rule a left join warn_rule b on a.rule_id=b.id
+        WHERE a.mn in
+        <foreach collection="mns" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+</mapper>

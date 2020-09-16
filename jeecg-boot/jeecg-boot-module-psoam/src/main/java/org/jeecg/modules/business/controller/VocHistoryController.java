@@ -84,10 +84,12 @@ public class VocHistoryController {
 	 @GetMapping(value = "/querySiteNameAndMn")
 	 public Result<?> querySiteNameAndMn(@RequestParam(name = "companyIds", required = true) String companyIds,@RequestParam(name = "siteType", required = false) String siteType) {
 		 List<String> idList = Arrays.asList(companyIds.split(","));
+		 List<String> siteTypeList = Arrays.asList(siteType.split(","));
 		 List<Map<String, String>> result = new ArrayList<>();
 		 LambdaQueryWrapper<SiteMonitorPoint> queryWrapper = new QueryWrapper<SiteMonitorPoint>().lambda();
-		 if(!StrUtil.isEmpty(siteType))
-			 queryWrapper.eq(SiteMonitorPoint::getSiteType, siteType);
+		 if(!StrUtil.isEmpty(siteType)){
+			 queryWrapper.in(SiteMonitorPoint::getSiteType, siteTypeList);
+		 }
 		 queryWrapper.in(SiteMonitorPoint::getCompanyId, idList);
 		 siteMonitorPointService.list(queryWrapper).forEach(siteMonitorPoint -> {
 			 Map<String, String> param = new HashMap<>();

@@ -30,7 +30,12 @@ export const tableMixin = {
       loading:false,
       dataTypes:[{key:"realTime",value:"实时"},{key:"minute",value:"分钟"},{key:"hour",value:"小时"} ,{key:"day",value:"日"} ],
       warnType:[{key:0,value:"超标报警(实时)"},{key:1,value:"超标报警(小时)"},{key:2,value:"超标报警(日)"},{key:3,value:"离线报警"},
-        {key:4,value:"设备报警"},{key:5,value:"量程报警"},{key:6,value:"定值报警"},{key:7,value:"数据异常报警"}]
+        {key:4,value:"设备报警"},{key:5,value:"量程报警"},{key:6,value:"定值报警"},{key:7,value:"数据异常报警"}],
+      sites:[{key:"0",value:"废水"},{key:"1",value:"废气"},{key:"2",value:"VOCs"}],
+      /* table选中keys*/
+      selectedRowKeys: [],
+      /* table选中records*/
+      selectionRows: [],
     }
   },
   computed:{
@@ -40,6 +45,10 @@ export const tableMixin = {
   created() {
   },
   methods:{
+    onSelectChange(selectedRowKeys, selectionRows) {
+      this.selectedRowKeys = selectedRowKeys;
+      this.selectionRows = selectionRows;
+    },
     calcIndex: function (t,r,index) {
       return parseInt(index)+1+(this.ipagination.current-1)*this.ipagination.pageSize;
     },
