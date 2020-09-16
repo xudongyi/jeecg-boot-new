@@ -46,8 +46,8 @@
         <a-row>
           <a-col :xl="12" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
-              <a-button type="primary" @click="updateRule">更新策略</a-button>
-              <a-button type="primary" @click="deleteRule" style="margin-left: 8px">删除策略</a-button>
+              <a-button type="primary" @click="searchQuery">更新策略</a-button>
+              <a-button type="primary" @click="searchQuery" style="margin-left: 8px">删除策略</a-button>
             </span>
           </a-col>
           <a-col :xl="12" :lg="7" :md="8" :sm="24" style="padding-top: 1%">
@@ -101,8 +101,6 @@
   import mainPollutionSelect from "../component/mainPollutionSelect";
   import moment from 'moment'
   import {getAction} from "../../../api/manage";
-  import {queryCompanyName, querySiteNameAndMn} from "../../requestAction/request";
-  import AreaHandler from "../component/AreaHandler";
   export default {
     name: "RuleList",
     mixins:[tableMixin],
@@ -245,77 +243,6 @@
           this.loading = false;
         })
         //对param
-      },
-      initArea(){
-        this.areaHandler = new AreaHandler()
-      },
-      getAreaByCode(text){
-        if(!text)
-          return '';
-        //初始化
-        if(this.areaHandler==='')
-        {
-          this.initArea()
-        }
-        let arr = [];
-        this.areaHandler.getAreaBycode(text,arr);
-        return arr[0]+arr[1]+arr[2]
-      },
-      //地区企业站点级联
-      areaChange(val){
-        let _this = this;
-        _this.items=[];
-        //选择地区筛选公司名称
-        _this.companyNames=[];
-        if(this.queryParam.area != null){
-          _this.companyNameOriginal.forEach(b=>{
-            if(b.area === val){
-              _this.companyNames.push(b);
-            }
-          })
-        }else {
-          _this.companyNames =_this.companyNameOriginal;
-        }
-      },
-      //企业站点级联
-      companyNameChange(val){
-        console.log(this.queryParam.companyId)
-        let _this = this;
-        _this.items=[];
-        _this.siteOriginal.forEach(e=>{
-          if(e.companyId === val){
-            _this.items.push(e)
-          }
-        });
-
-        if(this.queryParam.companyId != null){
-          _this.showDate = true;
-        }else {
-          _this.showDate = false;
-        }
-      },
-      queryCompanyAndSite(){
-        let that = this;
-        querySiteNameAndMn({companyIds:this.$store.getters.userInfo.companyIds.join(','),siteType:this.siteType}).then((res)=>{
-          if(res.success){
-            //console.log("!!",res.result);
-            that.siteOriginal = res.result;
-            that.siteitems = res.result;
-          }
-        });
-        if(this.queryParam.area != null){
-          this.items = that.siteitems;
-        }else {
-          this.items = '';
-        }
-        //查询企业名称
-        queryCompanyName({companyIds:this.$store.getters.userInfo.companyIds.join(',')}).then((res) => {
-          if(res.success){
-            that.companyNameOriginal = res.result.companyNames;
-            that.companyNames = res.result.companyNames;
-            // console.log("!!",that.companyNames);
-          }
-        });
       },
     },
     created(){

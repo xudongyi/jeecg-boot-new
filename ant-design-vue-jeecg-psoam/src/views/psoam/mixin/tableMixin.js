@@ -210,8 +210,14 @@ export const tableMixin = {
       querySiteNameAndMn({companyIds:this.$store.getters.userInfo.companyIds.join(','),siteType:this.siteType}).then((res)=>{
         if(res.success){
           //console.log("!!",res.result);
-          that.siteOriginal = res.result;
-          that.siteitems = res.result;
+          var a=[];
+          res.result.forEach(e=>{
+            if(e.siteType === '0' || e.siteType === '1' || e.siteType === '2'){
+              a.push(e)
+            }
+          });
+          that.siteOriginal = a;
+          that.siteitems = a;
         }
       });
       if(this.queryParam.area != null){

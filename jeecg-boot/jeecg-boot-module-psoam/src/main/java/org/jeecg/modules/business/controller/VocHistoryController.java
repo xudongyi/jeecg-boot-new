@@ -98,6 +98,7 @@ public class VocHistoryController {
 			 param.put("siteId", siteMonitorPoint.getId());
 			 param.put("area", siteMonitorPoint.getArea());
 			 param.put("companyId", siteMonitorPoint.getCompanyId());
+			 param.put("siteType", siteMonitorPoint.getSiteType());
 			 result.add(param);
 		 });
 		 return Result.ok(result);
