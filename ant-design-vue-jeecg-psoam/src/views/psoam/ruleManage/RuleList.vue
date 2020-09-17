@@ -45,7 +45,7 @@
 
         <a-row>
           <a-col :xl="12" :lg="7" :md="8" :sm="24">
-            <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
+            <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons" v-if="selectedRowKeys.length > 0">
               <a-button type="primary" @click="searchQuery">更新策略</a-button>
               <a-button type="primary" @click="searchQuery" style="margin-left: 8px">删除策略</a-button>
             </span>
@@ -83,13 +83,13 @@
         <div slot="icons" slot-scope="text, record" :style="{'background':'url('+tableImg[text]+') no-repeat center',width: '100%',height:'20px'}"></div>
 
         <span slot="action" slot-scope="text, record">
-            <a @click="handleView(record)">详情</a>
+            <a @click="handleDetail(record)">查看</a>
         </span>
 
       </a-table>
 
     </div>
-
+    <RuleListModal ref="modalForm"></RuleListModal>
   </a-card>
 </template>
 
@@ -101,10 +101,12 @@
   import mainPollutionSelect from "../component/mainPollutionSelect";
   import moment from 'moment'
   import {getAction} from "../../../api/manage";
+  import RuleListModal from "./modules/RuleListModal";
   export default {
     name: "RuleList",
     mixins:[tableMixin],
     components: {
+      RuleListModal,
       AreaLinkSelect,
       JDate
     },
@@ -244,6 +246,12 @@
         })
         //对param
       },
+      handleDetail(record){
+        this.$refs.modalForm.view(record);
+        this.$refs.modalForm.title = "详情";
+        this.$refs.modalForm.disableSubmit = true;
+        this.$refs.modalForm.record = record;
+      }
     },
     created(){
       this.queryCompanyAndSite();
