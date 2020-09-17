@@ -249,7 +249,6 @@
       handleDetail(record){
         this.$refs.modalForm.view(record);
         this.$refs.modalForm.title = "详情";
-        this.$refs.modalForm.disableSubmit = true;
         this.$refs.modalForm.record = record;
       }
     },

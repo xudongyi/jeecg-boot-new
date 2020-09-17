@@ -32,4 +32,9 @@ public class WarnRuleServiceImpl extends ServiceImpl<WarnRuleMapper, WarnRule> i
     public List<WarnRuleVO> queryWarnRuleVO(List<String> mns) {
         return warnRuleMapper.queryWarnRuleVO(mns);
     }
+
+    @Override
+    public List<Map<String, Object>> querySingleSiteInfo(String mn) {
+        return warnRuleMapper.querySingleSiteInfo(mn);
+    }
 }

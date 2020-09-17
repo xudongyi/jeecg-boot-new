@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import cn.hutool.core.util.StrUtil;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.modules.business.entity.WarnRule;
+import org.jeecg.modules.business.service.ISysDictService;
 import org.jeecg.modules.business.service.IWarnRuleService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +36,10 @@ import org.jeecg.common.aspect.annotation.AutoLog;
 public class WarnRuleController extends JeecgController<WarnRule, IWarnRuleService> {
 	@Autowired
 	private IWarnRuleService warnRuleService;
-	
+
+	 @Autowired
+	 private ISysDictService sysDictService;
+
 	/**
 	 * 分页列表查询
 	 *
@@ -151,6 +155,31 @@ public class WarnRuleController extends JeecgController<WarnRule, IWarnRuleServi
 			}
 		}
 	}
+
+     /**
+      * 分页列表查询
+      *
+      * @param req
+      * @return
+      */
+     @AutoLog(value = "warn_rule-分页列表查询")
+     @ApiOperation(value="warn_rule-分页列表查询", notes="warn_rule-分页列表查询")
+     @GetMapping(value = "/view")
+     public Result<?> querySingleSiteInfo(HttpServletRequest req){
+         String mn = req.getParameter("mn");
+		 List<Map<String,Object>> singleSiteInfo = warnRuleService.querySingleSiteInfo(mn);
+		 for (Map<String,Object> siteInfo:singleSiteInfo){
+		 	if(!StrUtil.isEmpty(siteInfo.get("ruleType").toString())){
+				String ruleType = sysDictService.queryDictTextByKey("warnType",siteInfo.get("ruleType").toString());
+				siteInfo.put("ruleTypeName", ruleType);
+			}
+		 	if(!StrUtil.isEmpty(siteInfo.get("ruleLevel").toString())){
+				String ruleLevel = sysDictService.queryDictTextByKey("warnLevel",siteInfo.get("ruleLevel").toString());
+				siteInfo.put("ruleLevelName", ruleLevel);
+			}
+		 }
+         return Result.ok(singleSiteInfo);
+     }
 	
 	/**
 	 *   添加

@@ -18,4 +18,5 @@ import java.util.Map;
 public interface WarnRuleMapper extends BaseMapper<WarnRule> {
     List<Map<String,Object>> queryMnInfo(@Param("companyIds")List<String> companyIds,String area,String siteType);
     List<WarnRuleVO> queryWarnRuleVO(@Param("mns")List<String> mns);
+    List<Map<String,Object>> querySingleSiteInfo(String mn);
 }

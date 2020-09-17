@@ -61,4 +61,30 @@
         </foreach>
     </select>
 
+    <select id="querySingleSiteInfo" resultType="Map">
+        select a.mn mn,
+        a.rule_id ruleId,
+        a.is_used isUsed,
+        b.rule_type ruleType,
+        b.site_type siteType,
+        b.code code,
+        b.is_sample isSample,
+        b.is_close_tap isCloseTap,
+        b.is_synchronize isSynchronize,
+        c.meaning meaning,
+        b.warn_value_up warnValueUp,
+        b.warn_value_down warnValueDown,
+        b.repeat_data_count repeatDataCount,
+        b.rule_level ruleLevel,
+        b.is_send_msg isSendMsg,
+        b.msg_rate msgRate,
+        b.msg_start_time msgStartTime,
+        b.msg_end_time msgEndTime,
+        b.content content
+        from warn_point_rule a left join warn_rule b on a.rule_id=b.id
+        left join sys_pollution_code c on b.code=c.code and c.type=b.site_type
+        where a.mn=#{mn}
+        order by b.rule_type asc
+    </select>
+
 </mapper>
