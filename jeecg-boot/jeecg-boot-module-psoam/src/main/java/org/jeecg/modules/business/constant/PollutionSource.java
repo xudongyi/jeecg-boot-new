@@ -18,11 +18,6 @@ public class PollutionSource {
         public final static String QUARTERLY =  "quarterly";
         public final static String MONTH = "month";
         public final static String DATE = "date";
-
-
-
-
-
     }
     public static class DataFormat{
 

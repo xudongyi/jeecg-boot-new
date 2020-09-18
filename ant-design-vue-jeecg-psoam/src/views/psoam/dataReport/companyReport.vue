@@ -24,7 +24,7 @@
           <a-col :xl="5" :lg="5" :md="5" :sm="24">
             <a-form-item label="数据时间">
               <a-date-picker :show-time="false"
-                             :format="dateFormat[key].value" placeholder="请选择开始时间"
+                             :format="dateFormat[key].value" placeholder="请选择时间"
                              :valueFormat="dateFormat[key].value"
                              :mode="dateFormat[key].mode"
                                v-model="queryParam.dataTime" />

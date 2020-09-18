@@ -49,7 +49,7 @@ export const dataDictMixin = {
       return result.text;
     },
     //查询地址--行政区域
-    getAreaByCode(text){
+    getAreaByCode(text,keys){
       if(!text)
         return ''
       //初始化
@@ -59,8 +59,16 @@ export const dataDictMixin = {
       }
       let arr = [];
       this.areaHandler.getAreaBycode(text,arr);
-      if(arr.length===3)
-        return arr[0]+arr[1]+arr[2]
+      if(arr.length===3){
+        if(!keys){
+          return arr[0]+arr[1]+arr[2]
+        }else{
+          let result  = "";
+          for(let i=0 ; i < keys.length;i++)
+            result+=arr[keys[i]];
+          return result
+        }
+      }
       else
         return text
     },

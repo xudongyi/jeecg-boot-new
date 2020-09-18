@@ -26,4 +26,36 @@
         inner join (select max(DATA_TIME) DATA_TIME,mn from ${tableName} where mn = #{mn} group by mn) C
         ON A.MN = C.MN and A.DATA_TIME = C.DATA_TIME
     </select>
+    <select id="querySiteInfos"  resultType="Map">
+        select M.*,N.mn,N.site_name,N.site_type,N.data_status,N.device_status,N.online_status from (
+        select company_id,company_name,administrative_region area from company_base A inner join company_baseinfo B
+        on A.id = B.company_id AND B.status ='2'
+         <if  test="area != null and area!=''">
+            and administrative_region = #{area}
+        </if>
+        where A.id in
+        <foreach collection="companyIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        )  M
+        INNER JOIN site_monitor_point N
+        ON M.company_id = N.company_id
+        where site_type in
+        <foreach collection="siteTypes" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        <if test="mn != null and mn!=''">
+            and mn = #{mn}
+        </if>
+    </select>
+    <select id="countCurbyMn"  resultType="Map">
+       select  count(1) num,mn from ${tableName} where mn in
+        <foreach collection="mns" item="mn" index="index" open="(" close=")" separator=",">
+            #{mn}
+        </foreach>
+        and data_time <![CDATA[ >= ]]> #{begin}
+        and data_time <![CDATA[ < ]]> #{end}
+        group by mn
+    </select>
+
 </mapper>
