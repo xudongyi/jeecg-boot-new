@@ -162,49 +162,57 @@
             title:'超标报警(实时)',
             align:"center",
             dataIndex: 'realTimeOver',
-            scopedSlots: { customRender: 'icons' }
+            scopedSlots: { customRender: 'icons' },
+            sorter: (a, b) => a.realTimeOver - b.realTimeOver
           },
           {
             title:'超标报警(小时)',
             align:"center",
             dataIndex: 'hourOver',
-            scopedSlots: { customRender: 'icons' }
+            scopedSlots: { customRender: 'icons' },
+            sorter: (a, b) => a.hourOver - b.hourOver
           },
           {
             title:'超标报警(日)',
             align:"center",
             dataIndex: 'dayOver',
-            scopedSlots: { customRender: 'icons' }
+            scopedSlots: { customRender: 'icons' },
+            sorter: (a, b) => a.dayOver - b.dayOver
           },
           {
             title:'离线报警',
             align:"center",
             dataIndex: 'offLine',
-            scopedSlots: { customRender: 'icons' }
+            scopedSlots: { customRender: 'icons' },
+            sorter: (a, b) => a.offLine - b.offLine
           },
           {
             title:'设备故障报警',
             align:"center",
             dataIndex: 'deviceFail',
-            scopedSlots: { customRender: 'icons' }
+            scopedSlots: { customRender: 'icons' },
+            sorter: (a, b) => a.deviceFail - b.deviceFail
           },
           {
             title:'定值报警',
             align:"center",
             dataIndex: 'constant',
-            scopedSlots: { customRender: 'icons' }
+            scopedSlots: { customRender: 'icons' },
+            sorter: (a, b) => a.constant - b.constant
           },
           {
             title:'量程报警',
             align:"center",
             dataIndex: 'measureDistance',
-            scopedSlots: { customRender: 'icons' }
+            scopedSlots: { customRender: 'icons' },
+            sorter: (a, b) => a.measureDistance - b.measureDistance
           },
           {
             title:'数据异常报警',
             align:"center",
             dataIndex: 'dataAbnormal',
-            scopedSlots: { customRender: 'icons' }
+            scopedSlots: { customRender: 'icons' },
+            sorter: (a, b) => a.dataAbnormal - b.dataAbnormal
           },
           {
             title: '操作',
