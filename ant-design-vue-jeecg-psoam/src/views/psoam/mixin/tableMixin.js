@@ -36,6 +36,10 @@ export const tableMixin = {
       selectedRowKeys: [],
       /* table选中records*/
       selectionRows: [],
+      /* 排序参数 */
+      isorter:{
+        order: 'desc',
+      },
     }
   },
   computed:{
@@ -71,6 +75,9 @@ export const tableMixin = {
     handleTableChange(pagination, filters, sorter) {
       //分页、排序、筛选变化时触发
       //TODO 筛选
+      if (Object.keys(sorter).length > 0) {
+        this.isorter.order = "ascend" == sorter.order ? "asc" : "desc"
+      }
       this.ipagination = pagination;
       this.loadData();
     },

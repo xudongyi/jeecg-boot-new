@@ -151,6 +151,7 @@
             title:'企业名称',
             align:"center",
             dataIndex: 'companyName',
+            customRender: this.renderContent
           },
           {
             title:'监测点名称',
@@ -161,49 +162,57 @@
             title:'超标报警(实时)',
             align:"center",
             dataIndex: 'realTimeOver',
-            scopedSlots: { customRender: 'icons' }
+            scopedSlots: { customRender: 'icons' },
+            sorter: (a, b) => a.realTimeOver - b.realTimeOver
           },
           {
             title:'超标报警(小时)',
             align:"center",
             dataIndex: 'hourOver',
-            scopedSlots: { customRender: 'icons' }
+            scopedSlots: { customRender: 'icons' },
+            sorter: (a, b) => a.hourOver - b.hourOver
           },
           {
             title:'超标报警(日)',
             align:"center",
             dataIndex: 'dayOver',
-            scopedSlots: { customRender: 'icons' }
+            scopedSlots: { customRender: 'icons' },
+            sorter: (a, b) => a.dayOver - b.dayOver
           },
           {
             title:'离线报警',
             align:"center",
             dataIndex: 'offLine',
-            scopedSlots: { customRender: 'icons' }
+            scopedSlots: { customRender: 'icons' },
+            sorter: (a, b) => a.offLine - b.offLine
           },
           {
             title:'设备故障报警',
             align:"center",
             dataIndex: 'deviceFail',
-            scopedSlots: { customRender: 'icons' }
+            scopedSlots: { customRender: 'icons' },
+            sorter: (a, b) => a.deviceFail - b.deviceFail
           },
           {
             title:'定值报警',
             align:"center",
             dataIndex: 'constant',
-            scopedSlots: { customRender: 'icons' }
+            scopedSlots: { customRender: 'icons' },
+            sorter: (a, b) => a.constant - b.constant
           },
           {
             title:'量程报警',
             align:"center",
             dataIndex: 'measureDistance',
-            scopedSlots: { customRender: 'icons' }
+            scopedSlots: { customRender: 'icons' },
+            sorter: (a, b) => a.measureDistance - b.measureDistance
           },
           {
             title:'数据异常报警',
             align:"center",
             dataIndex: 'dataAbnormal',
-            scopedSlots: { customRender: 'icons' }
+            scopedSlots: { customRender: 'icons' },
+            sorter: (a, b) => a.dataAbnormal - b.dataAbnormal
           },
           {
             title: '操作',
@@ -219,7 +228,47 @@
         }
       }
     },
+    watch: {
+      dataSource(val) {
+        console.log(val)
+        this.rowspan(val)
+        console.log(this.spanArr, this.position)
+      }
+    },
     methods:{
+      renderContent (value, row, index)  {
+        const obj = {
+          children: value,
+          attrs: {}
+        };
+        const _row = this.spanArr[index];
+        const _col = _row> 0 ? 1 : 0;
+        obj.attrs = {
+          rowSpan: _row,
+          colSpan: _col
+        };
+        return obj;
+      },
+      rowspan(userData){
+        let _this = this
+        _this. spanArr=[];
+        _this. position=0;
+        userData.forEach((item,index) => {
+          if(index === 0){
+            _this.spanArr.push(1);
+            _this.position = 0;
+          }else{
+            //需要合并的地方判断
+            if(userData[index].companyName === userData[index-1].companyName ){
+              _this.spanArr[ _this.position] += 1;
+              _this.spanArr.push(0);
+            }else{
+              _this.spanArr.push(1);
+              _this.position = index;
+            }
+          }
+        });
+      },
       searchQuery(){
         this.queryData()
       },
@@ -245,6 +294,15 @@
           this.loading = false;
         })
         //对param
+      },
+      handleTableChange(pagination, filters, sorter) {
+        //分页、排序、筛选变化时触发
+        //TODO 筛选
+        if (Object.keys(sorter).length > 0) {
+          this.isorter.order = "ascend" == sorter.order ? "asc" : "desc"
+        }
+        this.ipagination = pagination;
+        this.queryData();
       },
       handleDetail(record){
         this.$refs.modalForm.view(record);
