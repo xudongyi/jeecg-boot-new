@@ -314,24 +314,6 @@
       this.queryCompanyAndSite();
       this.queryData(1);
     },
-    watch:{
-      resultMsg:{
-        handler(val) {
-          if (val === '0') {
-            this.msgShow = true;
-            this.validatorRules.msgRate = {rules: [{required: true, message: '请选择发送频率!'}]};
-            this.validatorRules.warnStarttime = {rules: [{required: true, message: '请选择发送开始时间!'}]};
-            this.validatorRules.warnEndtime = {rules: [{required: true, message: '请选择发送结束时间!'}]};
-          } else {
-            this.msgShow = false;
-            this.validatorRules.msgRate = {};
-            this.validatorRules.warnStarttime = {};
-            this.validatorRules.warnEndtime = {};
-          }
-        },
-        immediate: true
-      },
-    }
   }
 </script>
 
