@@ -295,6 +295,15 @@
         })
         //对param
       },
+      handleTableChange(pagination, filters, sorter) {
+        //分页、排序、筛选变化时触发
+        //TODO 筛选
+        if (Object.keys(sorter).length > 0) {
+          this.isorter.order = "ascend" == sorter.order ? "asc" : "desc"
+        }
+        this.ipagination = pagination;
+        this.queryData();
+      },
       handleDetail(record){
         this.$refs.modalForm.view(record);
         this.$refs.modalForm.title = "详情";
