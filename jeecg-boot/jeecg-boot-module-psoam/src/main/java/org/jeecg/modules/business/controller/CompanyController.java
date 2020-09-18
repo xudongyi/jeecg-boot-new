@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
+import org.jeecg.modules.business.constant.SelfExcelConstants;
 import org.jeecg.modules.business.entity.PsoamConfig;
 import org.jeecg.modules.business.entity.SysPollutionCode;
 import org.jeecg.modules.business.service.ICompanyService;
@@ -15,14 +16,19 @@ import org.jeecg.modules.business.service.ISysDictService;
 import org.jeecg.modules.business.service.ISysPollutionCodeService;
 import org.jeecg.modules.business.utils.RedisCacheUtil;
 import org.jeecg.modules.business.utils.Util;
+import org.jeecg.modules.business.view.SelfEntityExcelView;
 import org.jeecg.modules.business.vo.Column;
+import org.jeecg.modules.business.vo.OverEntry;
+import org.jeecg.modules.business.vo.OverStandardRate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.*;
@@ -118,4 +124,35 @@ public class CompanyController {
         //查询相关联的因子
         return Result.ok(result);
     }
+    @AutoLog(value = "企业超标率统计")
+    @ApiOperation(value = "企业超标率统计", notes = "企业超标率统计")
+    @GetMapping(value = "/overStandardRate")
+    public Result<?> overStandardRate(HttpServletRequest req) {
+        return Result.ok(companyService.queryoverStandardRate(req));
+    }
+    @AutoLog(value = "企业超标率统计")
+    @ApiOperation(value = "企业超标率统计", notes = "企业超标率统计")
+    @GetMapping(value = "/exportOverStandardRate")
+    public ModelAndView exportOverStandardRate(HttpServletRequest req) {
+
+        // Step.3 AutoPoi 导出Excel
+        ModelAndView mv = new ModelAndView(new SelfEntityExcelView(null,null));
+        mv.addObject(SelfExcelConstants.TITLE, "企业超标率统计"); //此处设置的filename无效 ,前端会重更新设置一下
+        mv.addObject(SelfExcelConstants.SHEET_NAME, "企业超标率统计");
+        mv.addObject(SelfExcelConstants.CLAZZ, OverStandardRate.class);
+        mv.addObject(SelfExcelConstants.DATA_LIST, companyService.queryoverStandardRate(req));
+//        mv.addObject(SelfExcelConstants.FOOTER, "注：缺测指标的浓度及分指数均使用NA标识。");
+        return mv;
+    }
+
+
+    @AutoLog(value = "企业站点查询")
+    @ApiOperation(value = "企业站点状态查询", notes = "企业站点查询")
+    @GetMapping(value = "/queryCompanySite")
+    public Result<?> queryCompanySite(HttpServletRequest req) {
+
+
+        return Result.ok(companyService.queryCompanySite(req));
+    }
+
 }
