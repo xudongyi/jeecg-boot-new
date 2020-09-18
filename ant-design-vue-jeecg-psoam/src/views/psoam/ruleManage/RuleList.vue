@@ -151,6 +151,7 @@
             title:'企业名称',
             align:"center",
             dataIndex: 'companyName',
+            customRender: this.renderContent
           },
           {
             title:'监测点名称',
@@ -219,7 +220,47 @@
         }
       }
     },
+    watch: {
+      dataSource(val) {
+        console.log(val)
+        this.rowspan(val)
+        console.log(this.spanArr, this.position)
+      }
+    },
     methods:{
+      renderContent (value, row, index)  {
+        const obj = {
+          children: value,
+          attrs: {}
+        };
+        const _row = this.spanArr[index];
+        const _col = _row> 0 ? 1 : 0;
+        obj.attrs = {
+          rowSpan: _row,
+          colSpan: _col
+        };
+        return obj;
+      },
+      rowspan(userData){
+        let _this = this
+        _this. spanArr=[];
+        _this. position=0;
+        userData.forEach((item,index) => {
+          if(index === 0){
+            _this.spanArr.push(1);
+            _this.position = 0;
+          }else{
+            //需要合并的地方判断
+            if(userData[index].companyName === userData[index-1].companyName ){
+              _this.spanArr[ _this.position] += 1;
+              _this.spanArr.push(0);
+            }else{
+              _this.spanArr.push(1);
+              _this.position = index;
+            }
+          }
+        });
+      },
       searchQuery(){
         this.queryData()
       },

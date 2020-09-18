@@ -62,7 +62,8 @@
     </select>
 
     <select id="querySingleSiteInfo" resultType="Map">
-        select a.mn mn,
+        select a.id id,
+        a.mn mn,
         a.rule_id ruleId,
         a.is_used isUsed,
         b.rule_type ruleType,

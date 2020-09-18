@@ -44,6 +44,7 @@
       <a-button type="primary" @click="handleCancel">关闭</a-button>
 <!--      <a-button type="primary" @click="handleOk" v-if="!disableSubmit">确定</a-button>-->
     </template>
+    <SingleRuleModal ref="modalForm"></SingleRuleModal>
   </j-modal>
 </template>
 
@@ -51,8 +52,10 @@
   import { httpAction } from '@/api/manage'
   import {tableMixin} from "../../mixin/tableMixin";
   import {getAction} from "../../../../api/manage";
+  import SingleRuleModal from "./SingleRuleModal";
     export default {
       name: "RuleListModal",
+      components: {SingleRuleModal},
       mixins:[tableMixin],
       data () {
         return {
@@ -195,7 +198,7 @@
           //对param
         },
         handleDetail(record){
-          this.$refs.modalForm.view(record);
+          this.$refs.modalForm.edit(record);
           this.$refs.modalForm.title = "策略详情";
           this.$refs.modalForm.disableSubmit = true;
           this.$refs.modalForm.oneRecord = record;
