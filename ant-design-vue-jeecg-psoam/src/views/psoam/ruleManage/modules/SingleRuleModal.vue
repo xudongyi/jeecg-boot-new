@@ -348,13 +348,13 @@
           if (val === '0') {
             this.msgShow = true;
             this.validatorRules.msgRate = {rules: [{required: true, message: '请选择发送频率!'}]};
-            this.validatorRules.warnStarttime = {rules: [{required: true, message: '请选择发送开始时间!'}]};
-            this.validatorRules.warnEndtime = {rules: [{required: true, message: '请选择发送结束时间!'}]};
+            this.validatorRules.msgStartTime = {rules: [{required: true, message: '请选择发送开始时间!'}]};
+            this.validatorRules.msgEndTime = {rules: [{required: true, message: '请选择发送结束时间!'}]};
           } else {
             this.msgShow = false;
             this.validatorRules.msgRate = {};
-            this.validatorRules.warnStarttime = {};
-            this.validatorRules.warnEndtime = {};
+            this.validatorRules.msgStartTime = {};
+            this.validatorRules.msgEndTime = {};
           }
         },
         immediate: true
@@ -363,11 +363,4 @@
   }
 </script>
 <style scoped>
-  .level{
-    font-size: 14px;
-    font-family: Microsoft YaHei;
-    font-weight: bold;
-    color: #000000;
-    opacity: 0.95;
-  }
 </style>

@@ -37,4 +37,9 @@ public class WarnRuleServiceImpl extends ServiceImpl<WarnRuleMapper, WarnRule> i
     public List<Map<String, Object>> querySingleSiteInfo(String mn) {
         return warnRuleMapper.querySingleSiteInfo(mn);
     }
+
+    @Override
+    public List<Map<String, Object>> queryDeleteIds(List<String> mns, List<String> types) {
+        return warnRuleMapper.queryDeleteIds(mns, types);
+    }
 }

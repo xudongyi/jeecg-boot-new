@@ -47,7 +47,7 @@
           <a-col :xl="12" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons" v-if="selectedRowKeys.length > 0">
               <a-button type="primary" @click="searchQuery">更新策略</a-button>
-              <a-button type="primary" @click="searchQuery" style="margin-left: 8px">删除策略</a-button>
+              <a-button type="primary" @click="deleteBatch(selectedRowKeys)" style="margin-left: 8px">删除策略</a-button>
             </span>
           </a-col>
           <a-col :xl="12" :lg="7" :md="8" :sm="24" style="padding-top: 1%">
@@ -90,6 +90,7 @@
 
     </div>
     <RuleListModal ref="modalForm"></RuleListModal>
+    <DeleteRuleModal ref="deleteModalForm" @deleted="queryData"></DeleteRuleModal>
   </a-card>
 </template>
 
@@ -102,10 +103,12 @@
   import moment from 'moment'
   import {getAction} from "../../../api/manage";
   import RuleListModal from "./modules/RuleListModal";
+  import DeleteRuleModal from "./modules/DeleteRuleModal";
   export default {
     name: "RuleList",
     mixins:[tableMixin],
     components: {
+      DeleteRuleModal,
       RuleListModal,
       AreaLinkSelect,
       JDate
@@ -308,6 +311,11 @@
         this.$refs.modalForm.view(record);
         this.$refs.modalForm.title = "详情";
         this.$refs.modalForm.record = record;
+      },
+      deleteBatch(selectedRowKeys){
+        this.$refs.deleteModalForm.delete(selectedRowKeys);
+        this.$refs.deleteModalForm.title = "删除策略";
+        this.$refs.deleteModalForm.selectedKeys = selectedRowKeys;
       }
     },
     created(){
