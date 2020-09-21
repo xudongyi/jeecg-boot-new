@@ -313,7 +313,7 @@
     created(){
       this.queryCompanyAndSite();
       this.queryData(1);
-    }
+    },
   }
 </script>
 
