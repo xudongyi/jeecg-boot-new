@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.business.mapper.SourceDirectoryMapper">
+    <select id="getSourceDirectoryList" resultType="Map">
+        SELECT a.id companyId,d.id siteId,a.company_name companyName,b.short_name shortName,b.company_type companyType,b.administrative_region administrativeRegion,b.industry,c.intensive_unit intensiveUnit,d.site_name siteName,d.site_type siteType,d.site_level siteLevel,d.site_state siteState
+        FROM company_baseinfo b INNER  JOIN company_base a on a.id = b.company_id and b.`status` = 2
+        INNER JOIN source_directory c on a.id = c.company_id
+        INNER JOIN site_monitor_point d on a.id=d.company_id where 1=1
+        <if test="area != null and area!=''">
+            and b.administrative_region = #{area}
+        </if>
+        <if test="companyId != null and companyId!=''">
+            and b.company_id = #{companyId}
+        </if>
+        <if test="companyType != null and companyType!=''">
+            and b.company_type = #{companyType}
+        </if>
+        <if test="industry != null and industry!=''">
+            and b.industry = #{industry}
+        </if>
+        <if test="intensiveUnit != null and intensiveUnit!=''">
+            and c.intensive_unit = #{intensiveUnit}
+        </if>
+        <if test="intensiveCompany != null and intensiveCompany!=''">
+            and c.intensive_company = #{intensiveCompany}
+        </if>
+        <if test="siteType != null and siteType!=''">
+            and d.site_type = #{siteType}
+        </if>
+        <if test="siteLevel != null and siteLevel!=''">
+            and d.site_level = #{siteLevel}
+        </if>
+        <if test="siteState != null and siteState!=''">
+            and d.site_state = #{siteState}
+        </if>
+        ORDER BY a.id
+    </select>
+    <select id="getUnSelectCompany" resultType="Map">
+        SELECT a.id,a.company_name FROM company_base a  WHERE a.id NOT IN(SELECT c.company_id from source_directory c)
+        <if test="companyId != null and companyId!=''">
+            and a.id = #{companyId}
+        </if>
+    </select>
+    <select id="getSelectCompany" resultType="Map">
+         SELECT a.id,a.company_name from company_base a right join source_directory b on a.id = b.company_id
+    </select>
+</mapper>
