@@ -2,13 +2,13 @@
   <a-card :bordered="false">
     <div class="home-body">
       <div class="body-left">
-
+        left
       </div>
       <div class="body-right body-module">
-
+        right
       </div>
       <div  class="body-buttom body-module">
-
+        buttom
       </div>
     </div>
   </a-card>
