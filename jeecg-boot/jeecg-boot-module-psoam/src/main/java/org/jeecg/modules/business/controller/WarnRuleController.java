@@ -9,6 +9,7 @@ import cn.hutool.core.util.StrUtil;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.modules.business.entity.WarnRule;
 import org.jeecg.modules.business.service.ISysDictService;
+import org.jeecg.modules.business.service.IWarnPointRuleService;
 import org.jeecg.modules.business.service.IWarnRuleService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +40,9 @@ public class WarnRuleController extends JeecgController<WarnRule, IWarnRuleServi
 
 	 @Autowired
 	 private ISysDictService sysDictService;
+
+	 @Autowired
+	 private IWarnPointRuleService warnPointRuleService;
 
 	/**
 	 * 分页列表查询
@@ -232,8 +236,13 @@ public class WarnRuleController extends JeecgController<WarnRule, IWarnRuleServi
 	@AutoLog(value = "warn_rule-批量删除")
 	@ApiOperation(value="warn_rule-批量删除", notes="warn_rule-批量删除")
 	@DeleteMapping(value = "/deleteBatch")
-	public Result<?> deleteBatch(@RequestParam(name="ids",required=true) String ids) {
-		this.warnRuleService.removeByIds(Arrays.asList(ids.split(",")));
+	public Result<?> deleteBatch(@RequestParam(name="ids",required=true) String ids,@RequestParam(name="types",required=true) String types) {
+		List<Map<String,Object>> idList = warnRuleService.queryDeleteIds(Arrays.asList(ids.split(",")), Arrays.asList(types.split(",")));
+		List<String> deleteIds = new ArrayList<>();
+		for (Map<String,Object> id:idList){
+			deleteIds.add(id.get("id").toString());
+		}
+		this.warnPointRuleService.removeByIds(deleteIds);
 		return Result.ok("批量删除成功!");
 	}
 	

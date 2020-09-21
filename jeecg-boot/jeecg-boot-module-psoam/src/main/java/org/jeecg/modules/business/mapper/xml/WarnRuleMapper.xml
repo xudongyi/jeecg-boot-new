@@ -88,4 +88,18 @@
         order by b.rule_type asc
     </select>
 
+
+    <select id="queryDeleteIds" resultType="Map">
+        select a.id id
+        from warn_point_rule a left join warn_rule b on a.rule_id=b.id
+        where a.mn in
+        <foreach collection="mns" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        and b.rule_type in
+        <foreach collection="types" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
 </mapper>
