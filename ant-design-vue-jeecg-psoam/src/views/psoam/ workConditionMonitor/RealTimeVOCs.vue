@@ -29,45 +29,44 @@
             <div class="detail">
               <div style="width: 30%; display: flex;align-items: center;">
                 <div class="mark-pic" :style="vocsStyle"></div>
-                <div class="mark-text">废气 ：86.055 m³/s</div>
+                <div class="mark-text">苯 ：0.754 mg/m³</div>
               </div>
               <div style="width: 30%;display: flex;align-items: center;">
                 <div class="mark-pic" :style="vocsStyle"></div>
-                <div class="mark-text">氧气含量：29%</div>
+                <div class="mark-text">非甲烷总烃：15.234 mg/m³</div>
               </div>
               <div style="width: 30%;display: flex;align-items: center;">
                 <div class="mark-pic" :style="vocsStyle"></div>
-                <div class="mark-text">烟气流速：-</div>
+                <div class="mark-text">烟气温度：-</div>
               </div>
             </div>
             <div class="cut-line"></div>
             <div class="detail">
               <div style="width: 30%;display: flex;align-items: center;">
                 <div class="mark-pic" :style="vocsStyle"></div>
-                <div class="mark-text">烟尘：6.59 mg/m³</div>
+                <div class="mark-text">甲苯：0.123 mg/m³</div>
               </div>
               <div style="width: 30%;display: flex;align-items: center;">
                 <div class="mark-pic" :style="vocsStyle"></div>
-                <div class="mark-text">烟气温度：-</div>
+                <div class="mark-text">甲烷：-</div>
               </div>
               <div style="width: 30%;display: flex;align-items: center;">
                 <div class="mark-pic" :style="vocsStyle"></div>
-                <div class="mark-text">烟气湿度：2.96 %</div>
+                <div class="mark-text">烟气动压：12.031 Pa</div>
               </div>
             </div>
             <div class="cut-line"></div>
             <div class="detail">
               <div style="width: 30%;display: flex;align-items: center;">
                 <div class="mark-pic" :style="vocsStyle"></div>
-                <div class="mark-text">烟尘：6.59 mg/m³</div>
+                <div class="mark-text">二甲苯：0.354 mg/m³</div>
               </div>
               <div style="width: 30%;display: flex;align-items: center;">
                 <div class="mark-pic" :style="vocsStyle"></div>
-                <div class="mark-text">烟气温度：-</div>
+                <div class="mark-text">烟气流速：4.567 m/s</div>
               </div>
               <div style="width: 30%;display: flex;align-items: center;">
-                <div class="mark-pic" :style="vocsStyle"></div>
-                <div class="mark-text">烟气湿度：2.96 %</div>
+
               </div>
             </div>
           </div>
