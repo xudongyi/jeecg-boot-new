@@ -46,7 +46,7 @@
         <a-row>
           <a-col :xl="12" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons" v-if="selectedRowKeys.length > 0">
-              <a-button type="primary" @click="searchQuery">更新策略</a-button>
+              <a-button type="primary" @click="updateBatch(selectionRows)">更新策略</a-button>
               <a-button type="primary" @click="deleteBatch(selectedRowKeys)" style="margin-left: 8px">删除策略</a-button>
             </span>
           </a-col>
@@ -91,6 +91,7 @@
     </div>
     <RuleListModal ref="modalForm"></RuleListModal>
     <DeleteRuleModal ref="deleteModalForm" @deleted="queryData"></DeleteRuleModal>
+    <UpdateBatchModal ref="updateModalForm"></UpdateBatchModal>
   </a-card>
 </template>
 
@@ -104,10 +105,13 @@
   import {getAction} from "../../../api/manage";
   import RuleListModal from "./modules/RuleListModal";
   import DeleteRuleModal from "./modules/DeleteRuleModal";
+  import SingleRuleModal from "./modules/SingleRuleModal";
+  import UpdateBatchModal from "./modules/UpdateBatchModal";
   export default {
     name: "RuleList",
     mixins:[tableMixin],
     components: {
+      UpdateBatchModal,
       DeleteRuleModal,
       RuleListModal,
       AreaLinkSelect,
@@ -233,9 +237,9 @@
     },
     watch: {
       dataSource(val) {
-        console.log(val)
+        //console.log(val)
         this.rowspan(val)
-        console.log(this.spanArr, this.position)
+        //console.log(this.spanArr, this.position)
       }
     },
     methods:{
@@ -316,6 +320,31 @@
         this.$refs.deleteModalForm.delete(selectedRowKeys);
         this.$refs.deleteModalForm.title = "删除策略";
         this.$refs.deleteModalForm.selectedKeys = selectedRowKeys;
+      },
+      isAllEqual(arr){
+        var bool=true;
+        for (var i=1;i<arr.length;i++){
+          if(arr[i] !== arr[0]){
+            bool = false;
+          }else {
+            return bool
+          }
+        }
+      },
+      updateBatch(selectionRows){
+        //console.log("!!!!!!!!!!",selectionRows);
+        var siteTypes = [];
+        selectionRows.forEach(e=>{
+          siteTypes.push(e.siteType)
+        });
+        var equals = this.isAllEqual(siteTypes);
+        if(equals===true || siteTypes.length === 1){
+          this.$refs.updateModalForm.add(selectionRows);
+          this.$refs.updateModalForm.title = "更新策略";
+        }else {
+          this.$message.error("请选择相同类型监测点进行操作！");
+          return;
+        }
       }
     },
     created(){

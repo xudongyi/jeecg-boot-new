@@ -102,4 +102,14 @@
         </foreach>
     </select>
 
+    <select id="queryDeleteIdsBeforeAdd" resultType="Map">
+        select a.id id
+        from warn_point_rule a left join warn_rule b on a.rule_id=b.id
+        where a.mn in
+        <foreach collection="mns" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        and b.rule_type=#{ruleType} and b.site_type=#{siteType} and b.code = #{code}
+    </select>
+
 </mapper>

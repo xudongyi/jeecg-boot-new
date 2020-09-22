@@ -1,11 +1,14 @@
 package org.jeecg.modules.business.controller;
 
+import java.sql.Time;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSONObject;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.modules.business.entity.WarnRule;
 import org.jeecg.modules.business.service.ISysDictService;
@@ -188,15 +191,58 @@ public class WarnRuleController extends JeecgController<WarnRule, IWarnRuleServi
 	/**
 	 *   添加
 	 *
-	 * @param warnRule
+	 * @param jsonObject
 	 * @return
 	 */
 	@AutoLog(value = "warn_rule-添加")
 	@ApiOperation(value="warn_rule-添加", notes="warn_rule-添加")
 	@PostMapping(value = "/add")
-	public Result<?> add(@RequestBody WarnRule warnRule) {
+	public Result<?> add(@RequestBody JSONObject jsonObject) {
+		WarnRule warnRule = this.getWarnRule(jsonObject);
 		warnRuleService.save(warnRule);
-		return Result.ok("添加成功！");
+		String ruleId = warnRule.getId();
+		String ruleType = warnRule.getRuleType();
+		String siteType = warnRule.getSiteType();
+		String code = warnRule.getCode();
+		String mns = jsonObject.getString("mns");
+		List<String> mnList = Arrays.asList(mns.split(","));
+
+		List<Map<String,Object>> idList = warnRuleService.queryDeleteIdsBeforeAdd(mnList,ruleType,siteType,code);
+		List<String> deleteIds = new ArrayList<>();
+		for (Map<String,Object> id:idList){
+			deleteIds.add(id.get("id").toString());
+		}
+		this.warnPointRuleService.removeByIds(deleteIds);
+
+		String isUsed = jsonObject.getString("isUsed");
+		org.jeecg.modules.business.entity.WarnPointRule warnPointRule = new org.jeecg.modules.business.entity.WarnPointRule();
+		for(int i = 0;i<mnList.size();i++){
+			warnPointRule.setMn(mnList.get(i));
+			warnPointRule.setRuleId(ruleId);
+			warnPointRule.setIsUsed(isUsed);
+			warnPointRuleService.save(warnPointRule);
+		}
+		return Result.ok("更新成功");
+	}
+
+	private WarnRule getWarnRule(JSONObject jsonObject){
+		WarnRule warnRule = new WarnRule();
+		warnRule.setRuleType(jsonObject.getString("ruleType"));
+		warnRule.setSiteType(jsonObject.getString("siteType"));
+		warnRule.setCode(jsonObject.getString("code"));
+		warnRule.setRuleLevel(jsonObject.getString("ruleLevel"));
+		warnRule.setWarnValueUp(jsonObject.getDouble("warnValueUp"));
+		warnRule.setWarnValueDown(jsonObject.getDouble("warnValueDown"));
+		warnRule.setIsSample(jsonObject.getString("isSample"));
+		warnRule.setIsCloseTap(jsonObject.getString("isCloseTap"));
+		warnRule.setIsSendMsg(jsonObject.getString("isSendMsg"));
+		warnRule.setIsSynchronize(jsonObject.getString("isSynchronize"));
+		warnRule.setMsgRate(jsonObject.getInteger("msgRate"));
+		warnRule.setMsgStartTime(Time.valueOf(jsonObject.getString("msgStartTime")));
+		warnRule.setMsgEndTime(Time.valueOf(jsonObject.getString("msgEndTime")));
+		warnRule.setContent(jsonObject.getString("content"));
+		warnRule.setRepeatDataCount(jsonObject.getInteger("repeatDataCount"));
+		return warnRule;
 	}
 	
 	/**

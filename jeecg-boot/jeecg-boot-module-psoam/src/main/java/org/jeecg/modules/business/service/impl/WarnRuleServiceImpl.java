@@ -42,4 +42,9 @@ public class WarnRuleServiceImpl extends ServiceImpl<WarnRuleMapper, WarnRule> i
     public List<Map<String, Object>> queryDeleteIds(List<String> mns, List<String> types) {
         return warnRuleMapper.queryDeleteIds(mns, types);
     }
+
+    @Override
+    public List<Map<String, Object>> queryDeleteIdsBeforeAdd(List<String> mns, String ruleType, String siteType, String code) {
+        return warnRuleMapper.queryDeleteIdsBeforeAdd(mns, ruleType, siteType, code);
+    }
 }
