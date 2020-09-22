@@ -179,7 +179,7 @@ public class OnlineMonitorController extends JeecgController<WaterCurrentTr, IWa
                                    HttpServletRequest req) {
         String area = req.getParameter("area");
         String companyId = req.getParameter("companyId");
-        String mn = req.getParameter("mn");
+        String mn = req.getParameter("companyType");
         String dataStatus = req.getParameter("dataStatus");
         //表名
         String currTime = DateUtil.format(DateUtil.date(), "yyyyMM");

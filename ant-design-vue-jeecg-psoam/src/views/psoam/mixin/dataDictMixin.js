@@ -42,7 +42,7 @@ export const dataDictMixin = {
       //普通字典数据
       this.initDictData(key)
       let result = this.dictOptions[key].find(e=>{
-          return  e.value===text;
+          return  e.value===text+'';
       });
       if(result==null)
         return text;
