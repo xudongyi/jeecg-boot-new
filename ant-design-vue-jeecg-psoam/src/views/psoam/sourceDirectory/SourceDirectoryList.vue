@@ -88,12 +88,12 @@
         ref="table"
         size="middle"
         bordered
-        rowKey="companyId"
+
         :columns="columns"
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
-        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+
         class="j-table-force-nowrap"
         @change="handleTableChange">
 
@@ -118,15 +118,7 @@
           </a-button>
         </template>
 
-        <span slot="action" slot-scope="text, record">
-          <a @click="handleEdit(record)">编辑</a>
-          <a-divider type="vertical"/>
-          <a-dropdown>
-                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.companyId)">
-                  <a>删除</a>
-                </a-popconfirm>
-          </a-dropdown>
-        </span>
+
 
       </a-table>
     </div>
@@ -237,7 +229,9 @@
             align: "center",
             // fixed:"right",
             width: 147,
-            scopedSlots: {customRender: 'action'}
+            customRender:this.renderContentEdit,
+
+            // scopedSlots: {customRender: 'action'}
           }
         ],
         url: {
@@ -250,6 +244,7 @@
         'companyType',
         'administrativeRegion',
         'industry',
+          'action'
       ],
       }
     },
@@ -264,6 +259,73 @@
       },
       dictValByIndex(value, row, index,key){
         return this.dictVal(key.dataIndex,value)
+      },
+      renderContentEdit(value, row, index,key){
+        let _this = this
+        //JSX  写法
+        let child = _this.$createElement(
+          'div',
+          {
+
+          },
+            [
+
+              _this.$createElement(
+                'a',
+                {
+                  domProps:{
+                    innerHTML: '编辑'
+                  },
+                  on:{
+                    click: function () {_this.handleEdit(row)}
+                  }
+                }
+              ),
+              _this.$createElement(
+                'a-divider',
+                {
+                  props: {
+                    type:'vertical'
+                  },
+                }
+              ),
+              _this.$createElement(
+                'a-dropdown',
+                {
+
+                },
+                [
+                  _this.$createElement(
+                    'a-popconfirm',
+                    {
+                      props: {
+                        title:'确定删除吗'
+                      },
+                      on:{
+                        confirm:function () {
+                          _this.handleDelete(row.companyId)
+                        }
+                      },
+
+                    },
+                    [
+                      _this.$createElement(
+                        'a','删除'
+                      ),
+                    ]
+                  )
+                ]
+              ),
+            ]
+          );
+
+        const obj = {
+          children: child,
+          attrs: {}
+        }
+        //按照companyId合并
+        obj.attrs =  this.renderContent( row.companyId,row,index,key).attrs
+        return obj
       },
       renderCompanyType (value, row, index,key)  {
         return this.renderContent( this.dictVal("company_type",value),row,index,key)
