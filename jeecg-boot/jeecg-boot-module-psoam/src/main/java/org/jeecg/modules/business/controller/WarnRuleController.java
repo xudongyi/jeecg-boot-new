@@ -212,7 +212,9 @@ public class WarnRuleController extends JeecgController<WarnRule, IWarnRuleServi
 		for (Map<String,Object> id:idList){
 			deleteIds.add(id.get("id").toString());
 		}
-		this.warnPointRuleService.removeByIds(deleteIds);
+		if(deleteIds.size() > 0){
+			this.warnPointRuleService.removeByIds(deleteIds);
+		}
 
 		String isUsed = jsonObject.getString("isUsed");
 		org.jeecg.modules.business.entity.WarnPointRule warnPointRule = new org.jeecg.modules.business.entity.WarnPointRule();
