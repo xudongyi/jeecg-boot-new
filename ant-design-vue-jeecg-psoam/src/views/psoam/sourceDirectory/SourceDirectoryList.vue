@@ -88,7 +88,7 @@
         ref="table"
         size="middle"
         bordered
-        rowKey="siteId"
+        rowKey="companyId"
         :columns="columns"
         :dataSource="dataSource"
         :pagination="ipagination"
@@ -122,7 +122,7 @@
           <a @click="handleEdit(record)">编辑</a>
           <a-divider type="vertical"/>
           <a-dropdown>
-                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
+                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.companyId)">
                   <a>删除</a>
                 </a-popconfirm>
           </a-dropdown>
@@ -160,6 +160,7 @@
         description: '污染源名录库管理页面',
         companyNames:[],
         companyNameOriginal:[],
+        areaHandler: '',
         // 表头
         columns: [
           {
@@ -259,6 +260,7 @@
     },
     methods: {
       initDictConfig() {
+        this.areaHandler = new AreaHandler()
       },
       dictValByIndex(value, row, index,key){
         return this.dictVal(key.dataIndex,value)

@@ -5,7 +5,7 @@
         SELECT a.id companyId,d.id siteId,a.company_name companyName,b.short_name shortName,b.company_type companyType,b.administrative_region administrativeRegion,b.industry,c.intensive_unit intensiveUnit,d.site_name siteName,d.site_type siteType,d.site_level siteLevel,d.site_state siteState
         FROM company_baseinfo b INNER  JOIN company_base a on a.id = b.company_id and b.`status` = 2
         INNER JOIN source_directory c on a.id = c.company_id
-        INNER JOIN site_monitor_point d on a.id=d.company_id where 1=1
+        INNER JOIN site_monitor_point d on a.id=d.company_id where d.site_type in (0,1,2)
         <if test="area != null and area!=''">
             and b.administrative_region = #{area}
         </if>

@@ -150,14 +150,13 @@ public class SourceDirectoryController extends JeecgController<SourceDirectory, 
 	/**
 	 *   通过id删除
 	 *
-	 * @param id
 	 * @return
 	 */
 	@AutoLog(value = "污染源名录库-通过id删除")
 	@ApiOperation(value="污染源名录库-通过id删除", notes="污染源名录库-通过id删除")
 	@DeleteMapping(value = "/delete")
 	public Result<?> delete(@RequestParam(name="id",required=true) String id) {
-		sourceDirectoryService.removeById(id);
+		sourceDirectoryService.remove(new QueryWrapper<SourceDirectory>().lambda().eq(SourceDirectory::getCompanyId,id));
 		return Result.ok("删除成功!");
 	}
 	
@@ -167,14 +166,14 @@ public class SourceDirectoryController extends JeecgController<SourceDirectory, 
 	 * @param ids
 	 * @return
 	 */
-	@AutoLog(value = "污染源名录库-批量删除")
+	/*@AutoLog(value = "污染源名录库-批量删除")
 	@ApiOperation(value="污染源名录库-批量删除", notes="污染源名录库-批量删除")
 	@DeleteMapping(value = "/deleteBatch")
 	public Result<?> deleteBatch(@RequestParam(name="ids",required=true) String ids) {
 		this.sourceDirectoryService.removeByIds(Arrays.asList(ids.split(",")));
 		return Result.ok("批量删除成功!");
-	}
-	
+	}*/
+
 	/**
 	 * 通过id查询
 	 *
