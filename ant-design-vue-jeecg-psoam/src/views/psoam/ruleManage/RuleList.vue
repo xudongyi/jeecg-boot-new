@@ -91,7 +91,7 @@
     </div>
     <RuleListModal ref="modalForm"></RuleListModal>
     <DeleteRuleModal ref="deleteModalForm" @deleted="queryData"></DeleteRuleModal>
-    <UpdateBatchModal ref="updateModalForm"></UpdateBatchModal>
+    <UpdateBatchModal ref="updateModalForm" @ok="queryData"></UpdateBatchModal>
   </a-card>
 </template>
 
