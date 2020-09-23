@@ -351,6 +351,7 @@
               if(res.success){
                 that.$message.success(res.message);
                 that.$emit('ok');
+                that.$emit('clear');
               }else{
                 that.$message.warning(res.message);
               }

@@ -91,7 +91,7 @@
     </div>
     <RuleListModal ref="modalForm"></RuleListModal>
     <DeleteRuleModal ref="deleteModalForm" @deleted="queryData"></DeleteRuleModal>
-    <UpdateBatchModal ref="updateModalForm" @ok="queryData"></UpdateBatchModal>
+    <UpdateBatchModal ref="updateModalForm" @ok="queryData" @clear="onClearSelected"></UpdateBatchModal>
   </a-card>
 </template>
 
@@ -345,7 +345,11 @@
           this.$message.error("请选择相同类型监测点进行操作！");
           return;
         }
-      }
+      },
+      onClearSelected() {
+        this.selectedRowKeys = [];
+        this.selectionRows = [];
+      },
     },
     created(){
       this.queryCompanyAndSite();

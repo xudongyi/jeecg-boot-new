@@ -217,8 +217,8 @@ public class WarnRuleController extends JeecgController<WarnRule, IWarnRuleServi
 		}
 
 		String isUsed = jsonObject.getString("isUsed");
-		org.jeecg.modules.business.entity.WarnPointRule warnPointRule = new org.jeecg.modules.business.entity.WarnPointRule();
 		for(int i = 0;i<mnList.size();i++){
+			org.jeecg.modules.business.entity.WarnPointRule warnPointRule = new org.jeecg.modules.business.entity.WarnPointRule();
 			warnPointRule.setMn(mnList.get(i));
 			warnPointRule.setRuleId(ruleId);
 			warnPointRule.setIsUsed(isUsed);
