@@ -20,4 +20,5 @@ public interface IWarnRuleService extends IService<WarnRule> {
     List<Map<String,Object>> querySingleSiteInfo(String mn);
     List<Map<String,Object>> queryDeleteIds(List<String> mns,List<String> types);
     List<Map<String,Object>> queryDeleteIdsBeforeAdd(List<String> mns,String ruleType,String siteType,String code);
+    List<Map<String,Object>> queryTreeData(List<String> companyIds);
 }

@@ -21,4 +21,5 @@ public interface WarnRuleMapper extends BaseMapper<WarnRule> {
     List<Map<String,Object>> querySingleSiteInfo(String mn);
     List<Map<String,Object>> queryDeleteIds(@Param("mns")List<String> mns,@Param("types")List<String> types);
     List<Map<String,Object>> queryDeleteIdsBeforeAdd(@Param("mns")List<String> mns,String ruleType,String siteType,String code);
+    List<Map<String,Object>> queryTreeData(@Param("companyIds")List<String> companyIds);
 }

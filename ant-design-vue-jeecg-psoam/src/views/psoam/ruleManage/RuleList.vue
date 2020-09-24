@@ -105,7 +105,6 @@
   import {getAction} from "../../../api/manage";
   import RuleListModal from "./modules/RuleListModal";
   import DeleteRuleModal from "./modules/DeleteRuleModal";
-  import SingleRuleModal from "./modules/SingleRuleModal";
   import UpdateBatchModal from "./modules/UpdateBatchModal";
   export default {
     name: "RuleList",

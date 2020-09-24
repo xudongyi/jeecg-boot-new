@@ -90,7 +90,7 @@ public class VocHistoryController {
 		 if(!StrUtil.isEmpty(siteType)){
 			 queryWrapper.in(SiteMonitorPoint::getSiteType, siteTypeList);
 		 }
-		 queryWrapper.in(SiteMonitorPoint::getCompanyId, idList);
+		 queryWrapper.in(SiteMonitorPoint::getCompanyId, idList).eq(SiteMonitorPoint::getSiteState,"1");
 		 siteMonitorPointService.list(queryWrapper).forEach(siteMonitorPoint -> {
 			 Map<String, String> param = new HashMap<>();
 			 param.put("key", siteMonitorPoint.getMn());

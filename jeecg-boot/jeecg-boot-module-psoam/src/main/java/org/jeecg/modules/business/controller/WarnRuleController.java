@@ -246,6 +246,21 @@ public class WarnRuleController extends JeecgController<WarnRule, IWarnRuleServi
 		warnRule.setRepeatDataCount(jsonObject.getInteger("repeatDataCount"));
 		return warnRule;
 	}
+
+	 /**
+	  * 分页列表查询
+	  *
+	  * @param req
+	  * @return
+	  */
+	 @AutoLog(value = "warn_rule-分页列表查询")
+	 @ApiOperation(value="warn_rule-分页列表查询", notes="warn_rule-分页列表查询")
+	 @GetMapping(value = "/queryMsgUserInfo")
+	 public Result<?> queryMsgUserInfo(HttpServletRequest req){
+		 String companyIds = req.getParameter("companyIds");
+		 List<Map<String,Object>> msgUserInfo = warnRuleService.queryTreeData(Arrays.asList(companyIds.split(",")));
+		 return Result.ok(msgUserInfo);
+	 }
 	
 	/**
 	 *  编辑
