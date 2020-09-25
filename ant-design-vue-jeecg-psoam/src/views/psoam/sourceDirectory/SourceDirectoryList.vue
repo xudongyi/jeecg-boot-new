@@ -277,7 +277,7 @@
                     innerHTML: '编辑'
                   },
                   on:{
-                    click: function () {_this.handleEdit(row)}
+                    click: function () {_this.loadDetail(row.companyId)}
                   }
                 }
               ),
@@ -326,6 +326,9 @@
         //按照companyId合并
         obj.attrs =  this.renderContent( row.companyId,row,index,key).attrs
         return obj
+      },
+      loadDetail(){
+
       },
       renderCompanyType (value, row, index,key)  {
         return this.renderContent( this.dictVal("company_type",value),row,index,key)

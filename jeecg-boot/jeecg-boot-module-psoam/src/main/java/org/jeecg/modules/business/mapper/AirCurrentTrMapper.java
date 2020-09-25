@@ -28,4 +28,5 @@ public interface AirCurrentTrMapper extends BaseMapper<AirCurrentTr> {
 
     List<Map<String, Object>> getAirCurrentTrList(Page<Map<String, Object>> page, String area, String companyId, String mn, String tableName,List<Integer> dataStatus,Integer offLine);
 
+    Map<String, Object> findBySiteIdAndTime(String siteId, String dataTime);
 }

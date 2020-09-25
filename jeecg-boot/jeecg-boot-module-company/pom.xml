@@ -43,5 +43,9 @@
             <groupId>org.jeecgframework.boot</groupId>
             <artifactId>jeecg-boot-base-common</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.jeecgframework.boot</groupId>
+            <artifactId>jeecg-boot-module-site</artifactId>
+        </dependency>
     </dependencies>
 </project>

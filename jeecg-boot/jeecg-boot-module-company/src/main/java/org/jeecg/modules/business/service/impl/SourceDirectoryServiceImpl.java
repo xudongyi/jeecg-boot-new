@@ -2,14 +2,14 @@ package org.jeecg.modules.business.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.jeecg.modules.business.entity.SourceDirectory;
 import org.jeecg.modules.business.mapper.SourceDirectoryMapper;
 import org.jeecg.modules.business.service.ISourceDirectoryService;
 import org.springframework.stereotype.Service;
 
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,12 +29,12 @@ public class SourceDirectoryServiceImpl extends ServiceImpl<SourceDirectoryMappe
     }
 
     @Override
-    public IPage<Map<String, Object>> getUnSelectCompany(Page<Map<String, Object>> page, String companyId) {
-        return sourceDirectoryMapper.getUnSelectCompany(page,companyId);
+    public IPage<Map<String, Object>> getUnSelectCompany(Page<Map<String, Object>> page, List<String> companyIds) {
+        return sourceDirectoryMapper.getUnSelectCompany(page,companyIds);
     }
 
     @Override
-    public IPage<Map<String, Object>> getSelectCompany(Page<Map<String, Object>> page, String companyId) {
-        return sourceDirectoryMapper.getSelectCompany(page,companyId);
+    public IPage<Map<String, Object>> getSelectCompany(Page<Map<String, Object>> page,List<String> companyIds) {
+        return sourceDirectoryMapper.getSelectCompany(page,companyIds);
     }
 }

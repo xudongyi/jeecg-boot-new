@@ -113,8 +113,6 @@
         console.log(val)
         this.siteInfo = val;
         this.siteName = val.siteName
-
-        // site
       }
     },
   }

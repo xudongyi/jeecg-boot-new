@@ -9,9 +9,9 @@
     @cancel="handleCancel"
     cancelText="关闭">
     <a-row :gutter="24">
-      <a-col :xl="6" :lg="7" :md="8" :sm="24">
-        <a-form-item label="企业名称">
-          <a-select v-model="queryParam.companyId" show-search style="width: 100%" optionFilterProp="children">
+      <a-col :xl="8" :lg="10" :md="12" :sm="24">
+        <a-form-item label="企业名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-select v-model="queryParam.companyIds" show-search style="width: 100%" optionFilterProp="children">
             <a-select-option :value="companyIds">请选择</a-select-option>
             <a-select-option v-for="item in items" :key="item.value" :value="item.key">
               {{item.value}}
@@ -19,15 +19,15 @@
           </a-select>
         </a-form-item>
       </a-col>
-      <a-col :xl="6" :lg="7" :md="8" :sm="24">
+      <a-col :xl="3" :lg="3" :md="4" :sm="12">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
         <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
             </span>
       </a-col>
     </a-row>
     <a-row type="flex" justify="space-around" align="top">
-      <a-col :span="9">
-        <a-card title="未选择企业1家">
+      <a-col :span="10">
+        <a-card :title="unSelectTitle">
           <a-table
             ref="table"
             size="middle"
@@ -46,20 +46,20 @@
         </a-card>
       </a-col>
       <a-col :span="4">
-        <div style="height: 800px">
-          <a-button-group style="top: 50%;">
+        <div style="height:500px;display: flex;align-items: center;text-align: center;">
+          <a-button-group>
             <a-button type="primary" @click="deleteCompany" :disabled="selectDisable">
-              <a-icon type="left"/>
+              <a-icon type="double-left"/>
               删除
             </a-button>
-            <a-button type="primary" @click="addCompany" :disabled="unSelectDisable"> 新增
-              <a-icon type="right"/>
+            <a-button type="primary" @click="addCompany" :disabled="unSelectDisable" style="margin-top: 10px"> 新增
+              <a-icon type="double-right"/>
             </a-button>
           </a-button-group>
         </div>
       </a-col>
-      <a-col :span="9">
-        <a-card title="已选选择企业2家">
+      <a-col :span="10">
+        <a-card :title="selectTitle">
           <a-table
             ref="table"
             size="middle"
@@ -94,6 +94,8 @@
     components: {},
     data() {
       return {
+        unSelectTitle:"未选择企业0家",
+        selectTitle:"已选择企业0家",
         unSelectDisable: true,
         selectDisable: true,
         columns: [
@@ -131,7 +133,7 @@
         selectedRowKeys: [],
         selectionRows: [],
         loading: false,
-        queryParam: [],
+        queryParam: {companyIds: this.$store.getters.userInfo.companyIds.join(',')},
         items: [],
         companyIds: this.$store.getters.userInfo.companyIds.join(','),
         /* 高级查询条件生效状态 */
@@ -149,11 +151,11 @@
         model: {},
         labelCol: {
           xs: {span: 24},
-          sm: {span: 5},
+          sm: {span: 6},
         },
         wrapperCol: {
           xs: {span: 24},
-          sm: {span: 16},
+          sm: {span: 18},
         },
         confirmLoading: false,
         validatorRules: {
@@ -276,6 +278,7 @@
         if (res.success) {
           this.selectDataSource = res.result.records;
           this.selectIpagination.total = res.result.total;
+          this.selectTitle = "已选择企业"+res.result.total+"家"
           if (res.result.total > 0) {
             this.selectDisable = false;
           }
@@ -301,6 +304,7 @@
         if (res.success) {
           this.unSelectDataSource = res.result.records;
           this.unSelectIpagination.total = res.result.total;
+          this.unSelectTitle = "未选择企业"+res.result.total+"家"
           if (res.result.total > 0) {
             this.unSelectDisable = false;
           }
@@ -350,9 +354,11 @@
     queryCompany() {
       //查询企业名称
       let that = this;
-      queryCompanyName({companyIds: this.$store.getters.userInfo.companyIds.join(',')}).then((res) => {
+      queryCompanyName({companyIds: that.$store.getters.userInfo.companyIds.join(',')}).then((res) => {
+        debugger
         if (res.success) {
-          that.items = res.result;
+          that.items = res.result.companyNames;
+          console.log(res.result);
         }
       });
     },
@@ -415,3 +421,18 @@
   }
   }
 </script>
+<style scoped>
+  @import '~@assets/less/common.less';
+  .ant-btn-group > .ant-btn:first-child:not(:last-child), .ant-btn-group > span:first-child:not(:last-child) > .ant-btn {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+  }
+  .ant-btn-group > .ant-btn:last-child:not(:first-child), .ant-btn-group > span:last-child:not(:first-child) > .ant-btn {
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+  }
+</style>

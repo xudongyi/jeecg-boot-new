@@ -37,11 +37,16 @@
     </select>
     <select id="getUnSelectCompany" resultType="Map">
         SELECT a.id,a.company_name FROM company_base a  WHERE a.id NOT IN(SELECT c.company_id from source_directory c)
-        <if test="companyId != null and companyId!=''">
-            and a.id = #{companyId}
-        </if>
+            and a.id  in
+        <foreach collection="companyIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
     </select>
     <select id="getSelectCompany" resultType="Map">
          SELECT a.id,a.company_name from company_base a right join source_directory b on a.id = b.company_id
+        where a.id in
+        <foreach collection="companyIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
     </select>
 </mapper>

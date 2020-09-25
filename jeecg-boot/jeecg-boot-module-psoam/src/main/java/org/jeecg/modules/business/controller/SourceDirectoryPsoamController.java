@@ -10,9 +10,6 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import org.jeecg.common.api.vo.Result;
-import org.jeecg.common.system.query.QueryGenerator;
-import org.jeecg.modules.business.entity.SourceDirectory;
-import org.jeecg.modules.business.service.ISourceDirectoryService;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -20,6 +17,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 
 import org.jeecg.common.system.base.controller.JeecgController;
+import org.jeecg.modules.business.entity.SourceDirectory;
+import org.jeecg.modules.business.service.ISourceDirectoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -37,7 +36,7 @@ import org.jeecg.common.aspect.annotation.AutoLog;
 @RestController
 @RequestMapping("/sourceDirectory/sourceDirectory")
 @Slf4j
-public class SourceDirectoryController extends JeecgController<SourceDirectory, ISourceDirectoryService> {
+public class SourceDirectoryPsoamController extends JeecgController<SourceDirectory, ISourceDirectoryService> {
 	@Autowired
 	private ISourceDirectoryService sourceDirectoryService;
 	
@@ -84,10 +83,10 @@ public class SourceDirectoryController extends JeecgController<SourceDirectory, 
 	 @ApiOperation(value="未选择企业", notes="未选择企业")
 	 @GetMapping(value = "/unSelectList")
 	 public Result<?> unSelectList(@RequestParam(name="pageNo", defaultValue="1") Integer pageNo, @RequestParam(name="pageSize", defaultValue="10") Integer pageSize, HttpServletRequest req) {
-		 String companyId = req.getParameter("companyId");
+		 String companyIds = req.getParameter("companyIds");
 		 //查询列表
 		 Page<Map<String, Object>> page = new Page<>(pageNo, pageSize);
-		 IPage<Map<String, Object>> pageList = sourceDirectoryService.getUnSelectCompany(page,companyId);
+		 IPage<Map<String, Object>> pageList = sourceDirectoryService.getUnSelectCompany(page,Arrays.asList(companyIds.split(",")));
 		 return Result.ok(pageList);
 	 }
 
@@ -107,10 +106,10 @@ public class SourceDirectoryController extends JeecgController<SourceDirectory, 
 									@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
 									@RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
 									HttpServletRequest req) {
-		 String companyId = req.getParameter("companyId");
+		 String companyIds = req.getParameter("companyIds");
 		 //查询列表
 		 Page<Map<String, Object>> page = new Page<>(pageNo, pageSize);
-		 IPage<Map<String, Object>> pageList = sourceDirectoryService.getSelectCompany(page,companyId);
+		 IPage<Map<String, Object>> pageList = sourceDirectoryService.getSelectCompany(page,Arrays.asList(companyIds.split(",")));
 		 return Result.ok(pageList);
 	 }
 	
