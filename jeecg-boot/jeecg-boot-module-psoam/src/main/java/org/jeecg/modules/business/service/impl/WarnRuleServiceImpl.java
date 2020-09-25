@@ -52,4 +52,9 @@ public class WarnRuleServiceImpl extends ServiceImpl<WarnRuleMapper, WarnRule> i
     public List<Map<String, Object>> queryTreeData(List<String> companyIds) {
         return warnRuleMapper.queryTreeData(companyIds);
     }
+
+    @Override
+    public List<Map<String, Object>> queryMsgRuleInfo(List<String> companyIds, String name, String mobile, String mn, String zrCompanyId) {
+        return warnRuleMapper.queryMsgRuleInfo(companyIds, name, mobile, mn, zrCompanyId);
+    }
 }

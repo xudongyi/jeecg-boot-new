@@ -4,16 +4,20 @@ import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.jeecg.common.api.vo.Result;
+import org.jeecg.modules.business.entity.SiteMonitorPoint;
+import org.jeecg.modules.business.entity.SysWarnUser;
 import org.jeecg.modules.business.entity.WarnRule;
-import org.jeecg.modules.business.service.ISysDictService;
-import org.jeecg.modules.business.service.IWarnPointRuleService;
-import org.jeecg.modules.business.service.IWarnRuleService;
+import org.jeecg.modules.business.entity.WarnUserRule;
+import org.jeecg.modules.business.mapper.SiteMonitorPointMapper;
+import org.jeecg.modules.business.service.*;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -47,6 +51,14 @@ public class WarnRuleController extends JeecgController<WarnRule, IWarnRuleServi
 	 @Autowired
 	 private IWarnPointRuleService warnPointRuleService;
 
+	 @Autowired
+	 private ISysWarnUserService sysWarnUserService;
+
+	 @Autowired
+	 private ISiteMonitorPointService siteMonitorPointService;
+
+	 @Autowired
+	 private IWarnUserRuleService warnUserRuleService;
 	/**
 	 * 分页列表查询
 	 *
@@ -260,6 +272,77 @@ public class WarnRuleController extends JeecgController<WarnRule, IWarnRuleServi
 		 String companyIds = req.getParameter("companyIds");
 		 List<Map<String,Object>> msgUserInfo = warnRuleService.queryTreeData(Arrays.asList(companyIds.split(",")));
 		 return Result.ok(msgUserInfo);
+	 }
+
+	 /**
+	  * 分页列表查询 联系人接收策略
+	  *
+	  * @param req
+	  * @return
+	  */
+	 @AutoLog(value = "warn_rule-分页列表查询")
+	 @ApiOperation(value="warn_rule-分页列表查询", notes="warn_rule-分页列表查询")
+	 @GetMapping(value = "/listMsgRule")
+	 public Result<?> queryMsgRuleList(HttpServletRequest req) {
+		 String name = req.getParameter("name");
+		 String mobile = req.getParameter("mobile");
+		 String companyId = req.getParameter("companyId");
+		 String companyIds = req.getParameter("companyIds");
+	 	 String zrCompanyId = req.getParameter("zrCompanyId");
+	 	 String mn = req.getParameter("mn");
+
+	 	 companyIds = StrUtil.isEmpty(companyId)?companyIds:companyId; //可以查询到的企业
+		 List<String> companyIdList = Arrays.asList(companyIds.split(","));
+		 List<Map<String,Object>> msgRules = warnRuleService.queryMsgRuleInfo(companyIdList, name,mobile,mn,zrCompanyId);
+		 for (Map<String,Object> msgRule:msgRules){
+		 	String ruleTypeName = sysDictService.queryDictTextByKey("warnType", msgRule.get("ruleType").toString());
+		 	msgRule.put("ruleTypeName",ruleTypeName);
+		 }
+
+//		 Map<String,Object> userRuleList = new HashMap<>();
+//		 for (Map<String,Object> msgRule:msgRules){
+//		 	userRuleList.putIfAbsent(msgRule.get("mn").toString(),new ArrayList<>());
+//		 }
+	 	 return Result.ok(msgRules);
+	 }
+
+	 /**
+	  *   添加联系人接收策略
+	  *
+	  * @param jsonObject
+	  * @return
+	  */
+	 @AutoLog(value = "warn_rule-添加联系人接收策略")
+	 @ApiOperation(value="warn_rule-添加联系人接收策略", notes="warn_rule-添加联系人接收策略")
+	 @PostMapping(value = "/addMsgRule")
+	 public Result<?> addMsgRule(@RequestBody JSONObject jsonObject) {
+	 	List<String> mnAndTypes = jsonObject.getJSONArray("mnAndTypes").toJavaList(String.class);
+	 	String name = jsonObject.getString("name");
+	 	String mobile = jsonObject.getString("mobile");
+	 	String companyId = jsonObject.getString("companyId");
+
+	 	SysWarnUser sysWarnUser = new SysWarnUser();
+	 	sysWarnUser.setName(name);
+	 	sysWarnUser.setMobile(mobile);
+	 	sysWarnUser.setCompanyId(companyId);
+	 	sysWarnUserService.save(sysWarnUser);
+	 	String userId = sysWarnUser.getId();
+
+	 	List<WarnUserRule> warnUserRules = new ArrayList<>();
+	 	for(String mnAndType:mnAndTypes){
+	 		String ruleType = mnAndType.substring(0, 1);
+	 		String mn = mnAndType.substring(2);
+	 		String zrCompanyId = siteMonitorPointService.getOne(new QueryWrapper<SiteMonitorPoint>().lambda().eq(SiteMonitorPoint::getMn,mn).
+					eq(SiteMonitorPoint::getSiteState,"1")).getCompanyId();
+	 		WarnUserRule warnUserRule = new WarnUserRule();
+	 		warnUserRule.setUserId(userId);
+	 		warnUserRule.setMn(mn);
+	 		warnUserRule.setRuleType(ruleType);
+	 		warnUserRule.setZrCompanyId(zrCompanyId);
+	 		warnUserRules.add(warnUserRule);
+		}
+	 	warnUserRuleService.saveBatch(warnUserRules);
+	 	return Result.ok("添加成功");
 	 }
 	
 	/**

@@ -194,8 +194,8 @@
           }
         },
         url: {
-          add: "/swup/sysWarnUserPoint/add",
-          edit: "/swup/sysWarnUserPoint/edit",
+          add: "/wr/warnRule/addMsgRule",
+          edit: "/wr/warnRule/editX",
         }
       }
     },
@@ -504,8 +504,8 @@
           })
         }else{
           _this.treeData2 =   [];
-          _this.originalData2 = []
-          _this.checkedKeys = []
+          _this.originalData2 = [];
+          _this.checkedKeys = [];
           _this.checkedKeys2 = []
         }
       },
@@ -529,8 +529,8 @@
               method = 'put';
             }
             let formData = Object.assign(this.model, values);
-            formData.monitorIds = this.originalData2.map(e=>{
-              return e.key
+            formData.mnAndTypes = this.originalData2.map(e=>{
+              return e.ruleType+'+'+e.mn
             });
 
             console.log("表单提交数据",formData)

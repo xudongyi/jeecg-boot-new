@@ -75,15 +75,11 @@
         @change="handleTableChange">
 
         <span slot="action" slot-scope="text, record">
-          <a-menu-item>
             <a @click="handleEdit(record)">编辑</a>
-          </a-menu-item>
           <a-divider type="vertical" />
-          <a-menu-item>
-            <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
-              <a>删除</a>
-            </a-popconfirm>
-          </a-menu-item>
+              <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
+                <a>删除</a>
+              </a-popconfirm>
         </span>
 
       </a-table>
@@ -100,13 +96,13 @@
   import {tableMixin} from "../mixin/tableMixin";
   import {queryCompanyName,querySiteNameAndMn} from "../../requestAction/request";
   import MsgUserModal from "./modules/MsgUserModal";
+  import {getAction} from "../../../api/manage";
 
   export default {
     name: "MsgUserList",
     mixins:[tableMixin,commonUtil],
     components: {
       MsgUserModal
-
     },
     data () {
       return {
@@ -161,7 +157,7 @@
           {
             title:'短信接收策略',
             align:"center",
-            dataIndex: 'rules'
+            dataIndex: 'ruleTypeName'
           },
           {
             title: '操作',
@@ -173,11 +169,9 @@
           }
         ],
         url: {
-          list: "/swup/sysWarnUserPoint/list",
-          delete: "/swup/sysWarnUserPoint/delete",
-          deleteBatch: "/swup/sysWarnUserPoint/deleteBatch",
-          exportXlsUrl: "/swup/sysWarnUserPoint/exportXls",
-          importExcelUrl: "swup/sysWarnUserPoint/importExcel",
+          list: "/wr/warnRule/listMsgRule",
+          delete: "/wr/warnRule/deleteX",
+          deleteBatch: "/wr/warnRule/deleteBatchX",
         },
         dictOptions:{},
         spanArr:[],
@@ -203,6 +197,7 @@
           this.items = a;
         }
       });
+      this.queryData(1);
     },
     watch: {
       dataSource(val){
@@ -246,10 +241,37 @@
           }
         });
       },
-      initDictConfig(){
-      },
       searchQuery(){
+        this.loadData(1);
+      },
+      queryData(arg){
+        //加载数据 若传入参数1则加载第一页的内容
+        if (arg === 1) {
+          this.ipagination.current = 1;
+        }
+        var params = this.getQueryParams();//查询条件
+        this.loading = true;
+        getAction(this.url.list, params).then((res) => {
+          if (res.success) {
+            this.dataSource = res.result;
+            this.ipagination.total = res.result.length;
 
+          }
+          if(res.code===510){
+            this.$message.warning(res.message)
+          }
+          this.loading = false;
+        })
+        //对param
+      },
+      handleTableChange(pagination, filters, sorter) {
+        //分页、排序、筛选变化时触发
+        //TODO 筛选
+        if (Object.keys(sorter).length > 0) {
+          this.isorter.order = "ascend" == sorter.order ? "asc" : "desc"
+        }
+        this.ipagination = pagination;
+        this.queryData();
       },
       handleAdd: function () {
         this.$refs.modalForm.add();

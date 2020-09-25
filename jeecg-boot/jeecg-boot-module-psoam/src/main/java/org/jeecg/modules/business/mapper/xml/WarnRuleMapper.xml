@@ -132,4 +132,36 @@
         order by c.company_id,a.mn
     </select>
 
+    <select id="queryMsgRuleInfo" resultType="Map">
+        select a.user_id userId,
+        b.name name,
+        b.mobile mobile,
+        c.company_name companyName,
+        d.company_name zrCompanyName,
+        a.mn mn,
+        e.site_name siteName,
+        a.rule_type ruleType
+        from warn_user_rule a left join sys_warn_user b on a.user_id = b.id
+        left join company_base c on b.company_id=c.id
+        left join company_base d on a.zr_company_id = d.id
+        left join site_monitor_point e on a.mn = e.mn
+        where b.company_id in
+        <foreach collection="companyIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        <if test="name != null and name !=''">
+            and b.name=#{name}
+        </if>
+        <if test="mobile != null and mobile !=''">
+            and b.mobile=#{mobile}
+        </if>
+        <if test="zrCompanyId != null and zrCompanyId !=''">
+            and a.zr_company_id=#{zrCompanyId}
+        </if>
+        <if test="mn != null and mn !=''">
+            and a.mn=#{mn}
+        </if>
+        order by b.mobile,b.company_id,a.zr_company_id,a.mn
+    </select>
+
 </mapper>
