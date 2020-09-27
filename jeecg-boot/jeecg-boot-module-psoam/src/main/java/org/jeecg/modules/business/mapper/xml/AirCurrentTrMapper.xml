@@ -77,4 +77,7 @@
             and b.online_status =  #{offLine}
         </if>
     </select>
+    <select id="findBySiteIdAndTime"  resultType="Map">
+        select * from ${tableName} a right join site_monitor_point b on a.mn = b.mn WHERE b.id = #{siteId} AND a.DATA_TIME = #{dataTime}
+    </select>
 </mapper>

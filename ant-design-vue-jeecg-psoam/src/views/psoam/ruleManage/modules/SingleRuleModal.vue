@@ -18,7 +18,7 @@
           </a-col>
           <a-col span="8">
             <a-form-item label="监测类型" :labelCol="labelCols" :wrapperCol="wrapperCols">
-              <a-select v-decorator="['siteType',validatorRules.siteType]" placeholder="请选择" show-search style="width: 100%" optionFilterProp="children" :disabled="disableSubmit">
+              <a-select v-decorator="['siteType',validatorRules.siteType]" placeholder="请选择" show-search style="width: 100%" optionFilterProp="children" :disabled="true">
                 <a-select-option v-for="(item,index) in siteTypes" :key="item.value" :value="item.key">
                   {{item.value}}
                 </a-select-option>
@@ -85,14 +85,26 @@
           </a-col>
         </a-row>
         <a-row>
-          <a-col span="24">
-            <a-form-item label="是否发送短信：" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-col span="12">
+            <a-form-item label="是否发送短信" :labelCol="labelCols" :wrapperCol="wrapperCol">
               <a-radio-group v-model="resultMsg"  :trigger-change="true" :disabled="disableSubmit">
                 <a-radio value="0">
                   发送
                 </a-radio>
                 <a-radio value="1">
                   不发送
+                </a-radio>
+              </a-radio-group>
+            </a-form-item>
+          </a-col>
+          <a-col span="12">
+            <a-form-item label="是否同步短信联系人" :labelCol="labelCols" :wrapperCol="wrapperCol">
+              <a-radio-group v-model="resultSynchronize"  :trigger-change="true" :disabled="disableSubmit">
+                <a-radio value="0">
+                  是
+                </a-radio>
+                <a-radio value="1">
+                  否
                 </a-radio>
               </a-radio-group>
             </a-form-item>
@@ -130,7 +142,7 @@
 
         <a-row>
           <a-col span="24">
-            <a-form-item label="策略状态：" :labelCol="labelCol" :wrapperCol="wrapperCol">
+            <a-form-item label="策略状态" :labelCol="labelCol" :wrapperCol="wrapperCol">
               <a-radio-group v-model="resultUsed" :disabled="disableSubmit">
                 <a-radio value="0">
                   启用
@@ -179,11 +191,12 @@
         levelKey:'',
         levelItems:[{key:'0',value:'报警'},{key:'1',value:'一级预警'},{key:'2',value:'二级预警'},{key:'3',value:'三级预警'},{key:'4',value:'四级预警'}],
         oneRecord:'',
-        resultSample:'0',
-        resultTap:'0',
+        resultSample:'',
+        resultTap:'',
         msgShow:'',
         disableSubmit:'',
         resultMsg:'0',
+        resultSynchronize:'',
         resultUsed:'0',
         siteTypes:[{key:'0',value:'废水'},{key:'1',value:'废气'},{key:'2',value:'VOCs'}],
         codes:'',
@@ -259,20 +272,17 @@
 
         this.model = Object.assign({}, record);
         this.visible = true;
-        if(!record.ruleLevel){
-          this.levelKey = '0';
-        }else {
+        if(record.ruleLevel){
           this.levelKey = record.ruleLevel;
         }
-        if(!record.isSample){
-          this.resultSample = '0';
-        }else {
+        if(record.isSample){
           this.resultSample = record.isSample;
         }
-        if(!record.isCloseTap){
-          this.resultTap = '0';
-        }else {
+        if(record.isCloseTap){
           this.resultTap = record.isCloseTap;
+        }
+        if(record.isSynchronize){
+          this.resultSynchronize = record.isSynchronize;
         }
         if(!record.isSendMsg)
           record.isSendMsg = '0';
@@ -280,7 +290,7 @@
         if(record.isUsed === '0' || record.isUsed === '1')
           this.resultUsed = record.isUsed;
         this.$nextTick(() => {
-          this.form.setFieldsValue(pick(this.model,'ruleType','siteType','code','warnValueUp','warnValueDown','repeatDataCount',
+          this.form.setFieldsValue(pick(this.model,'ruleType','siteType','code','warnValueUp','warnValueDown','repeatDataCount','isSynchronize',
             'isSendMsg','msgRate','content','isUsed','isSample','isCloseTap'));
           this.form.setFieldsValue({msgStartTime: this.model.msgStartTime ? moment(this.model.msgStartTime, 'HH:mm:ss') : null
             ,msgEndTime: this.model.msgEndTime ? moment(this.model.msgEndTime, 'HH:mm:ss') : null});
@@ -348,13 +358,13 @@
           if (val === '0') {
             this.msgShow = true;
             this.validatorRules.msgRate = {rules: [{required: true, message: '请选择发送频率!'}]};
-            this.validatorRules.warnStarttime = {rules: [{required: true, message: '请选择发送开始时间!'}]};
-            this.validatorRules.warnEndtime = {rules: [{required: true, message: '请选择发送结束时间!'}]};
+            this.validatorRules.msgStartTime = {rules: [{required: true, message: '请选择发送开始时间!'}]};
+            this.validatorRules.msgEndTime = {rules: [{required: true, message: '请选择发送结束时间!'}]};
           } else {
             this.msgShow = false;
             this.validatorRules.msgRate = {};
-            this.validatorRules.warnStarttime = {};
-            this.validatorRules.warnEndtime = {};
+            this.validatorRules.msgStartTime = {};
+            this.validatorRules.msgEndTime = {};
           }
         },
         immediate: true
@@ -363,11 +373,4 @@
   }
 </script>
 <style scoped>
-  .level{
-    font-size: 14px;
-    font-family: Microsoft YaHei;
-    font-weight: bold;
-    color: #000000;
-    opacity: 0.95;
-  }
 </style>

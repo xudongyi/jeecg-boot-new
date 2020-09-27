@@ -69,4 +69,9 @@ public class AirCurrentTrServiceImpl extends ServiceImpl<AirCurrentTrMapper, Air
     public IPage<Map<String, Object>> getAirCurrentTrList(Page<Map<String, Object>> page, String area, String companyId, String mn, String tableName, List<Integer> dataStatus, Integer offLine) {
         return page.setRecords(airCurrentTrMapper.getAirCurrentTrList(page,area,companyId,mn,tableName,dataStatus,offLine));
     }
+
+    @Override
+    public Map<String, Object> findBySiteIdAndTime(String siteId, String dataTime) {
+        return airCurrentTrMapper.findBySiteIdAndTime(siteId,dataTime);
+    }
 }

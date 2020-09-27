@@ -80,17 +80,17 @@ public class WarnRule implements Serializable {
     @ApiModelProperty(value = "短信频率")
     private java.lang.Integer msgRate;
 	/**短信发送开始时间*/
-	@Excel(name = "短信发送开始时间", width = 15, format = "yyyy-MM-dd")
-	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
-    @DateTimeFormat(pattern="yyyy-MM-dd")
+	@Excel(name = "短信发送开始时间", width = 15, format = "HH:mm:ss")
+	@JsonFormat(timezone = "GMT+8",pattern = "HH:mm:ss")
+    @DateTimeFormat(pattern="HH:mm:ss",iso = DateTimeFormat.ISO.TIME)
     @ApiModelProperty(value = "短信发送开始时间")
-    private java.util.Date msgStartTime;
+    private java.sql.Time msgStartTime;
 	/**短信发送结束时间*/
-	@Excel(name = "短信发送结束时间", width = 15, format = "yyyy-MM-dd")
-	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
-    @DateTimeFormat(pattern="yyyy-MM-dd")
+	@Excel(name = "短信发送结束时间", width = 15, format = "HH:mm:ss")
+	@JsonFormat(timezone = "GMT+8",pattern = "HH:mm:ss")
+    @DateTimeFormat(pattern="HH:mm:ss",iso = DateTimeFormat.ISO.TIME)
     @ApiModelProperty(value = "短信发送结束时间")
-    private java.util.Date msgEndTime;
+    private java.sql.Time msgEndTime;
 	/**策略说明*/
 	@Excel(name = "策略说明", width = 15)
     @ApiModelProperty(value = "策略说明")

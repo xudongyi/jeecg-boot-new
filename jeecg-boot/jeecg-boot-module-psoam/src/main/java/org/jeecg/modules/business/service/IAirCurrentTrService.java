@@ -21,4 +21,6 @@ public interface IAirCurrentTrService extends IService<AirCurrentTr> {
                                            String area,String mn,String dataTime_begin,String dataTime_end);
 
     IPage<Map<String, Object>> getAirCurrentTrList(Page<Map<String, Object>> page, String area, String companyId, String mn,String tableName,List<Integer> dataStatus,Integer offLine);
+
+    Map<String, Object> findBySiteIdAndTime(String siteId, String dataTime);
 }

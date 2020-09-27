@@ -1,5 +1,7 @@
 package org.jeecg.modules.business.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import org.jeecg.modules.business.entity.SiteMonitorPoint;
 import org.jeecg.modules.business.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,6 +71,8 @@ public class CompanyBasicServiceImpl implements ICompanyBasicService {
     private ICompanyEnvTrialService companyEnvTrialService;
     @Autowired
     private ICompanyBaseinfoService companyBaseinfoService;
+    @Autowired
+    private ISiteMonitorPointService siteMonitorPointService;
     /**
      *  根据conpanyId组装 一企一档基础信息的菜单信息
      * @param companyId
@@ -94,6 +98,15 @@ public class CompanyBasicServiceImpl implements ICompanyBasicService {
         addElements("13"," 清洁生产信息",companyCleanProductService.findCountByCompanyId(companyId),basicInfoMenus);
 
         addElements("14"," 在线监控验收信息",companyOnlineInfoService.findCountByCompanyId(companyId),basicInfoMenus);
+        addElements("15"," 污染源信息",0,basicInfoMenus);
+        List<String> siteTypes = new ArrayList<String>() {
+            {
+                add("0");
+                add("1");
+                add("2");
+            }
+        };
+        addElements("16"," 监测站点信息",siteMonitorPointService.count(new QueryWrapper<SiteMonitorPoint>().lambda().eq(SiteMonitorPoint::getCompanyId,companyId).in(SiteMonitorPoint::getSiteType,siteTypes)),basicInfoMenus);
 
         return basicInfoMenus;
     }

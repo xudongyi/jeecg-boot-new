@@ -88,4 +88,80 @@
         order by b.rule_type asc
     </select>
 
+
+    <select id="queryDeleteIds" resultType="Map">
+        select a.id id
+        from warn_point_rule a left join warn_rule b on a.rule_id=b.id
+        where a.mn in
+        <foreach collection="mns" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        and b.rule_type in
+        <foreach collection="types" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="queryDeleteIdsBeforeAdd" resultType="Map">
+        select a.id id
+        from warn_point_rule a left join warn_rule b on a.rule_id=b.id
+        where a.mn in
+        <foreach collection="mns" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        and b.rule_type=#{ruleType} and b.site_type=#{siteType} and b.code = #{code}
+    </select>
+
+    <select id="queryTreeData" resultType="Map">
+        select e.administrative_region area,
+        c.company_id companyId,
+        d.company_name companyName,
+        a.mn mn,
+        c.site_name siteName,
+        b.rule_type ruleType
+        from warn_point_rule a
+        LEFT JOIN warn_rule b on a.rule_id = b.id
+        LEFT JOIN site_monitor_point c on a.mn= c.mn
+        LEFT JOIN company_base d on c.company_id = d.id
+        LEFT JOIN company_baseinfo e on e.company_id=c.company_id
+        WHERE a.is_used ='0' and e.`status`='2' and c.company_id in
+        <foreach collection="companyIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        GROUP BY a.mn,b.rule_type
+        order by c.company_id,a.mn
+    </select>
+
+    <select id="queryMsgRuleInfo" resultType="Map">
+        select a.user_id userId,
+        b.name name,
+        b.mobile mobile,
+        c.company_name companyName,
+        d.company_name zrCompanyName,
+        a.mn mn,
+        e.site_name siteName,
+        a.rule_type ruleType
+        from warn_user_rule a left join sys_warn_user b on a.user_id = b.id
+        left join company_base c on b.company_id=c.id
+        left join company_base d on a.zr_company_id = d.id
+        left join site_monitor_point e on a.mn = e.mn
+        where b.company_id in
+        <foreach collection="companyIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        <if test="name != null and name !=''">
+            and b.name=#{name}
+        </if>
+        <if test="mobile != null and mobile !=''">
+            and b.mobile=#{mobile}
+        </if>
+        <if test="zrCompanyId != null and zrCompanyId !=''">
+            and a.zr_company_id=#{zrCompanyId}
+        </if>
+        <if test="mn != null and mn !=''">
+            and a.mn=#{mn}
+        </if>
+        order by b.mobile,b.company_id,a.zr_company_id,a.mn
+    </select>
+
 </mapper>

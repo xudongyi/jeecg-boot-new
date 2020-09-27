@@ -3,6 +3,7 @@ import Vue from 'vue'
 
 const getDetailMenus = (params)=>getAction("/companyBasic/Menus",params);
 const loadCompanyBaseInfo = (params)=>getAction("/companyBasic/loadBaseInfo",params);
+const loadSourceDirectory = (params)=>getAction("/sourceDirectory/queryByCompanyId",params);
 const loadQualifications = (params)=>postAction("/companyQualification/queryByCompanyId",params);
 const loadBaiduMap = (params)=>getAction("/envtax/companyEnvTax/loadBaiduMap",params);
 //查詢 最新的企业归档基本信息
@@ -49,5 +50,6 @@ export {
   queryShortName,
   queryFiles,
   queryQualificationAudit,
-  submitQualificationAudit
+  submitQualificationAudit,
+  loadSourceDirectory
 }

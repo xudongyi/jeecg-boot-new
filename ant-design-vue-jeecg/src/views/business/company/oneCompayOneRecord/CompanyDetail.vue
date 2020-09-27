@@ -26,6 +26,8 @@
           <company-env-tax-list v-if="leftActive==12 && topActive==1" :companyId="companyId" listType="2" :operation-show="false"/>
           <company-clean-product-list v-if="leftActive==13 && topActive==1" :companyId="companyId" listType="2" :operation-show="false"/>
           <company-online-info-list v-if="leftActive==14 && topActive==1" :companyId="companyId" listType="2" :operation-show="false"/>
+          <source-directory-modal  v-if="leftActive==15 && topActive==1" :companyId="companyId" listType="2" :operation-show="true"/>
+          <site-monitor-point-list v-if="leftActive==16 && topActive==1" :companyId="companyId" listType="2" :operation-show="true"/>
 
           <company-dynamic-supervision-list v-if="leftActive==1 && topActive==2" :companyId="companyId" listType="0" role="view"/>
           <company-admin-penalties-list v-if="leftActive==2 && topActive==2" :companyId="companyId" listType="0" role="view"/>
@@ -58,6 +60,9 @@
     import CompanyComplaintLetterList from "./routeView/CompanyComplaintLetterList";
     import CompanyCleanProductList from "./routeView/CompanyCleanProductList";
     import CompanyOnlineInfoList from "./routeView/CompanyOnlineInfoList";
+    import SourceDirectoryModal from "./routeView/SourceDirectoryModal";
+    import SiteMonitorPointList from "./routeView/SiteMonitorPointList";
+
     import CompanyRadiateWasteList from "./routeView/CompanyRadiateWasteList";
     import CompanySolidWasteList from "./routeView/CompanySolidWasteList";
     import CompanyRiskWasteList from "./routeView/CompanyRiskWasteList";
@@ -73,11 +78,12 @@
         CompanyEnvTaxList,
         CompanyCleanProductList,
         CompanyOnlineInfoList,
-        ProductMaterialList,
+        SourceDirectoryModal,
         EnvTrialList,
         CompanyRadiateWasteList,
         CompanySolidWasteList,
-        CompanyRiskWasteList
+        CompanyRiskWasteList,
+        SiteMonitorPointList
       },
       props:{
 

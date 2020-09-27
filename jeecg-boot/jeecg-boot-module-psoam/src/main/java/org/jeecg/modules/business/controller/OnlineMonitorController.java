@@ -1,31 +1,30 @@
 package org.jeecg.modules.business.controller;
 
-import java.util.*;
-import javax.servlet.http.HttpServletRequest;
-
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateUtil;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.jeecg.common.api.vo.Result;
-import org.jeecg.modules.business.entity.SiteMonitorPoint;
+import org.jeecg.common.aspect.annotation.AutoLog;
+import org.jeecg.common.system.base.controller.JeecgController;
 import org.jeecg.modules.business.entity.SysPollutionCode;
 import org.jeecg.modules.business.entity.WaterCurrentTr;
 import org.jeecg.modules.business.service.ISiteMonitorPointService;
 import org.jeecg.modules.business.service.ISysDictService;
 import org.jeecg.modules.business.service.ISysPollutionCodeService;
 import org.jeecg.modules.business.service.IWaterCurrentTrService;
-
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import lombok.extern.slf4j.Slf4j;
-
-import org.jeecg.common.system.base.controller.JeecgController;
 import org.jeecg.modules.business.vo.Column;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import org.jeecg.common.aspect.annotation.AutoLog;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
 
 /**
  * @Description: water_current_tr
@@ -179,7 +178,7 @@ public class OnlineMonitorController extends JeecgController<WaterCurrentTr, IWa
                                    HttpServletRequest req) {
         String area = req.getParameter("area");
         String companyId = req.getParameter("companyId");
-        String mn = req.getParameter("mn");
+        String mn = req.getParameter("companyType");
         String dataStatus = req.getParameter("dataStatus");
         //表名
         String currTime = DateUtil.format(DateUtil.date(), "yyyyMM");
